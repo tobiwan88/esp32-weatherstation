@@ -1,0 +1,19 @@
+mpn: TP4056-42-ESOP8
+role: linear USB charger, 4.2 V, 1 A max
+lcsc: C16581
+source:
+  url: null        # manufacturer (TOPPOWER / NanJing Top Power) datasheet; values below come from copies of it, record the revision
+  revision: null
+values:
+  pins: {value: "1 TEMP, 2 PROG, 3 GND, 4 VCC, 5 BAT, 6 STDBY, 7 CHRG, 8 CE (exposed pad to GND)", section: null}
+  vcc_v: {value: [4.0, 8.0], section: null}
+  prog_formula: {value: "IBAT = 1200 / RPROG[kohm] mA", section: "PROG pin"}
+  prog_table: {value: "3k = 400 mA, 2.4k = 500 mA, 1.2k = 1000 mA", section: null}
+  temp_pin: {value: "suspends below 45 % or above 80 % of VCC; ground TEMP to disable", section: "TEMP pin"}
+  ce: {value: "high = enabled, low = disabled", section: "CE pin"}
+  bat_leak_disabled_ua: {value: 2, section: null, note: "BAT pin draws under 2 uA in disable or sleep"}
+  tj_regulation_c: {value: 145, section: null}
+checklist:
+  - "exposed pad to GND with via array: section ?"
+  - "BAT capacitor (10 uF) stability: section ?"
+  - "CHRG/STDBY are open-drain, pulled up to 3V3 (read by ESP32)"

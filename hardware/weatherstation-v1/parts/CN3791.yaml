@@ -1,0 +1,23 @@
+# Datasheet card: facts from the OFFICIAL datasheet only, each with its section.
+# value null = not read yet (scripts report MISSING); section: not stated = datasheet silent.
+# A value without a section is unsourced (scripts report WARN): find its section before ordering.
+mpn: CN3791
+role: solar MPPT charger for one Li-ion cell (4.2 V), PWM buck
+lcsc: C154992
+source:
+  url: http://www.consonance-elec.com/
+  revision: null   # copies found: Consonance Rev 1.0 (third-party hosts); fetch the manufacturer PDF and record the revision
+values:
+  pins: {value: "1 GND, 2 VG, 3 CHRG, 4 DONE, 5 COM, 6 MPPT, 7 BAT, 8 CSP, 9 VCC, 10 DRV (SSOP-10)", section: null, note: "from a Rev 1.0 copy; no TEMP pin"}
+  vmppt_v: {value: 1.205, section: null, note: "MPPT pin regulation voltage; normal operation needs MPPT pin above 1.23 V"}
+  vcs_v: {value: 0.12, section: null, note: "charge current = 120 mV / Rcs"}
+  trickle_pct: {value: 17.5, section: null, note: "of the set constant current"}
+  vreg_v: {value: 4.2, section: null, note: "+-1 %"}
+  abs_max_vcc_v: {value: 30, section: null}
+  abs_max_mppt_v: {value: 6.5, section: null}
+  inductor_uh: {value: null, section: not read}
+checklist:
+  - "Typical application circuit (Fig. 1): D1 may be omitted, section ?"
+  - "MPPT divider for the real panel Vmp (calc/power_budget.py): section ?"
+  - "inductor value/Isat, Rcs, input/output caps: section ?"
+  - "no battery temperature pin: cold inhibit is done by Q3 pulling MPPT low (REQUIREMENTS.md F4)"

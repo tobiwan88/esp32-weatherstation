@@ -1,0 +1,16 @@
+mpn: ESP32-S3-WROOM-1-N8
+role: MCU + WiFi/BLE module, 8 MB flash, no PSRAM, PCB antenna
+lcsc: C2913198
+source:
+  url: https://www.espressif.com/
+  revision: null   # record the datasheet revision; hardware design guidelines: docs.espressif.com/projects/esp-hardware-design-guidelines
+values:
+  native_usb: {value: "GPIO19 D-, GPIO20 D+", section: null}
+  console_uart0: {value: "TXD0 / RXD0 pins", section: null}
+  deep_sleep_ua: {value: null, section: not read}
+  decoupling: {value: null, section: not read, note: "reuse the desk_notifier card note: 10 uF + 1 uF + 0.1 uF at the 3V3 pin (Espressif schematic checklist)"}
+  antenna_keepout: {value: null, section: not read}
+checklist:
+  - "EN RC (10k + 1 uF) and BOOT strapping: section ?"
+  - "antenna keepout dimensions: section ?"
+  - "strapping pins: do not load GPIO0/3/45/46 with the new circuits (CHG_INH, status inputs)"

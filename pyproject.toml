@@ -1,0 +1,20 @@
+[project]
+name = "esp32-weatherstation"
+version = "0.1.0"
+requires-python = ">=3.13"
+license = "MIT"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.17.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["hardware/tools/tests"]
+
+[tool.uv.workspace]
+members = [
+    "hardware",
+]

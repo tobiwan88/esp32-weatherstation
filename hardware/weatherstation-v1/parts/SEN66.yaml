@@ -1,0 +1,17 @@
+mpn: SEN66-SIN-T
+role: PM + CO2 + RH/T + VOC/NOx environmental sensor node (I2C), connector GHR-06V-S
+lcsc: null
+source:
+  url: https://sensirion.com/
+  revision: null   # fetch the SEN66 datasheet from sensirion.com and record revision + sections
+values:
+  pinout: {value: "1 VDD, 2 GND, 3 SDA, 4 SCL, 5 GND (do not connect), 6 VDD (do not connect); 2/5 and 1/6 are tied inside", section: null, note: "Sensirion Python driver docs"}
+  vdd_v: {value: [3.15, 3.45], section: null, note: "distributor listing; driver docs say 3.3 V +-5 %"}
+  i2c_address: {value: "0x6B", section: null}
+  peak_current_ma: {value: 350, section: null, note: "distributor listing"}
+  avg_current_ma_measuring: {value: 85, section: null, note: "third-party measurement, not a datasheet value"}
+  connector: {value: "JST GHR-06V-S, 1.25 mm (mates with SM06B-GHS-TB on the board)", section: null}
+checklist:
+  - "I2C pull-up value and bus voltage: section ?"
+  - "operating temperature range (needed for winter): section ?"
+  - "warm-up time to stable PM readings: section ?"

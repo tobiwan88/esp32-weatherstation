@@ -1,0 +1,35 @@
+Comment,Designator,Footprint,Quantity,LCSC Part #,Class,Status,Function / notes
+ESP32-S3-WROOM-1-N8,U1,RF_Module:ESP32-S3-WROOM-1,1,C2913198,Extended,VERIFIED,MCU + WiFi. 8 MB flash no PSRAM. PCB antenna overhangs board edge with copper keepout
+CN3791,U3,SSOP-10 (1.0mm pitch 150mil),1,C154992,Extended,VERIFIED,MPPT Li-ion solar charger. Pins: 1 GND 2 VG 3 CHRG 4 DONE 5 COM 6 MPPT 7 BAT 8 CSP 9 VCC 10 DRV
+TP4056-42-ESOP8,U6,ESOP-8 (exposed pad to GND + thermal vias),1,C16581,Extended,VERIFIED,USB Li-ion charger 4.2 V. Pins: 1 TEMP (tie to GND = disabled) 2 PROG 3 GND 4 VCC 5 BAT 6 STDBY 7 CHRG 8 CE. CE high = enabled
+3k 0603 1% (Rprog),R26,0603,1,TBD,?,NOT FOUND,TP4056 PROG: about 400 mA charge (I = 1200/R in kohm: 3k = 400 mA; 2.4k = 500 mA). Keeps USB draw plus system load near a host's limit
+AP2112K-3.3TRG1,U2,SOT-23-5,1,C51118,Extended,VERIFIED,3.3V LDO 600 mA 55 uA Iq. EN tied to VIN
+USBLC6-2SC6,"U4,U5",SOT-23-6,2,C7519,Extended,VERIFIED,U4 = USB D+/D- ESD next to J1. U5 = ESD on SDA/SCL at J3 (long outdoor SHT45 cable). Same part twice = no extra unique-part fee
+SMBJ12A TVS 12V 600W,D4,SMB (DO-214AA),1,C3001973,Check class,VERIFIED part (UMW; in stock),Solar input surge/ESD clamp. 12 V standoff is above a 6 V panel's Voc. Alternative: C129529 (MCC)
+AO3401A,"M1,Q1,Q2",SOT-23,3,C15127,Basic,VERIFIED,P-FET: M1 charger switch / Q1 battery ideal-diode / Q2 sensor load switch
+SS34,"D1,D2,D3",SMA,3,C8678,Basic?,VERIFIED part (class not shown),D1 solar reverse protect / D2 charger freewheel / D3 USB VBUS to VSYS
+SWPA6045S220MT 22uH,L1,6x6mm 6045,1,C83454,Extended?,VERIFIED part (Isat 1.8-2.2A),Charger inductor
+USB-C receptacle TYPE-C-31-M-12,J1,USB_C_Receptacle_HRO_TYPE-C-31-M-12,1,C165948,Extended,VERIFIED,Programming, debug, power and USB charging (via U6). VBUS to TP4056 VCC directly
+JST SM06B-GHS-TB,J2,JST_GH_SM06B-GHS-TB,1,C133065,Extended,VERIFIED,SEN66 connector. 1 VDD(3V3_SW) 2 GND 3 SDA 4 SCL 5/6 leave unconnected
+JST SM04B-SRSS-TB,"J3,J4",JST_SH_SM04B-SRSS-TB,2,C160404,Extended,VERIFIED,STEMMA QT/Qwiic: 1 GND 2 3V3_SW 3 SDA 4 SCL. J3 = SHT45 in radiation shield. J4 = spare
+Tact switch TS-1187A-B-A-B,"SW1,SW2",SMD 5.1x5.1,2,C318884,Extended?,VERIFIED part,SW1 = EN/reset. SW2 = BOOT (GPIO0)
+10k 0603 1%,"R1,R2,R3,R4,R27",0603,5,C25804,Basic,VERIFIED,EN pull-up / NTC divider / MPPT bottom (R4) / spare / Q4 gate series resistor from VBUS
+100k 0603 1%,"R5,R6,R7,R8,R18,R19,R20,R21,R22,R23,R24,R25",0603,12,C25803,Basic?,VERIFIED part,Q1 gate pull-down / Q2 gate pull-up / Q3 gate pull-down / CN3791 CHRG+DONE pull-ups to 3V3 / TP4056 CE pull-up to VBUS / TP4056 CHRG+STDBY pull-ups to 3V3 / VBUS-sense divider x2 / Q4 gate pull-down / Q5 gate pull-down
+5.1k 0603,"R9,R10",0603,2,C23186,Basic,VERIFIED,USB-C CC1/CC2
+4.7k 0603,"R11,R12",0603,2,C23162,Basic?,VERIFIED part,I2C pull-ups to 3V3_SW
+1k 0603,R13,0603,1,C21190,Basic,VERIFIED,Spare / GPIO series
+100nF 0603,"C1,C2,C3,C4,C5,C6",0603,6,C14663,Basic,VERIFIED,Decoupling (ESP32 3V3 x2, CN3791 VCC, battery sense, NTC sense, USB)
+1uF 0603,C7,0603,1,C15849,Basic,VERIFIED,ESP32 EN RC delay
+10uF 0603,"C8,C9,C10,C16",0603,4,C19702,Basic,VERIFIED,LDO in/out + ESP32 3V3 bulk + TP4056 VCC (10V X5R)
+22uF 0805 25V,"C11,C12,C13,C14",0805,4,C45783,Basic,VERIFIED,CN3791 VIN x1 / BAT x1 / 3V3_SW bulk x2 (SEN66 fan peaks)
+0.12 ohm 1% 1206,R14,1206,1,TBD,?,NOT FOUND,Charge current sense: I = 0.12 V / R = 1 A. Pick in JLCPCB parts search
+39k 0603 1%,R15,0603,1,TBD,?,NOT FOUND,MPPT divider top (Vset about 5.9 V at CN3791 VCC)
+1M 0603 1% (x2),"R16,R17",0603,2,TBD,?,NOT FOUND,Battery voltage divider (2 uA drain)
+220nF 0603,C15,0603,1,TBD,?,NOT FOUND,CN3791 datasheet Fig.1 C4. Confirm value against datasheet
+NTC 10k B3950 0603,TH1,0603,1,TBD,?,NOT FOUND,Battery temperature. Place near cell holder
+2N7002 NMOS,"Q3,Q4,Q5",SOT-23,3,C8545,Basic,VERIFIED,Q3 = firmware cold-inhibit: pulls CN3791 MPPT pin low. Q4 = USB priority: VBUS present pulls MPPT low (solar charger off). Q5 = firmware cold-inhibit: pulls TP4056 CE low
+Ferrite bead 0603 (optional),FB1,0603,1,n/a,n/a,DNP,Optional filter between VSYS and sensor rail. Leave pads bridged with solder; fit a bead only if SEN66 fan noise shows up on 3V3_SW
+Pin header 1x4 2.54mm (UART0 debug),J7,PinHeader_1x04_P2.54mm,1,n/a,n/a,HAND-SOLDER,Fallback debug: 3V3 / TXD0 / RXD0 / GND. Main programming + debug is native USB (J1)
+Test points,TP1-TP6,TestPoint_Pad_D1.5mm,6,n/a,n/a,PCB pads only,GND / 3V3 / 3V3_SW / VSYS / BAT / MPPT
+"Hand-solder: JST-PH 2-pin x2 (solar in, battery)",J5/J6,JST_PH_B2B-PH-K,2,n/a,n/a,HAND-SOLDER,Not in assembly BOM
+"Hand-solder: 18650 holder or protected cell with leads",BT1,n/a,1,n/a,n/a,HAND-SOLDER,Use protected cell

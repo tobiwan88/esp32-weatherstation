@@ -1,0 +1,20 @@
+# Critical blocks of weatherstation-v1, declared by intent. hardware/calc/critical.py checks them on the routed board.
+# NOT RUN YET: there is no routed board. Reference designators follow bom.csv and will change when the generator numbers parts;
+# pad numbers (REF.PAD) are placeholders until the schematic exists. Fill them in then, and run calc/critical.py.
+# Limits are design targets unless a source is named (then: datasheet + section).
+
+switcher_loop:   # CN3791 buck: input cap, switch and GND as one small loop; inductor tight to the switch node
+  - {name: solar_charger, cin: C11, vin: U3.9, gnd: U3.1, max_mm: 3.0, sw: U3.10, inductor: L1.1, sw_max_mm: 3.0, known: "pins are placeholders until the schematic exists"}
+
+decoupling:      # each cap at the supply pin it serves
+  - {pin: U1.2, cap: C8.1, max_mm: 4.0, known: "placeholder pins"}   # ESP32-S3 module 3V3 pin
+  - {pin: U2.1, cap: C9.1, max_mm: 3.0, known: "placeholder pins"}   # AP2112K input
+
+thermal_distance:   # heat sources away from temperature-sensitive parts (footprint centres)
+  - {source: U3, sensor: TH1, min_mm: 15}   # solar charger vs battery NTC
+  - {source: U6, sensor: TH1, min_mm: 15}   # TP4056 vs battery NTC
+  - {source: L1, sensor: TH1, min_mm: 15}
+  - {source: U6, sensor: J2, min_mm: 15}    # TP4056 vs SEN66 connector
+
+# Review only (no script yet): return_path (no signal across the GND planes' gaps; both inner layers are solid GND),
+# keepout (ESP32 antenna strip at the board edge; copper keepout on all layers), stitching along the edge every 5 mm.

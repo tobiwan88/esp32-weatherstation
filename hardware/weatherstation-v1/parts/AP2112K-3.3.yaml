@@ -1,0 +1,16 @@
+mpn: AP2112K-3.3TRG1
+role: 3.3 V LDO (battery/USB to rail)
+lcsc: C51118
+source:
+  url: null        # Diodes Inc. datasheet; values below are from the JLCPCB listing, record the datasheet sections
+  revision: null
+values:
+  iout_max_a: {value: 0.6, section: null}
+  dropout_v: {value: 0.25, section: null, note: "at 600 mA"}
+  iq_ua: {value: 55, section: null}
+  vin_max_v: {value: 6, section: null}
+  package: {value: "SOT-25-5, pin 1 VIN, 2 GND, 3 EN, 4 NC, 5 VOUT", section: null}
+checklist:
+  - "input/output capacitor ESR and value: section ?"
+  - "EN tied to VIN"
+  - "dissipation at the highest input (USB 5 V minus diode): section ?"

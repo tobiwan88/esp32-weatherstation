@@ -1,0 +1,32 @@
+# esp32-weatherstation: agent notes
+
+Solar + USB powered ESP32-S3 air-quality weather station: SEN66 (PM, CO2, T/RH, NOx index) plus an outdoor SHT45, deep-sleep
+duty cycle, WiFi to Home Assistant/MQTT. Custom 4-layer PCB (two GND planes), JLCPCB-assembled. Status: hardware pre-layout, firmware not started.
+Base created from desk_notifier (board-neutral hardware skills, calc scripts, tools and a working KiCad pipeline kept as reference).
+
+## Start here
+- Hardware: read `.claude/skills/hw-base` first, then `hardware/weatherstation-v1/BOARD.md` and `board.yaml`. Requirements: `hardware/weatherstation-v1/REQUIREMENTS.md`. Plan: `hardware/PLAN.md`.
+- Skills (board-neutral, in `.claude/skills/`): `hw-base`, `kicad-schematic`, `kicad-layout`, `hw-parts`.
+- Numbers come from scripts in `hardware/calc/` (rule in `hw-base`): `bom_check.py`, `power_budget.py`, `critical.py`, `buck.py`, `impedance.py`.
+
+## Tooling
+- Gate: `scripts/hw-check.sh [--strict] [--stock --qty N]` (must print `hardware checks: OK`; MISSING rows are open inputs). `scripts/check.sh` = gate + pytest + privacy scan.
+- Tests: `python3 -m pytest -q` (or `uv run pytest`). Python 3.13, `uv`. Hardware tools: `uv run --package weatherstation-hardware ...` or plain `python3` for the calc scripts.
+- KiCad: `source scripts/kicad-env.sh` (kicad-cli, `$KICAD_PYTHON`, symbol/footprint dirs). On Linux install KiCad 7+ from apt for kicad-cli/pcbnew.
+- ESP-IDF v6.1 (firmware, later): `source scripts/idf-env.sh`.
+- Stock and price: `python3 hardware/tools/jlcparts.py C123456` or `-s "keyword"`.
+
+## Hardware decisions that must not be lost
+- 4 layers, In1 and In2 both solid GND; outline at most 50 x 50 mm (cheapest JLCPCB tier).
+- USB-C = programming, debug (native USB-JTAG) and charging; solar via CN3791 MPPT; USB charger TP4056; USB has hardware priority; firmware cold-inhibit (Q3/Q5, default = charge allowed).
+- Sensor rail 3V3_SW switched by a P-FET; SHT45 off-board in a radiation shield; SEN66 on a GH connector; NO2 not on v1.
+- Battery cutoff 3.5 V (LDO headroom, `calc/power_budget.py`).
+- Thermal: heat corner away from the NTC and sensor connectors. EMC: solid planes, antenna keepout on all layers, ESD on USB and the outdoor I2C cable, TVS on solar input.
+
+## Reference material (not active)
+`hardware/reference/desk_notifier/`: generators (`gen/`), pipeline, routing and fab-package scripts (`tools/`), a full board profile and PLAN with lessons. Copy and adapt; rename `notifier-v1` and the net names together. Source commit: desk_notifier `fedb410`.
+
+## Private data (this repo is public)
+Never commit: Wi-Fi names/passwords, tokens, MAC addresses, host names, LAN IPs, serial ports, home paths, order/account data, photos of people or the home, KiCad/CAD files with user metadata. Kconfig defaults for personal values stay 0 / "". Device notes go in `CLAUDE.local.md` (gitignored).
+- Before every commit that will be pushed, and before a push: `scripts/privacy-check.sh`. Fix findings, do not suppress them.
+- New binary/CAD exports (gerbers, STEP, images): check embedded metadata for names and paths first.

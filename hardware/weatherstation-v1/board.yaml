@@ -1,0 +1,87 @@
+# Board profile: the facts the board-neutral hardware skills and hardware/calc/ scripts read.
+# Skills never hard-code a number; it lives here, in critical.yaml or in parts/<MPN>.yaml.
+# Status: pre-layout. No generators or KiCad files yet (hardware/reference/desk_notifier has a working example).
+name: weatherstation-v1
+pcb: weatherstation-v1.kicad_pcb
+sch: weatherstation-v1.kicad_sch
+bom: bom.csv
+generators: {schematic: null, layout: null}   # to write: hardware/gen/weatherstation_v1.py, layout_v1.py (see hardware/PLAN.md)
+notes: BOARD.md
+requirements: REQUIREMENTS.md
+
+fab:
+  house: JLCPCB
+  assembly: "JLCPCB PCBA, Economic (one side, SMT only); Standard if the quote forces it for the ESP32 module"
+  rules: ../rules/jlc-4layer.json
+  router_rules: ../rules/krt-fab.txt
+  custom_drc: null            # to write: copy the rule set from reference/desk_notifier/notifier.kicad_dru and adapt
+  extended_fee_usd: 3.07      # per unique non-preferred Extended part, Economic PCBA (jlcpcb.com/blog/reduce-pcb-assembly-cost-prototype, 2026-10)
+
+# Requirement: 4 layers, two full ground planes (REQUIREMENTS.md 5). Dielectric/er numbers reused from the desk_notifier
+# profile (jlcpcb.com/impedance, 2026-10); no impedance control ordered (no fast signals).
+stackup:
+  name: JLC04161H-7628
+  copper_mm: 0.035
+  soldermask: {thickness_mm: 0.015, er: 3.8}
+  layers:
+    - {name: F.Cu, role: signal, ref: In1.Cu, dielectric_mm: 0.2104, er: 4.4}
+    - {name: In1.Cu, role: plane, net: GND}
+    - {name: In2.Cu, role: plane, net: GND}
+    - {name: B.Cu, role: signal, ref: In2.Cu, dielectric_mm: 0.2104, er: 4.4}
+
+net_classes:
+  Default: {track_mm: 0.2, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3}
+  Power: {track_mm: 0.4, clearance_mm: 0.15, nets: [VBUS, VSYS, BAT, +3V3, 3V3_SW, SOLAR_IN, SOLAR_VCC, SW]}
+  USB: {track_mm: 0.27, gap_mm: 0.15, nets: [/USB_DP, /USB_DN]}
+
+layout:
+  stitch_pitch_mm: [2, 3]
+  thermal_relief: {spoke_mm: 0.3, gap_mm: 0.25, spokes: 4}
+  max_board_mm: [50, 50]      # 4-layer boards under 50 x 50 mm are in JLCPCB's cheapest tier (community cost guide)
+
+alternates:
+  C2913198:
+    - {lcsc: C2913204, note: "ESP32-S3-WROOM-1-N8R2 (adds 2 MB PSRAM): check the module's reserved GPIOs before reusing the pin map"}
+  C3001973:
+    - {lcsc: C129529, note: "SMBJ12A TVS, MCC: same footprint (SMB)"}
+
+power: []   # switching-regulator inputs for calc/buck.py: none (LDO + two charger ICs). Charger/LDO/energy checks: design:
+
+# Inputs of calc/power_budget.py. value null = MISSING, no source = WARN. `source: assumption` = still a guess.
+design:
+  cn3791:
+    vmppt_v: {value: 1.205, source: "CN3791 datasheet, MPPT pin regulation voltage (section not recorded yet)"}
+    vcs_v: {value: 0.12, source: "CN3791 datasheet: charge current set by 120 mV reference over Rcs (section not recorded yet)"}
+    diode_drop_v: {value: 0.3, source: assumption}     # SS34 reverse protection at low current
+    r_top_ohm: 39000      # R15 (TBD part number), MPPT divider top
+    r_bottom_ohm: 10000   # R4
+    rcs_ohm: 0.12         # R14 (TBD part number)
+  panel:
+    vmp_v: {value: null, source: null}                 # fill from the real panel's datasheet (6 V class panel Vmp is about 6-6.5 V)
+  tp4056:
+    k_ma_kohm: {value: 1200, source: "TP4056 datasheet: IBAT = 1200 / RPROG (kohm)"}
+    prog_ohm: 3000        # R26 (TBD part number)
+    vin_v: 5.0
+    max_diss_w: 0.6
+  battery:
+    vtyp_v: 3.7
+    vcutoff_v: {value: 3.5, source: "calc/power_budget.py: 3.35 V left only +33 mV LDO headroom over the SEN66 minimum at 0.35 A"}  # firmware: sensors off below this
+    cell_mah: {value: 3000, source: assumption}        # protected 18650
+  ldo:
+    vout_v: 3.3
+    dropout_v_at_a: [0.25, 0.6]                         # AP2112K-3.3 listing: 250 mV at 600 mA (datasheet section to record)
+    q1_rds_ohm: 0.06                                    # AO3401A 60 mohm at 4.5 V (JLCPCB listing)
+  load:
+    peak_a: {value: 0.35, source: "SEN66 supply current listing (Future Electronics): 350 mA"}
+    sensor_vmin_v: {value: 3.15, source: "SEN66 supply 3.15-3.45 V (Future Electronics listing)"}
+  cycle:
+    period_s: {value: 600, source: assumption}
+    esp_active_s: {value: 15, source: assumption}
+    esp_active_ma: {value: 100, source: assumption}
+    sen66_on_s: {value: 45, source: "third-party SEN66 board measurement, 45 s events"}
+    sen66_ma: {value: 85, source: "third-party SEN66 board measurement, about 85 mA average while on"}
+    sleep_ua: {value: 100, source: assumption}          # AP2112K Iq 55 uA + module + dividers
+  solar:
+    panel_w: {value: 6, source: assumption}
+    psh_worst_h: {value: 0.7, source: assumption}       # peak-sun hours per day, Germany in December (estimate)
+    system_eff: {value: 0.6, source: assumption}
