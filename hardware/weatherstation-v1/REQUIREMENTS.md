@@ -17,7 +17,8 @@ port, and an optional ZE25-O3 ozone module on its own 5 V boost. NO2 is out of s
 - F3 Charge the cell from USB-C (VBUS, VAC1) or the solar panel (VAC2) through one charger, U3 BQ25798. Each input has its
   own back-to-back N-FET pair (ACFET/RBFET, AO3400A); the chip selects the input. Solar uses the chip's VOC-based MPPT.
 - F4 Fail-safe charge enable: CE is pulled high (R20 to +3V3), so the charger does not charge until firmware has written
-  the LFP settings (section 6). A blank or reset MCU means no charging.
+  the LFP settings (section 6). A blank or reset MCU means no charging. After that, charging stays enabled at all times,
+  including deep sleep (CE held low by GPIO hold; user decision 2026-11-01).
 - F5 Temperature: NTC TH1 next to the battery connector on the TS pin. Default state: the chip's JEITA limits apply. During an
   awake charge session firmware may take over (cold charging, `charge-policy.md`).
 - F6 Report battery voltage, input voltages and currents, charge state and TS through the charger ADC over I2C
@@ -38,12 +39,14 @@ port, and an optional ZE25-O3 ozone module on its own 5 V boost. NO2 is out of s
 - Order of cut-offs: cell 2.0 V <= HY2112 2.10 V < firmware cut-off 2.4 V (sensors off, long sleep).
 - 3.3 V: U2 TPS63802 from SYS, 1.3-5.5 V in (1.8 V to start), 2 A, FB 220k/39k = 3.32 V. Covers the whole LFP range.
 - SEN66: 3.15-3.6 V including ripple, peak 0.35 A (datasheet table 12); 22 uF + 22 uF on 3V3_SW at the connector side.
-- Gas module: GAS_VCC 5.06 V (FB 510k/68k); ZE25-O3 current and pinout are open (J8).
+- Gas module: GAS_VCC 5.06 V (FB 510k/68k) to ZE25-O3 Vin (3.7-5.5 V). J8 7-pin, numbered 1:1 to the module (Winsen table 2):
+  2 DAC (0.4-2.0 V = 0-10 ppm) to IO7, 3 GND, 4 Vin, 5 RXD (0-3.0 V) from IO17 through R46 1k / R47 10k, 6 TXD (0-3.0 V) to
+  IO18, 1 and 7 reserved. Supply current and cable pitch open.
 - PV input: 6 V class panel, Voc must stay at or below 10 V cold (SMBJ10A standoff). Reference panel Voltaic P110: Vmp 5.71 V,
   Voc 6.94 V, 9.5 W (`board.yaml` panel).
-- I2C: charger bus CHG_SDA/CHG_SCL on IO4/IO5 with 10k pull-ups to +3V3; sensor bus SEN_SDA/SEN_SCL on IO13/IO14 with 10k
+- I2C: charger bus CHG_SDA/CHG_SCL on IO1/IO2 (RTC I2C pins usable by the ULP RISC-V core) with 10k pull-ups to +3V3; sensor bus SEN_SDA/SEN_SCL on IO13/IO14 with 10k
   pull-ups to 3V3_SW (no back-power into unpowered sensors).
-- MCU pins: IO9 CHG_CE, IO10 CHG_INT, IO11 SENSOR_EN, IO12 GAS_EN, IO17 GAS_TXD, IO18 GAS_RXD, IO19/IO20 USB, IO43/IO44 UART0.
+- MCU pins: IO1/IO2 charger I2C, IO7 GAS_DAC, IO9 CHG_CE, IO10 CHG_INT, IO11 SENSOR_EN, IO12 GAS_EN, IO17 GAS_TXD, IO18 GAS_RXD, IO19/IO20 USB, IO43/IO44 UART0.
   Strapping pins (IO0, IO3, IO45, IO46) carry no load except BOOT on IO0.
 - USB: CC1/CC2 5.1k to GND (sink), D+/D- through 22 ohm to the ESP32 and shared with the BQ25798 D+/D- (BC1.2 detection once,
   then AUTO_INDET_EN = 0).
@@ -109,14 +112,15 @@ port, and an optional ZE25-O3 ozone module on its own 5 V boost. NO2 is out of s
   registers return to POR defaults (VREG 4.2 V, ICHG 1 A); the HY2112 3.75 V cut is only the backstop. Keep ICHG at 1.5 A or
   below (L1 Isat 3 A, B4). After the first BC1.2 detection set AUTO_INDET_EN = 0 so D+/D- stay free for the ESP32 USB.
 - MPPT: EN_MPPT = 1, VOC_PCT 0.8125 for the reference panel (Vmp/Voc 0.823).
-- Cold charging and the CE state in deep sleep: `charge-policy.md` (TS_IGNORE only during an awake session).
-- I2C: charger bus IO4/IO5, sensor bus IO13/IO14. Set IO13/IO14 to input or low before switching 3V3_SW off.
+- Charging always on (user, 2026-11-01): CE low and held through deep sleep; TS_IGNORE = 0 in sleep (chip JEITA). Cold
+  charging below the chip's limit only in an awake session or by the ULP core (`charge-policy.md`).
+- I2C: charger bus IO1/IO2, sensor bus IO13/IO14. Set IO13/IO14 to input or low before switching 3V3_SW off.
 - Gas: GAS_EN (IO12) high = TPS61023 on; drive GAS_TXD (IO17) low or input while the boost is off.
 - Battery: below 2.4 V turn sensors off and sleep long; report the charger ADC values each cycle.
 
 ## 7. Open items before ordering
-1. ZE25-O3 pinout, supply current and UART levels (J8).
+1. ZE25-O3 supply current and cable/connector pitch (J8).
 2. CMF4532F-900 land pattern and pinout from a HongyeX drawing (the footprint uses the EMTEK drawing).
 3. JLCPCB Standard vs Economic PCBA for the ESP32 module (quote).
-4. CE state during deep sleep (see `charge-policy.md`): decide whether solar may charge while the MCU sleeps.
+4. Sensor set: SEN66 cost; cheaper alternatives under research (2026-11-01).
 5. Layout not started; plan one prototype batch and bench-test charging, sleep current and the TH1-to-cell offset.

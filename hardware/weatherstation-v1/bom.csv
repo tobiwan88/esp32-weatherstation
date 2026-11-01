@@ -22,7 +22,7 @@ PTC 3A,F1,Fuse:Fuse_1812_4532Metric,1,C21004,Extended,VERIFIED LCSC part (class 
 30k,R18,Resistor_SMD:R_0603_1608Metric,1,C22984,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R18: 30k (TS bottom)
 2.2k,R19,Resistor_SMD:R_0603_1608Metric,1,C4190,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 STAT red,D2,LED_SMD:LED_0603_1608Metric,1,C2286,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
-10k,"R22,R30,R31,R50,R51,R54,R55",Resistor_SMD:R_0603_1608Metric,7,C25804,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+10k,"R22,R30,R31,R47,R50,R51,R54,R55",Resistor_SMD:R_0603_1608Metric,8,C25804,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 BATTERY,J6,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,
 10k NTC,TH1,Resistor_SMD:R_0603_1608Metric,1,C13564,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"TH1: 10k NTC NCP18XH103F03RB (TS, next to J6)"
 HY2112-CB,U6,Package_TO_SOT_SMD:SOT-23-6,1,C168764,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U6: HY2112-CB LiFePO4 protection
@@ -40,11 +40,11 @@ TPS63802,U2,weatherstation:TPS63802_DLA_VSON-HR-10_2x3mm,1,C2845237,Extended,VER
 10u,"C40,C44",Capacitor_SMD:C_0603_1608Metric,2,C19702,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),C44: 10u (boost input)
 AO3401A,Q40,Package_TO_SOT_SMD:SOT-23,1,C15127,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),Q40: AO3401A 3V3_SW switch
 2N7002,Q41,Package_TO_SOT_SMD:SOT-23,1,C8545,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),Q41: 2N7002 (sensor enable)
-1k,R41,Resistor_SMD:R_0603_1608Metric,1,C21190,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+1k,"R41,R46",Resistor_SMD:R_0603_1608Metric,2,C21190,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R46: 1k (GAS RXD level: 3.3 V x 10/11 = 3.0 V)
 TPS61023,U7,Package_TO_SOT_SMD:SOT-563,1,C919459,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U7: TPS61023DRLR 5 V boost
 510k 1%,R43,Resistor_SMD:R_0603_1608Metric,1,C23192,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R43: 510k 1% (boost FB top: 0.595 V x (1 + 510k/68k) = 5.06 V)
 68k 1%,R44,Resistor_SMD:R_0603_1608Metric,1,C23231,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R44: 68k 1% (boost FB bottom)
 SEN66,J2,Connector_JST:JST_GH_SM06B-GHS-TB_1x06-1MP_P1.25mm_Horizontal,1,C133065,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),J2: SEN66 (GH 6-pin)
 SHT45 cable,"J3,J4",Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,2,C160404,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),J4: spare port
-ZE25-O3,J8,Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,J8: ZE25-O3 (pinout confirm)
+ZE25-O3,J8,Connector_JST:JST_PH_B7B-PH-K_1x07_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,J8: ZE25-O3 (cable pitch to confirm)
 Test points,"TP1,TP2",TestPoint:TestPoint_Pad_D1.5mm,2,n/a,n/a,PCB pads only,GND/3V3 test pads

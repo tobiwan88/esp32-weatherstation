@@ -23,8 +23,9 @@ Voltage: 3.65 V CV, cell maximum 3.75 V. Discharge: -40 to 60 C; cut-off 2.0 V.
 
 ## Chip register rules (BQ25798)
 1. **Boot and every wake:** write VREG = 3.65 V, ICHG = 1.5 A, VSYSMIN as in usb-charger-bq25798.md, before CE is released.
-2. **Default and sleep state:** TS_IGNORE = 0 (chip JEITA on). The chip then stops charging below its cold threshold (about
-   0.5 C) and above its hot threshold, even when firmware is asleep. Do not charge during deep sleep with TS_IGNORE = 1.
+2. **Default and sleep state:** CE low (charging on), TS_IGNORE = 0 (chip JEITA on). The chip then stops charging below its
+   cold threshold (about 1.9 C at TH1 with R17/R18 5.1k/30k) and above its hot threshold, even when firmware is asleep. Do not
+   charge in deep sleep with TS_IGNORE = 1 unless the ULP core is running the band table and checks TS at least every 30 s.
 3. **Charge session (awake only):** TS_IGNORE = 1, ICHG set per band from the table, CE low. The firmware reads TS every
    30 s and applies the band table. Stop the session (CE high, TS_IGNORE = 0) on any reading outside the margins.
 4. **Chip watchdog:** an expired watchdog resets all registers to defaults (VREG 4.2 V, ICHG 1 A, TS_IGNORE 0; datasheet
@@ -35,11 +36,13 @@ Voltage: 3.65 V CV, cell maximum 3.75 V. Discharge: -40 to 60 C; cut-off 2.0 V.
 ## CE pin and the fail-safe chain
 - CE is pulled high to +3V3 by R20 (charge off; netlist net CHG_CE, R20 pin 1 on +3V3). Firmware drives CE low only during a session.
 - ESP32 reset or power-on: the GPIO becomes an input, R20 holds CE high, charging stops. This is the main fail-safe.
-- Deep sleep: **open decision (2026-11-01).** The earlier text said "hold CE high during sleep" and also "TS_IGNORE = 0
-  applies to solar charging while the MCU sleeps"; both cannot hold, because CE high stops all charging. With a 600 s cycle
-  and about 15 s awake, CE high in sleep leaves solar charging almost no time. Proposed: hold CE low in deep sleep with
+- Deep sleep: **decided (user, 2026-11-01): charging stays on.** Hold CE low through deep sleep (GPIO hold) with
   TS_IGNORE = 0 (chip JEITA active: no charge below about 1.9 C at TH1), VREG 3.65 V and WATCHDOG = 00 already written in the
   same wake. A chip POR during sleep also drops SYS, which resets the ESP32 and releases CE high through R20.
+- ULP option: the charger I2C is on IO1/IO2 (RTC I2C, ESP-IDF ulp_riscv_i2c: SDA IO1/IO3, SCL IO0/IO2), and CE (IO9) and
+  INT (IO10) are RTC GPIOs. The ULP RISC-V core can therefore read TS and the status in deep sleep, apply the band table
+  (including cold charging with TS_IGNORE = 1) and stop charging on a fault, without waking the main CPU. The main CPU and
+  the ULP must not use the RTC I2C at the same time.
 - Use the ESP32 task watchdog so a hung session resets the MCU, which drives CE high through R20.
 
 ## Residual risks (accepted by the user for v1, with the mitigation above)

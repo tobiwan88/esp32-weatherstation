@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "eeschema")
 	(generator_version "9.0")
-	(uuid "11e6ffa4-5d1b-489c-a845-d5fcd5ef571b")
+	(uuid "9dbce7dc-ba8d-4bfe-b65c-88ca40677b62")
 	(paper "A3")
 	(title_block
 		(title "weatherstation v1")
@@ -966,6 +966,309 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Connector_Generic:Conn_01x07"
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "J"
+				(at 0 10.16 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Conn_01x07"
+				(at 0 -10.16 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Generic connector, single row, 01x07, script generated (kicad-library-utils/schlib/autogen/connector/)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "connector"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "Connector*:*_1x??_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "Conn_01x07_1_1"
+				(rectangle
+					(start -1.27 8.89)
+					(end 1.27 -8.89)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(rectangle
+					(start -1.27 7.747)
+					(end 0 7.493)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 5.207)
+					(end 0 4.953)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 2.667)
+					(end 0 2.413)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 0.127)
+					(end 0 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -2.413)
+					(end 0 -2.667)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -4.953)
+					(end 0 -5.207)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -7.493)
+					(end 0 -7.747)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -5.08 7.62 0)
+					(length 3.81)
+					(name "Pin_1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 5.08 0)
+					(length 3.81)
+					(name "Pin_2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 2.54 0)
+					(length 3.81)
+					(name "Pin_3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 0 0)
+					(length 3.81)
+					(name "Pin_4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -2.54 0)
+					(length 3.81)
+					(name "Pin_5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -5.08 0)
+					(length 3.81)
+					(name "Pin_6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -7.62 0)
+					(length 3.81)
+					(name "Pin_7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:R"
 			(pin_numbers
 				(hide yes)
@@ -1370,7 +1673,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "4878ef97-eade-4a8e-b317-38adda2f410b")
+		(uuid "61ed10d4-609b-4414-b7ad-ca9bd860273d")
 		(property "Reference" "J2"
 			(at 101.6 68.58 0.0000)
 			(effects
@@ -1408,22 +1711,22 @@
 			)
 		)
 		(pin "1"
-			(uuid "e526e03e-a3b3-4d62-95fa-c279a253b8e3")
+			(uuid "a7948f38-a9ff-4bd6-8572-fd5dc89949a7")
 		)
 		(pin "2"
-			(uuid "ea7c47f7-6db3-4167-ab92-76cac06573ed")
+			(uuid "3966ec3f-9a4f-4c94-ad32-94550e6d0453")
 		)
 		(pin "3"
-			(uuid "b9c2a756-7367-4129-95d4-2ef4e14292d8")
+			(uuid "6539ef5a-74f2-4277-add1-cc3b9b398a3f")
 		)
 		(pin "4"
-			(uuid "81871135-d1cf-476f-8235-77b7022dc1e1")
+			(uuid "4cd32199-94b4-4a9b-ac4c-1cbe60ffd9d7")
 		)
 		(pin "5"
-			(uuid "a3568dc2-6c71-421b-ae26-f0106ab65883")
+			(uuid "c50d5749-d0ad-4819-af72-5ea6d24c0fb1")
 		)
 		(pin "6"
-			(uuid "14ecbe50-f4fc-4420-8e93-566df3433053")
+			(uuid "bd065c28-fbd9-4be3-bc3c-7fe71a35d743")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -1443,7 +1746,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "0913294b-6d2e-4851-99ef-58dcdc35f8fc")
+		(uuid "90e7d416-68f4-4075-ab76-e960485eb793")
 		(property "Reference" "J3"
 			(at 101.6 96.52 0.0000)
 			(effects
@@ -1481,16 +1784,16 @@
 			)
 		)
 		(pin "1"
-			(uuid "523f1d9f-8816-41ac-b918-65df66932aeb")
+			(uuid "5aa5610a-802e-4796-9611-e943fdf7942c")
 		)
 		(pin "2"
-			(uuid "3d069d43-b256-4470-8092-a75508735a8a")
+			(uuid "66ef5fe2-6c12-4836-8d27-f951a2da0fda")
 		)
 		(pin "3"
-			(uuid "a0fc9e07-91ab-4bc1-865a-907d51c0a738")
+			(uuid "c0a3c68b-25cc-47b1-902b-b6c2b8c80ebc")
 		)
 		(pin "4"
-			(uuid "0e3982af-aa7c-460f-b27f-4757f1f72094")
+			(uuid "a76c6ad7-914c-4207-8c40-df57da088b19")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -1510,7 +1813,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "cd0c6f0a-2e45-44ee-9c3c-1a2ad9c3d6af")
+		(uuid "586f1319-5621-4b19-84d1-48952b9f98ab")
 		(property "Reference" "J4"
 			(at 101.6 121.92 0.0000)
 			(effects
@@ -1548,16 +1851,16 @@
 			)
 		)
 		(pin "1"
-			(uuid "6d58b009-b5b7-4b65-969a-7e5e990e3a51")
+			(uuid "0a22cd65-9372-46f1-8cd3-0eceebb82588")
 		)
 		(pin "2"
-			(uuid "46ec428b-477f-49db-8144-27a3bc55f3fb")
+			(uuid "365dac76-cdb0-4608-ab7a-8ffcf16bda9c")
 		)
 		(pin "3"
-			(uuid "f9f5ef1c-2f01-4ab5-aad1-fa0cf6ec095a")
+			(uuid "0748e258-f39f-457f-8d4d-4b1950a7f8f9")
 		)
 		(pin "4"
-			(uuid "a28803b1-ade9-4352-9f06-c0f0afd3c4ae")
+			(uuid "65585105-d4b5-47d7-8b27-07110a9be3d6")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -1577,7 +1880,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "5ac4f2e0-c5b0-4dc9-9a35-ea9634aeef6e")
+		(uuid "7bed5c51-5bd2-4178-9bd8-353ce698d5d1")
 		(property "Reference" "U5"
 			(at 97.155 188.595 0.0000)
 			(effects
@@ -1615,22 +1918,22 @@
 			)
 		)
 		(pin "1"
-			(uuid "025ffea4-eb09-43f6-9879-09370d0efae5")
+			(uuid "baad9af4-4213-4938-af37-246088d975ba")
 		)
 		(pin "2"
-			(uuid "cc5de476-7ca4-4b5e-b577-36f6daa55ff6")
+			(uuid "23bcf8e6-0a89-4297-a2a9-0619a224acaa")
 		)
 		(pin "3"
-			(uuid "4fbf4c5a-eb5e-4c8e-920d-8d0daa18a2c9")
+			(uuid "0f757fd0-ae6a-4a5a-bc25-c4c8763bbf4f")
 		)
 		(pin "4"
-			(uuid "fad232de-4bbf-46bd-9895-054bd9e932c6")
+			(uuid "db950915-7e72-4e11-98b2-b2c806f1d7e2")
 		)
 		(pin "5"
-			(uuid "300f87e8-8769-4e95-8577-7ed59aa4df3f")
+			(uuid "2ed338f0-6857-4529-bea0-e4d75d8d96e4")
 		)
 		(pin "6"
-			(uuid "a156d999-7314-43c4-ad8c-0b6fd5c374c1")
+			(uuid "56ce574c-de7a-4d23-8438-99fd3dca3895")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -1642,17 +1945,17 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector_Generic:Conn_01x04")
-		(at 228.6 187.96 0)
+		(lib_id "Connector_Generic:Conn_01x07")
+		(at 254 187.96 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "8ca117c5-15e2-45ce-a8fc-e276a1706de0")
+		(uuid "42d042df-ed51-4a0b-a248-65ac95bcf7a1")
 		(property "Reference" "J8"
-			(at 228.6 193.04 0.0000)
+			(at 254 198.12 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1661,7 +1964,7 @@
 			)
 		)
 		(property "Value" "ZE25-O3"
-			(at 228.6 180.34 0.0000)
+			(at 254 177.8 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1669,8 +1972,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical"
-			(at 228.6 187.96 0.0000)
+		(property "Footprint" "Connector_JST:JST_PH_B7B-PH-K_1x07_P2.00mm_Vertical"
+			(at 254 187.96 0.0000)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1679,16 +1982,25 @@
 			)
 		)
 		(pin "1"
-			(uuid "22c94b30-4195-4657-9224-6ee3cd491d06")
+			(uuid "658540a6-4502-4e33-ab49-18fa2e5a5312")
 		)
 		(pin "2"
-			(uuid "714f6b97-b66c-4f1b-9ff0-b5619bfafbee")
+			(uuid "fa45adec-83db-46b9-8994-4b970da574e1")
 		)
 		(pin "3"
-			(uuid "73d8454f-b9f1-4936-9782-da90dbd27ff5")
+			(uuid "b091c065-a8e1-4f73-9d12-0c172183ad21")
 		)
 		(pin "4"
-			(uuid "39eae1ef-757c-42b6-83e1-a55696151b4f")
+			(uuid "0eedc8bf-af16-4eef-88f6-34804762de3c")
+		)
+		(pin "5"
+			(uuid "7ce8c35c-9ea2-46c0-99ff-8f4465e51994")
+		)
+		(pin "6"
+			(uuid "c7bdd236-0bbe-43d3-beb0-182d32b4eaca")
+		)
+		(pin "7"
+			(uuid "f158177e-461c-4050-acb0-94feeedbed9a")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -1708,7 +2020,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "cc255aa4-d5e9-478e-9ccf-917fad32a4bc")
+		(uuid "6e23d201-e83e-4f9f-b030-5c2e6dd7263d")
 		(property "Reference" "R50"
 			(at 32.68 181.58 0)
 			(effects
@@ -1744,10 +2056,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "ced38eae-31a5-49b3-8217-9599dcedaf3d")
+			(uuid "517fab04-8d2a-4875-aca6-f84d67ac8ee7")
 		)
 		(pin "2"
-			(uuid "a8cc1b75-9ef1-4de9-95ab-6c0dbd35d426")
+			(uuid "cc23efcc-1a18-4b20-9922-326eac4c13b2")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -1767,7 +2079,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "d609efa0-43e8-4a06-9977-43f5d70249f4")
+		(uuid "fb22d787-d427-44ac-b00d-7da663cda9ff")
 		(property "Reference" "R51"
 			(at 45.38 181.58 0)
 			(effects
@@ -1803,15 +2115,133 @@
 			)
 		)
 		(pin "1"
-			(uuid "bd27887d-9929-4d6e-b4ff-14a5c99aff8e")
+			(uuid "d77c58e6-f222-4d4b-9a30-67d3d03fba9d")
 		)
 		(pin "2"
-			(uuid "ffb101b5-5426-4b98-a1ac-c52fbebeb8f8")
+			(uuid "7be49719-808d-4928-9893-aa271e1fa595")
 		)
 		(instances
 			(project "weatherstation-v1"
 				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/c59d7228-2371-53d1-b452-1c754c2b4233"
 					(reference "R51")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 213.36 182.88 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "da77aece-2fc2-480f-8fbe-9b845e339acc")
+		(property "Reference" "R46"
+			(at 213.36 177.68 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Value" "1k"
+			(at 213.36 179.98 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 211.582 182.88 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C21190"
+			(at 215.9 187.9599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "48b58a79-247a-4742-895a-0df1b9453785")
+		)
+		(pin "2"
+			(uuid "382a8112-49d8-47c4-baa1-4b9c118d4232")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/c59d7228-2371-53d1-b452-1c754c2b4233"
+					(reference "R46")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 223.52 203.2 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "e6602a0e-22af-4aa9-847e-c3e39400564f")
+		(property "Reference" "R47"
+			(at 225.72 201.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(property "Value" "10k"
+			(at 225.72 204.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 221.742 203.2 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C25804"
+			(at 226.06 208.2799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "6fece892-a9fb-430c-9ea5-47c4c19b730a")
+		)
+		(pin "2"
+			(uuid "e7bdf1ac-0250-4e82-9f32-266e6290feb9")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/c59d7228-2371-53d1-b452-1c754c2b4233"
+					(reference "R47")
 					(unit 1)
 				)
 			)
@@ -1826,7 +2256,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "f5cc04a2-9308-4eca-944e-93d951fc428d")
+		(uuid "0e7cd632-2a18-4a99-9df3-1926f26fff93")
 		(property "Reference" "#PWR122"
 			(at 95.25 55.88 90)
 			(effects
@@ -1846,7 +2276,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "5b1144c1-8eff-42ab-99fd-5c0acfb43675")
+			(uuid "bc05fdfb-5d92-4565-bdff-e58970c03663")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -1866,7 +2296,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "457007b9-4c1b-4d00-98e5-528f5269d4c8")
+		(uuid "367572ac-9b7f-4e4e-b7e5-9a194792da55")
 		(property "Reference" "#PWR123"
 			(at 95.25 91.44 90)
 			(effects
@@ -1886,7 +2316,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "c1923273-3ab1-44af-a211-48d2cb210517")
+			(uuid "492e3a24-cd1f-4a52-b92e-f02f377ae459")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -1906,7 +2336,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "ef1f6604-d56b-48a2-9709-a6f006bb25ec")
+		(uuid "dd411784-710a-46e7-af35-006f7fd07943")
 		(property "Reference" "#PWR124"
 			(at 95.25 116.84 90)
 			(effects
@@ -1926,7 +2356,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "30ed6ae6-9ee9-428b-a81d-d25475249596")
+			(uuid "e34e9518-4549-4974-a0bd-8c9660a57b9a")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -1946,7 +2376,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "685554ec-7595-428f-9dd5-f27303c5bdb2")
+		(uuid "285f9ec0-f5a1-4725-a582-dbe021ac33e2")
 		(property "Reference" "#PWR125"
 			(at 96.52 168.91 0.0000)
 			(effects
@@ -1966,7 +2396,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "ec9c73e6-a01a-4b16-8bee-540df60d7200")
+			(uuid "b28a82b9-5a4a-49e1-a671-d1065088d033")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -1986,7 +2416,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "21aba8d7-c4dd-4ed6-8b42-e5019947feb7")
+		(uuid "a27876f8-f4aa-4d84-95c1-419e842601bf")
 		(property "Reference" "#PWR126"
 			(at 30.48 170.18 0.0000)
 			(effects
@@ -2006,7 +2436,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "0f2107ae-7204-4002-9483-8838df1ac9b9")
+			(uuid "e3f0782d-5deb-4cb9-8b7e-9b9fdc5db341")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2026,7 +2456,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "c28fab26-80e5-4755-845f-7420bceeb7fc")
+		(uuid "f0e5e5a2-24c6-40ab-ae83-a247b742eade")
 		(property "Reference" "#PWR127"
 			(at 43.18 170.18 0.0000)
 			(effects
@@ -2046,7 +2476,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "5eb37529-c568-42bd-844f-f60095cd34b4")
+			(uuid "8fe8e460-f344-4193-85cb-7470167109ed")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2059,16 +2489,16 @@
 	)
 	(symbol
 		(lib_id "power:VCC")
-		(at 218.44 185.42 90)
+		(at 243.84 187.96 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "fe01c8cf-9a58-477b-b12a-a7e4fcb4f235")
+		(uuid "0a8f937b-f27a-44f9-9b9e-a784926ef12a")
 		(property "Reference" "#PWR128"
-			(at 222.25 185.42 90)
+			(at 247.65 187.96 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2078,7 +2508,7 @@
 			)
 		)
 		(property "Value" "GAS_VCC"
-			(at 213.44 185.42 270)
+			(at 238.84 187.96 270)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2086,7 +2516,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "c4021cf8-e4e9-4d17-ac5e-79a7415cdaa0")
+			(uuid "7ef5b54c-db78-4575-baf9-1e56c068845c")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2106,7 +2536,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "96fa2171-1ca1-42a4-a148-a1ab3bf8bb9d")
+		(uuid "217769ff-3706-46e0-a511-3e2939709425")
 		(property "Reference" "#PWR129"
 			(at 85.09 58.42 270)
 			(effects
@@ -2126,7 +2556,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "0228a1cd-a5b2-4f4c-acc0-8f8191afd133")
+			(uuid "e4ad7965-6b8b-46fb-8446-426e809ed500")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2146,7 +2576,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "03d388bc-7413-4232-b53e-fbd4f26fe70b")
+		(uuid "a8e3a410-967c-473c-a5f9-270ba3eb4253")
 		(property "Reference" "#PWR130"
 			(at 85.09 88.9 270)
 			(effects
@@ -2166,7 +2596,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "1ccc4d71-0e8a-4c32-ad37-94bfbc33c7c8")
+			(uuid "9532ccde-6b3f-4f04-9c9f-06c3ace153c9")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2186,7 +2616,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "f394f8d5-5ee3-4693-af96-ba37f091cca3")
+		(uuid "eb09a8e8-1ea2-4784-84cd-a3c0e187b82a")
 		(property "Reference" "#PWR131"
 			(at 85.09 114.3 270)
 			(effects
@@ -2206,7 +2636,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "b7a2969f-840d-47d2-86f6-d00fdafd5aeb")
+			(uuid "e236215e-5cd8-4329-9d23-906e9bff9402")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2226,7 +2656,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "7324508d-eb1c-469d-a590-9e0270bb140d")
+		(uuid "ef825c66-2871-40c4-a065-6f66270e5bb7")
 		(property "Reference" "#PWR132"
 			(at 96.52 189.23 0.0000)
 			(effects
@@ -2246,7 +2676,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "baa33620-fbf7-4bd7-b879-afff9b1e58d7")
+			(uuid "d58e7ff0-8147-4865-9f59-e4d20eb1a27e")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2259,16 +2689,16 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 218.44 187.96 270)
+		(at 243.84 185.42 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "c3ac288e-092a-473e-a993-6a72d6b69a94")
+		(uuid "a7d1fc55-9662-4287-8be1-7a44d42ab1a4")
 		(property "Reference" "#PWR133"
-			(at 212.09 187.96 270)
+			(at 237.49 185.42 270)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2278,7 +2708,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 214.44 187.96 90)
+			(at 239.84 185.42 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2286,7 +2716,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "905a29de-b312-4abb-a0d5-5a018b01c2b6")
+			(uuid "28ac9e31-0df0-4883-a145-74dc2f5ebd15")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2297,51 +2727,100 @@
 			)
 		)
 	)
-	(wire (pts (xy 30.48 186.69) (xy 30.48 191.77)) (stroke (width 0) (type default)) (uuid "d501c56d-515d-5392-ab18-64ea0791b5bd"))
-	(wire (pts (xy 86.36 182.88) (xy 91.44 182.88)) (stroke (width 0) (type default)) (uuid "543c86ff-735a-5a99-a697-548607e3f518"))
-	(wire (pts (xy 101.6 182.88) (xy 106.68 182.88)) (stroke (width 0) (type default)) (uuid "71c9cd2e-90cf-5407-91ed-aaaaa6da6bac"))
-	(wire (pts (xy 43.18 186.69) (xy 43.18 191.77)) (stroke (width 0) (type default)) (uuid "4e214b75-c079-5c14-9be4-e7def0eae343"))
-	(wire (pts (xy 86.36 185.42) (xy 91.44 185.42)) (stroke (width 0) (type default)) (uuid "49afe0d5-9e01-522f-bff7-a0f815778c7e"))
-	(wire (pts (xy 101.6 185.42) (xy 106.68 185.42)) (stroke (width 0) (type default)) (uuid "fb5c0ea1-0902-5840-9adf-9ec5fc455412"))
-	(wire (pts (xy 218.44 193.04) (xy 223.52 193.04)) (stroke (width 0) (type default)) (uuid "4c829f71-a773-56fc-8a5a-1f0dc87716e2"))
-	(wire (pts (xy 218.44 190.5) (xy 223.52 190.5)) (stroke (width 0) (type default)) (uuid "cadc649a-a4e1-5095-b1d6-a9e9570fda6f"))
-	(wire (pts (xy 91.44 55.88) (xy 96.52 55.88)) (stroke (width 0) (type default)) (uuid "b5b43688-1cec-5cc6-abc0-cba5a185dc39"))
-	(wire (pts (xy 91.44 91.44) (xy 96.52 91.44)) (stroke (width 0) (type default)) (uuid "b9320580-3271-50a3-9818-f31f3a304975"))
-	(wire (pts (xy 91.44 116.84) (xy 96.52 116.84)) (stroke (width 0) (type default)) (uuid "827d28a6-8ce2-5312-b12a-f5766bd69b8b"))
-	(wire (pts (xy 96.52 172.72) (xy 96.52 177.8)) (stroke (width 0) (type default)) (uuid "7bf7f4d8-9c2d-5711-962c-7500b555f675"))
-	(wire (pts (xy 30.48 173.99) (xy 30.48 179.07)) (stroke (width 0) (type default)) (uuid "c2de284a-e950-5784-bdcb-e41aba9f0ac8"))
-	(wire (pts (xy 43.18 173.99) (xy 43.18 179.07)) (stroke (width 0) (type default)) (uuid "0214447e-2fe8-5cf7-badf-7016d11a4b3c"))
-	(wire (pts (xy 218.44 185.42) (xy 223.52 185.42)) (stroke (width 0) (type default)) (uuid "d2a2503d-3a34-5a17-914f-77d1385c9523"))
-	(wire (pts (xy 91.44 58.42) (xy 96.52 58.42)) (stroke (width 0) (type default)) (uuid "09e2362f-975f-5979-85da-d0ad88ad74ba"))
-	(wire (pts (xy 91.44 88.9) (xy 96.52 88.9)) (stroke (width 0) (type default)) (uuid "a0852fd4-2e4a-5125-ac60-d78b1a0a32c9"))
-	(wire (pts (xy 91.44 114.3) (xy 96.52 114.3)) (stroke (width 0) (type default)) (uuid "f784e14a-a42b-5cd6-9224-a04cf8427130"))
-	(wire (pts (xy 96.52 190.5) (xy 96.52 195.58)) (stroke (width 0) (type default)) (uuid "258ff87c-7fbb-5491-9500-d87eb7d3f1a1"))
-	(wire (pts (xy 218.44 187.96) (xy 223.52 187.96)) (stroke (width 0) (type default)) (uuid "b6539cd4-7684-5684-b3fb-bff349ee909d"))
-	(wire (pts (xy 66.04 60.96) (xy 96.52 60.96)) (stroke (width 0) (type default)) (uuid "7763e8ef-0297-56e7-a9be-6cc4335fa3d7"))
-	(wire (pts (xy 66.04 60.96) (xy 66.04 93.98)) (stroke (width 0) (type default)) (uuid "b4bd345e-1338-5efb-99de-399bdb2cf435"))
-	(wire (pts (xy 66.04 93.98) (xy 66.04 119.38)) (stroke (width 0) (type default)) (uuid "2596c566-eb3b-500c-8a8c-a2783037c862"))
-	(wire (pts (xy 66.04 119.38) (xy 96.52 119.38)) (stroke (width 0) (type default)) (uuid "dc8db4fc-7756-5faf-9eb7-6f54c19d4f0d"))
-	(wire (pts (xy 66.04 93.98) (xy 96.52 93.98)) (stroke (width 0) (type default)) (uuid "041ab8d7-e304-58a7-ad7d-ac9f94a838df"))
-	(wire (pts (xy 66.04 119.38) (xy 66.04 129.54)) (stroke (width 0) (type default)) (uuid "a97b8bdd-6028-560f-9d4f-550cad6cd7d9"))
-	(wire (pts (xy 60.96 63.5) (xy 96.52 63.5)) (stroke (width 0) (type default)) (uuid "b0a6f918-e88f-55e6-9639-f2d308767c5a"))
-	(wire (pts (xy 60.96 63.5) (xy 60.96 96.52)) (stroke (width 0) (type default)) (uuid "abb98f25-c199-5c31-b7bd-23ddaa5f9798"))
-	(wire (pts (xy 60.96 96.52) (xy 60.96 121.92)) (stroke (width 0) (type default)) (uuid "cd53ae3a-0cff-5c28-924b-0e74f1180ae8"))
-	(wire (pts (xy 60.96 121.92) (xy 96.52 121.92)) (stroke (width 0) (type default)) (uuid "e9d90f83-cdae-5fee-885e-dd5ca5be671e"))
-	(wire (pts (xy 60.96 96.52) (xy 96.52 96.52)) (stroke (width 0) (type default)) (uuid "c8385165-ae98-5737-8441-09680fa4bd48"))
-	(wire (pts (xy 60.96 121.92) (xy 60.96 129.54)) (stroke (width 0) (type default)) (uuid "99a50012-1528-5d54-a3e9-380e623a0f52"))
-	(junction (at 60.96 96.52) (diameter 0) (color 0 0 0 0) (uuid "854066ca-138c-54c4-bdb4-10f72207f2df"))
-	(junction (at 60.96 121.92) (diameter 0) (color 0 0 0 0) (uuid "f6a4e3e9-b5dc-51da-a5d6-abe55a2ee989"))
-	(junction (at 66.04 93.98) (diameter 0) (color 0 0 0 0) (uuid "8125a9d0-ab14-5cbb-baaa-a9311e7bb6b2"))
-	(junction (at 66.04 119.38) (diameter 0) (color 0 0 0 0) (uuid "06dfad39-e5ed-5a3c-b9a0-6a8941e0240e"))
+	(symbol
+		(lib_id "power:GND")
+		(at 223.52 212.09 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "c55246b3-dcdd-4a17-98a3-d9c964a41626")
+		(property "Reference" "#PWR134"
+			(at 223.52 205.74 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 223.52 217.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "bb1349c4-27f6-40f3-b773-3db09cfa34f2")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/c59d7228-2371-53d1-b452-1c754c2b4233"
+					(reference "#PWR134")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire (pts (xy 30.48 186.69) (xy 30.48 191.77)) (stroke (width 0) (type default)) (uuid "827d28a6-8ce2-5312-b12a-f5766bd69b8b"))
+	(wire (pts (xy 86.36 182.88) (xy 91.44 182.88)) (stroke (width 0) (type default)) (uuid "7bf7f4d8-9c2d-5711-962c-7500b555f675"))
+	(wire (pts (xy 101.6 182.88) (xy 106.68 182.88)) (stroke (width 0) (type default)) (uuid "c2de284a-e950-5784-bdcb-e41aba9f0ac8"))
+	(wire (pts (xy 43.18 186.69) (xy 43.18 191.77)) (stroke (width 0) (type default)) (uuid "0214447e-2fe8-5cf7-badf-7016d11a4b3c"))
+	(wire (pts (xy 86.36 185.42) (xy 91.44 185.42)) (stroke (width 0) (type default)) (uuid "d2a2503d-3a34-5a17-914f-77d1385c9523"))
+	(wire (pts (xy 101.6 185.42) (xy 106.68 185.42)) (stroke (width 0) (type default)) (uuid "09e2362f-975f-5979-85da-d0ad88ad74ba"))
+	(wire (pts (xy 204.47 182.88) (xy 209.55 182.88)) (stroke (width 0) (type default)) (uuid "a0852fd4-2e4a-5125-ac60-d78b1a0a32c9"))
+	(wire (pts (xy 217.17 182.88) (xy 222.25 182.88)) (stroke (width 0) (type default)) (uuid "f784e14a-a42b-5cd6-9224-a04cf8427130"))
+	(wire (pts (xy 223.52 194.31) (xy 223.52 199.39)) (stroke (width 0) (type default)) (uuid "258ff87c-7fbb-5491-9500-d87eb7d3f1a1"))
+	(wire (pts (xy 243.84 190.5) (xy 248.92 190.5)) (stroke (width 0) (type default)) (uuid "b6539cd4-7684-5684-b3fb-bff349ee909d"))
+	(wire (pts (xy 243.84 193.04) (xy 248.92 193.04)) (stroke (width 0) (type default)) (uuid "7763e8ef-0297-56e7-a9be-6cc4335fa3d7"))
+	(wire (pts (xy 243.84 182.88) (xy 248.92 182.88)) (stroke (width 0) (type default)) (uuid "b4bd345e-1338-5efb-99de-399bdb2cf435"))
+	(wire (pts (xy 91.44 55.88) (xy 96.52 55.88)) (stroke (width 0) (type default)) (uuid "2596c566-eb3b-500c-8a8c-a2783037c862"))
+	(wire (pts (xy 91.44 91.44) (xy 96.52 91.44)) (stroke (width 0) (type default)) (uuid "dc8db4fc-7756-5faf-9eb7-6f54c19d4f0d"))
+	(wire (pts (xy 91.44 116.84) (xy 96.52 116.84)) (stroke (width 0) (type default)) (uuid "041ab8d7-e304-58a7-ad7d-ac9f94a838df"))
+	(wire (pts (xy 96.52 172.72) (xy 96.52 177.8)) (stroke (width 0) (type default)) (uuid "a97b8bdd-6028-560f-9d4f-550cad6cd7d9"))
+	(wire (pts (xy 30.48 173.99) (xy 30.48 179.07)) (stroke (width 0) (type default)) (uuid "b0a6f918-e88f-55e6-9639-f2d308767c5a"))
+	(wire (pts (xy 43.18 173.99) (xy 43.18 179.07)) (stroke (width 0) (type default)) (uuid "abb98f25-c199-5c31-b7bd-23ddaa5f9798"))
+	(wire (pts (xy 243.84 187.96) (xy 248.92 187.96)) (stroke (width 0) (type default)) (uuid "cd53ae3a-0cff-5c28-924b-0e74f1180ae8"))
+	(wire (pts (xy 91.44 58.42) (xy 96.52 58.42)) (stroke (width 0) (type default)) (uuid "e9d90f83-cdae-5fee-885e-dd5ca5be671e"))
+	(wire (pts (xy 91.44 88.9) (xy 96.52 88.9)) (stroke (width 0) (type default)) (uuid "c8385165-ae98-5737-8441-09680fa4bd48"))
+	(wire (pts (xy 91.44 114.3) (xy 96.52 114.3)) (stroke (width 0) (type default)) (uuid "99a50012-1528-5d54-a3e9-380e623a0f52"))
+	(wire (pts (xy 96.52 190.5) (xy 96.52 195.58)) (stroke (width 0) (type default)) (uuid "854066ca-138c-54c4-bdb4-10f72207f2df"))
+	(wire (pts (xy 243.84 185.42) (xy 248.92 185.42)) (stroke (width 0) (type default)) (uuid "f6a4e3e9-b5dc-51da-a5d6-abe55a2ee989"))
+	(wire (pts (xy 223.52 207.01) (xy 223.52 212.09)) (stroke (width 0) (type default)) (uuid "8125a9d0-ab14-5cbb-baaa-a9311e7bb6b2"))
+	(wire (pts (xy 66.04 60.96) (xy 96.52 60.96)) (stroke (width 0) (type default)) (uuid "06dfad39-e5ed-5a3c-b9a0-6a8941e0240e"))
+	(wire (pts (xy 66.04 60.96) (xy 66.04 93.98)) (stroke (width 0) (type default)) (uuid "ca292490-0744-5742-8002-e7d1b2ca0b36"))
+	(wire (pts (xy 66.04 93.98) (xy 66.04 119.38)) (stroke (width 0) (type default)) (uuid "1f2528ae-19b2-5916-aa9f-35d90a331459"))
+	(wire (pts (xy 66.04 119.38) (xy 96.52 119.38)) (stroke (width 0) (type default)) (uuid "c9c497f0-f864-534d-a398-ed9cccc10a8d"))
+	(wire (pts (xy 66.04 93.98) (xy 96.52 93.98)) (stroke (width 0) (type default)) (uuid "2892660f-45fc-5fff-8870-efb667aecd93"))
+	(wire (pts (xy 66.04 119.38) (xy 66.04 129.54)) (stroke (width 0) (type default)) (uuid "94fe2d87-4003-507b-86fa-10545eda5ca9"))
+	(wire (pts (xy 60.96 63.5) (xy 96.52 63.5)) (stroke (width 0) (type default)) (uuid "e4040b47-6df1-5209-9bab-2ba78ad3b603"))
+	(wire (pts (xy 60.96 63.5) (xy 60.96 96.52)) (stroke (width 0) (type default)) (uuid "9bc728bb-1df3-530a-9506-5c2d57cacc49"))
+	(wire (pts (xy 60.96 96.52) (xy 60.96 121.92)) (stroke (width 0) (type default)) (uuid "05954f1a-d7d8-5850-812d-342c0e04ce56"))
+	(wire (pts (xy 60.96 121.92) (xy 96.52 121.92)) (stroke (width 0) (type default)) (uuid "48614e54-91f6-50f7-b366-53d3d0c0ad43"))
+	(wire (pts (xy 60.96 96.52) (xy 96.52 96.52)) (stroke (width 0) (type default)) (uuid "570b8d2c-21ab-55f6-9095-b58bade53907"))
+	(wire (pts (xy 60.96 121.92) (xy 60.96 129.54)) (stroke (width 0) (type default)) (uuid "0117f10a-8add-53f4-b5fb-81f5f7058364"))
+	(wire (pts (xy 223.52 182.88) (xy 223.52 194.31)) (stroke (width 0) (type default)) (uuid "3fb518fe-7bc7-52cd-beac-d0dbf6ffa3e0"))
+	(wire (pts (xy 222.25 182.88) (xy 223.52 182.88)) (stroke (width 0) (type default)) (uuid "6a961ada-c573-5745-91ac-4ecd5776f7a3"))
+	(wire (pts (xy 223.52 190.5) (xy 243.84 190.5)) (stroke (width 0) (type default)) (uuid "4fa633bb-f928-5979-b41f-11a8a998d99f"))
+	(junction (at 60.96 96.52) (diameter 0) (color 0 0 0 0) (uuid "95b35f4b-bbd8-5959-8784-ad0dbe93d1f7"))
+	(junction (at 60.96 121.92) (diameter 0) (color 0 0 0 0) (uuid "9c0b6056-353f-5e27-a33f-76e7277411d4"))
+	(junction (at 66.04 93.98) (diameter 0) (color 0 0 0 0) (uuid "f4424fcb-171a-55f1-8a67-32a43c01be9a"))
+	(junction (at 66.04 119.38) (diameter 0) (color 0 0 0 0) (uuid "5b96df0b-928b-543d-97a3-94457c0fbdea"))
+	(junction (at 223.52 190.5) (diameter 0) (color 0 0 0 0) (uuid "37ccb33c-fb2b-5d63-b04b-76e4aadc8d37"))
 	(rectangle (start 10.16 25.4) (end 187.96 142.24) (stroke (width 0.3) (type dash) (color 20 120 120 1)) (fill (type color) (color 195 238 238 0.35)) (uuid "da25dab1-26f5-53d8-9328-9359aa658fa2"))
 	(text "Sensor connectors" (exclude_from_sim no) (at 11.43 26.42 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "12ddca8a-18f7-5c1a-89be-36cf0ab4e653"))
 	(text "J2 SEN66 (GH 6-pin: 1 VDD, 2 GND, 3 SDA, 4 SCL, 5/6 NC). J3 SHT45 outdoor cable and J4 spare (Qwiic order: GND, VDD, SDA, SCL). All on 3V3_SW" (exclude_from_sim no) (at 11.43 31.5 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "045bf272-5cfe-5b9b-bc11-1dc8cc109b2d"))
 	(rectangle (start 10.16 152.4) (end 167.64 228.6) (stroke (width 0.3) (type dash) (color 20 120 120 1)) (fill (type color) (color 195 238 238 0.35)) (uuid "cefe9294-fd9a-5e11-9dc3-5eb7026391ae"))
 	(text "I2C pull-ups and cable ESD" (exclude_from_sim no) (at 11.43 153.42 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "7db96172-09fb-55bf-9732-e752de03e8bc"))
 	(text "Sensor I2C bus (IO13/IO14): pull-ups 10k to 3V3_SW; USBLC6 (U5, VBUS on 3V3_SW) on the outdoor cable lines. Charger bus is separate (Charger sheet)" (exclude_from_sim no) (at 11.43 158.5 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "9fb8c8db-1613-5e1d-9442-7d8cbc41b35d"))
-	(rectangle (start 182.88 152.4) (end 274.32 228.6) (stroke (width 0.3) (type dash) (color 20 120 120 1)) (fill (type color) (color 195 238 238 0.35)) (uuid "bc287c9a-5b08-534e-b263-58d5b0df8474"))
+	(rectangle (start 182.88 152.4) (end 325.12 228.6) (stroke (width 0.3) (type dash) (color 20 120 120 1)) (fill (type color) (color 195 238 238 0.35)) (uuid "bc287c9a-5b08-534e-b263-58d5b0df8474"))
 	(text "ZE25-O3 gas connector" (exclude_from_sim no) (at 184.15 153.42 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "5965a36b-2002-581f-8fef-69e0294303af"))
-	(text "J8 (hand-solder): 1 GAS_VCC, 2 GND, 3 TXD (sensor out), 4 RXD (sensor in). Pinout to confirm against the module" (exclude_from_sim no) (at 184.15 158.5 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "6d3c22c2-7ac3-59e8-919c-7d0d16f97f12"))
+	(text "J8 (hand-solder, 1:1 to the module): 2 DAC -> IO7, 3 GND, 4 GAS_VCC, 5 RXD (3.0 V via R46/R47), 6 TXD -> IO18; 1, 7 reserved" (exclude_from_sim no) (at 184.15 158.5 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "6d3c22c2-7ac3-59e8-919c-7d0d16f97f12"))
 	(hierarchical_label "SEN_SDA" (shape bidirectional) (at 66.04 129.54 270) (effects (font (size 1.27 1.27)) (justify right)) (uuid "1eebda81-e541-5bcd-afe6-968116e554f9"))
 	(hierarchical_label "SEN_SDA" (shape bidirectional) (at 30.48 191.77 270) (effects (font (size 1.27 1.27)) (justify right)) (uuid "a8164890-196c-5641-a5c1-25368b3daf44"))
 	(hierarchical_label "SEN_SDA" (shape bidirectional) (at 86.36 182.88 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "b4051575-6a4c-54df-81e3-e262799deee3"))
@@ -2350,11 +2829,15 @@
 	(hierarchical_label "SEN_SCL" (shape bidirectional) (at 43.18 191.77 270) (effects (font (size 1.27 1.27)) (justify right)) (uuid "3a9fcf71-2b09-58f3-b629-a6b1e93bc4ef"))
 	(hierarchical_label "SEN_SCL" (shape bidirectional) (at 86.36 185.42 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "14a972a1-da84-5776-8097-bb04e246dad8"))
 	(hierarchical_label "SEN_SCL" (shape bidirectional) (at 106.68 185.42 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c4902404-3f05-5db6-ae60-26aa8130c563"))
-	(hierarchical_label "GAS_TXD" (shape bidirectional) (at 218.44 193.04 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "5a0a3790-9061-53d3-ae4f-b573db580c7a"))
-	(hierarchical_label "GAS_RXD" (shape bidirectional) (at 218.44 190.5 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "8f7bae48-320e-544c-9b65-64b92858b7de"))
-	(no_connect (at 96.52 66.04) (uuid "135fa394-44e0-5e96-b907-89c1e0d42532"))
-	(no_connect (at 96.52 68.58) (uuid "f599cc9d-c5ca-54fd-831d-e78922e8da80"))
-	(text "weatherstation v1: Sensors. SEN66 and SHT45 connectors, spare port, I2C ESD and pull-ups, ZE25-O3 gas connector" (exclude_from_sim no) (at 12.7 7.62 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "918c2c63-c81c-5ba8-aa63-289fa15e43f2"))
+	(hierarchical_label "GAS_TXD" (shape bidirectional) (at 204.47 182.88 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "5a0a3790-9061-53d3-ae4f-b573db580c7a"))
+	(label "GAS_RXIN" (at 222.25 182.88 90) (effects (font (size 1.27 1.27)) (justify left)) (uuid "8f7bae48-320e-544c-9b65-64b92858b7de"))
+	(hierarchical_label "GAS_RXD" (shape bidirectional) (at 243.84 193.04 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "135fa394-44e0-5e96-b907-89c1e0d42532"))
+	(hierarchical_label "GAS_DAC" (shape bidirectional) (at 243.84 182.88 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "f599cc9d-c5ca-54fd-831d-e78922e8da80"))
+	(no_connect (at 96.52 66.04) (uuid "918c2c63-c81c-5ba8-aa63-289fa15e43f2"))
+	(no_connect (at 96.52 68.58) (uuid "210b8daa-6dad-530e-a11f-928dc2b05eeb"))
+	(no_connect (at 248.92 180.34) (uuid "fe9160a3-8f65-5eae-89ec-d2176c30a5bb"))
+	(no_connect (at 248.92 195.58) (uuid "7a3b2b14-df83-5dd5-84ca-b7a48cf212c0"))
+	(text "weatherstation v1: Sensors. SEN66 and SHT45 connectors, spare port, I2C ESD and pull-ups, ZE25-O3 gas connector" (exclude_from_sim no) (at 12.7 7.62 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "84b8a49a-209f-520f-85b5-5ab54cbeb59c"))
 	(sheet_instances
 		(path "/"
 			(page "1")

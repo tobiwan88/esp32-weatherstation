@@ -93,7 +93,7 @@ PARTS = {
     "D2": ("Device:LED", "STAT red", "LED_SMD:LED_0603_1608Metric", "C2286", "Charger"),
     "R20": ("Device:R", "100k", R0603, "C25803", "Charger"),
     "R22": ("Device:R", "10k", R0603, "C25804", "Charger"),
-    # Charger I2C bus (IO4/IO5) has its own 10k pull-ups to +3V3: readable while the sensor rail is off (PARTS-REVIEW A4).
+    # Charger I2C bus (IO1 SDA / IO2 SCL: the RTC I2C pins of the ULP RISC-V driver) has its own 10k pull-ups to +3V3: readable while the sensor rail is off (PARTS-REVIEW A4).
     "R54": ("Device:R", "10k", R0603, "C25804", "Charger"),
     "R55": ("Device:R", "10k", R0603, "C25804", "Charger"),
     # Battery connector (hand-soldered): 1 BAT+, 2 BAT-. The cell NTC TH1 is on the board next to J6 (same cell temperature
@@ -167,7 +167,12 @@ PARTS = {
     # Firmware sets IO13/IO14 to input (or low) before switching 3V3_SW off (PARTS-REVIEW A4).
     "R50": ("Device:R", "10k", R0603, "C25804", "Sensors"),
     "R51": ("Device:R", "10k", R0603, "C25804", "Sensors"),
-    "J8": ("Connector_Generic:Conn_01x04", "ZE25-O3 (pinout confirm)", "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical", None, "Sensors"),
+    # ZE25-O3 7-pin (Winsen table 2, user screenshot 2026-11-01): 1 reserved, 2 DAC 0.4-2.0 V = 0-10 ppm, 3 GND,
+    # 4 Vin 3.7-5.5 V, 5 RXD (0-3.0 V input), 6 TXD (0-3.0 V output), 7 reserved. Pin numbers 1:1 to the module.
+    "J8": ("Connector_Generic:Conn_01x07", "ZE25-O3 (cable pitch to confirm)", "Connector_JST:JST_PH_B7B-PH-K_1x07_P2.00mm_Vertical", None, "Sensors"),
+    # module RXD accepts 0-3.0 V: ESP32 TX (3.3 V) through R46 1k with R47 10k to GND = 3.0 V
+    "R46": ("Device:R", "1k (GAS RXD level: 3.3 V x 10/11 = 3.0 V)", R0603, "C21190", "Sensors"),
+    "R47": ("Device:R", "10k", R0603, "C25804", "Sensors"),
 }
 
 # Big parts placed by hand (cell x, cell y, rotation). Everything else is auto-placed on its sheet.
@@ -217,9 +222,10 @@ NETS = {
     "CHG_CE": [("U3", "13"), ("R20", "2"), ("U1", "17")],
     # QON (pin 12) left open: internal pull-up (PARTS-REVIEW C, R21 removed 2026-11-01); no-connect marker.
     "CHG_INT": [("U3", "21"), ("R22", "1"), ("U1", "18")],
-    # Two I2C buses (PARTS-REVIEW A4): charger on IO4/IO5 (always powered), sensors on IO13/IO14 (3V3_SW).
-    "CHG_SDA": [("U3", "15"), ("U1", "4"), ("R54", "1")],
-    "CHG_SCL": [("U3", "14"), ("U1", "5"), ("R55", "1")],
+    # Two I2C buses (PARTS-REVIEW A4): charger on IO1/IO2 (always powered; RTC I2C, so the ULP core can manage charging in
+    # deep sleep: ESP-IDF ulp_riscv_i2c allows SDA IO1/IO3, SCL IO0/IO2), sensors on IO13/IO14 (3V3_SW).
+    "CHG_SDA": [("U3", "15"), ("U1", "39"), ("R54", "1")],
+    "CHG_SCL": [("U3", "14"), ("U1", "38"), ("R55", "1")],
     "SEN_SDA": [("U1", "21"), ("J2", "3"), ("J3", "3"), ("J4", "3"), ("R50", "1"), ("U5", "1"), ("U5", "6")],
     "SEN_SCL": [("U1", "22"), ("J2", "4"), ("J3", "4"), ("J4", "4"), ("R51", "1"), ("U5", "3"), ("U5", "4")],
     # MCU sheet
@@ -231,8 +237,10 @@ NETS = {
     "RXD0": [("U1", "36"), ("J7", "3")],
     "SENSOR_EN": [("U1", "19"), ("R41", "1")],
     "GAS_EN": [("U1", "20"), ("U7", "2"), ("R45", "1")],
-    "GAS_TXD": [("U1", "10"), ("J8", "4")],
-    "GAS_RXD": [("U1", "11"), ("J8", "3")],
+    "GAS_TXD": [("U1", "10"), ("R46", "1")],
+    "GAS_RXIN": [("R46", "2"), ("R47", "1"), ("J8", "5")],
+    "GAS_RXD": [("U1", "11"), ("J8", "6")],
+    "GAS_DAC": [("U1", "7"), ("J8", "2")],  # IO7 = ADC1: backup reading if the UART fails
     # Rails sheet
     "3V3_SW": [("Q40", "3"), ("C42", "1"), ("C43", "1"), ("J2", "1"), ("J3", "2"), ("J4", "2"), ("U5", "5"), ("R50", "2"), ("R51", "2"),
                ("#FLG10", "1")],
@@ -240,7 +248,7 @@ NETS = {
     "SEN_EN_G": [("Q41", "1"), ("R41", "2"), ("R42", "1")],
     "GAS_SW": [("U7", "5"), ("L5", "2")],
     "GAS_FB": [("U7", "1"), ("R43", "2"), ("R44", "1")],
-    "GAS_VCC": [("U7", "6"), ("R43", "1"), ("C45", "1"), ("C46", "1"), ("J8", "1")],
+    "GAS_VCC": [("U7", "6"), ("R43", "1"), ("C45", "1"), ("C46", "1"), ("J8", "4")],
     # Power symbols
     # R20 (CE pull-up) on +3V3, not REGN: CE is also an ESP32 GPIO (3.3 V I/O). PARTS-REVIEW A7.
     "+3V3": [("R20", "1"), ("U1", "2"), ("C30", "1"), ("C31", "1"), ("C32", "1"), ("R30", "1"), ("R31", "1"), ("J7", "1"), ("R22", "2"),
@@ -257,7 +265,7 @@ NETS = {
             ("C33", "2"), ("SW10", "2"), ("SW11", "2"), ("J7", "4"), ("C40", "2"), ("C41", "2"), ("Q41", "2"),
             ("R42", "2"), ("C42", "2"), ("C43", "2"), ("U7", "4"), ("R44", "2"), ("R45", "2"), ("C44", "2"), ("C45", "2"),
             ("C46", "2"), ("J2", "2"), ("J3", "1"),
-            ("J4", "1"), ("U5", "2"), ("J8", "2"), ("#FLG12", "1")],
+            ("J4", "1"), ("U5", "2"), ("J8", "3"), ("R47", "2"), ("#FLG12", "1")],
 }
 # Rails: drawn as a power symbol on every pin (never routed as a wire, no hierarchical label). This is how an engineer
 # reads a schematic: a capacitor with a rail symbol on top and GND below is decoupling for that rail, no wire to trace.

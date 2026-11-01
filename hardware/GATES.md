@@ -20,7 +20,7 @@ Exit checks, for every BOM line:
 - [ ] `hw-check.sh --strict` prints OK
 Status: open. Parts and circuit review done 2026-11-01: `weatherstation-v1/PARTS-REVIEW.md`. All seven A findings
 decided and applied 2026-11-01: A1-A3, A6 (SMBJ10A, 6 V 10 W panel, 3 A choke), A7 (CE pull-up to +3V3), A4 (two I2C buses:
-charger IO4/IO5, sensors IO13/IO14) and A5 (TPS61023 5 V boost on GAS_VCC, EN from IO12). B items still open.
+charger IO4/IO5, since moved to IO1/IO2 for the ULP; sensors IO13/IO14) and A5 (TPS61023 5 V boost on GAS_VCC, EN from IO12). B items still open.
 Datasheets: not found for Littelfuse SMBJ10A (C151250; LCSC link in jlcparts), CMF4532F-900 page, ST USBLC6-2SC6, CBAK 26700LT, TDK VLS252010HBX-1R0M-1 (exact suffix).
 Not the maker's own file: Murata NCP18XH103F03RB, Hroparts TYPE-C-31-M-12. L4 is a Sunlord part (note fixed in the review).
 

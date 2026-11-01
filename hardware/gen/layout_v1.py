@@ -32,7 +32,7 @@ BLOCKS = {
              "C13": (106, 22, 0), "C14": (111, 22, 0), "C15": (116, 22, 0), "C16": (121, 22, 0),
              "C17": (126, 22, 0), "C18": (131, 22, 0),
              "R13": (106, 42, 0), "C19": (114, 44, 0), "C20": (120, 44, 0), "C21": (130, 44, 0)}),
-        ("Programming, thermal and status", "PROG 3.0k = 1S, 1.5 MHz (table 7-1). ILIM 120k/100k = 1.59 A. TS 5.1k/30k + NTC (Battery sheet). CE pulled to +3V3 = charge off until firmware writes VREG. STAT LED and INT; QON open (internal pull-up). Charger I2C (IO4/IO5) pull-ups R54/R55 to +3V3",
+        ("Programming, thermal and status", "PROG 3.0k = 1S, 1.5 MHz (table 7-1). ILIM 120k/100k = 1.59 A. TS 5.1k/30k + NTC (Battery sheet). CE pulled to +3V3 = charge off until firmware writes VREG. STAT LED and INT; QON open (internal pull-up). Charger I2C (IO1/IO2, ULP RTC I2C) pull-ups R54/R55 to +3V3",
          (4, 66, 140, 28), {
              "R14": (12, 78, 0), "R15": (26, 78, 0), "R16": (26, 88, 0), "R17": (40, 78, 0), "R18": (40, 88, 0),
              "R19": (58, 76, 0), "D2": (58, 86, 90), "R20": (74, 78, 0), "R22": (102, 78, 180),
@@ -78,9 +78,9 @@ BLOCKS = {
         ("I2C pull-ups and cable ESD", "Sensor I2C bus (IO13/IO14): pull-ups 10k to 3V3_SW; USBLC6 (U5, VBUS on 3V3_SW) on the outdoor cable lines. Charger bus is separate (Charger sheet)",
          (4, 60, 62, 30), {
              "R50": (12, 72, 180), "R51": (17, 72, 180), "U5": (38, 72, 0)}),
-        ("ZE25-O3 gas connector", "J8 (hand-solder): 1 GAS_VCC, 2 GND, 3 TXD (sensor out), 4 RXD (sensor in). Pinout to confirm against the module",
-         (72, 60, 36, 30), {
-             "J8": (90, 74, 0)}),
+        ("ZE25-O3 gas connector", "J8 (hand-solder, 1:1 to the module): 2 DAC -> IO7, 3 GND, 4 GAS_VCC, 5 RXD (3.0 V via R46/R47), 6 TXD -> IO18; 1, 7 reserved",
+         (72, 60, 56, 30), {
+             "J8": (100, 74, 0), "R46": (84, 72, 90), "R47": (88, 80, 0)}),
     ],
 }
 

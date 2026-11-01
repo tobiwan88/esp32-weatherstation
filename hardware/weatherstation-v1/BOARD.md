@@ -108,13 +108,13 @@ the CN3791/TP4056 or the AP2112K are superseded.
   5.06 V (FB 510k/68k, VREF 0.595 V). EN = GAS_EN (IO12) with R45 100k pull-down: off by default; off = input and output
   disconnected, 0.1 uA. L5 1 uH (same part as L1), 10 uF in, 2 x 22 uF out (datasheet SLVSF14B figure 8-1).
   Firmware: drive GAS_TXD (IO17) low or set it to input while the boost is off (else the ESP32 back-powers the module RX).
-- I2C: two buses (PARTS-REVIEW A4, decided 2026-11-01). CHG_SDA/CHG_SCL (IO4/IO5): BQ25798 only, R54/R55 10k to +3V3, readable
+- I2C: two buses (PARTS-REVIEW A4, decided 2026-11-01). CHG_SDA/CHG_SCL (IO1/IO2, moved 2026-11-01 from IO4/IO5 to the RTC I2C pins for the ULP core): BQ25798 only, R54/R55 10k to +3V3, readable
   with the sensors off. SEN_SDA/SEN_SCL (IO13/IO14): SEN66, SHT45, spare port, R50/R51 10k and U5 VBUS on 3V3_SW, so nothing
   is back-powered. Firmware sets IO13/IO14 to input or low before it switches 3V3_SW off.
-- GPIO map (module pin, GPIO): CHG_SDA/CHG_SCL 4/5 (IO4/IO5); SEN_SDA/SEN_SCL 21/22 (IO13/IO14); CHG_CE 17 (IO9); CHG_INT 18 (IO10); SENSOR_EN 19 (IO11);
-  GAS_EN 20 (IO12); GAS_TXD 10 (IO17); GAS_RXD 11 (IO18); USB D-/D+ 13/14 (IO19/IO20); UART0 36/37; BOOT 27 (IO0).
-- Open items that the schematic does not settle: L1 Isat (VLS252010 candidate, 1 uH, needs 2.5 A+ check), ZE25-O3 pinout
-  (manual), SMBJ10A vs PV Voc (6 V class panel only; Voc at or below 10 V). ACDRV wiring: common-source
+- GPIO map (module pin, GPIO): CHG_SDA/CHG_SCL 39/38 (IO1/IO2); SEN_SDA/SEN_SCL 21/22 (IO13/IO14); CHG_CE 17 (IO9); CHG_INT 18 (IO10); SENSOR_EN 19 (IO11);
+  GAS_EN 20 (IO12); GAS_TXD 10 (IO17, to J8.5 through R46 1k / R47 10k = 3.0 V); GAS_RXD 11 (IO18, J8.6); GAS_DAC 7 (IO7, ADC1, J8.2); USB D-/D+ 13/14 (IO19/IO20); UART0 36/37; BOOT 27 (IO0).
+- Open items that the schematic does not settle: L1 Isat (VLS252010 candidate, 1 uH, needs 2.5 A+ check), ZE25-O3 supply current
+  (pinout from Winsen table 2: J8 7-pin 1:1, cable pitch still to confirm), SMBJ10A vs PV Voc (6 V class panel only; Voc at or below 10 V). ACDRV wiring: common-source
   N-FET pair with ACDRV on the gates (datasheet 7.3.5); Table 7-7 detail still to check on the final netlist.
 - Generated files: `weatherstation-v1.kicad_sch` (root) and six sheets (`input`, `charger`, `battery`, `mcu`, `rails`, `sensors`). Block layout: `hardware/gen/layout_v1.py`.
   `bom.csv` is written by the generator from the same PARTS list. Run:
@@ -279,7 +279,7 @@ The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design
    REQUIREMENTS.md section 4 still says -10 to +50 C for operation; amend it to "short-term" for the SEN66.
 4. `design.panel.vmp_v` is still an assumption (6.0 V). Choose the panel; the TVS choice (A6) depends on its Voc.
 5. Whether JLCPCB forces Standard PCBA for the ESP32 module (check the quote).
-6. ZE25-O3 pinout and supply current (J8).
+6. ZE25-O3 supply current and cable pitch (J8; pinout from Winsen table 2, 2026-11-01).
 
 ### Schematic: nets that keep labels (generator `UNWIRED`, 2026-11-01)
 Each is readable as drawn; listed so a reviewer knows they are labels on purpose, not missing wires.
