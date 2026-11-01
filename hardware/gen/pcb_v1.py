@@ -28,24 +28,24 @@ LIBS = {"weatherstation": HERE / "lib" / "weatherstation.pretty"}
 
 # Floorplan (REQUIREMENTS 4, 4a, 4b): module top centre with the antenna over the top edge (its keepout lies off the
 # board); battery block top-left (J6, TH1 at the cell connector, protection); debug corner top-right (J7, RESET, BOOT);
-# heat corner bottom-left (USB-C and PV inputs, BQ25798, TPS63802, TPS61023); sensors bottom-right (J2, J3, J4, J8,
+# heat corner bottom-left (USB-C and PV inputs, BQ25798, TPS63802, TPS61023); sensors bottom-right (J2, J3, J8,
 # SCD41), opposite the heat corner. M3 holes in the four corners.
 UX, UY = 25.0, 6.75   # module centre: antenna keepout (local y < -6.75) ends at the top edge
-FIXED = {  # ref: (x, y, rotation)
+FIXED = {  # ref: (x, y, rotation[, "B"]); hand-soldered THT connectors sit on the back (decision 2026-11-01)
     "U1": (UX, UY, 0),
     "H1": (3.5, 3.5, 0), "H2": (W - 3.5, 3.5, 0), "H3": (3.5, H - 3.5, 0), "H4": (W - 3.5, H - 3.5, 0),
     # battery: cell connector on the left edge, NTC beside it
-    "J6": (3.3, 10.0, 270), "U6": (8.8, 14.0, 0),
+    "J6": (3.3, 14.0, 270, "B"), "U6": (8.8, 14.0, 0),
     # debug corner
-    "J7": (48.0, 8.5, 0), "SW10": (40.5, 10.3, 0), "SW11": (40.5, 17.0, 0),
+    "J7": (48.0, 16.5, 0, "B"), "SW10": (40.5, 10.3, 0), "SW11": (40.5, 17.0, 0),
     # inputs: USB-C opening out of the left edge, PV connector on the bottom edge
-    "J1": (3.4, 28.5, 270), "J5": (3.3, 37.5, 270),
+    "J1": (3.4, 28.5, 270), "J5": (3.3, 40.5, 270, "B"),
     # charger: inductor above the IC between SW1 and SW2; buck-boost right of it, boost below, each with room for its loop
     "U3": (16.5, 35.5, 0), "L1": (16.5, 31.7, 0),
     "U2": (25.0, 38.5, 0), "U7": (23.0, 46.8, 0),
     # sensors
-    "U8": (39.0, 30.0, 0), "J8": (47.4, 24.5, 270), "J2": (29.0, 25.0, 0),
-    "J3": (38.6, 47.4, 0), "J4": (30.8, 47.4, 0),
+    "U8": (39.0, 30.0, 0), "J8": (47.4, 37.0, 270, "B"), "J2": (29.0, 29.5, 0, "B"),
+    "J3": (38.6, 47.4, 0),
 }
 
 # ref: [(pad, target ref, target pad), ...]; the part goes where these pads are closest to their targets. Order = priority.
@@ -74,8 +74,8 @@ NEAR = [
     ("C14", [("1", "U3", "25")]), ("C15", [("1", "U3", "25")]), ("C16", [("1", "U3", "25")]),
     ("C17", [("1", "U3", "25")]), ("C18", [("1", "U3", "25")]), ("C7", [("1", "U3", "3")]), ("C8", [("1", "U3", "3")]),
     # module (decoupling, EN RC, series resistors at the driving pin)
-    ("C31", [("1", "U1", "2")]), ("C32", [("1", "U1", "2")]), ("C30", [("1", "U1", "2")]),
-    ("C33", [("1", "U1", "3")]), ("R30", [("2", "U1", "3")]),
+    ("C31", [("1", "U1", "2")]), ("C33", [("1", "U1", "3")]), ("C32", [("1", "U1", "2")]),
+    ("R30", [("2", "U1", "3")]), ("C30", [("1", "U1", "2")]),
     ("R33", [("2", "U1", "13")]), ("R32", [("2", "U1", "14")]),
     ("R48", [("1", "U1", "4")]), ("R49", [("1", "U1", "6")]), ("R46", [("1", "U1", "10")]), ("R47", [("1", "R46", "2")]),
     ("R31", [("2", "U1", "27")]),
@@ -275,19 +275,46 @@ def main():
         sys.exit(f"placement: unknown refs {unknown}, refs without a position {unplaced}")
 
     placed = {}  # ref -> (x, y, rot)
-    taken = []   # courtyard boxes in board mm
+    taken = []   # F-side courtyard boxes in board mm (a back-side THT part blocks the front only with its pads)
+    real_pads = {}  # fixed parts: pad centres read back from pcbnew (handles the flip of back-side parts)
+    back = []    # back-side courtyard boxes
 
     def put(ref, x, y, deg):
         placed[ref] = (x, y, deg)
         taken.append(box_at(boxes[ref], x, y, deg))
 
     def pad_at(ref, num):
+        if ref in real_pads:
+            return real_pads[ref][num]
         x, y, deg = placed[ref]
         px, py = rot(*pad_local[ref][num], deg)
         return x + px, y + py
 
-    for ref, (x, y, deg) in FIXED.items():
-        put(ref, x, y, deg)
+    def mm_box(b, grow=0.0):
+        return (pcbnew.ToMM(b.GetLeft()) - OX - grow, pcbnew.ToMM(b.GetTop()) - OY - grow,
+                pcbnew.ToMM(b.GetRight()) - OX + grow, pcbnew.ToMM(b.GetBottom()) - OY + grow)
+
+    for ref, (x, y, deg, *side) in sorted(FIXED.items(), key=lambda kv: not kv[0].startswith("H")):
+        fp = fps[ref]
+        fp.SetPosition(v(x, y))
+        fp.SetOrientationDegrees(deg)
+        if side == ["B"]:
+            fp.Flip(fp.GetPosition(), pcbnew.FLIP_DIRECTION_TOP_BOTTOM)
+            fp.Reference().SetLayer(pcbnew.B_Fab)
+            placed[ref] = (x, y, deg)
+            taken.extend(mm_box(q.GetBoundingBox(), 0.25) for q in fp.Pads())
+            b = mm_box(fp.GetCourtyard(pcbnew.B_CrtYd).BBox())
+            if any(overlaps(b, o) for o in back):
+                sys.exit(f"back-side courtyard of {ref} overlaps another back-side part")
+            back.append(b)
+        else:
+            put(ref, x, y, deg)
+            if ref.startswith("H"):  # standoff or nut under the board: no back-side body there either
+                back.append(box_at(boxes[ref], x, y, deg))
+        real_pads[ref] = {}
+        for q in fp.Pads():
+            c = q.GetPosition()
+            real_pads[ref].setdefault(q.GetNumber(), (pcbnew.ToMM(c.x) - OX, pcbnew.ToMM(c.y) - OY))
 
     def place_near(ref, wants):
         targets = [(num, pad_at(tr, tp)) for num, tr, tp in wants]
@@ -320,6 +347,8 @@ def main():
         place_near(ref, wants)
 
     for ref, (x, y, deg) in placed.items():
+        if ref in FIXED:
+            continue
         fp = fps[ref]
         fp.SetPosition(v(x, y))
         fp.SetOrientationDegrees(deg)

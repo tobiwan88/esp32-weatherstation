@@ -170,7 +170,6 @@ PARTS = {
     "U8": ("Sensor_Gas:SCD41-D-R2", "SCD41 DNP (C3659294)", "Sensor:Sensirion_SCD4x-1EP_10.1x10.1mm_P1.25mm_EP4.8x4.8mm", None, "Sensors"),
     "C47": ("Device:C", "10u (SCD41 VDD)", C0603, "C19702", "Sensors"),
     "J3": ("Connector_Generic:Conn_01x04", "SHT45 cable", "Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal", "C160404", "Sensors"),
-    "J4": ("Connector_Generic:Conn_01x04", "spare port", "Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal", "C160404", "Sensors"),
     "U5": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (I2C)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "Sensors"),
     # Sensor I2C bus (IO13/IO14): pull-ups and U5 VBUS on 3V3_SW, so nothing back-powers the sensors when the rail is off.
     # Firmware sets IO13/IO14 to input (or low) before switching 3V3_SW off (PARTS-REVIEW A4).
@@ -235,8 +234,8 @@ NETS = {
     # deep sleep: ESP-IDF ulp_riscv_i2c allows SDA IO1/IO3, SCL IO0/IO2), sensors on IO13/IO14 (3V3_SW).
     "CHG_SDA": [("U3", "15"), ("U1", "39"), ("R54", "1")],
     "CHG_SCL": [("U3", "14"), ("U1", "38"), ("R55", "1")],
-    "SEN_SDA": [("U1", "21"), ("U8", "10"), ("J3", "3"), ("J4", "3"), ("R50", "1"), ("U5", "1"), ("U5", "6")],
-    "SEN_SCL": [("U1", "22"), ("U8", "9"), ("J3", "4"), ("J4", "4"), ("R51", "1"), ("U5", "3"), ("U5", "4")],
+    "SEN_SDA": [("U1", "21"), ("U8", "10"), ("J3", "3"), ("R50", "1"), ("U5", "1"), ("U5", "6")],
+    "SEN_SCL": [("U1", "22"), ("U8", "9"), ("J3", "4"), ("R51", "1"), ("U5", "3"), ("U5", "4")],
     # MCU sheet
     "EN": [("U1", "3"), ("R30", "2"), ("C33", "1"), ("SW10", "1")],
     "IO0": [("U1", "27"), ("R31", "2"), ("SW11", "1")],
@@ -251,7 +250,7 @@ NETS = {
     "GAS_RXD": [("U1", "11"), ("J8", "6")],
     "GAS_DAC": [("U1", "7"), ("J8", "2")],  # IO7 = ADC1: backup reading if the UART fails
     # Rails sheet
-    "3V3_SW": [("Q40", "3"), ("C42", "1"), ("C43", "1"), ("U8", "7"), ("U8", "19"), ("C47", "1"), ("J3", "2"), ("J4", "2"), ("U5", "5"), ("R50", "2"), ("R51", "2"),
+    "3V3_SW": [("Q40", "3"), ("C42", "1"), ("C43", "1"), ("U8", "7"), ("U8", "19"), ("C47", "1"), ("J3", "2"), ("U5", "5"), ("R50", "2"), ("R51", "2"),
                ("#FLG10", "1")],
     "SEN_G": [("Q40", "1"), ("R40", "2"), ("Q41", "3")],
     "SEN_EN_G": [("Q41", "1"), ("R41", "2"), ("R42", "1")],
@@ -279,7 +278,7 @@ NETS = {
             ("C33", "2"), ("SW10", "2"), ("SW11", "2"), ("J7", "4"), ("C40", "2"), ("C41", "2"), ("Q41", "2"),
             ("R42", "2"), ("C42", "2"), ("C43", "2"), ("U7", "4"), ("R44", "2"), ("R45", "2"), ("C44", "2"), ("C45", "2"),
             ("C46", "2"), ("J2", "3"), ("J2", "4"), ("U8", "6"), ("U8", "20"), ("U8", "21"), ("C47", "2"), ("J3", "1"),
-            ("J4", "1"), ("U5", "2"), ("J8", "3"), ("R47", "2"), ("#FLG12", "1")],
+            ("U5", "2"), ("J8", "3"), ("R47", "2"), ("#FLG12", "1")],
 }
 # Rails: drawn as a power symbol on every pin (never routed as a wire, no hierarchical label). This is how an engineer
 # reads a schematic: a capacitor with a rail symbol on top and GND below is decoupling for that rail, no wire to trace.

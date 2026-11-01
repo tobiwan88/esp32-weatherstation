@@ -151,7 +151,7 @@ the CN3791/TP4056 or the AP2112K are superseded.
   The cell is charged only by U3/U6, never through D3.
 - SHT45 off-board in a radiation shield: board heat (charger, LDO, SEN66 fan) cannot bias outdoor T/RH.
 - Sensor rail switched by Q2 (P-FET, pull-up gate = off in deep sleep); I2C pull-ups on 3V3_SW so nothing is back-powered.
-- NO2 not on this revision (electrochemical cell is 2 years life, ozone cross-sensitivity, about 130-300 EUR); J4 Qwiic is a spare port.
+- NO2 not on this revision (electrochemical cell is 2 years life, ozone cross-sensitivity, about 130-300 EUR); the J4 spare Qwiic port was dropped for board area (2026-11-01).
 - ESD/EMC set kept pragmatic: USBLC6 on USB data and on the outdoor SHT45 I2C cable, SMBJ12A on the solar input, FB1 DNP footprint.
 
 ## Outdoor sensor decision (2026-10-31)
@@ -287,6 +287,11 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
   (GND, SYS, PMID, REGN, USB pair, TS, 5V_SW and others), 19 vias in pads, power tracks necked to 0.2 mm in many places.
   The board is too dense for single-sided parts on 50 x 50 mm: engineer decision open (THT connector bodies on the back,
   smaller buttons, fewer connectors or holes, or a bigger board).
+- Decision 2026-11-01 (engineer): hand-soldered THT connectors J2, J5, J6, J7, J8 with their bodies on the back (cables
+  plug in from below), J4 spare port dropped; outline stays 50 x 50 mm. Front courtyards 67 %. Routing trial 2: 60 of 71
+  nets, 11 open, all in the charger corner or the USB pair (PMID, SYS, BAT_PACK, USB_VBUS, REGN, BATP, +3V3, SEN_SDA,
+  GAS_SW, USB_DP/DN), 2 vias in pads. Next: draw the charger power copper (PMID/SYS/BAT/VBUS) and the USB pair in the
+  generator and lock them (kicad-layout order of work step 6), then route the rest.
 
 ## Open before ordering (updated 2026-11-01)
 The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).

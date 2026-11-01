@@ -72,9 +72,9 @@ BLOCKS = {
              "R43": (108, 76, 0), "R44": (108, 85, 0), "C45": (116, 77, 0), "C46": (121, 77, 0)}),
     ],
     "Sensors": [
-        ("I2C sensor connectors", "J3 SHT45 board in the radiation shield (outdoor cable) and J4 spare (Qwiic order: GND, VDD, SDA, SCL). Both on 3V3_SW",
+        ("I2C sensor connector", "J3 SHT45 board in the radiation shield (outdoor cable, Qwiic order: GND, VDD, SDA, SCL), on 3V3_SW",
          (4, 10, 70, 46), {
-             "J3": (40, 36, 0), "J4": (40, 46, 0)}),
+             "J3": (40, 36, 0)}),
         ("PM sensor PMS7003", "J2 (hand-solder, 2x5 1.27 mm, manual V2.5): 1/2 5V_SW, 3/4 GND, 7 RX <- IO4 via R48, 9 TX -> IO5, 10 SET <- IO6 via R49 (low = sleep); 5 RESET, 6, 8 open. Data 3.3 V TTL",
          (78, 10, 80, 46), {
              "J2": (120, 30, 0), "R48": (100, 31, 90), "R49": (100, 35, 90)}),
@@ -126,8 +126,8 @@ HAND_ROUTES = {
     },
     # sensor I2C bus: one vertical line per signal left of the connectors (SDA x 26, SCL x 24; SCL crosses SDA, no dot)
     "Sensors": {
-        "SEN_SDA": [[("J3", "3"), (26, 37)], [(26, 37), (26, 47)], [(26, 47), ("J4", "3")], [(26, 47), (26, 51)]],
-        "SEN_SCL": [[("J3", "4"), (24, 38)], [(24, 38), (24, 48)], [(24, 48), ("J4", "4")], [(24, 48), (24, 51)]],
+        "SEN_SDA": [[("J3", "3"), (26, 37)], [(26, 37), (26, 51)]],
+        "SEN_SCL": [[("J3", "4"), (24, 38)], [(24, 38), (24, 51)]],
     },
 }
 # name label of a hand-drawn net at a fixed wire end (x, y cells, text angle): sheet -> net
@@ -146,7 +146,7 @@ SHEET_NOTES = {
     "Battery": "Cell connector, PTC, cell NTC, HY2112-CB overcharge/overdischarge/overcurrent protection and its pack-negative FETs",
     "MCU": "ESP32-S3-WROOM-1-N8: decoupling, reset and boot, USB data series resistors, UART debug",
     "Rails": "SYS to 3.3 V (TPS63802), switched 3V3_SW sensor rail and the 5V_SW 5 V boost (TPS61023, enable from IO12)",
-    "Sensors": "PMS7003 PM sensor, SHT45 cable, spare port, I2C ESD and pull-ups, optional SCD41 (DNP), ZE25-O3 gas connector",
+    "Sensors": "PMS7003 PM sensor, SHT45 cable, I2C ESD and pull-ups, optional SCD41 (DNP), ZE25-O3 gas connector",
 }
 
 # root block diagram boxes (cells): sheet -> (x, y, w, h)

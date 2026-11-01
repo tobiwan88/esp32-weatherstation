@@ -46,6 +46,6 @@ TPS61023,U7,Package_TO_SOT_SMD:SOT-563,1,C919459,Extended,VERIFIED LCSC part (cl
 68k 1%,R44,Resistor_SMD:R_0603_1608Metric,1,C23231,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R44: 68k 1% (boost FB bottom)
 PMS7003,J2,Connector_PinHeader_1.27mm:PinHeader_2x05_P1.27mm_Vertical,1,n/a,n/a,HAND-SOLDER,J2: PMS7003 (2x5 1.27 mm)
 SCD41 DNP,U8,Sensor:Sensirion_SCD4x-1EP_10.1x10.1mm_P1.25mm_EP4.8x4.8mm,1,n/a,n/a,NOT ASSEMBLED,U8: SCD41 DNP (C3659294)
-SHT45 cable,"J3,J4",Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,2,C160404,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),J4: spare port
+SHT45 cable,J3,Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,1,C160404,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 ZE25-O3,J8,Connector_JST:JST_PH_B7B-PH-K_1x07_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,J8: ZE25-O3 (cable pitch to confirm)
 Test points,"TP1,TP2",TestPoint:TestPoint_Pad_D1.5mm,2,n/a,n/a,PCB pads only,GND/3V3 test pads

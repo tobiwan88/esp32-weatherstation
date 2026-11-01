@@ -71,7 +71,7 @@ port, and an optional ZE25-O3 ozone module on its own 5 V boost. NO2 is out of s
   Group the converters in one heat corner, away from TH1, the antenna and the sensor connectors.
 - T2 TH1 next to J6 and the cell holder, outside the heat corner; sense trace not under a converter. TH1 reads the board next
   to the cell: measure the TH1-to-cell offset on the samples (`charge-policy.md`).
-- T3 J2/J3/J4 on the side opposite the heat corner. The SHT45 is off-board in a radiation shield.
+- T3 J2/J3/J8 on the side opposite the heat corner. The SHT45 is off-board in a radiation shield.
 - T4 BQ25798 exposed pad, TPS63802 GND bar and ESP32 EP on via arrays into both GND planes.
 - T5 Keep the board temperature rise under 25 C at 1.5 A charge in the closed enclosure; verify on the first board.
 - T6 Optional milled slots between the heat corner and the sensor side if measurement shows coupling; slots must not cut

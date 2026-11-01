@@ -15,7 +15,7 @@ Adapt from `hardware/reference/desk_notifier/notifier-v1-profile/ORDER.md` (gerb
 ## Assembly options
 - Economic PCBA, one side, SMT only. If the quote forces Standard for the ESP32 module, expect about +$40-50 (see REQUIREMENTS.md 5a).
 - Hand-soldered after delivery: JST-PH J5/J6, UART header J7, battery holder/cell leads. Off-board: SEN66, SHT45 (Qwiic cable), solar panel.
-- Placement preview: check U1, U2, U3, U6, J1, J2, J3, J4, L1 orientation; fix in the fab package rotation table, never in the CPL.
+- Placement preview: check U1, U2, U3, U6, J1, J3, L1 (J2, J5-J8 are hand-soldered from the back) orientation; fix in the fab package rotation table, never in the CPL.
 
 ## Cost (see REQUIREMENTS.md 5a)
 5 boards: about $72-112 plus shipping and VAT; about EUR 240-300 for the first batch plus one complete station.
