@@ -11,9 +11,9 @@ BLOCKS = {
     "Input": [
         ("USB-C input", "USB-C sink: CC 5.1k pull-downs, ESD on D+/D-; ACFET1/RBFET1 back-to-back (sources joined, gates driven by BQ25798 ACDRV1) into VBUS",
          (4, 10, 74, 40), {
-             "J1": (12, 30, 0), "U4": (34, 32, 0), "R9": (22, 42, 0), "R10": (26, 42, 0),
-             "M1": (50, 24, 90), "M2": (58, 24, 90, "m"), "R11": (54, 34, 0), "C1": (68, 36, 0),
-             "#FLG1": (72, 16, 0), "#FLG12": (14, 46, 0)}),
+             "J1": (12, 30, 0), "U4": (34, 35, 0), "R9": (26, 42, 0), "R10": (22, 42, 0),
+             "M1": (50, 25, 90), "M2": (58, 25, 90, "m"), "R11": (54, 35, 0), "C1": (40, 25.5, 0),
+             "#FLG1": (37, 24, 0), "#FLG12": (16, 40, 0)}),
         ("PV input", "6 V / 10 W panel (Voc about 8 V cold, up to 1.7 A): JST PH J5; SMBJ10A D1 across the pair (clamp 17 V < 30 V abs max); CM choke L3 3 A; ACFET2/RBFET2 into VBUS (ACDRV2)",
          (4, 58, 74, 40), {
              "J5": (10, 76, 0, "m"), "D1": (18, 77.5, 270), "L3": (28, 77, 0), "C2": (36, 79.5, 0),
@@ -41,7 +41,7 @@ BLOCKS = {
     "Battery": [
         ("Cell, PTC, NTC and HY2112 protection", "J6 cell (JST PH), F1 PTC 3 A hold, TH1 NTC for BQ25798 TS. HY2112-CB: OVP 3.75 V, ODP 2.10 V; R60/C60/R61 per datasheet section 10; M60 (discharge) and M61 (charge) common-drain in the pack negative, as section 10",
          (4, 10, 90, 50), {
-             "J6": (10, 30, 0, "m"), "F1": (18, 30, 90), "TH1": (26, 42, 0), "#FLG14": (16, 36, 0),
+             "J6": (10, 30, 0, "m"), "F1": (18, 30, 90), "TH1": (26, 42, 0), "#FLG14": (24, 55, 0),
              "R60": (36, 19.5, 0), "C60": (50, 22.5, 0), "U6": (46, 30, 270, "m"), "R61": (52, 39, 90),
              "M60": (42, 48, 270), "M61": (60, 48, 270, "m"), "#FLG13": (43.5, 21, 0)}),
     ],
@@ -99,6 +99,12 @@ HAND_ROUTES = {
         "PV_RAW": [[("J5", "1"), ("D1", "1")], [("D1", "1"), ("L3", "1")]],
         "PV_N_RAW": [[("J5", "2"), (14, 77), (14, 79), ("D1", "2")], [("D1", "2"), (24, 79), (24, 78), ("L3", "4")]],
         "PV_IN": [[("L3", "2"), (36, 76), (36, 69), (44, 69)], [(44, 69), ("M3", "3")], [(36, 76), ("C2", "1")]],
+        # USB-C: VBUS along the top to ACFET1 (U4 VBUS, C1, flag on it). D+/D- stay labels (U4 passes them through).
+        # CC1/CC2 straight down to their 5.1k (they cross the data lines without a junction)
+        "USB_VBUS": [[("J1", "A4"), (34, 24)], [(34, 24), (37, 24)], [(37, 24), (40, 24)], [(40, 24), ("M1", "3")],
+                     [(34, 24), ("U4", "5")]],
+        "CC1": [[("J1", "A5"), (26, 26), ("R9", "1")]],
+        "CC2": [[("J1", "B5"), (22, 27), ("R10", "1")]],
     },
     # HY2112 section 10: R60/C60 supply filter above the IC, OD/OC down to the gates of M60/M61, CS through R61 to PB-
     "Battery": {
@@ -108,6 +114,9 @@ HAND_ROUTES = {
         "HY_CS": [[("U6", "2"), (45.5, 39), ("R61", "1")]],
         "PB_MID": [[("M60", "3"), ("M61", "3")]],
         "BAT_CON": [[("J6", "1"), ("F1", "1")]],
+        # cell minus: J6 pin 2 to the M60 drain and around the FETs up to HY2112 VSS and C60 (section 10)
+        "BAT_N": [[("J6", "2"), (14, 31), (14, 55)], [(14, 55), (24, 55)], [(24, 55), (36, 55)], [("M60", "2"), (36, 49), (36, 55)],
+                  [(36, 55), (70, 55), (70, 24), ("C60", "2")], [("U6", "6"), (46.5, 24), ("C60", "2")]],
     },
     # sensor I2C bus: one vertical line per signal left of the connectors (SDA x 26, SCL x 24; SCL crosses SDA, no dot)
     "Sensors": {
@@ -118,7 +127,8 @@ HAND_ROUTES = {
     },
 }
 # name label of a hand-drawn net at a fixed wire end (x, y cells, text angle): sheet -> net
-HAND_LABELS = {"Sensors": {"SEN_SDA": (26, 51, 270), "SEN_SCL": (24, 51, 270)}}
+HAND_LABELS = {"Sensors": {"SEN_SDA": (26, 51, 270), "SEN_SCL": (24, 51, 270)},
+}
 
 # reference/value text below a horizontal passive (default: above), where a wire runs just above it
 TAGS_BELOW = {"C4"}

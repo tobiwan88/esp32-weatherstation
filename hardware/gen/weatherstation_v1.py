@@ -384,7 +384,10 @@ def _labels_for(items: dict, wired: set, segs: list | None = None) -> list:
     out, seen = [], set()
     for key, its in items.items():
         net = key[0]
-        anchors = its if net in POWER_SYMBOLS or key not in wired else [_clear_item(net, its, segs or [], key in HAND_KEYS)]
+        if net in POWER_SYMBOLS and key in HAND_KEYS:  # hand-drawn rail: one symbol, on a pin that points up
+            anchors = [next((it for it in its if it["deg"] == 90), its[0])]
+        else:
+            anchors = its if net in POWER_SYMBOLS or key not in wired else [_clear_item(net, its, segs or [], key in HAND_KEYS)]
         for it in anchors:
             if (net, it["exit"]) not in seen:
                 seen.add((net, it["exit"]))
