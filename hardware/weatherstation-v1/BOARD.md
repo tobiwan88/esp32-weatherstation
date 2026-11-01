@@ -18,7 +18,10 @@ Status: schematic v1 generated (`hardware/gen/weatherstation_v1.py`, ERC 0 error
 - Accepted residual risk (user): no hardware cold or hot stop during a session. Mitigations in `charge-policy.md`.
 - Earlier bullet, superseded: standard LFP 26650, 0-45 C charge.
 - **Cell: standard LFP 26650, 0-45 C charge** (not the 26700LT). Reason: the BQ25798 cold cut-off is fixed at about 0 C; no
-  verified charger IC allows cold charging (see cells.md). Cell datasheet still to read (charge end, discharge cut-off, capacity).
+  verified charger IC allows cold charging (see cells.md).
+- **CBAK 26700LT spec A/03 read (2026-11-01, `datasheets/CBAK_26700LT_A03.pdf`):** 3900 mAh min, 3.65 V standard charge
+  (limit 3.75 V), 2.0 V cut-off, charge -10..50 C at 0.2C below 0 C, 0.5C at 0-20 C, 1C at 20-40 C; -20 C capacity >= 80 %.
+  board.yaml cell values match.
 - **Cost basis:** the parts cost is per board. The Extended fee is per unique part per order, so it is paid once and is shared by
   all boards in the order. Recommendation: cost the order for **5 boards** (the fee is then spread over five) and use 1 board only
   for a prototype.
@@ -68,8 +71,9 @@ the CN3791/TP4056 or the AP2112K are superseded.
   The NTC plus firmware is the temperature protection; there is no separate temperature IC.
 - **Cell PTC F1** SMD1812P300TF (C21004, Extended): 3 A hold, between the battery connector and the battery node. Overcurrent backup.
 - **EMC on the PV input:** common-mode choke L3 CMF4532F-900-2P-T (C963746, Extended, 90 Ohm at 100 MHz, 3 A, 70 mOhm; was the 1 A -102, too small
-  for a 10 W 6 V panel) on PV+ and PV-; the TVS D1 (SMBJ10A, was SMBJ24A, see PARTS-REVIEW A6) moved in front of it (across PV+ and PV-); C2 0.1 uF after it. Open: L3 pinout (pins 1/2 and 3/4 assumed as
-  one winding each, in on 1 and 3) and footprint (custom 4-pad).
+  for a 10 W 6 V panel) on PV+ and PV-; the TVS D1 (SMBJ10A, was SMBJ24A, see PARTS-REVIEW A6) moved in front of it (across PV+ and PV-); C2 0.1 uF after it. Ratings confirmed from the HongyeX spec D2
+  (the LCSC maker is HongyeX, not EMTEK). Open: land pattern and pinout still from the EMTEK T-0602-102D drawing; check them
+  against a HongyeX drawing before layout. SMBJ10A (Littelfuse rev. 07/04/25) and USBLC6-2 (ST DS4260 rev 7) read: values as designed.
 
 ### Still open (decisions and checks)
 1. **Sodium: dropped for v1** (see the decision above). Re-open only with a new cell spec and a matching protection part.
