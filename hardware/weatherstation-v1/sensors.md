@@ -25,9 +25,10 @@ SHT45 board a few EUR). Prices other than the LCSC rows are from search results,
 - **SEN55/SEN54** (PM, T/RH, VOC/NOx, 5 V supply): no CO2. Same deep-sleep problem for the gas index.
 
 ## Open
-- **ZE25-O3 warm-up (3 min) and response (90 s)** do not fit a 45 s measurement window. Either it stays powered for several
-  minutes per reading (energy cost unknown until its current is measured) or ozone is dropped. Its power is not in
-  `power_budget.py` yet.
+- **ZE25-O3:** warm-up (3 min) and response (90 s) do not fit the 45 s window. Decided (user): a firmware feature keeps
+  5V_SW on longer for ozone (e.g. 4 min once per hour). `power_budget.py` counts it with an ASSUMED 80 mA at the cell;
+  measure the module and replace the number.
+- **SHT45 board:** schematic in `hardware/sht45-board/` (SHT45-AD1F with membrane, 100 nF, JST SH).
 - The research was a first pass (English sources). A Chinese-language search (szlcsc.com, AliExpress) for PM modules
   sold by LCSC was not done.
 

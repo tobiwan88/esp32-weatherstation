@@ -83,7 +83,12 @@ design:
     esp_active_ma: {value: 100, source: assumption}
     sensor_on_s: {value: 45, source: "PMS7003 manual V2.5: stable data at least 30 s after wake-up; 45 s = 30 s + readings + margin"}
     sensor_ma: {value: 190, source: "PMS7003 manual V2.5: active <= 100 mA at 5 V; at the cell 5 V x 0.1 A / 0.85 (TPS61023, assumption) / 3.2 V = 184 mA, rounded up"}
-    sleep_ua: {value: 100, source: assumption}          # TPS63802 Iq 11 uA + HY2112 3 uA + module + dividers
+    sleep_ua: {value: 100, source: assumption}
+    # ZE25-O3 as a firmware option (user 2026-11-01): 5V_SW stays on longer for ozone, e.g. once per hour for 4 min
+    # (warm-up <= 3 min + response <= 90 s, Winsen product page); PMS7003 in sleep (SET low) meanwhile.
+    o3_on_s: {value: 240, source: "Winsen ZE25-O3 page: warm-up <= 3 min, response <= 90 s; 4 min window (firmware choice)"}
+    o3_period_s: {value: 3600, source: "firmware choice: one O3 reading per hour"}
+    o3_ma: {value: 80, source: "ASSUMPTION, not published: about 40 mA at 5 V plus boost Iq -> about 80 mA at the cell; measure and replace"}          # TPS63802 Iq 11 uA + HY2112 3 uA + module + dividers
   solar:
     panel_w: {value: 10, source: "decision 2026-11-01: 6 V class, about 10 W (e.g. Voltaic P110 9.5 W, or 2 x 6 V 5 W in parallel). Covers 0.96 Wh/day from 0.16 peak-sun hours, 1.5x margin from 0.24 h; replace with the bought panel's datasheet"}
     psh_worst_h: {value: 0.7, source: "design value for cloudy December, Germany. PVGIS-SARAH3 2005-2023, 45 deg: Dec mean 1.25 kWh/m2/d Frankfurt, 0.95 Hamburg; 27 % (Frankfurt) to 44 % (Hamburg) of Dec days below 0.5"}  # peak-sun hours per day

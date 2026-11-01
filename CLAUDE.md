@@ -6,7 +6,8 @@ duty cycle, WiFi to Home Assistant/MQTT. Custom 4-layer PCB (two GND planes), JL
 Base created from desk_notifier (board-neutral hardware skills, calc scripts, tools and a working KiCad pipeline kept as reference).
 
 ## Start here
-- Hardware: read `.claude/skills/hw-base` first, then `hardware/weatherstation-v1/BOARD.md` and `board.yaml`. Requirements: `hardware/weatherstation-v1/REQUIREMENTS.md`. Plan: `hardware/PLAN.md`.
+- Hardware: read `.claude/skills/hw-base` first, then `hardware/weatherstation-v1/BOARD.md` and `board.yaml`.
+  Second board: `hardware/sht45-board/` (outdoor SHT45, generator `hardware/gen/sht45_board.py`). Requirements: `hardware/weatherstation-v1/REQUIREMENTS.md`. Plan: `hardware/PLAN.md`.
 - Skills (board-neutral, in `.claude/skills/`): `hw-base`, `kicad-schematic`, `kicad-layout`, `hw-parts`.
 - Numbers come from scripts in `hardware/calc/` (rule in `hw-base`): `bom_check.py`, `power_budget.py`, `critical.py`, `buck.py`, `impedance.py`.
 

@@ -72,6 +72,11 @@ def run(design: dict) -> list:
     cyv = {n: val(cy, n, rows, f"cycle.{n}") for n in need}
     if None not in cyv.values():
         q = (cyv["esp_active_s"] * cyv["esp_active_ma"] + cyv["sensor_on_s"] * cyv["sensor_ma"]) / cyv["period_s"] + cyv["sleep_ua"] / 1000
+        o3 = {n: cy.get(n, {}).get("value") for n in ("o3_on_s", "o3_ma", "o3_period_s")}  # optional slow sensor (ZE25-O3)
+        if None not in o3.values():
+            q += o3["o3_on_s"] * o3["o3_ma"] / o3["o3_period_s"]
+            rows.append(("OK", "slow sensor (O3) share", f"{o3['o3_on_s']} s at {o3['o3_ma']} mA every {o3['o3_period_s']} s = "
+                         f"{o3['o3_on_s'] * o3['o3_ma'] / o3['o3_period_s']:.1f} mA average"))
         wh = q * 3.2 * 24 / 1000  # LFP nominal 3.2 V (all currents are at the cell)
         rows.append(("OK", "average current", f"{q:.1f} mA at a {cyv['period_s']} s cycle, {wh:.2f} Wh/day"))
         cell = val(ce, "cell_mah", rows)

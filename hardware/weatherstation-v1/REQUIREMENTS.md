@@ -122,11 +122,14 @@ port, and an optional ZE25-O3 ozone module on its own 5 V boost. NO2 is out of s
   charging below the chip's limit only in an awake session or by the ULP core (`charge-policy.md`).
 - I2C: charger bus IO1/IO2, sensor bus IO13/IO14. Set IO13/IO14 to input or low before switching 3V3_SW off.
 - Gas: BOOST_EN (IO12) high = TPS61023 on; drive GAS_TXD (IO17) low or input while the boost is off.
+- O3 option (user 2026-11-01): firmware feature to keep 5V_SW on longer for the ZE25-O3 (warm-up <= 3 min, response
+  <= 90 s), e.g. one 4 min window per hour (configurable, off by default), with the PMS7003 in sleep (SET low) meanwhile.
+  Budget in `board.yaml` cycle.o3_* (current is an assumption until measured).
 - Battery: below 2.4 V turn sensors off and sleep long; report the charger ADC values each cycle.
 
 ## 7. Open items before ordering
 1. ZE25-O3 supply current and cable/connector pitch (J8).
 2. CMF4532F-900 land pattern and pinout from a HongyeX drawing (the footprint uses the EMTEK drawing).
 3. JLCPCB Standard vs Economic PCBA for the ESP32 module (quote).
-4. SHT45 board (separate small PCB) still to design; ZE25-O3 warm-up (3 min) vs the duty cycle and its current.
+4. SHT45 board: schematic in `hardware/sht45-board/` (layout open). ZE25-O3 supply current (assumed 80 mA at the cell).
 5. Layout not started; plan one prototype batch and bench-test charging, sleep current and the TH1-to-cell offset.

@@ -68,12 +68,13 @@ class Sheet:
 
     pwr_count = 0  # power-symbol references are unique over all sheets
 
-    def __init__(self, name: str, filename: str, parts: dict, paper: str = "A3", note: str = ""):
+    def __init__(self, name: str, filename: str, parts: dict, paper: str = "A3", note: str = "",
+                 project: str = "weatherstation-v1", title: str = "weatherstation v1"):
         self.name, self.filename, self.parts = name, filename, parts
         self.paper, self.note = paper, note
-        self.sch = ksa.Schematic.create("weatherstation-v1")
+        self.sch = ksa.Schematic.create(project)
         self.sch.set_paper_size(paper)
-        self.sch.set_title_block(title="weatherstation v1", date="2026-10-31", rev="v1", company="weatherstation",
+        self.sch.set_title_block(title=title, date="2026-10-31", rev="v1", company="weatherstation",
                                  comments={1: f"Sheet: {name}", 2: note.split(":")[0][:60]})
         self.uuid = str(uuid.uuid5(uuid.NAMESPACE_URL, "sheet/" + name))
         self.raw: list[str] = []
@@ -297,11 +298,12 @@ class Sheet:
         return path
 
 
-def root_sheet(directory: Path, name: str, sheets: list[dict], texts: list[tuple[float, float, str]], wires, labels) -> tuple[Path, str]:
+def root_sheet(directory: Path, name: str, sheets: list[dict], texts: list[tuple[float, float, str]], wires, labels,
+               project: str = "weatherstation-v1", title: str = "weatherstation v1") -> tuple[Path, str]:
     """Root page: block diagram of sheet symbols. Each entry of sheets: name, file, x, y, w, h, page, pins=[(edge, y_cell, name)]."""
-    root = str(uuid.uuid5(uuid.NAMESPACE_URL, "root"))
+    root = str(uuid.uuid5(uuid.NAMESPACE_URL, "root" if project == "weatherstation-v1" else "root/" + project))
     out = ['(kicad_sch (version 20250114) (generator "eeschema") (generator_version "9.0")', f'\t(uuid "{root}")', '\t(paper "A3")',
-           '\t(title_block (title "weatherstation v1") (date "2026-10-31") (rev "v1") (company "weatherstation") '
+           f'\t(title_block (title "{title}") (date "2026-10-31") (rev "v1") (company "weatherstation") '
            '(comment 1 "Sheet: root (block diagram)"))', "\t(lib_symbols)"]
     segs_mm = [((mm(a[0]), mm(a[1])), (mm(b[0]), mm(b[1]))) for a, b in wires]
     for jx, jy in junction_points(segs_mm):
@@ -329,7 +331,7 @@ def root_sheet(directory: Path, name: str, sheets: list[dict], texts: list[tuple
                 rot, just = (90, "left") if edge == "top" else (270, "left")
             s.append(f'\t\t(pin "{pname}" bidirectional (at {px} {py} {rot}) (uuid "{uid()}") '
                      f'(effects (font (size 1.27 1.27)) (justify {just})))')
-        s.append(f'\t\t(instances (project "weatherstation-v1" (path "/{root}" (page "{sh["page"]}"))))')
+        s.append(f'\t\t(instances (project "{project}" (path "/{root}" (page "{sh["page"]}"))))')
         s.append("\t)")
         out.append("\n".join(s))
     for x, y, body in texts:
@@ -339,7 +341,7 @@ def root_sheet(directory: Path, name: str, sheets: list[dict], texts: list[tuple
                    f'(effects (font (size {size} {size})) (justify left top)) (uuid "{uid()}"))')
     out.append('\t(sheet_instances (path "/" (page "1")))')
     out.append("\t(embedded_fonts no)\n)")
-    path = directory / "weatherstation-v1.kicad_sch"
+    path = directory / f"{project}.kicad_sch"
     path.write_text("\n".join(out) + "\n")
     return path, root
 
