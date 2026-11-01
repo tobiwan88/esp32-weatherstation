@@ -283,6 +283,10 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
 - Critical blocks: `critical.yaml` (switching loops of BQ25798, TPS63802, TPS61023; FB dividers; decoupling; series
   resistors; USB pair; heat-to-NTC and heat-to-sensor distances).
 - Test points TP1 (+3V3) and TP2 (SYS); UART0 header J7 as fallback debug.
+- Routing trial 2026-11-01 (KRT 0.23, first placement, courtyards 76 % of the board): 53 of 71 nets routed, 18 open
+  (GND, SYS, PMID, REGN, USB pair, TS, 5V_SW and others), 19 vias in pads, power tracks necked to 0.2 mm in many places.
+  The board is too dense for single-sided parts on 50 x 50 mm: engineer decision open (THT connector bodies on the back,
+  smaller buttons, fewer connectors or holes, or a bigger board).
 
 ## Open before ordering (updated 2026-11-01)
 The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).
