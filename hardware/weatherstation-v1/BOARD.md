@@ -132,6 +132,10 @@ the CN3791/TP4056 or the AP2112K are superseded.
 - BOM only: `python3 hardware/calc/bom_check.py hardware/weatherstation-v1 [--stock] [--qty 5] [--strict]` (`--stock` needs network).
 - Power/charger/energy: `python3 hardware/calc/power_budget.py hardware/weatherstation-v1` (`--selftest` for the formulas).
 - Stock and price of one part: `python3 hardware/tools/jlcparts.py C123456` or `-s "keyword" -n 20`.
+- Schematic (after `source scripts/kicad-env.sh`): generator `uv run --package weatherstation-hardware python hardware/gen/weatherstation_v1.py hardware/weatherstation-v1`;
+  review loop `scripts/schematic-review.sh` (ERC, geometry, PNGs in `hardware/out/review/`); pin positions for hand routes
+  `uv run --package weatherstation-hardware python hardware/gen/pins.py <Sheet> [ref|net ...]`.
+- Second board (outdoor SHT45): `uv run --package weatherstation-hardware python hardware/gen/sht45_board.py` (`hardware/sht45-board/`).
 - Reference pipeline (schematic generator, placement, KRT routing, fab package) from desk_notifier: `hardware/reference/desk_notifier/`
   (copy and adapt, see `hardware/PLAN.md`; the board-neutral skills assume that layout).
 
