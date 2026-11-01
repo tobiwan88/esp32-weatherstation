@@ -8,7 +8,8 @@ Exit checks:
 - [ ] every requirement has a number, a source or a stated assumption, and a test or check that proves it
 - [ ] power, temperature range, sensor set, enclosure, outdoor use and the fab limits (4 layers, at most 50 x 50 mm) are written down
 - [ ] the user has accepted the list
-Status: document exists. Not yet accepted in this gate. Decision for the user: accept REQUIREMENTS.md as it stands.
+Status: rewritten as v0.4 on 2026-11-01 for the BQ25798 / LFP / TPS63802 design. Not yet accepted. Decision for the user:
+accept REQUIREMENTS.md v0.4 (open item: CE state in deep sleep, `charge-policy.md`).
 
 ## Gate 2: BOM research and acceptance
 Source: `weatherstation-v1/bom.csv` (generated from `hardware/gen/weatherstation_v1.py`), `bom_check.py`, `hardware/tools/jlcparts.py`, datasheets in `weatherstation-v1/datasheets/` (PDFs git-ignored, sources in `datasheets/SOURCES.md`).
