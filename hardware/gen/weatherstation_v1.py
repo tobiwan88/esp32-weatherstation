@@ -64,8 +64,8 @@ PARTS = {
     "L1": ("Device:L", "1uH (TDK VLS252010HBX-1R0M-1: Isat 3.22 A, Itemp 2.55 A, 65 mohm max)", "weatherstation:L_TDK_VLS252010", "C88211", "Charger"),
     # Cell overcurrent backup: PTC hold 3 A, trip 5 A, 8 V. Backup to the HY2112 overcurrent cut.
     "F1": ("Device:Fuse", "PTC 3 A hold (SMD1812P300TF)", "Fuse:Fuse_1812_4532Metric", "C21004", "Battery"),
-    "C3": ("Device:C", "47n", C0603, "C113811", "Charger"),
-    "C4": ("Device:C", "47n", C0603, "C113811", "Charger"),
+    "C3": ("Device:C", "47n", C0603, "C1622", "Charger"),
+    "C4": ("Device:C", "47n", C0603, "C1622", "Charger"),
     "C5": ("Device:C", "4.7u", C0603, "C19666", "Charger"),
     "C6": ("Device:C", "0.1u", C0603, "C14663", "Charger"),
     "C7": ("Device:C", "10u", C0805, "C15850", "Charger"),
@@ -82,13 +82,13 @@ PARTS = {
     "C18": ("Device:C", "10u", C0805, "C15850", "Charger"),
     "C19": ("Device:C", "10u", C0805, "C15850", "Charger"),
     "C20": ("Device:C", "10u", C0805, "C15850", "Charger"),
-    "C21": ("Device:C", "1n", C0603, "C53084481", "Charger"),
+    "C21": ("Device:C", "1n", C0603, "C1588", "Charger"),
     "R13": ("Device:R", "100", R0603, "C22775", "Charger"),
     "R14": ("Device:R", "3.0k (PROG: 1S, 1.5 MHz)", R0603, "C4211", "Charger"),
-    "R15": ("Device:R", "127k", R0603, "C22869", "Charger"),
+    "R15": ("Device:R", "120k (ILIM: REGN 5 V x 100/220 = 2.27 V -> 1.59 A clamp)", R0603, "C25808", "Charger"),
     "R16": ("Device:R", "100k", R0603, "C25803", "Charger"),
-    "R17": ("Device:R", "5.23k (candidate; figure 5.24k)", R0603, "C23068", "Charger"),
-    "R18": ("Device:R", "30.1k (candidate; figure 30.31k)", R0603, "C23000", "Charger"),
+    "R17": ("Device:R", "5.1k (TS top; thresholds about +0.9 C vs 5.24k/30.31k)", R0603, "C23186", "Charger"),
+    "R18": ("Device:R", "30k (TS bottom)", R0603, "C22984", "Charger"),
     "R19": ("Device:R", "2.2k", R0603, "C4190", "Charger"),
     "D2": ("Device:LED", "STAT red", "LED_SMD:LED_0603_1608Metric", "C2286", "Charger"),
     "R20": ("Device:R", "100k", R0603, "C25803", "Charger"),
@@ -112,7 +112,7 @@ PARTS = {
     "M61": ("Transistor_FET:AO3400A", "AO3400A charge FET (OC)", "Package_TO_SOT_SMD:SOT-23", "C20917", "Battery"),
     "R60": ("Device:R", "100 (HY2112 VDD)", R0603, "C22775", "Battery"),
     "C60": ("Device:C", "0.1u (HY2112 VDD)", C0603, "C14663", "Battery"),
-    "R61": ("Device:R", "2k (HY2112 CS)", R0603, "C177639", "Battery"),
+    "R61": ("Device:R", "2k (HY2112 CS)", R0603, "C22975", "Battery"),
     # --- MCU ---------------------------------------------------------------------------------
     "U1": ("RF_Module:ESP32-S3-WROOM-1", "ESP32-S3-WROOM-1-N8", "RF_Module:ESP32-S3-WROOM-1", "C2913198", "MCU"),
     "C30": ("Device:C", "22u", C0805, "C45783", "MCU"),
@@ -132,8 +132,8 @@ PARTS = {
     # board layout (build_footprints.py; PARTS-REVIEW B6).
     "U2": ("weatherstation:TPS63802DLA", "TPS63802DLA 3.3 V buck-boost", "weatherstation:TPS63802_DLA_VSON-HR-10_2x3mm", "C2845237", "Rails"),
     "L4": ("Device:L", "0.47uH (Sunlord WPN201610HR47MT: Isat 4.0 A max, Irms 2.7 A)", "weatherstation:L_Sunlord_WPN201610H", "C97009", "Rails"),
-    "R52": ("Device:R", "511k 1% (FB top: 0.5 V x (1 + 511k/91k) = 3.31 V)", R0603, "C227946", "Rails"),
-    "R53": ("Device:R", "91k 1% (FB bottom)", R0603, "C23265", "Rails"),
+    "R52": ("Device:R", "220k 1% (FB top: 0.5 V x (1 + 220k/39k) = 3.32 V)", R0603, "C22961", "Rails"),
+    "R53": ("Device:R", "39k 1% (FB bottom, datasheet max 100k)", R0603, "C23153", "Rails"),
     "C40": ("Device:C", "10u", C0603, "C19702", "Rails"),
     "C41": ("Device:C", "22u (TPS63802 output: 22 uF per table 10-1)", C0805, "C45783", "Rails"),
     "Q40": ("Transistor_FET:AO3401A", "AO3401A 3V3_SW switch", "Package_TO_SOT_SMD:SOT-23", "C15127", "Rails"),
@@ -146,10 +146,10 @@ PARTS = {
     # GAS_VCC 5 V boost for the ZE25-O3 (3.7-5.5 V; PARTS-REVIEW A5, decided 2026-11-01). TPS61023 (TI SLVSF14B): VIN 0.5-5.5 V
     # (start 1.8 V), true input/output disconnect and 0.1 uA in shutdown, so EN low = J8 unpowered. EN from GAS_EN (IO12),
     # R45 pulls EN low = off by default (reset, deep sleep without hold). Figure 8-1 circuit: 1 uH, 10 uF in, 2 x 22 uF out.
-    # FB: VREF 0.595 V x (1 + 511k/68k) = 5.07 V (580-610 mV: 4.94-5.19 V, OVP 5.5 V min). Values reuse BOM lines.
+    # FB: VREF 0.595 V x (1 + 510k/68k) = 5.06 V (580-610 mV: 4.93-5.18 V, OVP 5.5 V min). Values reuse BOM lines.
     "U7": ("weatherstation:TPS61023DRL", "TPS61023DRLR 5 V boost", "Package_TO_SOT_SMD:SOT-563", "C919459", "Rails"),
     "L5": ("Device:L", "1uH (VLS252010HBX-1R0M-1, same as L1)", "weatherstation:L_TDK_VLS252010", "C88211", "Rails"),
-    "R43": ("Device:R", "511k 1% (boost FB top)", R0603, "C227946", "Rails"),
+    "R43": ("Device:R", "510k 1% (boost FB top: 0.595 V x (1 + 510k/68k) = 5.06 V)", R0603, "C23192", "Rails"),
     "R44": ("Device:R", "68k 1% (boost FB bottom)", R0603, "C23231", "Rails"),
     "R45": ("Device:R", "100k (EN pull-down: boost off by default)", R0603, "C25803", "Rails"),
     "C44": ("Device:C", "10u (boost input)", C0603, "C19702", "Rails"),
@@ -769,7 +769,10 @@ JLC_CLASS = {"C165948": "Extended", "C7519": "Extended", "C23186": "Basic", "C15
              "C21004": "Extended",
              "C2845237": "Extended", "C151250": "Extended", "C963746": "Extended", "C97009": "Extended", "C227946": "Extended", "C23265": "Extended",
              "C168764": "Extended", "C20917": "Basic", "C177639": "Extended",
-             "C919459": "Extended", "C23231": "Basic"}  # TPS61023DRLR 44.7k stock, 68k (2026-11-01)
+             "C919459": "Extended", "C23231": "Basic",
+             # Basic swaps 2026-11-01
+             "C1622": "Basic", "C1588": "Basic", "C25808": "Basic", "C22984": "Basic", "C22975": "Basic",
+             "C22961": "Basic", "C23153": "Basic", "C23192": "Basic"}  # TPS61023DRLR 44.7k stock, 68k (2026-11-01)
 HAND_SOLDER = {"J5", "J6", "J7", "J8"}  # JST PH and pin header: hand-soldered, not in the assembly BOM
 
 

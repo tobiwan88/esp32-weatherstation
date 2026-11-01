@@ -32,7 +32,7 @@ BLOCKS = {
              "C13": (106, 22, 0), "C14": (111, 22, 0), "C15": (116, 22, 0), "C16": (121, 22, 0),
              "C17": (126, 22, 0), "C18": (131, 22, 0),
              "R13": (106, 42, 0), "C19": (114, 44, 0), "C20": (120, 44, 0), "C21": (130, 44, 0)}),
-        ("Programming, thermal and status", "PROG 3.0k = 1S, 1.5 MHz (table 7-1). ILIM 127k/100k = 1.5 A. TS 5.23k/30.1k + NTC (Battery sheet). CE pulled to +3V3 = charge off until firmware writes VREG. STAT LED and INT; QON open (internal pull-up). Charger I2C (IO4/IO5) pull-ups R54/R55 to +3V3",
+        ("Programming, thermal and status", "PROG 3.0k = 1S, 1.5 MHz (table 7-1). ILIM 120k/100k = 1.59 A. TS 5.1k/30k + NTC (Battery sheet). CE pulled to +3V3 = charge off until firmware writes VREG. STAT LED and INT; QON open (internal pull-up). Charger I2C (IO4/IO5) pull-ups R54/R55 to +3V3",
          (4, 66, 140, 28), {
              "R14": (12, 78, 0), "R15": (26, 78, 0), "R16": (26, 88, 0), "R17": (40, 78, 0), "R18": (40, 88, 0),
              "R19": (58, 76, 0), "D2": (58, 86, 90), "R20": (74, 78, 0), "R22": (102, 78, 180),
@@ -58,7 +58,7 @@ BLOCKS = {
              "J7": (110, 60, 0)}),
     ],
     "Rails": [
-        ("3.3 V buck-boost", "TPS63802DLA from SYS (VIN = EN = SYS, MODE = GND: power save). FB 511k / 91k: 0.5 V x (1 + 511/91) = 3.31 V. L4 0.47 uH; 10 uF in, 22 uF out",
+        ("3.3 V buck-boost", "TPS63802DLA from SYS (VIN = EN = SYS, MODE = GND: power save). FB 220k / 39k: 0.5 V x (1 + 220/39) = 3.32 V. L4 0.47 uH; 10 uF in, 22 uF out",
          (4, 10, 90, 40), {
              "U2": (30, 26, 0), "L4": (42, 25, 0), "C40": (14, 26, 0), "R52": (50, 30, 0), "R53": (50, 38, 0), "C41": (58, 26, 0),
              "TP1": (72, 30, 0), "TP2": (78, 30, 0), "#FLG10": (86, 16, 0)}),
@@ -66,7 +66,7 @@ BLOCKS = {
          (4, 56, 62, 36), {
              "Q40": (30, 71, 0), "R40": (22, 66, 0), "Q41": (21, 81, 0), "R41": (12, 81, 90), "R42": (16, 88, 0),
              "C42": (44, 68, 0), "C43": (49, 68, 0)}),
-        ("GAS_VCC 5 V boost", "TPS61023: SYS -> 5.07 V for the ZE25-O3. EN = GAS_EN (IO12); R45 = off by default; off = output disconnected, 0.1 uA. FB 0.595 V x (1 + 511k/68k)",
+        ("GAS_VCC 5 V boost", "TPS61023: SYS -> 5.06 V for the ZE25-O3. EN = GAS_EN (IO12); R45 = off by default; off = output disconnected, 0.1 uA. FB 0.595 V x (1 + 510k/68k)",
          (72, 56, 56, 36), {
              "C44": (76, 76, 0), "L5": (92, 66, 90), "U7": (92, 74, 0), "R45": (82, 84, 0),
              "R43": (108, 76, 0), "R44": (108, 85, 0), "C45": (116, 77, 0), "C46": (121, 77, 0)}),

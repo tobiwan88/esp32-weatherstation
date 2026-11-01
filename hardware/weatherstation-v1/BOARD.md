@@ -25,10 +25,11 @@ Status: schematic v1 generated (`hardware/gen/weatherstation_v1.py`, ERC 0 error
 - **Cost basis:** the parts cost is per board. The Extended fee is per unique part per order, so it is paid once and is shared by
   all boards in the order. Recommendation: cost the order for **5 boards** (the fee is then spread over five) and use 1 board only
   for a prototype.
-  - Parts per board (JLCPCB unit price from jlcparts.py, no volume break): **USD 13.24**.
-  - Extended fee: 23 unique Extended parts x USD 3.07 = **USD 70.61 per order**.
-  - 1 board: 13.24 + 70.61 = **USD 83.85** (plus PCB and assembly).
-  - 5 boards: 5 x 13.24 + 70.61 = **USD 136.81**, i.e. USD 27.36 per board (plus PCB and assembly).
+  - Parts per board (JLCPCB unit price from jlcparts.py, no volume break, bom.csv 2026-11-01): **USD 13.76**.
+  - Extended fee: 15 unique Extended parts x USD 3.07 = **USD 46.05 per order** (8 passives moved to Basic on 2026-11-01:
+    C3/C4, C21, R15, R17, R18, R43, R52, R53, R61; no Basic power inductor or NTC exists, so L1/L4/L5 and TH1 stay Extended).
+  - 1 board: 13.76 + 46.05 = **USD 59.81** (plus PCB and assembly).
+  - 5 boards: 5 x 13.76 + 46.05 = **USD 114.85**, i.e. USD 22.97 per board (plus PCB and assembly).
   - Not in these numbers: PCB fabrication (4-layer, 50 x 50 mm), assembly labour, hand-soldered parts (J5-J8, J7, test points),
   the battery holder, cells, panel, enclosure, sensors. Get the JLCPCB quote for 5 and 1 boards before ordering.
 - Charger cold rule with the 26650: the chip suspends below about 0.5 C (matches the cell's 0 C), and reduces charge from
@@ -42,7 +43,7 @@ the CN3791/TP4056 or the AP2112K are superseded.
 ### Changes made (schematic regenerated, ERC: 2 footprint warnings only)
 - **3.3 V: AP2112K replaced by TPS63802DLA (C2845237) buck-boost.** The LDO needs about 3.55 V at its input (3.3 V + 250 mV
   dropout at 600 mA); battery-only SYS follows the cell (LFP 3.2 V nominal, sodium 3.0 V), so the old rail dropped out near 3.5 V.
-  TPS63802: input 1.3-5.5 V (1.8 V to start), 2 A, 11 uA Iq, output 3.3 V from R52 511k / R53 91k (0.5 V x (1 + 511/91) = 3.31 V),
+  TPS63802: input 1.3-5.5 V (1.8 V to start), 2 A, 11 uA Iq, output 3.3 V from R52 220k / R53 39k (0.5 V x (1 + 220/39) = 3.32 V; Basic parts, datasheet table 10-5 uses 511k/91k),
   L4 0.47 uH WPN201610HR47MT (2.7 A, C97009), C41 22 uF output (table 10-1), C40 10 uF input, MODE low (power save).
   Symbol: project library `hardware/gen/lib/weatherstation.kicad_sym`, written by `hardware/gen/build_symbols.py` from the
   datasheet pin table (VIN 10, EN 1, MODE 2, AGND 3, GND 8, VOUT 6, L1 9, L2 7, FB 4, PG 5). EN is tied to SYS (always on).
@@ -60,10 +61,10 @@ the CN3791/TP4056 or the AP2112K are superseded.
   104 % of VREG = 3.80 V at VREG 3.65 V, which is above the cell's 3.75 V limit: HY2112 is the backstop, not the chip.
 - **Temperature: NTC TH1 on the board, next to the battery connector J6.** TH1 = NCP18XH103F03RB (Murata 10k, B 3434 K,
   C13564, Extended, about 142k in stock). It sits on the charger sheet at the same column as J6, so both are placed together
-  and both are hand-soldered or reflow-soldered as the BOM says. TS divider R17 5.23k / R18 30.1k, NTC TS-to-BAT- (BAT- is the
+  and both are hand-soldered or reflow-soldered as the BOM says. TS divider R17 5.1k / R18 30k (Basic; was 5.23k / 30.1k), NTC TS-to-BAT- (BAT- is the
   cell minus, so the NTC has no current through the pack path).
-  Verified against the BQ25798 JEITA table (section 6.5, 103AT rows): computed TS ratio with B 3434 = 73.7 % at 0 C (VT1 73.3 %),
-  68.6 % at 10 C (VT2 68.4 %), 44.4 % at 45 C (VT3 falling 44.8 %), 34.2 % at 60 C (VT5 34.2 %). A B 3950 NTC would move the cold
+  Verified against the BQ25798 JEITA table (section 6.5, 103AT rows): with 5.1k/30k and B 3434 the TS ratio crosses VT1 73.3 % at 1.9 C,
+  VT2 68.4 % at 11.2 C, VT3 44.8 % at 45.3 C, VT5 34.2 % at 60.8 C (5.23k/30.1k: 1.0 / 10.3 / 44.4 / 59.9 C). A B 3950 NTC would move the cold
   cut-off to about +3 C, so the B value is part of the design: keep 3380-3455 K.
   Limit: TH1 senses the board next to the cell, not the cell. Keep the holder thermally close to TH1 (same board area, not
   under the charger or the buck-boost) and measure the offset with the samples.
@@ -101,10 +102,10 @@ the CN3791/TP4056 or the AP2112K are superseded.
   value is dropped); ICHG 1.5 A (was 2 A, see the review); VSYSMIN 4.0 V. Cell values: `cells.md`.
   PROG 3.0 kohm sets 1S and 1.5 MHz. CE is held high by R20 to +3V3 (charge disabled) until firmware releases it.
 - Cold: the chip suspends charging below about 0 C (default; T1 is not a register). Between 0 and 10 C it charges at 20 %
-  (JEITA_ISETC default). TS network 5.23k / 30.1k / 10k NTC (candidate values, E96 of the datasheet 5.24k / 30.31k).
+  (JEITA_ISETC default). TS network 5.1k / 30k / 10k NTC (Basic parts; datasheet 5.24k / 30.31k). With B 3434 the thresholds move about +0.9 C: cold 1.9 C, cool 11.2 C, warm 45.3 C, hot 60.8 C (5.23k/30.1k gave 1.0 / 10.3 / 44.4 / 59.9 C); cold shifts to the safe side.
 - 3.3 V: TPS63802 buck-boost from SYS (2026-11-01; the AP2112K LDO was dropped, see the review). 3V3_SW: AO3401A switch (Q40) with 2N7002 enable.
 - Gas (ZE25-O3, 3.7-5.5 V; PARTS-REVIEW A5, decided 2026-11-01): J8 on GAS_VCC from a TPS61023 boost U7 (C919459) on SYS,
-  5.07 V (FB 511k/68k, VREF 0.595 V). EN = GAS_EN (IO12) with R45 100k pull-down: off by default; off = input and output
+  5.06 V (FB 510k/68k, VREF 0.595 V). EN = GAS_EN (IO12) with R45 100k pull-down: off by default; off = input and output
   disconnected, 0.1 uA. L5 1 uH (same part as L1), 10 uF in, 2 x 22 uF out (datasheet SLVSF14B figure 8-1).
   Firmware: drive GAS_TXD (IO17) low or set it to input while the boost is off (else the ESP32 back-powers the module RX).
 - I2C: two buses (PARTS-REVIEW A4, decided 2026-11-01). CHG_SDA/CHG_SCL (IO4/IO5): BQ25798 only, R54/R55 10k to +3V3, readable

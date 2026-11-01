@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "eeschema")
 	(generator_version "9.0")
-	(uuid "89f6518a-ba28-4ea4-9553-8ba7f123c3ce")
+	(uuid "d9726159-064a-4999-8c3e-179c0cc2bbd3")
 	(paper "A3")
 	(title_block
 		(title "weatherstation v1")
@@ -1966,7 +1966,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "599583d5-2500-4cf1-9acf-509b9cf834e9")
+		(uuid "f992ee54-2ce7-4f2d-ba88-d15908b80e65")
 		(property "Reference" "U3"
 			(at 109.22 118.11 0.0000)
 			(effects
@@ -2004,91 +2004,91 @@
 			)
 		)
 		(pin "1"
-			(uuid "a96a21b4-4ebc-476b-b9c6-0b619cc7eb91")
+			(uuid "a94df6ec-c0c6-42de-bcb3-bbab44c923e3")
 		)
 		(pin "2"
-			(uuid "4f64158c-ad46-4dfa-a5a2-1aed02b419e1")
+			(uuid "23a184e5-d2ad-4781-bc38-7971a5cc5eda")
 		)
 		(pin "3"
-			(uuid "c661ac1a-3ade-4c44-a918-bd75482971cb")
+			(uuid "59731f51-1a89-4531-9221-ba71067c2b23")
 		)
 		(pin "4"
-			(uuid "dc1b8510-9b0c-4d84-9bb5-3a83add4d842")
+			(uuid "f6a67887-1e26-4a8c-8338-e7a5f906fad3")
 		)
 		(pin "5"
-			(uuid "5324b1fe-fd08-4347-8b2d-fda76574cd1a")
+			(uuid "b73fdebb-aafb-4477-85c4-417fd0261f9d")
 		)
 		(pin "6"
-			(uuid "956f3a21-10df-4d68-b884-70b6ac188691")
+			(uuid "8447e6da-17b4-409b-a7c6-f4031d8e3a82")
 		)
 		(pin "7"
-			(uuid "53a4e441-191c-4567-8217-afba7cc21c06")
+			(uuid "835ee197-d18b-4b30-a85b-66b285ca5259")
 		)
 		(pin "8"
-			(uuid "2cec90c1-4348-4071-b1f8-eacd1987885d")
+			(uuid "667a3407-6f3e-48c9-8236-ebb1f7d0f077")
 		)
 		(pin "9"
-			(uuid "2f000bf2-9020-4bb7-b31b-be7830a301f6")
+			(uuid "dff137a5-f82b-45f8-8077-8210d1580af0")
 		)
 		(pin "10"
-			(uuid "fee47eca-2da2-4224-83f6-a4065d2b5e04")
+			(uuid "ac630e1a-b735-4cd2-af4f-c6b71de7fc10")
 		)
 		(pin "11"
-			(uuid "565ecd45-a3a9-46e5-9037-f3de13c357d5")
+			(uuid "4924dd0b-6487-4c15-986e-b5d5dd2c092c")
 		)
 		(pin "12"
-			(uuid "d7cccd32-05be-4536-a60c-d3036f5f3a32")
+			(uuid "085cea59-87f2-4c17-8882-dc7014f25488")
 		)
 		(pin "13"
-			(uuid "e0174441-1d3a-4f69-bc80-7fdc4b57a94f")
+			(uuid "1252994e-a188-4790-b20a-518b8e4be490")
 		)
 		(pin "14"
-			(uuid "0c7900e3-8895-4098-b1aa-53bf3d093593")
+			(uuid "d3cdccf2-a8f6-48f6-ae7e-ce37323fe696")
 		)
 		(pin "15"
-			(uuid "7a6bcf22-3df9-4a91-98c2-953a1b3da6ab")
+			(uuid "bf5e35a0-0b91-4c62-bf19-8332f7c8a4d6")
 		)
 		(pin "16"
-			(uuid "ef07c6c6-6aed-42a4-9ab5-e8f79b5d90db")
+			(uuid "577b0e32-35a9-4adf-a4f4-3f2d8eb4dc28")
 		)
 		(pin "17"
-			(uuid "71d4262a-9c85-49b7-8162-1a5895d3f53c")
+			(uuid "d40ef0e6-6416-4051-a751-acdeab34e68e")
 		)
 		(pin "18"
-			(uuid "bf2d8a8e-e726-4d43-bd05-a32887b51a1e")
+			(uuid "5ddb329c-76d5-439b-a607-133fc09b0d0b")
 		)
 		(pin "19"
-			(uuid "e5fcee84-45fe-4de0-9233-a5d54e2aad01")
+			(uuid "8e9a2a5f-69f1-4190-9b8b-2a528bee490a")
 		)
 		(pin "20"
-			(uuid "a7c4fb80-86c6-45a6-ac89-937880fab63d")
+			(uuid "77324f9f-0eb5-455f-9009-34d3dd43211f")
 		)
 		(pin "21"
-			(uuid "b65792bb-3103-4868-a2db-748aee2cecd7")
+			(uuid "a8bc2022-a506-4363-9bb2-877e2f16191f")
 		)
 		(pin "22"
-			(uuid "f42e722a-98a3-40ae-9c1a-6fe275c8633b")
+			(uuid "52dcebe7-c45e-4e1b-b3c3-05d47e0f1e67")
 		)
 		(pin "23"
-			(uuid "94568471-1ab8-4c2b-a1ad-efae6ece3313")
+			(uuid "0f5160b0-4300-41ba-bb25-0d0a1696fc8a")
 		)
 		(pin "24"
-			(uuid "29a6a48b-0224-4bc0-afd9-16081d1a3f62")
+			(uuid "827ac2b6-2bc4-4134-a564-d06ee2999cb8")
 		)
 		(pin "25"
-			(uuid "2c45363a-baec-4984-a1d5-27257ce155ed")
+			(uuid "b5e6ba72-4552-40c7-9a3d-eba67c7a9e11")
 		)
 		(pin "26"
-			(uuid "56a6ba6c-f007-41a3-969e-7b1eab133ba2")
+			(uuid "ddddab4f-e671-43e1-9aa8-6b1ea9c66427")
 		)
 		(pin "27"
-			(uuid "70d6c9a8-0ea5-4e7d-a7c8-c06d548e2355")
+			(uuid "2d09ac0f-27fe-4a33-bcf3-8f84d0662af1")
 		)
 		(pin "28"
-			(uuid "5969a023-f438-4dd6-817e-19c2e7babc85")
+			(uuid "cec23b67-236a-4d91-b011-b9a16190f9ed")
 		)
 		(pin "29"
-			(uuid "6f68b681-6715-4002-8ebe-37befaad6c17")
+			(uuid "6c0c8624-dbb4-4830-a70a-7f4776d53a7a")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2108,7 +2108,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "9d646b56-6143-462a-acb7-4d49226102a7")
+		(uuid "d595bee8-51a2-4d5a-9b83-a20f46573834")
 		(property "Reference" "#FLG3"
 			(at 223.52 37.465 0.0000)
 			(effects
@@ -2128,7 +2128,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "280a79b4-4e3a-4070-b1e4-2a7fd9591564")
+			(uuid "6834eae0-8a20-4fbf-990e-b3eb272f74ae")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2148,7 +2148,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "ea670746-ccfb-4a60-953a-bcec871b944e")
+		(uuid "c318acd6-69ef-44c7-9a4b-f9fefa7cfed6")
 		(property "Reference" "L1"
 			(at 160.02 68.46 270)
 			(effects
@@ -2184,10 +2184,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "b234c876-cf06-4d95-8786-d23e204e9cbd")
+			(uuid "59ece107-f86b-4b37-a8ae-eeb87c6dd749")
 		)
 		(pin "2"
-			(uuid "fb4e560d-36c6-4605-9763-833e102db0fc")
+			(uuid "9fb1287e-784e-413b-a1a9-4f88b0bf0d28")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2207,7 +2207,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "d35a6469-019b-4666-a25b-4c70dbe2934b")
+		(uuid "2468712e-00e6-4069-a36f-57210cb51ddc")
 		(property "Reference" "C3"
 			(at 152.4 58.3 270)
 			(effects
@@ -2233,7 +2233,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C113811"
+		(property "LCSC" "C1622"
 			(at 154.94 68.5799 0)
 			(effects
 				(font
@@ -2243,10 +2243,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "104f7c29-9cdd-4372-8f88-5fef83780cd6")
+			(uuid "abe32a8d-68e5-4295-91ab-63ed0f262e9d")
 		)
 		(pin "2"
-			(uuid "92e6cd01-5a6a-42f0-b5d5-ad1a70b1629b")
+			(uuid "6842e316-a9fc-4c56-befb-c3917ffe090f")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2266,7 +2266,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "00931637-8fb9-4fed-bb4b-bcf91b875a8a")
+		(uuid "5bec0c2e-5039-4d79-8bdf-95c49f7c76ae")
 		(property "Reference" "C4"
 			(at 152.4 87.22 270)
 			(effects
@@ -2292,7 +2292,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C113811"
+		(property "LCSC" "C1622"
 			(at 154.94 88.8999 0)
 			(effects
 				(font
@@ -2302,10 +2302,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "06e8dfd3-4a50-4e3f-b45b-b8a966360cdd")
+			(uuid "963c6540-a8d2-4feb-b73e-db0802e8d62e")
 		)
 		(pin "2"
-			(uuid "c3222807-e6fe-4696-b9bd-5831438e1834")
+			(uuid "8512c7d2-8922-4334-8004-9ab1ca9b0d16")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2325,7 +2325,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "09ec5dca-9abd-4c19-a265-539c5d066513")
+		(uuid "f77019e4-5b72-437f-b1a9-68b8d2b529c6")
 		(property "Reference" "C5"
 			(at 180.0 115.54 0)
 			(effects
@@ -2361,10 +2361,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "f8a1c124-23c7-47fa-b106-674594ae9ede")
+			(uuid "5493798d-246b-4dc0-9b13-3fbf1b5ed15e")
 		)
 		(pin "2"
-			(uuid "54db9011-e500-4e37-9937-a88da4c3240c")
+			(uuid "27955e50-9059-4436-b8d0-1c93ab36d44f")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2384,7 +2384,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "34f7c307-36f9-4585-a919-a4cef414a59f")
+		(uuid "a9f25463-cfcd-4492-a1f5-404bf4604d15")
 		(property "Reference" "C6"
 			(at 27.6 54.58 0)
 			(effects
@@ -2420,10 +2420,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "67ee04f7-a168-4e01-b3c4-917a1fba6570")
+			(uuid "e9e07943-7a9e-4eda-9d07-dc717f5f5f0b")
 		)
 		(pin "2"
-			(uuid "13ec8325-71b0-4bf7-9466-f6aa40baf72a")
+			(uuid "f87f4000-0842-4587-96fc-4d091bc28c31")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2443,7 +2443,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "959dec01-4253-42e5-ac92-b4e1ed1aba49")
+		(uuid "1e28d4a0-0ec1-40e7-807f-c4a2afcf56bf")
 		(property "Reference" "C7"
 			(at 40.3 54.58 0)
 			(effects
@@ -2479,10 +2479,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "db1e5275-4d08-4d2e-9fef-f42b3dd2e7d9")
+			(uuid "0af88c2d-2f1f-4f74-8bc5-e0a4ee02a81c")
 		)
 		(pin "2"
-			(uuid "2cfcbfd5-bd7b-48a9-95ba-f6e7c5ffb8d9")
+			(uuid "1245d39e-0850-4f72-a3e2-3c590f6dcde9")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2502,7 +2502,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "d073e5c7-d1b0-4823-9cf2-64341f8e284a")
+		(uuid "e868c2b2-e03f-470b-ade4-0064047e35e8")
 		(property "Reference" "C8"
 			(at 53.0 54.58 0)
 			(effects
@@ -2538,10 +2538,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "432e405a-3db4-4ad1-be97-74ac7017fff7")
+			(uuid "9e273020-327f-4e90-b7db-0f428cf52e3f")
 		)
 		(pin "2"
-			(uuid "eaad888d-4e41-4711-a7d4-3769c93c8612")
+			(uuid "11ad31c6-f3e0-4d6c-b2c6-d9de8814d48c")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2561,7 +2561,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "d8dae501-2567-476b-b667-d29240a73309")
+		(uuid "bb8a139f-906a-4429-a1bd-079dba07a12e")
 		(property "Reference" "C9"
 			(at 93.64 140.94 0)
 			(effects
@@ -2597,10 +2597,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "6d70b840-c890-4026-85e0-1a76fb93e900")
+			(uuid "5f8e1630-fd26-4f9a-9c94-b3a2de3a7acd")
 		)
 		(pin "2"
-			(uuid "1d2117c6-c250-4157-b3c6-6a1a8f0ae70b")
+			(uuid "af53ea1a-cf48-4254-b213-e003310d99da")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2620,7 +2620,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "3fb34d7f-7685-450a-af0a-49d6bf121519")
+		(uuid "2c0846b4-e377-46fc-b2fe-95d5a607a35d")
 		(property "Reference" "C10"
 			(at 108.88 140.94 0)
 			(effects
@@ -2656,10 +2656,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "5b7f022e-e1d6-4f66-b7ae-f97a7bb3175f")
+			(uuid "c76ff705-89fe-401b-ba88-c012a3fd3075")
 		)
 		(pin "2"
-			(uuid "3a8fbd25-b1b9-4622-8783-2cfe9522a88a")
+			(uuid "e0238422-9d72-4d41-b24c-3073c60d61aa")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2679,7 +2679,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "7bfca049-a609-4606-9b2a-2075be269edf")
+		(uuid "fbef74bb-ada2-4bbc-9f84-3aef1ff79d56")
 		(property "Reference" "C11"
 			(at 124.12 140.94 0)
 			(effects
@@ -2715,10 +2715,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "29eb5837-1e5a-4f9d-9fea-63f9b6110be9")
+			(uuid "5d1c80eb-a432-4dac-b88a-0e8641b1d878")
 		)
 		(pin "2"
-			(uuid "cc308bc3-be6a-49d7-a5b7-67f6736b2af1")
+			(uuid "52940a73-e577-47bf-b893-af54ea3a22ca")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2738,7 +2738,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "c9f7a71d-b7d9-4e3b-925e-43b2b69e24eb")
+		(uuid "0e564cf0-3bc2-4de3-a119-56bc1a542056")
 		(property "Reference" "C12"
 			(at 139.36 140.94 0)
 			(effects
@@ -2774,10 +2774,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "5c5cb2d6-36da-4ace-ade5-ed0f94650054")
+			(uuid "7b5dff34-4afe-4402-bd7d-3d7a0b41b664")
 		)
 		(pin "2"
-			(uuid "0ff5fa0b-0c82-4e94-a937-68518826d6f9")
+			(uuid "7f81f789-ea24-4f8f-a85b-5d250d3a24f6")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2797,7 +2797,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "b0538142-6838-4259-9782-e0675794e2be")
+		(uuid "2dad3100-7668-4abf-94b6-1cfbd87f2b8a")
 		(property "Reference" "C13"
 			(at 271.44 54.58 0)
 			(effects
@@ -2833,10 +2833,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "d185ea71-f8ab-4228-b069-02f73331f87e")
+			(uuid "fc243bb5-5c70-4406-b5fd-d65e87e2aebe")
 		)
 		(pin "2"
-			(uuid "974ba915-7ce5-4318-b416-758b15071d13")
+			(uuid "7530627c-9560-42b7-8375-3162feaaf60c")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2856,7 +2856,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "dd0fa233-34ad-462b-8940-1f52dd27c393")
+		(uuid "ca82cb43-0b7f-4629-987d-9706184635ef")
 		(property "Reference" "C14"
 			(at 284.14 54.58 0)
 			(effects
@@ -2892,10 +2892,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "a34c5931-0a2e-42f2-8aa9-d083922670a4")
+			(uuid "c1218726-9b60-4cd4-b468-9975d8bae96f")
 		)
 		(pin "2"
-			(uuid "7f26d383-fb8c-41c3-9802-95971a16ba31")
+			(uuid "f711622d-8c71-4377-8b96-4a9fdd3ac3e1")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2915,7 +2915,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "c6c746d5-df53-451c-b820-5b975dd9dc6b")
+		(uuid "c0621818-2cc5-4ad0-8b4a-91a9b1361f35")
 		(property "Reference" "C15"
 			(at 296.84 54.58 0)
 			(effects
@@ -2951,10 +2951,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "5edbf7c8-8431-4c97-9c6a-6bbb78c76a3b")
+			(uuid "7a1f8259-274d-4899-b525-82d49323ccaf")
 		)
 		(pin "2"
-			(uuid "b5db2be6-a25b-44de-9f4c-c4489efcdc69")
+			(uuid "097a6be3-c862-4ad3-b338-e264159548f8")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -2974,7 +2974,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "3c73a90e-4a36-42e8-b070-4d7e4b21e19c")
+		(uuid "026e8177-5c19-4c68-adb2-65576406460d")
 		(property "Reference" "C16"
 			(at 309.54 54.58 0)
 			(effects
@@ -3010,10 +3010,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "84c8b4d9-c78d-4daa-8bdc-c2c604a5ef75")
+			(uuid "267dc582-96c6-46c1-acee-4507b9f16bcf")
 		)
 		(pin "2"
-			(uuid "34555675-1557-4ae1-ba28-f6ad1b313295")
+			(uuid "7b632e2f-38e9-43ac-97c0-0bc15a3fb761")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3033,7 +3033,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "c0374de8-74db-4655-9cac-a55c2aaab21f")
+		(uuid "27d6af8c-407e-46e2-b1a0-1e5344c2a703")
 		(property "Reference" "C17"
 			(at 322.24 54.58 0)
 			(effects
@@ -3069,10 +3069,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "e242fb50-e136-4ecd-94aa-37d423720354")
+			(uuid "b4aac881-b85b-497b-a491-ca1439fbba3d")
 		)
 		(pin "2"
-			(uuid "6474e799-26cb-4673-9078-49ef997973d3")
+			(uuid "8ae3f2b5-7441-4a29-ad3b-aa8a29143ded")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3092,7 +3092,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "78d58745-6334-4577-84d6-baee36bed7fa")
+		(uuid "bc95d17b-b4db-48d2-a19b-a4041c9aafa7")
 		(property "Reference" "C18"
 			(at 334.94 54.58 0)
 			(effects
@@ -3128,10 +3128,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "27c97fee-8da3-4665-b804-8241890b8245")
+			(uuid "a14b3861-4e2e-480e-9c05-bd02bf22d30a")
 		)
 		(pin "2"
-			(uuid "1f0ed48c-d799-4662-a3b7-f4f9efb9ecbb")
+			(uuid "bba5f32c-b75d-4438-955d-2ed9fc5f5495")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3151,7 +3151,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "6590c8e2-b8a5-45f1-9db2-14ad54c49b41")
+		(uuid "03a09dd5-af64-4261-b0fe-20ed60eb8db5")
 		(property "Reference" "C19"
 			(at 291.76 110.46 0)
 			(effects
@@ -3187,10 +3187,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "a99560ea-e492-453f-ae8c-c27045cdbbac")
+			(uuid "554929dd-c544-40e2-b9d2-1c2e90a492e9")
 		)
 		(pin "2"
-			(uuid "3dcedd41-0748-4c57-9d93-cb508763b82d")
+			(uuid "ca9c7c79-7d82-474c-afdf-887a10b69a47")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3210,7 +3210,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "69a93d6e-7a34-4068-8a7b-3918a7bfeb8b")
+		(uuid "fea3d33d-a232-4983-bdee-2fde666e9892")
 		(property "Reference" "C20"
 			(at 307.0 110.46 0)
 			(effects
@@ -3246,10 +3246,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "2983eb2b-554f-4828-a0af-85d3bec44fad")
+			(uuid "c8dbd35c-f1fe-42fe-9ae1-dbe464dfea25")
 		)
 		(pin "2"
-			(uuid "0732dd31-71b4-4fb9-912b-0a33611ca92e")
+			(uuid "6abfc04e-0e4e-4f99-869d-f44a970090c9")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3269,7 +3269,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "c83ab814-2faa-4219-9f38-9b4b3a9ac1e7")
+		(uuid "98365795-2690-49c9-b629-af08e9559f76")
 		(property "Reference" "C21"
 			(at 332.4 110.46 0)
 			(effects
@@ -3295,7 +3295,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C53084481"
+		(property "LCSC" "C1588"
 			(at 332.74 116.8399 0)
 			(effects
 				(font
@@ -3305,10 +3305,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "e8aa68d4-623f-4d0a-b0fb-e9a760f198ac")
+			(uuid "3a7e461c-96e9-486b-90c9-192e00a4fc20")
 		)
 		(pin "2"
-			(uuid "2bd18c47-13e7-4511-8af1-affa7d7c2320")
+			(uuid "34a68c40-063c-41eb-9ef6-575379a125ef")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3328,7 +3328,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "3b4dfab0-59ee-4c45-84de-11f227d605af")
+		(uuid "5b72cca0-10c0-4425-aa53-2af08980e001")
 		(property "Reference" "R13"
 			(at 271.44 105.38 0)
 			(effects
@@ -3364,10 +3364,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "935b9f42-d55b-41ff-8dc7-71ddd0e5be00")
+			(uuid "4fd39e57-1f67-4171-8329-2090975f92ee")
 		)
 		(pin "2"
-			(uuid "af148330-7ef2-43f2-8760-fd4ef967d09f")
+			(uuid "945e4d2f-7528-4d90-8917-b1e8d8b14be4")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3387,7 +3387,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "987982c0-60d7-4fb4-9a95-abb33fc316ac")
+		(uuid "d9166eba-f504-4bea-ac6e-5f45685cda93")
 		(property "Reference" "R14"
 			(at 32.68 196.82 0)
 			(effects
@@ -3423,10 +3423,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "3c3f3681-5b15-48d3-95ed-895da849e28e")
+			(uuid "b214d715-40d4-43a3-a805-65bbfe4ea6a3")
 		)
 		(pin "2"
-			(uuid "71c11b72-997e-45f2-84ce-16c6a91b07eb")
+			(uuid "bc325cb6-0b0c-49a8-8ed2-3ae229209b1f")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3446,7 +3446,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "5c3e9960-36b3-4327-a4ee-26455c494d3a")
+		(uuid "1c6347bf-999a-46ae-a272-43065b7c49a5")
 		(property "Reference" "R15"
 			(at 68.24 196.82 0)
 			(effects
@@ -3455,7 +3455,7 @@
 				) (justify left)
 			)
 		)
-		(property "Value" "127k"
+		(property "Value" "120k"
 			(at 68.24 199.42 0)
 			(effects
 				(font
@@ -3472,7 +3472,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C22869"
+		(property "LCSC" "C25808"
 			(at 68.58 203.1999 0)
 			(effects
 				(font
@@ -3482,10 +3482,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "0f672c0c-291f-4e7c-bd7b-399f0bee01d4")
+			(uuid "3bad9671-ade0-40f0-8c4d-6973ebdd1d10")
 		)
 		(pin "2"
-			(uuid "ef3e6d16-d35e-4904-b1c0-f4551e6ed9e3")
+			(uuid "b806bb5a-3b12-4966-8ad6-029cdb50420f")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3505,7 +3505,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "d852b6cc-70d0-4e00-8215-1a3bcd84dbc9")
+		(uuid "385eca4b-8cf4-4c16-a6bc-f8eed097f465")
 		(property "Reference" "R16"
 			(at 68.24 222.22 0)
 			(effects
@@ -3541,10 +3541,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "898fb721-e85f-4e8f-b18f-851c3c69a7e4")
+			(uuid "499b625f-fbb7-4b05-8ee5-87ee3b0fbf95")
 		)
 		(pin "2"
-			(uuid "e8c1f315-8d6c-46e0-bd80-fc7c72c407cb")
+			(uuid "aa7a9562-05f9-4002-a8e9-89ea029ca2a0")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3564,7 +3564,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "0e5b3946-6e49-4761-8bb0-b05cf2257dd8")
+		(uuid "fca00245-a64f-4ef7-a626-2b330c4ee0c5")
 		(property "Reference" "R17"
 			(at 103.8 196.82 0)
 			(effects
@@ -3573,7 +3573,7 @@
 				) (justify left)
 			)
 		)
-		(property "Value" "5.23k"
+		(property "Value" "5.1k"
 			(at 103.8 199.42 0)
 			(effects
 				(font
@@ -3590,7 +3590,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C23068"
+		(property "LCSC" "C23186"
 			(at 104.14 203.1999 0)
 			(effects
 				(font
@@ -3600,10 +3600,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "35430f6a-d325-40fe-830a-af53b2d4636d")
+			(uuid "0fd3d369-18e4-4aba-b509-b319a1dc88f2")
 		)
 		(pin "2"
-			(uuid "f60f42f1-e313-433a-97c7-e40c21afa10d")
+			(uuid "074c1f7d-93fd-4c64-9d49-72fcac107d46")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3623,7 +3623,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "be21184c-3960-4aa3-9049-0b59b5f75178")
+		(uuid "cf2592e2-7955-4cd1-af08-31802788e3ab")
 		(property "Reference" "R18"
 			(at 103.8 222.22 0)
 			(effects
@@ -3632,7 +3632,7 @@
 				) (justify left)
 			)
 		)
-		(property "Value" "30.1k"
+		(property "Value" "30k"
 			(at 103.8 224.82 0)
 			(effects
 				(font
@@ -3649,7 +3649,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C23000"
+		(property "LCSC" "C22984"
 			(at 104.14 228.5999 0)
 			(effects
 				(font
@@ -3659,10 +3659,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "0289d4ed-a650-46b9-b359-d30e80b3dc20")
+			(uuid "9e1845d5-0bc4-458e-a4c0-a37d878b79aa")
 		)
 		(pin "2"
-			(uuid "2b4a8055-c84b-48c3-adaa-0f700a3c42fc")
+			(uuid "cf0c068d-5a4b-4f9e-9568-8c322986e004")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3682,7 +3682,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "badf5247-2882-4f32-9231-8db38dd8b5cd")
+		(uuid "c62df609-69df-4e32-ba6e-186df5b3f25a")
 		(property "Reference" "R19"
 			(at 149.52 191.74 0)
 			(effects
@@ -3718,10 +3718,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "344ff8f4-c01f-4712-a281-28f650f32c7d")
+			(uuid "2442bd4d-74ff-41f7-aaaf-5021d3207ac9")
 		)
 		(pin "2"
-			(uuid "a7ac75f5-f0ed-4e1c-bbbf-92bdffd274b6")
+			(uuid "ebb2fd03-1a5d-4bc1-9deb-aee53d96fcde")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3741,7 +3741,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "e4932299-6fb2-464d-9214-540b6d132df5")
+		(uuid "2d1d7157-3507-4472-b492-20424383f2ca")
 		(property "Reference" "D2"
 			(at 149.52 217.14 270)
 			(effects
@@ -3777,10 +3777,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "933e8bc6-a161-4bd9-90f7-e1c88ced6438")
+			(uuid "dbffaa07-f889-4377-8e9d-50676b04ef56")
 		)
 		(pin "2"
-			(uuid "35c5824a-3bfe-442a-b06f-4c232b00cb31")
+			(uuid "a8da5201-1736-44e1-9f02-9e048919d90d")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3800,7 +3800,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "65b2fe78-66de-4e82-a52b-c49b294c92cb")
+		(uuid "35478ac6-84f9-4870-8e33-3d7bbca32680")
 		(property "Reference" "R20"
 			(at 190.16 196.82 0)
 			(effects
@@ -3836,10 +3836,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "103ecd7b-1efa-4792-88ba-1cb00ae1b464")
+			(uuid "9e96d339-22e4-42dc-a0bc-51de8716902c")
 		)
 		(pin "2"
-			(uuid "d305129a-3343-4975-8107-f7e6bc04a31b")
+			(uuid "e1d0a72e-bac9-482a-b0be-6556b43afcea")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3859,7 +3859,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "fdc9180c-200e-413c-a10b-113951056d32")
+		(uuid "b87890e8-05b7-4b3b-beee-067511cad53a")
 		(property "Reference" "R22"
 			(at 261.28 196.82 0)
 			(effects
@@ -3895,10 +3895,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "73991166-69fc-44db-ba4c-4946addcfe13")
+			(uuid "20478a79-a15f-4f41-b9de-24d111b6e7c9")
 		)
 		(pin "2"
-			(uuid "3f3cf23d-0f92-402b-99ea-352149b5f3b0")
+			(uuid "62a17480-5083-4d90-8ffe-d80c02043a73")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3918,7 +3918,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "b2d6b2a9-73e9-46ce-b48e-8521749eaffc")
+		(uuid "24108a6b-453d-4bbd-bae6-1e1708bb74ef")
 		(property "Reference" "R54"
 			(at 312.08 196.82 0)
 			(effects
@@ -3954,10 +3954,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "6f9ea432-83e3-4648-9601-adfe972a167d")
+			(uuid "7cce6b03-bafe-4cbc-8822-dde2d2db9bb6")
 		)
 		(pin "2"
-			(uuid "9ab194ef-1c0a-4386-8778-d2f4983cba94")
+			(uuid "e8d36e2c-0288-41b8-b9a4-9b7001dcc200")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -3977,7 +3977,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "b2b4ec13-d063-47ee-a063-c45947a917d8")
+		(uuid "b821b753-72f9-4746-b252-7947af55ed35")
 		(property "Reference" "R55"
 			(at 327.32 196.82 0)
 			(effects
@@ -4013,10 +4013,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "1053a1d6-3955-4121-88f3-1f8663d7c656")
+			(uuid "ff10eda1-b1ea-4448-a799-2c1e326abcdc")
 		)
 		(pin "2"
-			(uuid "890bac4f-94ba-4cb2-addf-6880dd82ec72")
+			(uuid "9595bca8-6339-4ba7-8a51-095c444d56ba")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4036,7 +4036,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "5397201c-9afe-4411-9ff6-0f85c46a543f")
+		(uuid "04effe3d-a21a-4dbc-8c3d-f3c0535e2848")
 		(property "Reference" "#PWR17"
 			(at 105.41 63.5 90)
 			(effects
@@ -4056,7 +4056,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "592810f1-1c80-45db-bed0-1f2ac8d58feb")
+			(uuid "5e209d9b-9457-4268-b87d-aad59b1acee5")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4076,7 +4076,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "85aab53e-9b98-4493-8995-3db2c4f832e1")
+		(uuid "1a0d191c-4991-419c-9bac-3243011e1055")
 		(property "Reference" "#PWR18"
 			(at 105.41 58.42 90)
 			(effects
@@ -4096,7 +4096,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "e55c28e7-47fe-4eae-8d96-dddb5b3179c4")
+			(uuid "5b20811e-0b66-4b79-a7c2-b064138418c7")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4116,7 +4116,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "25438d16-57aa-4e84-bdc3-f1d4d17aa242")
+		(uuid "317f54d8-2307-4174-ae12-167b3b2f96f3")
 		(property "Reference" "#PWR19"
 			(at 25.4 43.18 0.0000)
 			(effects
@@ -4136,7 +4136,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "514d3b26-79da-491f-9cbc-fa0aac729da6")
+			(uuid "b00867a7-896c-491e-a2e2-27cabba071e7")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4156,7 +4156,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "dbd0c13d-63f0-49d8-b466-ea2b3f35f79c")
+		(uuid "f998d087-b3ab-4008-bbdf-e9437bab9c61")
 		(property "Reference" "#PWR20"
 			(at 38.1 43.18 0.0000)
 			(effects
@@ -4176,7 +4176,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "13c4bbfa-74f3-4e5e-b975-70fe81905581")
+			(uuid "33213650-10f7-48d9-9a66-230b1adafea7")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4196,7 +4196,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "89233521-79a9-4832-b90d-bca2b83d64d3")
+		(uuid "e21a1a8c-8391-42b3-a064-87d8c7fd3c0e")
 		(property "Reference" "#PWR21"
 			(at 50.8 43.18 0.0000)
 			(effects
@@ -4216,7 +4216,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "226dfe4a-a1d5-4bff-90d5-1a59bcedc146")
+			(uuid "85fdc43b-6d58-46ca-a42b-595c43fa2a43")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4237,7 +4237,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "2943c7cb-c1dd-4ece-92c1-26d78595ffdc")
+		(uuid "1e830b12-70d4-4f5f-b342-f7bed1079f6f")
 		(property "Reference" "#PWR22"
 			(at 223.52 36.83 0.0000)
 			(effects
@@ -4257,7 +4257,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "b5e1eec2-b25a-4205-bc3a-a333e3c5bd85")
+			(uuid "593d70e2-f596-46c7-9c60-c2d0c6028946")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4277,7 +4277,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "773052dc-5c2d-4c2d-82f2-1dc84bcd9eda")
+		(uuid "c0a65a7a-20b8-40ef-b8f4-ca71b26bff1a")
 		(property "Reference" "#PWR23"
 			(at 128.27 93.98 270)
 			(effects
@@ -4297,7 +4297,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "de2c1692-4e55-43b7-87c9-ec1c2ffe232a")
+			(uuid "d84e4e67-5c6d-46dd-84d3-43223ada96ee")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4317,7 +4317,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "545a6d06-41fe-4f44-bd15-91b6f81bf633")
+		(uuid "5e925eb0-ed0b-445a-b54f-a6ee54a8b356")
 		(property "Reference" "#PWR24"
 			(at 177.8 104.14 0.0000)
 			(effects
@@ -4337,7 +4337,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "20266f5a-b198-490e-b262-5b18b46cca61")
+			(uuid "0c581c1b-b8da-41c8-9633-d30220efb692")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4357,7 +4357,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "d8dfb807-f71a-452c-8d5a-4cab04763556")
+		(uuid "8c701f6a-a3de-45b7-b218-28271245e153")
 		(property "Reference" "#PWR25"
 			(at 66.04 185.42 0.0000)
 			(effects
@@ -4377,7 +4377,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "5d60386e-1cc8-40c1-9b94-899ce8d2daad")
+			(uuid "e59fadd8-d7fa-43a0-8763-8de0bc431053")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4397,7 +4397,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "fdabc7fd-f502-4c95-87ca-1b31308a721a")
+		(uuid "4e5e3647-521f-4369-a99d-659ce20b89f6")
 		(property "Reference" "#PWR26"
 			(at 101.6 185.42 0.0000)
 			(effects
@@ -4417,7 +4417,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "3433f3d2-162b-4b0b-808c-c6e1fa24bf2f")
+			(uuid "d4453a22-1030-4a41-a7d0-529c44cf5c6b")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4437,7 +4437,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "d3265a59-277c-413c-8cb7-be44498b711f")
+		(uuid "4b27254d-abdf-4a0e-87eb-d3a71f683e1b")
 		(property "Reference" "#PWR27"
 			(at 147.32 180.34 0.0000)
 			(effects
@@ -4457,7 +4457,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "126e9574-0d85-4061-a83d-372fd4461f87")
+			(uuid "f69a3755-23d3-46c2-b64b-28fc4268fdcb")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4477,7 +4477,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "b1fad35e-f685-4712-9005-cfa2433928e9")
+		(uuid "5b84c49b-d9a5-47e6-a8a9-16b2e23269d0")
 		(property "Reference" "#PWR28"
 			(at 128.27 58.42 270)
 			(effects
@@ -4497,7 +4497,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "1353f78c-81db-4687-bc29-bbc74394a30f")
+			(uuid "4ec878d2-93ee-4b1b-80ca-1d20a4923bd4")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4517,7 +4517,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "a77dabbc-3529-4b39-b931-8a2a1073556a")
+		(uuid "477a1875-a03d-46f3-967a-d88610b28cff")
 		(property "Reference" "#PWR29"
 			(at 91.44 129.54 0.0000)
 			(effects
@@ -4537,7 +4537,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "714c0ef9-c8fd-49dc-b3a9-e6fcb43a8a76")
+			(uuid "c10c1ae8-4022-4e07-995e-f61695c0ff57")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4557,7 +4557,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "6d359c7a-ad77-4279-94f0-aa3d7dd75ded")
+		(uuid "2a6e00cb-7665-42e3-89aa-0a4faf2d9104")
 		(property "Reference" "#PWR30"
 			(at 106.68 129.54 0.0000)
 			(effects
@@ -4577,7 +4577,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "a2713fdc-afac-420c-9c93-c5cb89679bd8")
+			(uuid "c8a1b8ce-1d40-4176-8a9f-b3e62fb44c39")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4597,7 +4597,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "615c111e-280f-48b8-9076-a8d64a07c2ea")
+		(uuid "d142c940-eb82-4ec1-9c4b-b6d1d7d74484")
 		(property "Reference" "#PWR31"
 			(at 121.92 129.54 0.0000)
 			(effects
@@ -4617,7 +4617,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "7e61f4ab-faab-429d-8352-42dc04bb18b2")
+			(uuid "d4f99ad9-f96b-4857-8267-1179f4b9abd9")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4637,7 +4637,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "e541f64e-7261-44f0-b218-94ec2f209c67")
+		(uuid "7df85455-d533-4c25-a874-2023883c5d6b")
 		(property "Reference" "#PWR32"
 			(at 137.16 129.54 0.0000)
 			(effects
@@ -4657,7 +4657,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "7ece88ce-d98f-49b6-9ff8-c68bc63eda8a")
+			(uuid "4fd2578f-bbb4-4fec-973e-0f7124466a5f")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4677,7 +4677,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "b1d3460f-f814-434b-a4af-063a281b481d")
+		(uuid "c4ef1288-19e1-4d56-bbcd-601e4f575abe")
 		(property "Reference" "#PWR33"
 			(at 128.27 99.06 270)
 			(effects
@@ -4697,7 +4697,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "fc2b8831-c9b6-42e4-82a1-f63099f32f0a")
+			(uuid "83950444-afda-4268-ac5f-c849c166ba5c")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4717,7 +4717,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "a12e0da7-0d30-47a1-804e-95efc6baf83d")
+		(uuid "a6419ab5-3122-401b-9006-e2709335a2a0")
 		(property "Reference" "#PWR34"
 			(at 269.24 43.18 0.0000)
 			(effects
@@ -4737,7 +4737,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "1a9b9de7-5909-426c-b4c4-515e64b95678")
+			(uuid "30cd13f1-182a-4050-a281-41dde10d1824")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4757,7 +4757,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "474d50e0-d1aa-4fdf-badf-7f926edd7967")
+		(uuid "038b27c3-aea3-4397-a038-29eaabb49e74")
 		(property "Reference" "#PWR35"
 			(at 281.94 43.18 0.0000)
 			(effects
@@ -4777,7 +4777,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "7c32fca6-280c-4027-a79b-f571c52cd27f")
+			(uuid "852bc3d4-aefb-4b7c-8a02-5e106c91b2f7")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4797,7 +4797,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "87f27be7-cbb2-4b23-a210-6fcf368a79d5")
+		(uuid "f73d9050-abfd-43ce-987c-df5f3b068700")
 		(property "Reference" "#PWR36"
 			(at 294.64 43.18 0.0000)
 			(effects
@@ -4817,7 +4817,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "59ccf046-b004-4ea2-806c-88deed9f7d0d")
+			(uuid "38e0419e-f4a5-4918-b4e6-a70af7b9d255")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4837,7 +4837,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "80a6a2d3-9357-458f-a610-38486353c132")
+		(uuid "c4c733be-3860-41c2-af30-690ea9a3b488")
 		(property "Reference" "#PWR37"
 			(at 307.34 43.18 0.0000)
 			(effects
@@ -4857,7 +4857,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "8b09e62f-e208-4257-937a-12551ea8c632")
+			(uuid "2aeec943-6107-445d-aaf8-170af44ade81")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4877,7 +4877,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "06513ab5-09d8-40bf-a79a-3890c70f56ad")
+		(uuid "11638f6d-c6a6-41f4-a9b2-f9f54b4512ab")
 		(property "Reference" "#PWR38"
 			(at 320.04 43.18 0.0000)
 			(effects
@@ -4897,7 +4897,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "7ec11d15-f34f-4d95-8245-091d9e1facdd")
+			(uuid "16129986-ff97-4d56-a68d-058e9af3b9c7")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4917,7 +4917,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "26e50a9f-9c97-4e47-82b3-26fb8393066a")
+		(uuid "4db6d550-55ec-4fa7-9f4a-999b1e1efe87")
 		(property "Reference" "#PWR39"
 			(at 332.74 43.18 0.0000)
 			(effects
@@ -4937,7 +4937,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "81479371-cfec-45bf-a2e6-adfb3e90da3f")
+			(uuid "7dd06f3d-c811-4b7d-8726-322a190bc9c8")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4957,7 +4957,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "72fc326d-1fed-4ad1-871d-39f79cea50ee")
+		(uuid "a43837a7-5072-4b44-aaa5-b18a11ef2355")
 		(property "Reference" "#PWR40"
 			(at 128.27 104.14 270)
 			(effects
@@ -4977,7 +4977,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "786d5dd0-8a4e-481e-b2f2-257df82b9f9c")
+			(uuid "5c74bd24-d224-45e4-b71b-4a770994940b")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -4997,7 +4997,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "1538fba9-0c9e-47ee-9f57-8de8f1c067be")
+		(uuid "12cdcd6d-1b34-42d5-a47d-c2c68bf6800f")
 		(property "Reference" "#PWR41"
 			(at 269.24 93.98 0.0000)
 			(effects
@@ -5017,7 +5017,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "829b7936-4500-4d6f-9911-96bb97d3842b")
+			(uuid "33fe48b5-9631-4e17-a438-7afb845f8265")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5037,7 +5037,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "af7c5d7d-54c6-4794-950f-d8395ac26b02")
+		(uuid "ad2d810e-088d-4142-901c-62230b112bcb")
 		(property "Reference" "#PWR42"
 			(at 289.56 99.06 0.0000)
 			(effects
@@ -5057,7 +5057,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "f9a5d974-2299-4b8b-a64d-1cb35069605d")
+			(uuid "67c5f64e-e039-4f79-961e-296edc92282b")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5077,7 +5077,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "2c1c6b33-1117-43de-b3c0-7dd31e090f08")
+		(uuid "4110e398-808b-4c18-a868-2ddea91309dd")
 		(property "Reference" "#PWR43"
 			(at 304.8 99.06 0.0000)
 			(effects
@@ -5097,7 +5097,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "d6fdf6bc-336a-423c-b951-f8d4d05328db")
+			(uuid "d3139a35-3724-4c67-b728-baf7117580e4")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5117,7 +5117,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "d33f355d-4e6b-40fb-964b-caf58c9100af")
+		(uuid "b717506b-c8f5-4fc8-996b-75d290ab1e31")
 		(property "Reference" "#PWR44"
 			(at 187.96 185.42 0.0000)
 			(effects
@@ -5137,7 +5137,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "f23e46fa-e844-4f19-a936-158c61e5665e")
+			(uuid "51026325-42e2-4590-98e5-9b692dfb0167")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5157,7 +5157,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "58a36fe0-1829-43af-bd86-461e01ab753b")
+		(uuid "97d373ef-4f06-4c14-bd86-acaf1b4ce02d")
 		(property "Reference" "#PWR45"
 			(at 259.08 185.42 0.0000)
 			(effects
@@ -5177,7 +5177,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "1e83eac2-d02e-4e67-9174-f74d1540e8ac")
+			(uuid "a3d2b12d-a02a-486f-8a27-11167b175732")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5197,7 +5197,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "a99a3673-3f52-49bc-abe2-6e1f84424118")
+		(uuid "b9baf297-3433-466e-a521-680bc2315035")
 		(property "Reference" "#PWR46"
 			(at 309.88 185.42 0.0000)
 			(effects
@@ -5217,7 +5217,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "d463f097-a896-4b58-b9a7-1df7a6acb7ad")
+			(uuid "fc3350c7-12d5-44e9-838e-64db6a1b305e")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5237,7 +5237,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "8bf4c732-e3d2-4a85-90c5-60a0aa02a63a")
+		(uuid "23700ba3-6be4-448f-9b49-290e4eec21e6")
 		(property "Reference" "#PWR47"
 			(at 325.12 185.42 0.0000)
 			(effects
@@ -5257,7 +5257,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "d66e73ae-f806-4b68-b6fe-c3652d5b093b")
+			(uuid "67826c31-2c0b-4ce0-a836-987c6e60c74b")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5277,7 +5277,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "72ebb828-c80b-4a3f-afe7-d0b8f546d6e3")
+		(uuid "82016c65-736a-416a-b0c8-5363f7750189")
 		(property "Reference" "#PWR48"
 			(at 116.84 118.11 0.0000)
 			(effects
@@ -5297,7 +5297,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "48c0d4fb-7aa8-496b-b089-974f987345d7")
+			(uuid "8c6e3394-054b-44a1-9d7a-6cfe8b85ec11")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5317,7 +5317,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "b4b0d6dc-a0d9-411b-9b83-33c42bf4531d")
+		(uuid "97b5f0f3-fb8a-4d92-9c73-026fa99da92c")
 		(property "Reference" "#PWR49"
 			(at 177.8 119.38 0.0000)
 			(effects
@@ -5337,7 +5337,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "ecfb179f-5d3a-4c0e-8132-cee0247d5feb")
+			(uuid "c63a9d3a-bac4-4652-aa31-928d9ed3aaef")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5357,7 +5357,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "24a6c24c-7dc3-41f3-bcef-96762ae9f25e")
+		(uuid "66462c74-6a2e-41d8-998b-dda42db2e333")
 		(property "Reference" "#PWR50"
 			(at 25.4 58.42 0.0000)
 			(effects
@@ -5377,7 +5377,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "65083872-3681-40df-8c50-5ac38406d9e4")
+			(uuid "70c92a70-52ee-4d0e-a402-b8add897ad1b")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5397,7 +5397,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "a94b847e-1adf-45bc-98f7-c80dbbd22dc6")
+		(uuid "e25d990a-f1ab-4bca-902b-1db30461fdba")
 		(property "Reference" "#PWR51"
 			(at 38.1 58.42 0.0000)
 			(effects
@@ -5417,7 +5417,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "f6859cce-a433-48fa-8a29-412cd4e5a571")
+			(uuid "7d752e2b-616a-47d2-a702-e85855daf394")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5437,7 +5437,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "f3dad74c-a23a-4405-b77a-c6df93f9e52c")
+		(uuid "fc803d77-2aa8-4600-aaf8-6b71efc9d096")
 		(property "Reference" "#PWR52"
 			(at 50.8 58.42 0.0000)
 			(effects
@@ -5457,7 +5457,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "fbbc3afa-aa01-42e9-b4b1-75d9879e12f4")
+			(uuid "bbc24345-8692-4957-bb92-66258274d95f")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5477,7 +5477,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "19d46d51-6b9b-48ef-9907-35a47c6e216b")
+		(uuid "eaa4ce7d-e38b-4920-abd4-487acf4e0ccb")
 		(property "Reference" "#PWR53"
 			(at 91.44 144.78 0.0000)
 			(effects
@@ -5497,7 +5497,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "477baff5-cc4b-4bbf-9456-387ea1960069")
+			(uuid "8de4e5ea-5847-468f-bac9-23aacf41ad29")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5517,7 +5517,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "0c7875de-2010-4985-a9f8-5fbcff18d78b")
+		(uuid "fcd82a3f-f097-4eb0-b9a2-d2852064d156")
 		(property "Reference" "#PWR54"
 			(at 106.68 144.78 0.0000)
 			(effects
@@ -5537,7 +5537,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "f72c4943-663a-4fef-b8d0-0d70344416f1")
+			(uuid "900fc32c-f312-4b1e-b461-98766fac94c4")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5557,7 +5557,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "aa22a430-b1ba-4a93-8537-8729add9ece7")
+		(uuid "5e40d496-74e3-4596-856d-681f357d76e6")
 		(property "Reference" "#PWR55"
 			(at 121.92 144.78 0.0000)
 			(effects
@@ -5577,7 +5577,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "4a36c801-4043-47bf-a91a-42cc54969803")
+			(uuid "74e15714-e297-42fd-bb72-da36516ef545")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5597,7 +5597,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "e5d59d8d-7754-4f14-9f62-d9d908fae02a")
+		(uuid "808d71e7-34fb-47e8-9c11-b462b360ccd4")
 		(property "Reference" "#PWR56"
 			(at 137.16 144.78 0.0000)
 			(effects
@@ -5617,7 +5617,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "8370b6e9-346d-40b7-aa1e-dc5fb2be56d7")
+			(uuid "83e70696-a615-41ef-87c2-0af3b144901e")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5637,7 +5637,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "04660a9d-91a2-42a8-8e73-29223a12e537")
+		(uuid "c3040326-d703-47a5-bd23-60ba2f3f42a2")
 		(property "Reference" "#PWR57"
 			(at 269.24 58.42 0.0000)
 			(effects
@@ -5657,7 +5657,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "11782416-9052-4d5b-9be4-b0a55c83b328")
+			(uuid "49aa74e8-2eab-49d0-9ee1-23cf3d76d8f6")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5677,7 +5677,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "3f3a16eb-6794-4f3d-a8d1-d2109e554283")
+		(uuid "dc0e6171-f40a-421b-be04-975760b2faa3")
 		(property "Reference" "#PWR58"
 			(at 281.94 58.42 0.0000)
 			(effects
@@ -5697,7 +5697,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "73ec6b36-0510-40c0-bd5e-9764ab8048c1")
+			(uuid "f9151066-69ae-4d2c-9a94-025d7571f99e")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5717,7 +5717,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "969fed6b-460f-41b1-82dd-737ffd5a37b4")
+		(uuid "5bfed061-f87a-41a5-918c-58d309647e43")
 		(property "Reference" "#PWR59"
 			(at 294.64 58.42 0.0000)
 			(effects
@@ -5737,7 +5737,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "02fd71ba-8a6b-4297-8067-bd9441f01873")
+			(uuid "62558644-d14e-4207-bd2e-c25486f6b39e")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5757,7 +5757,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "b2b80538-4778-43cb-b724-2218d8aba6a4")
+		(uuid "c1f22d79-02f7-4764-881f-e9b2db29194b")
 		(property "Reference" "#PWR60"
 			(at 307.34 58.42 0.0000)
 			(effects
@@ -5777,7 +5777,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "cf82a894-6410-4f76-89d2-bddfcbdae99e")
+			(uuid "562d7162-ae60-434d-b8b8-77dca66d1335")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5797,7 +5797,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "f75a0b5e-c829-4768-ab60-ce1d57a59245")
+		(uuid "62401db9-83b7-4b38-ba0d-b128c03ab9d7")
 		(property "Reference" "#PWR61"
 			(at 320.04 58.42 0.0000)
 			(effects
@@ -5817,7 +5817,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "e5188676-bef0-4cb1-98a4-97e674972f02")
+			(uuid "1c9554dd-305d-4e8d-9032-1bbfeeec5304")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5837,7 +5837,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "a5f19ee0-b9c2-416a-99f7-c182072d59ae")
+		(uuid "c980e723-e13b-49f8-903c-5b4a533aac5d")
 		(property "Reference" "#PWR62"
 			(at 332.74 58.42 0.0000)
 			(effects
@@ -5857,7 +5857,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "9f222cd5-bec6-4ef3-a86e-399af7c82fc6")
+			(uuid "1fdaa4c3-1eca-4cfe-85eb-8d2aa0b3b4ef")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5877,7 +5877,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "a7360cf0-7a44-4f04-b870-29da45aa490e")
+		(uuid "af09bb2e-0780-44df-b69c-0d9db741e696")
 		(property "Reference" "#PWR63"
 			(at 289.56 114.3 0.0000)
 			(effects
@@ -5897,7 +5897,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "1d7a7aa0-b307-4158-8593-27f250eb7363")
+			(uuid "b034f34f-8e67-4633-b860-8d8f12bb6455")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5917,7 +5917,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "206068fe-4643-4ddf-9360-288071d75644")
+		(uuid "cd1e3acc-2bb6-4722-beaa-5a8dd853e8a0")
 		(property "Reference" "#PWR64"
 			(at 304.8 114.3 0.0000)
 			(effects
@@ -5937,7 +5937,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "fca4e36f-b8a5-45d5-93fb-82ab46cd4676")
+			(uuid "85d7d8e5-58d9-4e4c-8675-18d3f093293f")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5957,7 +5957,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "789cdf58-4da6-4a56-a257-ea630553f198")
+		(uuid "89a5c4e8-304c-489c-8df3-c89ba25a683a")
 		(property "Reference" "#PWR65"
 			(at 330.2 114.3 0.0000)
 			(effects
@@ -5977,7 +5977,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "0cfa1596-4dd7-4763-8624-381305227c68")
+			(uuid "ca54626f-36e9-4dd1-a133-b7389c642dca")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -5997,7 +5997,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "38991f85-64c7-4c89-8b59-d292b79f9a29")
+		(uuid "eeda0ec1-0756-42fc-9610-90dd20ba44e1")
 		(property "Reference" "#PWR66"
 			(at 30.48 200.66 0.0000)
 			(effects
@@ -6017,7 +6017,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "50f1063a-2af5-4d9b-a12e-fb23cf4295bf")
+			(uuid "ff4a51d3-974a-42ee-8610-3b9f138271c0")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -6037,7 +6037,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "6e9109ae-7f7b-4758-99b7-3e4dd265f69f")
+		(uuid "e41764d2-5afd-4376-b211-1e82802df003")
 		(property "Reference" "#PWR67"
 			(at 66.04 226.06 0.0000)
 			(effects
@@ -6057,7 +6057,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "1fe0616c-ce82-4db7-938e-71d40116b169")
+			(uuid "79296521-2baa-4e99-ad20-bbdfbed9e6fb")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -6077,7 +6077,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "1d6ecd15-b5e1-42dd-afe7-1dfcae0b5aba")
+		(uuid "ec4a1a3c-1fdf-49e5-bc8c-a7cd7595b5a6")
 		(property "Reference" "#PWR68"
 			(at 101.6 226.06 0.0000)
 			(effects
@@ -6097,7 +6097,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "00a77f4c-4a05-4c1b-ab9e-96d439cf1ffc")
+			(uuid "1631abf8-c882-4230-81f2-4892c068d8fd")
 		)
 		(instances
 			(project "weatherstation-v1"
@@ -6209,7 +6209,7 @@
 	(text "SYS: 5x10u + 0.1u; BAT: 2x10u (table 5-1). BATP: battery sense through 100 ohm. SDRV: 1 nF (no ship FET)" (exclude_from_sim no) (at 255.27 31.5 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "733e5714-9bbc-5f37-8e08-96223677bb76"))
 	(rectangle (start 10.16 167.64) (end 365.76 238.76) (stroke (width 0.3) (type dash) (color 190 90 20 1)) (fill (type color) (color 255 222 180 0.35)) (uuid "86db8a3f-6434-5a89-ad7d-3287faf4be9c"))
 	(text "Programming, thermal and status" (exclude_from_sim no) (at 11.43 168.66 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "534e7ad9-3d3e-5360-af1b-7dcbe9c9896a"))
-	(text "PROG 3.0k = 1S, 1.5 MHz (table 7-1). ILIM 127k/100k = 1.5 A. TS 5.23k/30.1k + NTC (Battery sheet). CE pulled to +3V3 = charge off until firmware writes VREG. STAT LED and INT; QON open (internal pull-up). Charger I2C (IO4/IO5) pull-ups R54/R55 to +3V3" (exclude_from_sim no) (at 11.43 173.74 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "39edf33b-2eab-52c1-8c5d-8281d4034b91"))
+	(text "PROG 3.0k = 1S, 1.5 MHz (table 7-1). ILIM 120k/100k = 1.59 A. TS 5.1k/30k + NTC (Battery sheet). CE pulled to +3V3 = charge off until firmware writes VREG. STAT LED and INT; QON open (internal pull-up). Charger I2C (IO4/IO5) pull-ups R54/R55 to +3V3" (exclude_from_sim no) (at 11.43 173.74 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "39edf33b-2eab-52c1-8c5d-8281d4034b91"))
 	(hierarchical_label "ACDRV1" (shape bidirectional) (at 101.6 66.04 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "3e759f9d-650a-5bd1-979b-aea7c150099b"))
 	(hierarchical_label "PV_IN" (shape bidirectional) (at 101.6 71.12 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "e8e5f56b-b94f-5542-88b0-1930fca834f4"))
 	(hierarchical_label "ACDRV2" (shape bidirectional) (at 101.6 73.66 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "a34c2522-bc22-5da9-810a-9ba0e8ac50e1"))

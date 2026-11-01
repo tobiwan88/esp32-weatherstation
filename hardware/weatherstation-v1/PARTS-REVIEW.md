@@ -57,7 +57,7 @@ is open.
 
 ## Checked and fine
 BQ25798 pin map (all 29 pins), VBUS 2 x 10 uF + 0.1 uF, PMID 3 x 10 uF + 0.1 uF, SYS 5 x 10 uF + 0.1 uF, BTST 47 nF, REGN 4.7 uF,
-PROG 3.0k (1S, 1.5 MHz), ILIM 127k/100k (as figure 8-2), TS 5.23k/30.1k (figure 5.24k/30.31k), SDRV 1 nF (no ship FET),
+PROG 3.0k (1S, 1.5 MHz), ILIM 120k/100k (figure 8-2 127k; Basic, 1.59 A clamp), TS 5.1k/30k (figure 5.24k/30.31k; Basic, +0.9 C), SDRV 1 nF (no ship FET),
 ACFET/RBFET common-source pairs, VAC1/VAC2 before the FETs, STAT LED from REGN 2.2k. TPS63802 pins (table 7-1) and FB divider
 3.31 V. HY2112 R1 100 ohm, C1 0.1 uF, R2 2k (section 10 table). ESP32-S3 pins: USB IO19/IO20, no strapping pin used except IO0,
 EN RC 10k/1 uF. SEN66 GH pinout 1 VDD, 2 GND, 3 SDA, 4 SCL; SHT45 cable in Qwiic order. USB-C CC 5.1k.
