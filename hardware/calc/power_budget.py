@@ -1,10 +1,10 @@
-"""Power checks for a solar/USB Li-ion board from its profile (board.yaml `design`): charger set points, LDO headroom, energy budget.
+"""Power checks for a solar/USB cell board from its profile (board.yaml `design`): BQ25798 charger set points, cell limits,
+buck-boost input at cut-off, protection ordering, energy budget.
 
 Rows: OK, WARN, FAIL, MISSING. An input with a null value is MISSING (fill it from its source, never guess); an input
 without `source` is WARN (unsourced). `source: assumption` is allowed and printed, so a reader sees what is still a guess.
-Formulas: CN3791 MPPT divider Vset = Vmppt x (1 + Rtop/Rbot) and ICH = Vcs/Rcs (CN3791 datasheet, application section);
-TP4056 IBAT = 1200 / RPROG[kohm] mA (TP4056 datasheet, "PROG pin"); linear dissipation = (Vin - Vbat) x I (basic);
-LDO dropout scaled linearly with current from one datasheet point (conservative for small currents).
+Formulas: C-rate = ICHG / capacity; cell voltage at the regulator input = cut-off - (path resistance x peak current);
+the TPS63802 minimum input is the datasheet recommended value (section 8.3).
 Usage: uv run --package weatherstation-hardware python hardware/calc/power_budget.py hardware/<board> [--selftest]
 """
 
@@ -28,46 +28,44 @@ def val(d: dict, key: str, rows: list, label: str | None = None):
 
 def run(design: dict) -> list:
     rows: list = []
-    c, t, b, l, ld, cy, so, pn = (design.get(k, {}) for k in ("cn3791", "tp4056", "battery", "ldo", "load", "cycle", "solar", "panel"))
+    ch, ce, bb, ld, cy, so, pn, hy = (design.get(k, {}) for k in ("charger", "cell", "buckboost", "load", "cycle", "solar", "panel", "hy2112"))
 
-    # CN3791 solar charger
-    vm, vcs = val(c, "vmppt_v", rows), val(c, "vcs_v", rows)
-    rt, rb, rcs = c.get("r_top_ohm"), c.get("r_bottom_ohm"), c.get("rcs_ohm")
-    drop = val(c, "diode_drop_v", rows)
-    if None not in (vm, rt, rb, drop):
-        vset = vm * (1 + rt / rb)
-        rows.append(("OK", "CN3791 MPPT set point", f"CN3791 VCC regulated to {vset:.2f} V, panel pin about {vset + drop:.2f} V (diode {drop} V)"))
-        vmp = val(pn, "vmp_v", rows, "panel Vmp")
-        if vmp is not None:
-            err = (vset + drop - vmp) / vmp * 100
-            rows.append(("OK" if abs(err) <= 5 else "WARN", "MPPT vs panel Vmp", f"{err:+.1f} % (panel {vmp} V); keep within +-5 %"))
-    if None not in (vcs, rcs):
-        ich = vcs / rcs
-        rows.append(("OK", "CN3791 charge current", f"{ich:.2f} A at Rcs {rcs} ohm"))
-        pw, pv = so.get("panel_w"), pn.get("vmp_v", {}).get("value")
-        if pw and pv:
-            rows.append(("OK" if pw / pv <= ich else "WARN", "panel current vs Rcs", f"panel Imp about {pw / pv:.2f} A, charger limit {ich:.2f} A"))
+    # BQ25798 charger (USB + PV): register values that firmware writes before CE is released (usb-charger-bq25798.md)
+    vreg, acc, ichg = val(ch, "vreg_v", rows), val(ch, "vreg_accuracy_mv", rows), val(ch, "ichg_a", rows)
+    vmax, cap = val(ce, "vmax_v", rows), val(ce, "cell_mah", rows)
+    if vreg is not None and vmax is not None:
+        if acc is None:
+            rows.append(("MISSING", "VREG vs cell maximum", f"VREG {vreg} V, cell maximum {vmax} V; accuracy of the BQ25798 VREG not in the profile"))
+        else:
+            worst = vreg + acc / 1000
+            rows.append(("OK" if worst <= vmax else "FAIL", "VREG vs cell maximum", f"VREG {vreg} V + {acc} mV accuracy = {worst:.3f} V, cell maximum {vmax} V"))
+    if ichg is not None and cap is not None:
+        c_rate = ichg / (cap / 1000)
+        rows.append(("OK" if c_rate <= 0.5 else "FAIL", "charge current vs 0.5C", f"{ichg} A on {cap} mAh = {c_rate:.2f}C (limit 0.5C at 0-20 C, the coldest band that allows 0.5C)"))
 
-    # TP4056 USB charger
-    k, prog, vusb = val(t, "k_ma_kohm", rows), t.get("prog_ohm"), t.get("vin_v")
-    vbat_typ = b.get("vtyp_v")
-    if None not in (k, prog, vusb, vbat_typ):
-        i = k / (prog / 1000)
-        p = (vusb - vbat_typ) * i / 1000
-        rows.append(("OK", "TP4056 charge current", f"{i:.0f} mA at RPROG {prog / 1000:g} kohm"))
-        rows.append(("OK" if p <= t.get("max_diss_w", 0.6) else "WARN", "TP4056 dissipation", f"{p:.2f} W at {vusb} V in, {vbat_typ} V cell (limit {t.get('max_diss_w', 0.6)} W; pad + vias)"))
-
-    # LDO headroom at the battery cutoff
-    vco, rds = val(b, "vcutoff_v", rows), l.get("q1_rds_ohm")
-    dv, di = (l.get("dropout_v_at_a") or [None, None])
-    pk, vmin = val(ld, "peak_a", rows), val(ld, "sensor_vmin_v", rows)
-    if None not in (vco, rds, dv, di, pk, vmin):
-        vin = vco - rds * pk
-        dout = dv * min(pk / di, 1.0)
-        vout = min(l.get("vout_v", 3.3), vin - dout)
-        m = vout - vmin
-        rows.append(("OK" if m >= 0.05 else ("WARN" if m >= 0 else "FAIL"), "LDO headroom at cutoff",
-                     f"cell {vco} V -> rail {vout:.2f} V at {pk} A peak, sensor minimum {vmin} V, margin {m * 1000:+.0f} mV"))
+    # TPS63802 buck-boost (3.3 V): input at the firmware cut-off must stay above the minimum input voltage
+    vco, path = val(ce, "vcutoff_firmware_v", rows), val(bb, "path_r_ohm", rows)
+    vin_min, pk = val(bb, "vin_min_v", rows), val(ld, "peak_a", rows)
+    if None not in (vco, path, vin_min, pk):
+        vin = vco - path * pk
+        m = vin - vin_min
+        rows.append(("OK" if m >= 0.2 else ("WARN" if m >= 0 else "FAIL"), "buck-boost input at cutoff",
+                     f"cell {vco} V minus {path * pk * 1000:.0f} mV path drop at {pk} A = {vin:.2f} V, minimum {vin_min} V, margin {m * 1000:+.0f} mV"))
+    # HY2112-CB current sense: two FETs in series across CS (drop = 2 x Rds x I) must stay inside the overcurrent thresholds
+    rds, occ, ocd = val(hy, "fet_rds_ohm", rows), val(hy, "oc_charge_v", rows), val(hy, "oc_discharge_v", rows)
+    if rds is not None and occ is not None and ichg is not None:
+        drop = 2 * rds * ichg
+        rows.append(("OK" if drop <= occ - 0.02 else ("WARN" if drop <= occ else "FAIL"), "HY2112 charge overcurrent margin",
+                     f"charge {ichg} A gives {drop * 1000:.0f} mV across M60+M61, trip at {occ * 1000:.0f} mV (want 20 mV margin)"))
+    if rds is not None and ocd is not None and pk is not None:
+        drop = 2 * rds * pk
+        rows.append(("OK" if drop <= ocd - 0.02 else ("WARN" if drop <= ocd else "FAIL"), "HY2112 discharge overcurrent margin",
+                     f"peak load {pk} A gives {drop * 1000:.0f} mV, trip at {ocd * 1000:.0f} mV"))
+    # Hardware protection (HY2112-CB) must act below the firmware cut-off, and above the cell's own cut-off
+    vdl, vcell_min = val(ce, "hy2112_overdischarge_v", rows), val(ce, "vcut_cell_v", rows)
+    if None not in (vco, vdl, vcell_min):
+        rows.append(("OK" if vcell_min <= vdl < vco else "FAIL", "cut-off ordering",
+                     f"cell spec {vcell_min} V <= HY2112 detection {vdl} V < firmware cut-off {vco} V (sensors off first)"))
 
     # energy budget
     need = ("period_s", "esp_active_s", "esp_active_ma", "sen66_on_s", "sen66_ma", "sleep_ua")
@@ -76,7 +74,7 @@ def run(design: dict) -> list:
         q = (cyv["esp_active_s"] * cyv["esp_active_ma"] + cyv["sen66_on_s"] * cyv["sen66_ma"]) / cyv["period_s"] + cyv["sleep_ua"] / 1000
         wh = q * 3.7 * 24 / 1000
         rows.append(("OK", "average current", f"{q:.1f} mA at a {cyv['period_s']} s cycle, {wh:.2f} Wh/day"))
-        cell = val(b, "cell_mah", rows)
+        cell = val(ce, "cell_mah", rows)
         if cell:
             rows.append(("OK", "battery autonomy", f"{cell * 0.8 / (q * 24):.1f} days from 80 % of {cell} mAh without sun"))
         pw, psh, eff = (val(so, n, rows, f"solar.{n}") for n in ("panel_w", "psh_worst_h", "system_eff"))
@@ -87,11 +85,18 @@ def run(design: dict) -> list:
 
 
 def selftest() -> bool:
-    d = {"cn3791": {"vmppt_v": {"value": 1.205, "source": "x"}, "vcs_v": {"value": 0.12, "source": "x"}, "diode_drop_v": {"value": 0.3, "source": "x"},
-                    "r_top_ohm": 39000, "r_bottom_ohm": 10000, "rcs_ohm": 0.12},
-         "tp4056": {"k_ma_kohm": {"value": 1200, "source": "x"}, "prog_ohm": 3000, "vin_v": 5.0}, "battery": {"vtyp_v": 3.7}}
-    r = {x[1]: x[2] for x in run(d)}
-    return "5.90 V" in r["CN3791 MPPT set point"] and "1.00 A" in r["CN3791 charge current"] and "400 mA" in r["TP4056 charge current"]
+    d = {"charger": {"vreg_v": {"value": 3.65, "source": "x"}, "vreg_accuracy_mv": {"value": 20, "source": "x"},
+                     "ichg_a": {"value": 1.9, "source": "x"}},
+         "cell": {"vmax_v": {"value": 3.75, "source": "x"}, "cell_mah": {"value": 3900, "source": "x"},
+                  "vcutoff_firmware_v": {"value": 2.4, "source": "x"}, "hy2112_overdischarge_v": {"value": 2.10, "source": "x"},
+                  "vcut_cell_v": {"value": 2.0, "source": "x"}},
+         "buckboost": {"path_r_ohm": {"value": 0.15, "source": "x"}, "vin_min_v": {"value": 1.3, "source": "x"}},
+         "load": {"peak_a": {"value": 0.35, "source": "x"}}}
+    r = {x[1]: x for x in run(d)}
+    ok_vreg = r["VREG vs cell maximum"][0] == "OK" and "3.670" in r["VREG vs cell maximum"][2]
+    ok_rate = r["charge current vs 0.5C"][0] == "OK" and "0.49C" in r["charge current vs 0.5C"][2]
+    ok_bb = r["buck-boost input at cutoff"][0] == "OK" and "2.35 V" in r["buck-boost input at cutoff"][2]
+    return ok_vreg and ok_rate and ok_bb
 
 
 if __name__ == "__main__":

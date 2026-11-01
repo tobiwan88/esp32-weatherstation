@@ -7,10 +7,109 @@ BOM: `bom.csv` (JLCPCB columns plus Class/Status/notes). Order checklist: `ORDER
 ## Board
 Solar + USB-C powered ESP32-S3 air-quality weather station, about 50 x 45 mm, 4 layers (In1 and In2 both solid GND),
 JLC04161H-7628, JLCPCB Economic PCBA (one side, SMT; connectors J5/J6/J7 and the battery are hand-soldered).
-ESP32-S3-WROOM-1-N8 (C2913198), AP2112K 3.3 V LDO, CN3791 solar MPPT charger, TP4056 USB charger, one protected 18650,
+ESP32-S3-WROOM-1-N8 (C2913198), TPS63802 3.3 V buck-boost, BQ25798 charger (USB + PV), HY2112-CB 1S protection, one 26700 LFP cell,
 switched 3V3_SW sensor rail (Q2), SEN66 on a GH connector (PM, CO2, T/RH, NOx index), SHT45 off-board on a Qwiic cable in a
 radiation shield, spare Qwiic port. USB-C = programming, debug (native USB-JTAG) and charging.
-Status: pre-layout. No generators or KiCad files yet.
+Status: schematic v1 generated (`hardware/gen/weatherstation_v1.py`, ERC 0 errors, net check OK). Layout not started.
+
+## Cell choice and cost (2026-11-01)
+- **Latest decision (user): CBAK 26700LT with firmware-managed cold charging** (`charge-policy.md`). The standard 26650
+  bullet below is superseded. The chip's temperature checks are switched off during a session only; sleep and default keep them.
+- Accepted residual risk (user): no hardware cold or hot stop during a session. Mitigations in `charge-policy.md`.
+- Earlier bullet, superseded: standard LFP 26650, 0-45 C charge.
+- **Cell: standard LFP 26650, 0-45 C charge** (not the 26700LT). Reason: the BQ25798 cold cut-off is fixed at about 0 C; no
+  verified charger IC allows cold charging (see cells.md). Cell datasheet still to read (charge end, discharge cut-off, capacity).
+- **Cost basis:** the parts cost is per board. The Extended fee is per unique part per order, so it is paid once and is shared by
+  all boards in the order. Recommendation: cost the order for **5 boards** (the fee is then spread over five) and use 1 board only
+  for a prototype.
+  - Parts per board (JLCPCB unit price from jlcparts.py, no volume break): **USD 13.24**.
+  - Extended fee: 23 unique Extended parts x USD 3.07 = **USD 70.61 per order**.
+  - 1 board: 13.24 + 70.61 = **USD 83.85** (plus PCB and assembly).
+  - 5 boards: 5 x 13.24 + 70.61 = **USD 136.81**, i.e. USD 27.36 per board (plus PCB and assembly).
+  - Not in these numbers: PCB fabrication (4-layer, 50 x 50 mm), assembly labour, hand-soldered parts (J5-J8, J7, test points),
+  the battery holder, cells, panel, enclosure, sensors. Get the JLCPCB quote for 5 and 1 boards before ordering.
+- Charger cold rule with the 26650: the chip suspends below about 0.5 C (matches the cell's 0 C), and reduces charge from
+  45 C (matches the cell's 45 C). Limit: TH1 senses the board, not the cell (see the NTC note below).
+
+## Power and EMC review (2026-11-01, after the cell spec sheets; updated same day)
+Cell values: `cells.md`. **Decision (2026-11-01): v1 is LFP only (26700LT, 3.2 V nominal).** The sodium 32140NH 7 Ah was dropped: its
+3.35 V limit and 1.5 V cut-off are outside the HY2112-CB thresholds. Sections older than this one that mention 32140NS, 3.95 V,
+the CN3791/TP4056 or the AP2112K are superseded.
+
+### Changes made (schematic regenerated, ERC: 2 footprint warnings only)
+- **3.3 V: AP2112K replaced by TPS63802DLA (C2845237) buck-boost.** The LDO needs about 3.55 V at its input (3.3 V + 250 mV
+  dropout at 600 mA); battery-only SYS follows the cell (LFP 3.2 V nominal, sodium 3.0 V), so the old rail dropped out near 3.5 V.
+  TPS63802: input 1.3-5.5 V (1.8 V to start), 2 A, 11 uA Iq, output 3.3 V from R52 511k / R53 91k (0.5 V x (1 + 511/91) = 3.31 V),
+  L4 0.47 uH WPN201610HR47MT (2.7 A, C97009), C41 22 uF output (table 10-1), C40 10 uF input, MODE low (power save).
+  Symbol: project library `hardware/gen/lib/weatherstation.kicad_sym`, written by `hardware/gen/build_symbols.py` from the
+  datasheet pin table (VIN 10, EN 1, MODE 2, AGND 3, GND 8, VOUT 6, L1 9, L2 7, FB 4, PG 5). EN is tied to SYS (always on).
+  PG is left unconnected. Footprint: `weatherstation:VSON10_DLA_custom` (open: the DLA land pattern is not in the KiCad library).
+- **1-cell protection: HY2112-CB (C168764, Extended, about 19800 in stock)** (U6). Datasheet DS-HY2112 V08 read (table 1, section 9
+  and section 10 wiring). Overcharge 3.75 V (release 3.60 V, 1.3 s delay), overdischarge 2.10 V (release 2.30 V), discharge
+  overcurrent 200 mV, charge overcurrent -200 mV, short circuit 0.85 V. Two AO3400A (C20917, Basic) in the pack negative:
+  M60 discharge (OD gate), M61 charge (OC gate), common source at PB_MID, drains to the cell minus (BAT_N, VSS) and to system GND.
+  VDD from the cell plus through R60 100 ohm and C60 0.1 uF; CS through R61 2 kohm to GND (datasheet maximum 2 kohm).
+  Datasheet rule: after an overcharge trip the release needs a load or the charger removed (section 11.2), so a fault latches.
+- **Charge current 1.5 A (was 2 A):** the HY2112 charge overcurrent trips at -170 mV minimum. 2 x 48 mOhm x 2 A = 192 mV would
+  trip it. 1.5 A gives 144 mV. `power_budget.py` checks this every run. The panel supplies about 1 A anyway.
+- **Charger VREG check:** BQ25798 VREG accuracy from the datasheet (section 6.5, VREG_ACC -0.45 % to +0.95 %, specified at 4.2 V):
+  worst case 3.65 V + 35 mV = 3.685 V, below the 3.75 V cell limit. Note: the chip's own battery overvoltage stop (VBAT_OVP) is
+  104 % of VREG = 3.80 V at VREG 3.65 V, which is above the cell's 3.75 V limit: HY2112 is the backstop, not the chip.
+- **Temperature: NTC TH1 on the board, next to the battery connector J6.** TH1 = NCP18XH103F03RB (Murata 10k, B 3434 K,
+  C13564, Extended, about 142k in stock). It sits on the charger sheet at the same column as J6, so both are placed together
+  and both are hand-soldered or reflow-soldered as the BOM says. TS divider R17 5.23k / R18 30.1k, NTC TS-to-BAT- (BAT- is the
+  cell minus, so the NTC has no current through the pack path).
+  Verified against the BQ25798 JEITA table (section 6.5, 103AT rows): computed TS ratio with B 3434 = 73.7 % at 0 C (VT1 73.3 %),
+  68.6 % at 10 C (VT2 68.4 %), 44.4 % at 45 C (VT3 falling 44.8 %), 34.2 % at 60 C (VT5 34.2 %). A B 3950 NTC would move the cold
+  cut-off to about +3 C, so the B value is part of the design: keep 3380-3455 K.
+  Limit: TH1 senses the board next to the cell, not the cell. Keep the holder thermally close to TH1 (same board area, not
+  under the charger or the buck-boost) and measure the offset with the samples.
+  The chip then applies: no charge below about 0.5 C, 20 % current 0-10 C, reduced charging from 45 C, stop at 60 C.
+  The NTC plus firmware is the temperature protection; there is no separate temperature IC.
+- **Cell PTC F1** SMD1812P300TF (C21004, Extended): 3 A hold, between the battery connector and the battery node. Overcurrent backup.
+- **EMC on the PV input:** common-mode choke L3 CMF4532F-102-2P-T (C963748, Extended, 1 kOhm at 100 MHz, 1 A) on PV+ and PV-; the
+  TVS D1 (SMBJ24A) moved in front of it (across PV+ and PV-); C2 0.1 uF after it. Open: L3 pinout (pins 1/2 and 3/4 assumed as
+  one winding each, in on 1 and 3) and footprint (custom 4-pad).
+
+### Still open (decisions and checks)
+1. **Sodium: dropped for v1** (see the decision above). Re-open only with a new cell spec and a matching protection part.
+2. **Firmware and protection:** CE is pulled high (R20), so no charge happens until firmware releases it. Firmware must write
+   VREG 3.65 V before releasing CE. If CE were released with the 4.2 V default, the cell would charge to 4.2 V until HY2112 trips
+   at 3.75 V (cell not damaged by that trip alone, but the cell is over its limit for the time it takes). The HY2112 is the
+   hardware backstop for LFP; it is not a substitute for the firmware order.
+3. **Cold charge:** LFP allows 0.2C (0.8 A) below 0 C and 0.5C (1.95 A) at 0-20 C. The chip suspends charging below about 0 C
+   (T1 not a register) and charges at 20 % (0.3 A) from 0 to 10 C, both inside the cell limits. Above 10 C it charges at 1.5 A. The rule holds only if the
+   chip's cold threshold is at or above 0 C at the cell: measure the offset between TH1 and the cell.
+4. **Hot:** LFP charge stops at 50 C (spec); the chip's warm band starts at 45 C (TS_WARM default). The chip's hot-stop threshold
+   is not recorded in this review: check figure 7-11 before relying on it.
+5. **Reverse polarity** of the cell is not protected (JST PH keyed). PV reverse is blocked by the ACFET/RBFET pairs (N-channel, back-to-back; body diodes oppose each other).
+6. **Open technical items:** L1 Isat (VLS252010 candidate); PV Voc at or below 22 V (SMBJ24A standoff 24 V); TPS63802 and HY2112
+   footprints (to verify against the land patterns); `power_budget.py` path resistance 0.15 ohm is an assumption.
+   Resolved 2026-11-01: ACFET/RBFET are N-channel (datasheet 7.3.5: ACDRV 5 V above the common source), so AO3401A was replaced by
+   AO3400A (C20917). L3 pinout and footprint come from EMTEK T-0602-102D (winding 1→2 and 4→3).
+
+## Schematic v1 architecture (2026-10-31, supersedes the older charger, LDO and cell sections below)
+- One charger for USB-C and PV: BQ25798 (C2876593). USB and PV each have a back-to-back N-FET pair (ACFET/RBFET, AO3400A
+  C20917) into VBUS; PV is protected by SMBJ24A. CN3791, TP4056, Q1/D3 (ideal diode), CN3791 FETs, Q3/Q4/Q5 are removed.
+- Battery: BQ25798 BATFET (integrated) to SYS; J6 battery connector (hand-soldered holder). Battery voltage and temperature
+  are read over I2C (BQ25798 ADC and TS), so the battery divider R16/R17 is removed.
+- Variant values (written by firmware over I2C at every boot, before CE is released): VREG 3.65 V (LFP only; the sodium
+  value is dropped); ICHG 1.5 A (was 2 A, see the review); VSYSMIN 4.0 V. Cell values: `cells.md`.
+  PROG 3.0 kohm sets 1S and 1.5 MHz. CE is held high by R20 to REGN (charge disabled) until firmware releases it.
+- Cold: the chip suspends charging below about 0 C (default; T1 is not a register). Between 0 and 10 C it charges at 20 %
+  (JEITA_ISETC default). TS network 5.23k / 30.1k / 10k NTC (candidate values, E96 of the datasheet 5.24k / 30.31k).
+- 3.3 V: TPS63802 buck-boost from SYS (2026-11-01; the AP2112K LDO was dropped, see the review). 3V3_SW: AO3401A switch (Q40) with 2N7002 enable.
+- Gas (ZE25-O3, 3.7-5.5 V): connector J8 on GAS_VCC from SYS through AO3401A (Q42), enable from GPIO. No 5 V boost needed.
+- I2C: 10k pull-ups to +3V3 (not 3V3_SW), so the charger can be read while sensors are off. Check back-power on SEN66 and
+  SHT45 with 3V3_SW off (ESD diode leakage).
+- GPIO map (module pin, GPIO): I2C SDA/SCL 4/5 (IO4/IO5); CHG_CE 17 (IO9); CHG_INT 18 (IO10); SENSOR_EN 19 (IO11);
+  GAS_EN 20 (IO12); GAS_TXD 10 (IO17); GAS_RXD 11 (IO18); USB D-/D+ 13/14 (IO19/IO20); UART0 36/37; BOOT 27 (IO0).
+- Open items that the schematic does not settle: L1 Isat (VLS252010 candidate, 1 uH, needs 2.5 A+ check), ZE25-O3 pinout
+  (manual), SMBJ24A vs PV Voc (keep panel Voc at or below 22 V; the TVS standoff is 24 V). ACDRV wiring: common-source
+  N-FET pair with ACDRV on the gates (datasheet 7.3.5); Table 7-7 detail still to check on the final netlist.
+- Generated files: `weatherstation-v1.kicad_sch` (root) and five sheets (`input`, `charger`, `mcu`, `rails`, `sensors`).
+  `bom.csv` is written by the generator from the same PARTS list. Run:
+  `uv run --package weatherstation-hardware python hardware/gen/weatherstation_v1.py hardware/weatherstation-v1`.
 
 ## Commands
 - Gate: `scripts/hw-check.sh [--strict] [--stock --qty N]`: profile files parse, `calc/bom_check.py`, `calc/power_budget.py`
@@ -37,6 +136,118 @@ Status: pre-layout. No generators or KiCad files yet.
 - NO2 not on this revision (electrochemical cell is 2 years life, ozone cross-sensitivity, about 130-300 EUR); J4 Qwiic is a spare port.
 - ESD/EMC set kept pragmatic: USBLC6 on USB data and on the outdoor SHT45 I2C cable, SMBJ12A on the solar input, FB1 DNP footprint.
 
+## Outdoor sensor decision (2026-10-31)
+- PM sensor: **SEN63C** (PM, CO2, T/RH; no VOC/NOx), the lowest-cost Sensirion option on the 3V3_SW rail. About EUR 23 ex VAT
+  (SOS 23.30, Farnell 23.89); the SEN66 is about EUR 71. Same 6-pin SEN6x pinout, so J2 stays. Supply 3.15-3.6 V,
+  75 mA avg / 100 mA max, peak 140 / 200 mA (SEN6x datasheet Table 12). Recommended 10-40 C (accepted winter limit).
+  CO2 accuracy is weaker than the SEN66: +/-(100 + 10 % m.v.), 12 h initial operation (datasheet Table 6). Revisit if CO2 matters.
+- Rejected for v1: SPS30 and SDS011 / PMS5003 need a 5 V rail (SPS30 4.5-5.5 V, 55 mA avg, 80 mA peak, Sensirion catalogue).
+  SEN65 has no EUR price in DE (US list about USD 28).
+- Gas: an O3/NO2 module connector is added in v1 (not populated). Candidate: Winsen ZE25-O3 (manual v1.4, verified): **supply 3.7-5.5 V, no reverse protection**, so it cannot run on the 3V3_SW rail (3.3 V) or on a cell at the 3.5 V cutoff. UART is 3.0 V logic (compatible with the ESP32), 9600 baud, 0-10 ppm, warm-up <= 3 min, operating -10 to +55 C, 15-90 % RH, 2-year life in air. NO2 and Cl2 are interference gases, so it is O3-only in practice. Adding it needs a 5 V rail (boost from the cell) on J8, which the board does not have yet; decide with the PM rail question. NO2 electrochemical modules stay out of v1.
+- The SEN66 VOC/NOx and CO2 accuracy are indoor-oriented; the outdoor station does not need them.
+- Sourcing policy (2026-10-31): on-board parts must be assemblable by JLCPCB (LCSC stock, Basic or Extended). Off-board modules
+  (sensors, gas module, panel) may come from AliExpress; counterfeit risk accepted for alternatives. No German distributor required.
+- Gas connector power: J8 (ZE25-O3, 3.7-5.5 V) gets its own 5 V rail from a boost on the cell. Enable from an MCU GPIO, default off,
+  so the boost does not draw in deep sleep. Boost candidates in JLCPCB stock (datasheets not yet read, values **unverified**):
+  TPS61023DRLR (C919459, 45k, SOT-563), TPS61040DBVR (C7722, 31k, SOT-23-5), TPS61088RHLR (C87357, 5k, VQFN-20).
+  Check light-load efficiency and minimum input at the 3.2-3.5 V cell voltage before choosing. Add to BOM and power budget
+  once the ZE25-O3 supply current is known (the manual does not state it; it is an open input).
+  Read 2026-10-31 (TI datasheets): TPS61023 (0.5-5.5 V in, 2.2-5.5 V out, 0.1 uA shutdown, true disconnect in shutdown,
+  about 20 uA no-load) is the choice. TPS61040 has no disconnect in shutdown (output follows input through the inductor and
+  Schottky, datasheet 6.3.3), so it needs a P-FET load switch. TPS61088-Q1 (10 A, 2.7-12 V, automotive grade, large external
+  network) is overkill and is dropped.
+  ZE25-O3 current: the user reports about 10 mA; the manual pages read (1-6) do not state it. Open until a page confirms it.
+  At 10 mA continuous from the cell, the gas module adds about 1.4 Wh/day (boost efficiency about 85 %, assumed).
+  The manual also requires a 24-48 h warm-up at first power-on, so duty-cycling it is not viable.
+  Energy-based check (PVGIS-SARAH3 hourly, 2005-2023, 45 deg, December, 0.7 performance ratio, 3000 mAh cell from 80 %):
+  base load (0.96 Wh/d) never runs the cell flat (0 of 19 years, Hamburg and Frankfurt, 6 W or 10 W).
+  base + gas (2.36 Wh/d): 6 W panel runs flat in 5 of 19 Decembers in Hamburg (0 in Frankfurt, worst SOC 11 %);
+  10 W panel runs flat in 0 of 19 in either city (worst SOC 39 % Hamburg).
+  Decision: with a 10 W panel the ozone module fits the energy budget; with 6 W it does not in Hamburg.
+  Not modelled: cold-cell derating and the 0 C charge inhibit (see below).
+  Cold inhibit: about 16-19 % of December in-plane solar energy falls on sunlit hours with air below 0 C (PVGIS T2m).
+  Charging is blocked below 0 C (Q3/Q5 inhibit), so that share is lost, possibly more than cloud losses. The enclosure cell
+  temperature may run above air temperature in sun; to be measured.
+
+## Subzero-charge cell candidates (2026-10-31) [SUPERSEDED 2026-11-01: LFP only, values in cells.md]
+- Cells from the maker (CBAK, product pages en.cbak.com.cn/products_details/27.html and /38.html). The user opened a cell and
+  confirmed the claimed charge window; treat as user-verified, not datasheet-verified.
+  - 26700LT (LFP, 3.2 V nominal, 4 Ah): charge -10 to +50 C, discharge -40 to +60 C, 0.5C standard, 1C max, end of charge 3.65 V.
+  - 32140NS (sodium-ion, 3 V nominal, 10 Ah): charge -20 to +65 C, discharge -40 to +65 C, 0.5C standard, 3C max, end of charge 3.95 V.
+    Discharge cutoff not listed.
+- Charger: TI BQ25798 (rejected: fixed 0 C cold cutoff). CN3795 (Consonance datasheet verified): multi-chemistry (Li-ion, LiFePO4,
+  LTO), 6.6-30 V input, MPPT pin regulated to 1.205 V, charge current 120 mV / Rcs, end-of-charge set by the FB divider (formula
+  not read yet), C4 = 220 nF. No TEMP pin, so cold control must be external (MCU + NTC + MOSFET on the MPPT pin, like Q3 now).
+- Open: cold-charge current limit (the vendor page gives only the window; the 0.5C value is for normal temperatures), the FB
+  divider formula for 3.65 V and 3.95 V, and the 32140NS discharge cutoff.
+- CN3795 formulas (datasheet, verified): VREG = 1.205 x (1 + R1/R2) + 60 nA x R1 (FB divider, max 25 V); ICH = 120 mV / Rcs;
+  VMPPT = 1.205 x (1 + R5/R6); trickle below 66.5 % of VREG at 17.5 % current; termination at 16 %; recharge at 58.8 %;
+  loop compensation 220 nF + 120 ohm from COM to GND (matches C4 and R4).
+- **UVLO: the charger is off when VCC is below 6.5 V.** A 6 V-class panel regulates to about 5.9 V, so it cannot work with the
+  CN3795. Use a 12 V-class panel (Voc about 21-24 V, below the 30 V input maximum) with the MPPT divider set to about 17 V.
+- Worst-case design (user rule: lower C as the maximum charge current): LFP 26700LT 0.5C = 2 A; sodium 32140NS 0.5C = 5 A,
+  above the CN3795's 4 A. The panel limits the real current to about 0.6-1 A anyway.
+- Both chemistries sit below 3.3 V for part of their discharge (LFP 3.2 V nominal, sodium 3.0 V nominal), so the LDO cannot hold
+  3.3 V. A buck-boost is required for either cell.
+
+## Cell variants on one board (2026-10-31) [SUPERSEDED 2026-11-01: LFP only]
+Variant A = LFP 26700LT (samples in hand). Variant B = sodium 32140NS (not yet sourced). Same PCB; per variant only the BOM
+value of R1 (FB divider) and the battery holder (hand-soldered BT1) change. Charger, inductor, Rcs and buck-boost are common.
+
+| Item | A: LFP 26700LT | B: sodium 32140NS |
+|---|---|---|
+| Charge end voltage (CN3795 FB) | R1 20.5 k, R2 10 k: 3.68 V | R1 22.6 k, R2 10 k: 3.93 V (limit 3.95 V) |
+| Charge current design (Rcs 0.06 ohm, 120 mV / Rcs) | 2 A (0.5C, lower C rating) | 2 A (set below its 0.5C = 5 A and the 4 A CN3795 limit) |
+| Cold charge window (vendor page, user-verified) | -10 to +50 C | -20 to +65 C |
+| Cell cut-off to firmware | TBD: measure with the samples | TBD: not published, measure |
+| Holder (BT1, hand-soldered) | 26700 holder | 32140 holder |
+| Energy (nominal) | about 12.8 Wh | about 30 Wh |
+
+Common solar path (CN3795, from a 12 V-class panel, MPPT pin R5/R6 about 130 k / 10 k for Vmp about 17 V):
+- Inductor 22 uH with Isat at least 3 A (candidate SWPA8040S220MT, C15857, 2k stock, not read).
+- Rcs 0.06 ohm, 2512, 1 W (2 A worst case; the panel limits the real current to about 0.6-1 A).
+- P-FET on DRV with Vds at least 30 V (the panel's Voc is 21-24 V; the CN3795 input maximum is 30 V).
+- Input capacitance rated for 35 V or more. Loop compensation 220 nF + 120 ohm (C4, R4 as in the BOM).
+- The CN3795 has no TEMP pin: the cold rule is in firmware, a MOSFET on the MPPT pin (like Q3 now) and an NTC.
+
+3.3 V rail: TPS63802 (C2845237, 2.4k stock, datasheet read). Input 1.3-5.5 V (start above 1.8 V), output 3.3 V,
+2 A at Vin of 2.3 V or more, 11 uA quiescent, 0.47 uH inductor, true load disconnect in shutdown. Both cells stay above 1.8 V.
+It replaces the AP2112K LDO on both variants, because both cells sit below 3.3 V for part of their discharge.
+
+**USB charger (decided 2026-10-31, user approved): TI BQ25798 (C2876593, about 3.8k stock) for both variants.** It replaces the
+TP4056, which charges to 4.2 V and would overcharge both cells. End-of-charge voltage is set over I2C per variant (3.65 V LFP,
+3.95 V sodium). Its cold cutoff at 0 C is fixed inside the chip, so USB charging stops below 0 C (accepted). The solar path
+(CN3795) still charges below 0 C. CN3795 cannot run from USB: its UVLO is 6.5 V and USB gives 5 V.
+- Safety item to confirm in the datasheet: the register default end voltage. If the default is 4.2 V, firmware must write the
+  variant value before any charge, or a cell plugged into USB before first boot is overcharged. Check whether a hardware
+  strap or OTP option exists instead.
+- The BQ25798 has its own power path (PMID/SYS/BAT). Evaluate whether it replaces Q1/D3 in the power path; do not assume it.
+- Not yet read: I2C address, charge current register and sense resistor, input range, required passives, end-voltage accuracy.
+
+**Sodium discharge cut-off lead (2026-10-31, UNVERIFIED):** two web searches (standard and extended) found no CBAK
+datasheet for 32140NS. A battery distributor listing for a 10 Ah 3 V sodium 32140 cell gives discharge end 1.5 V above 0 C
+and 1.2 V at or below 0 C, with charge end 3.95 V (snippet only, page not opened: https://www.delongtop.com/product/3v-10ah-32140-rechargeable-cylindrical-sodium-ion-battery-cells/).
+A DIY forum resource page lists a "CBAK 32140NS.pdf" marked partial; not opened (https://diysolarforum.com/resources/cbak-cell-datasheets.410/).
+Not a CBAK specification. Do not design to it until the CBAK datasheet confirms it.
+
+**Impact when the cut-off is known:** the 3.5 V cut-off in `board.yaml` was set for the AP2112K LDO (LDO headroom). With the
+TPS63802 buck-boost, the LDO check no longer limits the cut-off; the cut-off is then set by the cell and the firmware policy.
+Recompute `battery.vcutoff_v` and the autonomy check when the LFP or sodium cut-off is known. TPS63802 starts above 1.8 V, so a
+cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input minimum once running.
+
+**Monday checklist (samples and datasheets at work):**
+1. LFP 26700LT: discharge at a light load (10-20 mA) with a DC supply or a load to find the voltage where the cell is
+   at about 20 % capacity; record cut-off in `board.yaml`. Confirm end-of-charge 3.65 V at the cell with the BQ25798 setting.
+2. Sodium 32140NS: CBAK datasheet (ask CBAK sales if none online). Confirm charge end 3.95 V (maximum or nominal), the discharge
+   cut-off, and the cold-charge limits. Until then the variant B holder and R1 stay open.
+3. BQ25798 datasheet: register default for charge voltage, I2C address, end-voltage step size and accuracy, charge current
+   setting, cold cutoff, passives, and whether it runs without firmware.
+4. CN3795 R1 values (20.5 kΩ, 22.6 kΩ with R2 10 kΩ, both E96) against the actual FB pin tolerance; formula checked:
+   3.677 V and 3.928 V.
+5. Inductor (SWPA8040S220MT), P-FET for 30 V, and input capacitor datasheets (not read yet).
+6. Update `bom.csv` only after items 3 and 4 are confirmed: remove TP4056 (C16581), R26 (C4211), D2/D3/Q1 only if the BQ25798
+   power path replaces them, add BQ25798 and passives, and set R14 to 0.06 ohm (2512) for the CN3795 Rcs.
+
 ## Layout specifics (to carry into the layout generator)
 - Antenna at a board edge with a copper keepout on all layers; 15 mm from battery and solar wiring.
 - Heat corner: CN3791, L1, D2, M1, TP4056 (exposed pad on vias), AP2112K together; NTC at the cell; SEN66/SHT45 connectors on the far side.
@@ -45,12 +256,24 @@ Status: pre-layout. No generators or KiCad files yet.
 - Test points: GND, 3V3, 3V3_SW, VSYS, BAT, MPPT; UART0 header J7 as fallback debug.
 
 ## Open before ordering
-1. LCSC numbers still TBD in `bom.csv` (0.12 ohm 1206, 39k, 1M, 220 nF, NTC 10k, 3k PROG): the gate lists them as MISSING.
-2. `design.panel.vmp_v` in `board.yaml` (real panel datasheet) so `power_budget.py` can check the MPPT divider.
-3. Datasheet cards: fetch manufacturer PDFs, record revision and section for every value (cards were seeded from search results).
-4. Class (Basic/Extended) of SS34, 100k, 4.7k, inductor, tact switch (`bom_check.py --stock` fills this in).
-5. Whether JLCPCB forces Standard PCBA for the ESP32 module (check the quote).
-6. SEN66 operating temperature range (winter) and the cell's low-temperature behaviour.
+Closed: LCSC numbers for all TBD parts except C15 (R14 C24435, R15 C23153, R16/R17 C22935, R26 C4211, TH1 Murata
+NCP18XH103F03RB C13564); Basic/Extended class of all parts (from `jlcparts.py`); TP4056 charge formula and PROG table,
+AP2112K 3.3 V dropout (250 mV at 600 mA), SEN66 supply/peak/average current (datasheet Table 12) verified from the PDFs in
+`datasheets/`. SEN66 I2C pull-ups changed to 10 kohm (datasheet sec. 3.1).
+
+1. **CN3791 datasheet not retrieved** (only an XML error page). Its MPPT pin voltage (1.205 V assumed), Vcs (120 mV assumed) and
+   the Fig.1 application circuit (C4 = 220 nF assumed) are unverified. Needed before the schematic is based on the app note.
+   Drop the PDF in `datasheets/CN3791.pdf` and record the section numbers in `parts/CN3791.yaml`.
+2. `C15` (CN3791 Fig.1 C4) LCSC number: follows from item 1.
+3. **Decided: accept reduced winter accuracy.** The SEN66 datasheet recommends 10 to 40 C (short-term -10 to 50 C, storage
+   -40 to 70 C), and gas sensing is only guaranteed in the recommended range. No heater. Below 10 C, PM, CO2 and NOx accuracy is
+   not guaranteed; log the enclosure temperature so the effect can be checked later. REQUIREMENTS.md section 4 still says
+   -10 to +50 C for operation; amend it to "short-term" for the SEN66.
+4. `design.panel.vmp_v` is still an assumption (6.0 V, candidates 5.76-6.12 V). Choose the panel; then replace with its datasheet Vmp.
+5. Cell: no protected 18650 with a verified low-temperature capacity found. `design.battery.cell_mah` (3000) is an assumption.
+   Needed for the winter autonomy estimate.
+6. Whether JLCPCB forces Standard PCBA for the ESP32 module (check the quote).
+7. Remaining datasheets not downloaded (USBLC6-2SC6, SMBJ12A, SWPA6045S220MT, TYPE-C-31-M-12): see `datasheets/SOURCES.md`.
 
 ## Pitfalls (carried over from desk_notifier, see its PLAN.md/BOARD.md for details)
 | Symptom | Cause | Fix |

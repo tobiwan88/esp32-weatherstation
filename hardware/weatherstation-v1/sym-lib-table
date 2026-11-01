@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "weatherstation")(type "KiCad")(uri "${KIPRJMOD}/../gen/lib/weatherstation.kicad_sym")(options "")(descr "Project symbols: TPS63802DLA, HY2112-CB (hardware/gen/build_symbols.py)"))
+)

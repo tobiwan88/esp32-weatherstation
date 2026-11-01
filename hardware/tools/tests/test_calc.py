@@ -23,5 +23,13 @@ def test_bom_has_required_columns_and_no_bad_numbers():
     assert "FAIL" not in r.stdout and r.returncode == 0
 
 
-def test_strict_fails_while_part_numbers_are_missing():
-    assert run("bom_check.py", "hardware/weatherstation-v1", "--strict").returncode == 1
+def test_strict_fails_while_part_numbers_are_missing(tmp_path):
+    # Regression guard on a copy: mark one LCSC number TBD (the open-input marker), --strict must fail.
+    # The real BOM has no TBD rows now.
+    import shutil
+    board = tmp_path / "board"
+    shutil.copytree(ROOT / "hardware/weatherstation-v1", board, ignore=shutil.ignore_patterns("datasheets"))
+    bom = board / "bom.csv"
+    bom.write_text(bom.read_text().replace("C2913198", "TBD", 1))
+    r = subprocess.run([sys.executable, str(CALC / "bom_check.py"), str(board), "--strict"], capture_output=True, text=True, cwd=ROOT)
+    assert r.returncode == 1

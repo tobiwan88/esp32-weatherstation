@@ -45,43 +45,40 @@ alternates:
   C3001973:
     - {lcsc: C129529, note: "SMBJ12A TVS, MCC: same footprint (SMB)"}
 
-power: []   # switching-regulator inputs for calc/buck.py: none (LDO + two charger ICs). Charger/LDO/energy checks: design:
-
-# Inputs of calc/power_budget.py. value null = MISSING, no source = WARN. `source: assumption` = still a guess.
+power: []   # switching-regulator inputs for calc/buck.py: none (buck-boost and charger ICs are checked in design:)
+# Inputs of calc/power_budget.py. value null = MISSING, no source = WARN (unsourced). `source: assumption` = still a guess.
 design:
-  cn3791:
-    vmppt_v: {value: 1.205, source: "CN3791 datasheet, MPPT pin regulation voltage (section not recorded yet)"}
-    vcs_v: {value: 0.12, source: "CN3791 datasheet: charge current set by 120 mV reference over Rcs (section not recorded yet)"}
-    diode_drop_v: {value: 0.3, source: assumption}     # SS34 reverse protection at low current
-    r_top_ohm: 39000      # R15 (TBD part number), MPPT divider top
-    r_bottom_ohm: 10000   # R4
-    rcs_ohm: 0.12         # R14 (TBD part number)
-  panel:
-    vmp_v: {value: null, source: null}                 # fill from the real panel's datasheet (6 V class panel Vmp is about 6-6.5 V)
-  tp4056:
-    k_ma_kohm: {value: 1200, source: "TP4056 datasheet: IBAT = 1200 / RPROG (kohm)"}
-    prog_ohm: 3000        # R26 (TBD part number)
-    vin_v: 5.0
-    max_diss_w: 0.6
-  battery:
-    vtyp_v: 3.7
-    vcutoff_v: {value: 3.5, source: "calc/power_budget.py: 3.35 V left only +33 mV LDO headroom over the SEN66 minimum at 0.35 A"}  # firmware: sensors off below this
-    cell_mah: {value: 3000, source: assumption}        # protected 18650
-  ldo:
+  charger:                 # BQ25798 (C2876593): register values written by firmware before CE is released
+    vreg_v: {value: 3.65, source: "CBAK 26700LT spec A/03: standard end of charge 3.65 V (charge-policy.md)"}
+    vreg_accuracy_mv: {value: 35, source: "BQ25798 datasheet SLUSDV2C section 6.5: VREG_ACC -0.45 % to +0.95 % (specified at VREG 4.2 V; worst high 0.95 % x 3.65 V = 35 mV, not specified at 3.65 V)"}
+    ichg_a: {value: 1.5, source: "0.38C of 3.9 Ah; inside the HY2112 charge overcurrent (-170 mV minimum): 2 x 48 mOhm x 1.5 A = 144 mV; 1.9 A would trip it (power_budget check). Panel supplies about 1 A anyway"}
+  hy2112:                  # HY2112-CB protection (U6) and its pack-negative FETs M60/M61
+    fet_rds_ohm: {value: 0.048, source: "AO3400A (C20917) JLCPCB listing: 48 mOhm at 2.5 V gate; worst case used"}
+    oc_charge_v: {value: 0.170, source: "HY2112-CB table 1 / section 9: charge overcurrent -200 mV +/- 30 mV, minimum magnitude 170 mV"}
+    oc_discharge_v: {value: 0.185, source: "HY2112-CB section 9: discharge overcurrent 200 mV +/- 15 mV, minimum 185 mV"}
+  cell:                    # CBAK 26700LT spec A/03 (LFP). Cold charging is firmware-managed (charge-policy.md).
+    vmax_v: {value: 3.75, source: "CBAK 26700LT spec A/03: limited charge voltage 3.75 V (upper limit 3.8 V)"}
+    cell_mah: {value: 3900, source: "CBAK 26700LT spec A/03: minimum capacity 3900 mAh (typical 4000)"}
+    vcut_cell_v: {value: 2.0, source: "CBAK 26700LT spec A/03: standard discharge cut-off 2.0 V (must not exceed the HY2112 2.10 V detection)"}
+    hy2112_overdischarge_v: {value: 2.10, source: "HY2112-CB datasheet DS-HY2112 V08 table 1: overdischarge detection 2.10 V"}
+    vcutoff_firmware_v: {value: 2.4, source: "firmware policy: sensors off above the HY2112 detection (2.10 V) so the protection never acts on a normal load"}
+  buckboost:               # TPS63802 (3.3 V), see cells.md and BOARD.md power review
+    vin_min_v: {value: 1.3, source: "TPS63802 datasheet table 8.3: input voltage 1.3 V minimum (1.8 V to start)"}
     vout_v: 3.3
-    dropout_v_at_a: [0.25, 0.6]                         # AP2112K-3.3 listing: 250 mV at 600 mA (datasheet section to record)
-    q1_rds_ohm: 0.06                                    # AO3401A 60 mohm at 4.5 V (JLCPCB listing)
+    path_r_ohm: {value: 0.15, source: "assumption: F1 PTC (about 40 mOhm) + M60/M61 AO3400A (about 35 mOhm each) + wiring"}
+  panel:
+    vmp_v: {value: 6.0, source: "assumption: 6 V class panels list Vmp 5.76-6.12 V (distributor listings, scratchpad panel.md); replace with the bought panel's datasheet value"}
   load:
-    peak_a: {value: 0.35, source: "SEN66 supply current listing (Future Electronics): 350 mA"}
-    sensor_vmin_v: {value: 3.15, source: "SEN66 supply 3.15-3.45 V (Future Electronics listing)"}
+    peak_a: {value: 0.35, source: "SEN66 datasheet Table 12: peak supply current 300 mA typ, 350 mA max (measurement, 2 ms pulses)"}
+    sensor_vmin_v: {value: 3.15, source: "SEN66 datasheet Table 12 + footnote 25: 3.15 V minimum incl. ripple, 3.3 V typ, 3.6 V max"}
   cycle:
     period_s: {value: 600, source: assumption}
     esp_active_s: {value: 15, source: assumption}
     esp_active_ma: {value: 100, source: assumption}
-    sen66_on_s: {value: 45, source: "third-party SEN66 board measurement, 45 s events"}
-    sen66_ma: {value: 85, source: "third-party SEN66 board measurement, about 85 mA average while on"}
-    sleep_ua: {value: 100, source: assumption}          # AP2112K Iq 55 uA + module + dividers
+    sen66_on_s: {value: 45, source: "assumption: SEN66 datasheet Table 2 PM start-up 30 s, plus margin for the 60 s average-current window"}
+    sen66_ma: {value: 110, source: "SEN66 datasheet Table 12: measurement mode average after first 60 s, 90 mA typ, 110 mA max (used: max)"}
+    sleep_ua: {value: 100, source: assumption}          # TPS63802 Iq 11 uA + HY2112 3 uA + module + dividers
   solar:
     panel_w: {value: 6, source: assumption}
-    psh_worst_h: {value: 0.7, source: assumption}       # peak-sun hours per day, Germany in December (estimate)
+    psh_worst_h: {value: 0.7, source: "design value for cloudy December, Germany. PVGIS-SARAH3 2005-2023, 45 deg: Dec mean 1.25 kWh/m2/d Frankfurt, 0.95 Hamburg; 27 % (Frankfurt) to 44 % (Hamburg) of Dec days below 0.5"}  # peak-sun hours per day
     system_eff: {value: 0.6, source: assumption}

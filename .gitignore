@@ -42,3 +42,7 @@ _autosave-*
 # Private notes and patterns
 CLAUDE.local.md
 .privacy-patterns
+
+# Vendor datasheets and app notes: not redistributed (see datasheets/SOURCES.md for URLs and revisions)
+hardware/weatherstation-v1/datasheets/*.pdf
+hardware/weatherstation-v1/datasheets/appnotes/*.pdf
