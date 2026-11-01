@@ -1,5 +1,5 @@
 """weatherstation-v1 schematic: BQ25798 charger for USB-C and a PV panel, ESP32-S3-WROOM-1, 3.3 V LDO,
-switched sensor rail, SEN66 / SHT45 connectors, ZE25-O3 gas-sensor connector.
+switched sensor rail, PMS7003 PM sensor and ZE25-O3 on a switched 5 V rail, SHT45 cable, optional SCD41 (DNP).
 
 PARTS and NETS are the source of truth. check_nets() compares them with KiCad's own netlist.
 Drawing: each pin gets a short stub with a net label (global label when the net crosses sheets,
@@ -143,8 +143,8 @@ PARTS = {
     "R42": ("Device:R", "100k", R0603, "C25803", "Rails"),
     "C42": ("Device:C", "22u", C0805, "C45783", "Rails"),
     "C43": ("Device:C", "22u", C0805, "C45783", "Rails"),
-    # GAS_VCC 5 V boost for the ZE25-O3 (3.7-5.5 V; PARTS-REVIEW A5, decided 2026-11-01). TPS61023 (TI SLVSF14B): VIN 0.5-5.5 V
-    # (start 1.8 V), true input/output disconnect and 0.1 uA in shutdown, so EN low = J8 unpowered. EN from GAS_EN (IO12),
+    # 5V_SW 5 V boost for the ZE25-O3 (3.7-5.5 V; PARTS-REVIEW A5, decided 2026-11-01). TPS61023 (TI SLVSF14B): VIN 0.5-5.5 V
+    # (start 1.8 V), true input/output disconnect and 0.1 uA in shutdown, so EN low = J8 unpowered. EN from BOOST_EN (IO12),
     # R45 pulls EN low = off by default (reset, deep sleep without hold). Figure 8-1 circuit: 1 uH, 10 uF in, 2 x 22 uF out.
     # FB: VREF 0.595 V x (1 + 510k/68k) = 5.06 V (580-610 mV: 4.93-5.18 V, OVP 5.5 V min). Values reuse BOM lines.
     "U7": ("weatherstation:TPS61023DRL", "TPS61023DRLR 5 V boost", "Package_TO_SOT_SMD:SOT-563", "C919459", "Rails"),
@@ -159,7 +159,16 @@ PARTS = {
     "TP2": ("Connector:TestPoint", "SYS", TP, None, "Rails"),
     "#FLG10": ("power:PWR_FLAG", "PWR_FLAG", None, None, "Rails"),
     # --- Sensors -----------------------------------------------------------------------------
-    "J2": ("Connector_Generic:Conn_01x06", "SEN66 (GH 6-pin)", "Connector_JST:JST_GH_SM06B-GHS-TB_1x06-1MP_P1.25mm_Horizontal", "C133065", "Sensors"),
+    # PM sensor (option A, user 2026-11-01): Plantower PMS7003 on its 2x5 1.27 mm cable (manual V2.5): 1/2 VCC 5 V (4.5-5.5 V,
+    # <= 100 mA, standby <= 200 uA), 3/4 GND, 5 RESET (internal pull-up, open), 6/8 NC, 7 RX, 9 TX, 10 SET (high/open = run,
+    # low = sleep); data pins 3.3 V TTL. Stable data 30 s after wake-up. R48/R49 1k limit current into an unpowered module.
+    "J2": ("Connector_Generic:Conn_02x05_Odd_Even", "PMS7003 (2x5 1.27 mm)", "Connector_PinHeader_1.27mm:PinHeader_2x05_P1.27mm_Vertical", None, "Sensors"),
+    "R48": ("Device:R", "1k (PM RX series)", R0603, "C21190", "Sensors"),
+    "R49": ("Device:R", "1k (PM SET series)", R0603, "C21190", "Sensors"),
+    # optional CO2: Sensirion SCD41-D-R2 (LCSC C3659294), footprint only (DNP) until CO2 is wanted. Datasheet SCD4x v1.7:
+    # VDD 2.4-5.5 V, peak 205 mA max at 3.3 V, ripple <= 30 mV; VDD and VDDH tied at the sensor; single shot 0.45 mA avg (1/5 min).
+    "U8": ("Sensor_Gas:SCD41-D-R2", "SCD41 DNP (C3659294)", "Sensor:Sensirion_SCD4x-1EP_10.1x10.1mm_P1.25mm_EP4.8x4.8mm", None, "Sensors"),
+    "C47": ("Device:C", "10u (SCD41 VDD)", C0603, "C19702", "Sensors"),
     "J3": ("Connector_Generic:Conn_01x04", "SHT45 cable", "Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal", "C160404", "Sensors"),
     "J4": ("Connector_Generic:Conn_01x04", "spare port", "Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal", "C160404", "Sensors"),
     "U5": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (I2C)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "Sensors"),
@@ -226,8 +235,8 @@ NETS = {
     # deep sleep: ESP-IDF ulp_riscv_i2c allows SDA IO1/IO3, SCL IO0/IO2), sensors on IO13/IO14 (3V3_SW).
     "CHG_SDA": [("U3", "15"), ("U1", "39"), ("R54", "1")],
     "CHG_SCL": [("U3", "14"), ("U1", "38"), ("R55", "1")],
-    "SEN_SDA": [("U1", "21"), ("J2", "3"), ("J3", "3"), ("J4", "3"), ("R50", "1"), ("U5", "1"), ("U5", "6")],
-    "SEN_SCL": [("U1", "22"), ("J2", "4"), ("J3", "4"), ("J4", "4"), ("R51", "1"), ("U5", "3"), ("U5", "4")],
+    "SEN_SDA": [("U1", "21"), ("U8", "10"), ("J3", "3"), ("J4", "3"), ("R50", "1"), ("U5", "1"), ("U5", "6")],
+    "SEN_SCL": [("U1", "22"), ("U8", "9"), ("J3", "4"), ("J4", "4"), ("R51", "1"), ("U5", "3"), ("U5", "4")],
     # MCU sheet
     "EN": [("U1", "3"), ("R30", "2"), ("C33", "1"), ("SW10", "1")],
     "IO0": [("U1", "27"), ("R31", "2"), ("SW11", "1")],
@@ -236,19 +245,24 @@ NETS = {
     "TXD0": [("U1", "37"), ("J7", "2")],
     "RXD0": [("U1", "36"), ("J7", "3")],
     "SENSOR_EN": [("U1", "19"), ("R41", "1")],
-    "GAS_EN": [("U1", "20"), ("U7", "2"), ("R45", "1")],
+    "BOOST_EN": [("U1", "20"), ("U7", "2"), ("R45", "1")],
     "GAS_TXD": [("U1", "10"), ("R46", "1")],
     "GAS_RXIN": [("R46", "2"), ("R47", "1"), ("J8", "5")],
     "GAS_RXD": [("U1", "11"), ("J8", "6")],
     "GAS_DAC": [("U1", "7"), ("J8", "2")],  # IO7 = ADC1: backup reading if the UART fails
     # Rails sheet
-    "3V3_SW": [("Q40", "3"), ("C42", "1"), ("C43", "1"), ("J2", "1"), ("J3", "2"), ("J4", "2"), ("U5", "5"), ("R50", "2"), ("R51", "2"),
+    "3V3_SW": [("Q40", "3"), ("C42", "1"), ("C43", "1"), ("U8", "7"), ("U8", "19"), ("C47", "1"), ("J3", "2"), ("J4", "2"), ("U5", "5"), ("R50", "2"), ("R51", "2"),
                ("#FLG10", "1")],
     "SEN_G": [("Q40", "1"), ("R40", "2"), ("Q41", "3")],
     "SEN_EN_G": [("Q41", "1"), ("R41", "2"), ("R42", "1")],
     "GAS_SW": [("U7", "5"), ("L5", "2")],
     "GAS_FB": [("U7", "1"), ("R43", "2"), ("R44", "1")],
-    "GAS_VCC": [("U7", "6"), ("R43", "1"), ("C45", "1"), ("C46", "1"), ("J8", "4")],
+    "5V_SW": [("U7", "6"), ("R43", "1"), ("C45", "1"), ("C46", "1"), ("J8", "4"), ("J2", "1"), ("J2", "2")],
+    "PM_TXD": [("U1", "4"), ("R48", "1")],     # IO4 = UART2 TX
+    "PM_RXIN": [("R48", "2"), ("J2", "7")],
+    "PM_RXD": [("U1", "5"), ("J2", "9")],      # IO5 = UART2 RX
+    "PM_SET": [("U1", "6"), ("R49", "1")],     # IO6: low = PMS7003 sleep (fan off) while 5V_SW stays on for the O3 module
+    "PM_SETIN": [("R49", "2"), ("J2", "10")],
     # Power symbols
     # R20 (CE pull-up) on +3V3, not REGN: CE is also an ESP32 GPIO (3.3 V I/O). PARTS-REVIEW A7.
     "+3V3": [("R20", "1"), ("U1", "2"), ("C30", "1"), ("C31", "1"), ("C32", "1"), ("R30", "1"), ("R31", "1"), ("J7", "1"), ("R22", "2"),
@@ -264,12 +278,12 @@ NETS = {
             ("U1", "1"), ("U1", "40"), ("U1", "41"), ("C30", "2"), ("C31", "2"), ("C32", "2"),
             ("C33", "2"), ("SW10", "2"), ("SW11", "2"), ("J7", "4"), ("C40", "2"), ("C41", "2"), ("Q41", "2"),
             ("R42", "2"), ("C42", "2"), ("C43", "2"), ("U7", "4"), ("R44", "2"), ("R45", "2"), ("C44", "2"), ("C45", "2"),
-            ("C46", "2"), ("J2", "2"), ("J3", "1"),
+            ("C46", "2"), ("J2", "3"), ("J2", "4"), ("U8", "6"), ("U8", "20"), ("U8", "21"), ("C47", "2"), ("J3", "1"),
             ("J4", "1"), ("U5", "2"), ("J8", "3"), ("R47", "2"), ("#FLG12", "1")],
 }
 # Rails: drawn as a power symbol on every pin (never routed as a wire, no hierarchical label). This is how an engineer
 # reads a schematic: a capacitor with a rail symbol on top and GND below is decoupling for that rail, no wire to trace.
-POWER_SYMBOLS = ("GND", "+3V3", "3V3_SW", "SYS", "VBUS", "USB_VBUS", "PMID", "REGN", "GAS_VCC", "BAT_PACK")
+POWER_SYMBOLS = ("GND", "+3V3", "3V3_SW", "SYS", "VBUS", "USB_VBUS", "PMID", "REGN", "5V_SW", "BAT_PACK")
 RAIL_LIB = {"GND": "power:GND", "+3V3": "power:+3V3", "VBUS": "power:VBUS"}  # others: power:VCC with the net as value
 
 
@@ -727,7 +741,7 @@ def root_interfaces():
     texts = [(6, 6, "#weatherstation v1 (esp32-weatherstation): block diagram"),
              (6, 10, "Each box is a sheet. Wires join the sheet pins, which are the hierarchical labels inside each sheet."),
              (6, 96, "Power path: USB-C or PV -> Input (ACFET/RBFET pairs) -> VBUS -> Charger (BQ25798) -> SYS -> Rails (TPS63802) -> +3V3 -> 3V3_SW;"),
-             (6, 98, "SYS -> TPS61023 5 V boost -> GAS_VCC. Cell: Battery (HY2112, PTC) <-> BAT_PACK <-> Charger. Rails (GND, +3V3, SYS, VBUS, ...) are power symbols on each sheet, not wires here."),
+             (6, 98, "SYS -> TPS61023 5 V boost -> 5V_SW. Cell: Battery (HY2112, PTC) <-> BAT_PACK <-> Charger. Rails (GND, +3V3, SYS, VBUS, ...) are power symbols on each sheet, not wires here."),
              (6, 101, "Open engineer decisions: hardware/weatherstation-v1/PARTS-REVIEW.md (parts and circuit review, 2026-11-01).")]
     # unrouted nets: the reserved 1-cell exit stub out of the box with the label at its end, text pointing away from the box
     root_labels = []
@@ -784,7 +798,7 @@ JLC_CLASS = {"C165948": "Extended", "C7519": "Extended", "C23186": "Basic", "C15
              # Basic swaps 2026-11-01
              "C1622": "Basic", "C1588": "Basic", "C25808": "Basic", "C22984": "Basic", "C22975": "Basic",
              "C22961": "Basic", "C23153": "Basic", "C23192": "Basic"}  # TPS61023DRLR 44.7k stock, 68k (2026-11-01)
-HAND_SOLDER = {"J5", "J6", "J7", "J8"}  # JST PH and pin header: hand-soldered, not in the assembly BOM
+HAND_SOLDER = {"J2", "J5", "J6", "J7", "J8"}  # JST PH and pin header: hand-soldered, not in the assembly BOM
 
 
 def write_bom(path: Path) -> None:

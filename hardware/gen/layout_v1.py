@@ -66,20 +66,26 @@ BLOCKS = {
          (4, 56, 62, 36), {
              "Q40": (30, 71, 0), "R40": (22, 66, 0), "Q41": (21, 81, 0), "R41": (12, 81, 90), "R42": (16, 88, 0),
              "C42": (44, 68, 0), "C43": (49, 68, 0)}),
-        ("GAS_VCC 5 V boost", "TPS61023: SYS -> 5.06 V for the ZE25-O3. EN = GAS_EN (IO12); R45 = off by default; off = output disconnected, 0.1 uA. FB 0.595 V x (1 + 510k/68k)",
+        ("5V_SW 5 V boost", "TPS61023: SYS -> 5.06 V for the PMS7003 and the ZE25-O3. EN = BOOST_EN (IO12); R45 = off by default; off = output disconnected, 0.1 uA. FB 0.595 V x (1 + 510k/68k)",
          (72, 56, 56, 36), {
              "C44": (76, 76, 0), "L5": (92, 66, 90), "U7": (92, 74, 0), "R45": (82, 84, 0),
              "R43": (108, 76, 0), "R44": (108, 85, 0), "C45": (116, 77, 0), "C46": (121, 77, 0)}),
     ],
     "Sensors": [
-        ("Sensor connectors", "J2 SEN66 (GH 6-pin: 1 VDD, 2 GND, 3 SDA, 4 SCL, 5/6 NC). J3 SHT45 outdoor cable and J4 spare (Qwiic order: GND, VDD, SDA, SCL). All on 3V3_SW",
+        ("I2C sensor connectors", "J3 SHT45 board in the radiation shield (outdoor cable) and J4 spare (Qwiic order: GND, VDD, SDA, SCL). Both on 3V3_SW",
          (4, 10, 70, 46), {
-             "J2": (40, 24, 0), "J3": (40, 36, 0), "J4": (40, 46, 0)}),
+             "J3": (40, 36, 0), "J4": (40, 46, 0)}),
+        ("PM sensor PMS7003", "J2 (hand-solder, 2x5 1.27 mm, manual V2.5): 1/2 5V_SW, 3/4 GND, 7 RX <- IO4 via R48, 9 TX -> IO5, 10 SET <- IO6 via R49 (low = sleep); 5 RESET, 6, 8 open. Data 3.3 V TTL",
+         (78, 10, 80, 46), {
+             "J2": (120, 30, 0), "R48": (100, 31, 90), "R49": (100, 35, 90)}),
+        ("CO2 SCD41 (DNP)", "Footprint only; VDD = VDDH at the sensor, 3V3_SW",
+         (126, 60, 32, 30), {
+             "U8": (146, 76, 0), "C47": (134, 76, 0)}),
         ("I2C pull-ups and cable ESD", "Sensor I2C bus (IO13/IO14): pull-ups 10k to 3V3_SW; USBLC6 (U5, VBUS on 3V3_SW) on the outdoor cable lines. Charger bus is separate (Charger sheet)",
          (4, 60, 62, 30), {
              "R50": (12, 72, 180), "R51": (17, 72, 180), "U5": (38, 72, 0)}),
-        ("ZE25-O3 gas connector", "J8 (hand-solder, 1:1 to the module): 2 DAC -> IO7, 3 GND, 4 GAS_VCC, 5 RXD (3.0 V via R46/R47), 6 TXD -> IO18; 1, 7 reserved",
-         (72, 60, 56, 30), {
+        ("ZE25-O3 gas connector", "J8 (hand-solder, 1:1 to the module): 2 DAC -> IO7, 3 GND, 4 5V_SW, 5 RXD (3.0 V via R46/R47), 6 TXD -> IO18; 1, 7 reserved",
+         (70, 60, 54, 30), {
              "J8": (100, 74, 0), "R46": (84, 72, 90), "R47": (88, 80, 0)}),
     ],
 }
@@ -120,10 +126,8 @@ HAND_ROUTES = {
     },
     # sensor I2C bus: one vertical line per signal left of the connectors (SDA x 26, SCL x 24; SCL crosses SDA, no dot)
     "Sensors": {
-        "SEN_SDA": [[("J2", "3"), (26, 24), (26, 37)], [(26, 37), (26, 47)], [(26, 47), ("J4", "3")], [("J3", "3"), (26, 37)],
-                    [(26, 47), (26, 51)]],
-        "SEN_SCL": [[("J2", "4"), (24, 25), (24, 38)], [(24, 38), (24, 48)], [(24, 48), ("J4", "4")], [("J3", "4"), (24, 38)],
-                    [(24, 48), (24, 51)]],
+        "SEN_SDA": [[("J3", "3"), (26, 37)], [(26, 37), (26, 47)], [(26, 47), ("J4", "3")], [(26, 47), (26, 51)]],
+        "SEN_SCL": [[("J3", "4"), (24, 38)], [(24, 38), (24, 48)], [(24, 48), ("J4", "4")], [(24, 48), (24, 51)]],
     },
 }
 # name label of a hand-drawn net at a fixed wire end (x, y cells, text angle): sheet -> net
@@ -141,8 +145,8 @@ SHEET_NOTES = {
     "Charger": "BQ25798RQMR: one charger for USB and PV. Power stage, SYS bulk, programming and status. Cell side on the Battery sheet",
     "Battery": "Cell connector, PTC, cell NTC, HY2112-CB overcharge/overdischarge/overcurrent protection and its pack-negative FETs",
     "MCU": "ESP32-S3-WROOM-1-N8: decoupling, reset and boot, USB data series resistors, UART debug",
-    "Rails": "SYS to 3.3 V (TPS63802), switched 3V3_SW sensor rail and the GAS_VCC 5 V boost (TPS61023, enable from IO12)",
-    "Sensors": "SEN66 and SHT45 connectors, spare port, I2C ESD and pull-ups, ZE25-O3 gas connector",
+    "Rails": "SYS to 3.3 V (TPS63802), switched 3V3_SW sensor rail and the 5V_SW 5 V boost (TPS61023, enable from IO12)",
+    "Sensors": "PMS7003 PM sensor, SHT45 cable, spare port, I2C ESD and pull-ups, optional SCD41 (DNP), ZE25-O3 gas connector",
 }
 
 # root block diagram boxes (cells): sheet -> (x, y, w, h)
@@ -167,6 +171,6 @@ SHEET_PURPOSE = {
     "Charger": "BQ25798 charger: turns VBUS (USB or solar) into battery charge current and SYS power. Programmed over I2C by the firmware: 1S, 1.5 MHz, 3.65 V, 1.5 A.",
     "Battery": "Cell connection and protection: fuse (PTC), cell temperature sensor for the charger, HY2112-CB overcharge, overdischarge and overcurrent protection with its pack-negative FETs.",
     "MCU": "ESP32-S3 module: runs the firmware, USB data, reset and boot, debug UART. Controls the charger over I2C and switches the sensor rails.",
-    "Rails": "SYS to 3.3 V buck-boost (TPS63802). Switched 3V3_SW for the SEN66 and SHT45; TPS61023 5 V boost (GAS_VCC) for the gas sensor, enabled by the ESP32. Sensors are off between measurements.",
-    "Sensors": "Connectors for the SEN66 (PM, CO2, T/RH, NOx), the outdoor SHT45 and the ZE25-O3 gas sensor; I2C pull-ups and ESD protection.",
+    "Rails": "SYS to 3.3 V buck-boost (TPS63802). Switched 3V3_SW for the SHT45 cable and the optional SCD41; TPS61023 5 V boost (5V_SW) for the PMS7003 and the O3 module, enabled by the ESP32. Sensors are off between measurements.",
+    "Sensors": "PMS7003 PM sensor (5 V, UART), the outdoor SHT45 board, optional SCD41 CO2 (not fitted) and the ZE25-O3 gas sensor; I2C pull-ups and ESD protection.",
 }

@@ -37,14 +37,15 @@ TPS63802,U2,weatherstation:TPS63802_DLA_VSON-HR-10_2x3mm,1,C2845237,Extended,VER
 0.47uH,L4,weatherstation:L_Sunlord_WPN201610H,1,C97009,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"L4: 0.47uH (Sunlord WPN201610HR47MT: Isat 4.0 A max, Irms 2.7 A)"
 220k 1%,R52,Resistor_SMD:R_0603_1608Metric,1,C22961,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R52: 220k 1% (FB top: 0.5 V x (1 + 220k/39k) = 3.32 V)
 39k 1%,R53,Resistor_SMD:R_0603_1608Metric,1,C23153,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"R53: 39k 1% (FB bottom, datasheet max 100k)"
-10u,"C40,C44",Capacitor_SMD:C_0603_1608Metric,2,C19702,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),C44: 10u (boost input)
+10u,"C40,C44,C47",Capacitor_SMD:C_0603_1608Metric,3,C19702,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),C44: 10u (boost input); C47: 10u (SCD41 VDD)
 AO3401A,Q40,Package_TO_SOT_SMD:SOT-23,1,C15127,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),Q40: AO3401A 3V3_SW switch
 2N7002,Q41,Package_TO_SOT_SMD:SOT-23,1,C8545,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),Q41: 2N7002 (sensor enable)
-1k,"R41,R46",Resistor_SMD:R_0603_1608Metric,2,C21190,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R46: 1k (GAS RXD level: 3.3 V x 10/11 = 3.0 V)
+1k,"R41,R46,R48,R49",Resistor_SMD:R_0603_1608Metric,4,C21190,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R46: 1k (GAS RXD level: 3.3 V x 10/11 = 3.0 V); R48: 1k (PM RX series); R49: 1k (PM SET series)
 TPS61023,U7,Package_TO_SOT_SMD:SOT-563,1,C919459,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U7: TPS61023DRLR 5 V boost
 510k 1%,R43,Resistor_SMD:R_0603_1608Metric,1,C23192,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R43: 510k 1% (boost FB top: 0.595 V x (1 + 510k/68k) = 5.06 V)
 68k 1%,R44,Resistor_SMD:R_0603_1608Metric,1,C23231,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R44: 68k 1% (boost FB bottom)
-SEN66,J2,Connector_JST:JST_GH_SM06B-GHS-TB_1x06-1MP_P1.25mm_Horizontal,1,C133065,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),J2: SEN66 (GH 6-pin)
+PMS7003,J2,Connector_PinHeader_1.27mm:PinHeader_2x05_P1.27mm_Vertical,1,n/a,n/a,HAND-SOLDER,J2: PMS7003 (2x5 1.27 mm)
+SCD41 DNP,U8,Sensor:Sensirion_SCD4x-1EP_10.1x10.1mm_P1.25mm_EP4.8x4.8mm,1,n/a,n/a,NOT ASSEMBLED,U8: SCD41 DNP (C3659294)
 SHT45 cable,"J3,J4",Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,2,C160404,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),J4: spare port
 ZE25-O3,J8,Connector_JST:JST_PH_B7B-PH-K_1x07_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,J8: ZE25-O3 (cable pitch to confirm)
 Test points,"TP1,TP2",TestPoint:TestPoint_Pad_D1.5mm,2,n/a,n/a,PCB pads only,GND/3V3 test pads

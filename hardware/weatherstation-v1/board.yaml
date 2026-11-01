@@ -73,14 +73,16 @@ design:
     vmp_v: {value: 5.71, source: "Voltaic P110 product page: Vmp 5.71 V, Imp 1.67 A, 9.54 W, +/-10 %"}
     voc_v: {value: 6.94, source: "Voltaic P110 product page: Voc 6.94 V. Cold estimate (-0.3 %/K typical mono-Si, not on the page): about 7.9 V at -20 C, below the SMBJ10A 10 V standoff"}
   load:
-    peak_a: {value: 0.35, source: "SEN66 datasheet Table 12: peak supply current 300 mA typ, 350 mA max (measurement, 2 ms pulses)"}
-    sensor_vmin_v: {value: 3.15, source: "SEN66 datasheet Table 12 + footnote 25: 3.15 V minimum incl. ripple, 3.3 V typ, 3.6 V max"}
+    # cell-side peak: ESP32 WiFi TX (assumption about 0.35 A at 3.3 V -> about 0.4 A at the cell) + PMS7003 (0.1 A at 5 V ->
+    # 0.19 A at 3.2 V with 85 % boost efficiency). The SCD41 (DNP) would add up to 0.205 A at 3.3 V when fitted.
+    peak_a: {value: 0.6, source: "estimate: ESP32 TX about 0.4 A + PMS7003 0.19 A at the cell (PMS7003 manual V2.5: active <= 100 mA at 5 V)"}
+    sensor_vmin_v: {value: 2.4, source: "SCD4x datasheet v1.7 table 4: VDD 2.4-5.5 V (SHT45 1.08-3.6 V); 3V3_SW is 3.32 V"}
   cycle:
     period_s: {value: 600, source: assumption}
     esp_active_s: {value: 15, source: assumption}
     esp_active_ma: {value: 100, source: assumption}
-    sen66_on_s: {value: 45, source: "assumption: SEN66 datasheet Table 2 PM start-up 30 s, plus margin for the 60 s average-current window"}
-    sen66_ma: {value: 110, source: "SEN66 datasheet Table 12: measurement mode average after first 60 s, 90 mA typ, 110 mA max (used: max)"}
+    sensor_on_s: {value: 45, source: "PMS7003 manual V2.5: stable data at least 30 s after wake-up; 45 s = 30 s + readings + margin"}
+    sensor_ma: {value: 190, source: "PMS7003 manual V2.5: active <= 100 mA at 5 V; at the cell 5 V x 0.1 A / 0.85 (TPS61023, assumption) / 3.2 V = 184 mA, rounded up"}
     sleep_ua: {value: 100, source: assumption}          # TPS63802 Iq 11 uA + HY2112 3 uA + module + dividers
   solar:
     panel_w: {value: 10, source: "decision 2026-11-01: 6 V class, about 10 W (e.g. Voltaic P110 9.5 W, or 2 x 6 V 5 W in parallel). Covers 0.96 Wh/day from 0.16 peak-sun hours, 1.5x margin from 0.24 h; replace with the bought panel's datasheet"}

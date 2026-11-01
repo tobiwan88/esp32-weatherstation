@@ -8,9 +8,14 @@ BOM: `bom.csv` (JLCPCB columns plus Class/Status/notes). Order checklist: `ORDER
 Solar + USB-C powered ESP32-S3 air-quality weather station, about 50 x 45 mm, 4 layers (In1 and In2 both solid GND),
 JLC04161H-7628, JLCPCB Economic PCBA (one side, SMT; connectors J5/J6/J7 and the battery are hand-soldered).
 ESP32-S3-WROOM-1-N8 (C2913198), TPS63802 3.3 V buck-boost, BQ25798 charger (USB + PV), HY2112-CB 1S protection, one 26700 LFP cell,
-switched 3V3_SW sensor rail (Q2), SEN66 on a GH connector (PM, CO2, T/RH, NOx index), SHT45 off-board on a Qwiic cable in a
-radiation shield, spare Qwiic port. USB-C = programming, debug (native USB-JTAG) and charging.
+switched 3V3_SW sensor rail (Q40), switched 5 V rail 5V_SW (TPS61023), PMS7003 PM sensor on J2 (5V_SW, UART IO4/IO5), SHT45 on
+its own small board in a radiation shield (cable to J3), spare Qwiic port, optional SCD41 CO2 (U8, DNP) and ZE25-O3 (J8).
+USB-C = programming, debug (native USB-JTAG) and charging.
 Status: schematic v1 generated (`hardware/gen/weatherstation_v1.py`, ERC 0 errors, net check OK). Layout not started.
+
+## Sensor set (2026-11-01, user: option A)
+SEN66 dropped for cost; see `sensors.md`. PMS7003 (PM) + own SHT45 board + SCD41 footprint (DNP) + ZE25-O3 (optional).
+No VOC/NOx index (needs continuous 1 Hz sampling). Sections below that mention the SEN66 are history.
 
 ## Cell choice and cost (2026-11-01)
 - **Latest decision (user): CBAK 26700LT with firmware-managed cold charging** (`charge-policy.md`). The standard 26650
@@ -104,15 +109,15 @@ the CN3791/TP4056 or the AP2112K are superseded.
 - Cold: the chip suspends charging below about 0 C (default; T1 is not a register). Between 0 and 10 C it charges at 20 %
   (JEITA_ISETC default). TS network 5.1k / 30k / 10k NTC (Basic parts; datasheet 5.24k / 30.31k). With B 3434 the thresholds move about +0.9 C: cold 1.9 C, cool 11.2 C, warm 45.3 C, hot 60.8 C (5.23k/30.1k gave 1.0 / 10.3 / 44.4 / 59.9 C); cold shifts to the safe side.
 - 3.3 V: TPS63802 buck-boost from SYS (2026-11-01; the AP2112K LDO was dropped, see the review). 3V3_SW: AO3401A switch (Q40) with 2N7002 enable.
-- Gas (ZE25-O3, 3.7-5.5 V; PARTS-REVIEW A5, decided 2026-11-01): J8 on GAS_VCC from a TPS61023 boost U7 (C919459) on SYS,
-  5.06 V (FB 510k/68k, VREF 0.595 V). EN = GAS_EN (IO12) with R45 100k pull-down: off by default; off = input and output
+- Gas (ZE25-O3, 3.7-5.5 V; PARTS-REVIEW A5, decided 2026-11-01): J8 (and since option A the PMS7003 J2) on 5V_SW from a TPS61023 boost U7 (C919459) on SYS,
+  5.06 V (FB 510k/68k, VREF 0.595 V). EN = BOOST_EN (IO12) with R45 100k pull-down: off by default; off = input and output
   disconnected, 0.1 uA. L5 1 uH (same part as L1), 10 uF in, 2 x 22 uF out (datasheet SLVSF14B figure 8-1).
   Firmware: drive GAS_TXD (IO17) low or set it to input while the boost is off (else the ESP32 back-powers the module RX).
 - I2C: two buses (PARTS-REVIEW A4, decided 2026-11-01). CHG_SDA/CHG_SCL (IO1/IO2, moved 2026-11-01 from IO4/IO5 to the RTC I2C pins for the ULP core): BQ25798 only, R54/R55 10k to +3V3, readable
-  with the sensors off. SEN_SDA/SEN_SCL (IO13/IO14): SEN66, SHT45, spare port, R50/R51 10k and U5 VBUS on 3V3_SW, so nothing
+  with the sensors off. SEN_SDA/SEN_SCL (IO13/IO14): SHT45 cable, spare port, SCD41 (DNP), R50/R51 10k and U5 VBUS on 3V3_SW, so nothing
   is back-powered. Firmware sets IO13/IO14 to input or low before it switches 3V3_SW off.
 - GPIO map (module pin, GPIO): CHG_SDA/CHG_SCL 39/38 (IO1/IO2); SEN_SDA/SEN_SCL 21/22 (IO13/IO14); CHG_CE 17 (IO9); CHG_INT 18 (IO10); SENSOR_EN 19 (IO11);
-  GAS_EN 20 (IO12); GAS_TXD 10 (IO17, to J8.5 through R46 1k / R47 10k = 3.0 V); GAS_RXD 11 (IO18, J8.6); GAS_DAC 7 (IO7, ADC1, J8.2); USB D-/D+ 13/14 (IO19/IO20); UART0 36/37; BOOT 27 (IO0).
+  PM_TXD 4 (IO4, via R48 1k to J2.7); PM_RXD 5 (IO5, J2.9); PM_SET 6 (IO6, via R49 1k to J2.10); BOOST_EN 20 (IO12); GAS_TXD 10 (IO17, to J8.5 through R46 1k / R47 10k = 3.0 V); GAS_RXD 11 (IO18, J8.6); GAS_DAC 7 (IO7, ADC1, J8.2); USB D-/D+ 13/14 (IO19/IO20); UART0 36/37; BOOT 27 (IO0).
 - Open items that the schematic does not settle: L1 Isat (VLS252010 candidate, 1 uH, needs 2.5 A+ check), ZE25-O3 supply current
   (pinout from Winsen table 2: J8 7-pin 1:1, cable pitch still to confirm), SMBJ10A vs PV Voc (6 V class panel only; Voc at or below 10 V). ACDRV wiring: common-source
   N-FET pair with ACDRV on the gates (datasheet 7.3.5); Table 7-7 detail still to check on the final netlist.

@@ -68,11 +68,11 @@ def run(design: dict) -> list:
                      f"cell spec {vcell_min} V <= HY2112 detection {vdl} V < firmware cut-off {vco} V (sensors off first)"))
 
     # energy budget
-    need = ("period_s", "esp_active_s", "esp_active_ma", "sen66_on_s", "sen66_ma", "sleep_ua")
+    need = ("period_s", "esp_active_s", "esp_active_ma", "sensor_on_s", "sensor_ma", "sleep_ua")
     cyv = {n: val(cy, n, rows, f"cycle.{n}") for n in need}
     if None not in cyv.values():
-        q = (cyv["esp_active_s"] * cyv["esp_active_ma"] + cyv["sen66_on_s"] * cyv["sen66_ma"]) / cyv["period_s"] + cyv["sleep_ua"] / 1000
-        wh = q * 3.7 * 24 / 1000
+        q = (cyv["esp_active_s"] * cyv["esp_active_ma"] + cyv["sensor_on_s"] * cyv["sensor_ma"]) / cyv["period_s"] + cyv["sleep_ua"] / 1000
+        wh = q * 3.2 * 24 / 1000  # LFP nominal 3.2 V (all currents are at the cell)
         rows.append(("OK", "average current", f"{q:.1f} mA at a {cyv['period_s']} s cycle, {wh:.2f} Wh/day"))
         cell = val(ce, "cell_mah", rows)
         if cell:
