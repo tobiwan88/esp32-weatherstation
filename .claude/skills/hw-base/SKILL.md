@@ -19,6 +19,21 @@ Board-neutral. Facts about one board live in its profile, never in a skill.
 - `hardware/agents/`: prompts for narrow helper agents.
 - Start every task by reading `BOARD.md` and `board.yaml` of the board you work on.
 
+## Requirements first (review, at gate 1)
+- Before any schematic: a cost target per finished unit, counting off-board modules, sensors, cell, panel and enclosure.
+  The board is often the cheap part; an expensive module found late forces a redesign.
+- Every load against the power cycle: warm-up, minimum on-time, sampling rate an algorithm needs. A sensor that must run
+  continuously does not fit a deep-sleep design; find that at selection, not after the drawing.
+- Pins that must work in deep sleep (low-power coprocessor buses, wake pins) and strapping pins are reserved before the pin map.
+
+## Changing a decision (review; gate)
+- A change of part, chemistry, value or pin is not done until every copy is updated: search the repo for the old name and
+  value (profile, `BOARD.md`, requirements, firmware rules, calc scripts, generator notes, skills' examples) and fix each.
+- Hidden copies are constants in scripts (a nominal voltage, a threshold): read the calc scripts the change touches.
+- Docs state what the netlist does (pull-up targets, pin map, enable defaults). When they differ, the netlist wins and the
+  doc is fixed; a contradiction between two docs is a question for the engineer.
+- Old decisions stay as dated history; the current state sits at the top of `BOARD.md`.
+
 ## Rule: numbers come from scripts
 - Any check with a number (distance, impedance, voltage, current, timing, length, stock) runs a script. Never estimate in the reply.
 - Look in `hardware/calc/` first. If nothing fits, write a script and keep it.
@@ -63,6 +78,9 @@ Board-neutral. Facts about one board live in its profile, never in a skill.
 
 ## Review roles
 - Narrow helper agents (small model): one image or one datasheet, one question, JSON answer (`hardware/agents/`). They read KiCad plots poorly: spell out the exact rule in the question.
+- Research agents (parts, prices): tell them to open pages rather than quote search snippets, to look parts up with the fab
+  stock tool, to tag every number as page / snippet / estimate, and to write "not found" instead of guessing. Check the
+  numbers that drive a decision yourself before they enter the profile.
 - Whole-board review: a fresh-context strong model with the skills, before the human review.
 - Humans: KiCad review, fab placement preview, payment, order.
 

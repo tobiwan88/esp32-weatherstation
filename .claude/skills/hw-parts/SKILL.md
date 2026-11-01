@@ -10,7 +10,11 @@ Read `hw-base`, then the board's `BOARD.md` (decisions, commands, order checklis
 ## Choosing a part (review)
 - Start from the requirement: function, supply voltage and current, package, temperature, the datasheet's application circuit.
 - Collect 2-3 candidates from the fab library; stock and price with the lookup tool in `BOARD.md`.
-- Prefer basic parts: other parts add a setup fee (gate counts them).
+- Basic first, at selection time: for every passive pick a basic value and do the divider/threshold math with it, rather
+  than choosing an exact value and hunting a basic part later. Other parts add a setup fee (gate counts them).
+- Fit to the power cycle: warm-up, minimum on-time, required sampling rate, current per phase (hw-base requirements).
+- Cost per finished unit, including modules and sensors bought outside the fab: write it into `BOARD.md` when it changes.
+- The fab listing's maker must match the datasheet's maker. Same series name from another maker = another drawing.
 - Stock covers boards x parts per board (gate FAILs below 1x, flags LOW STOCK below 2x).
 - Compare the footprint's land pattern and pin 1 with the datasheet drawing, not only the package name.
 - Add the part to the schematic generator with its fab part number; no number = not assembled.
@@ -21,6 +25,10 @@ Read `hw-base`, then the board's `BOARD.md` (decisions, commands, order checklis
 - One file `parts/<MPN>.yaml`: `source.url` (manufacturer site, not a distributor listing or third-party design), `source.revision`, and `values` with a `section` each. Format: an existing card.
 - Not read yet: `value: null`. Datasheet silent: `value: null, section: not stated`. Never fill a value from memory or a reference design.
 - Extraction: the helper prompt `hardware/agents/datasheet_extract.md`. Check each number against the PDF page yourself before it goes into the card.
+- Download: the maker's own URL first; fab/distributor datasheet links often return an HTML page. Each download goes to
+  its own new folder; check the `%PDF` header; read with `pdftotext -layout` or by viewing the page (figures, e.g. an
+  application circuit, are images). Record file, revision and URL in the board's datasheet source list.
+- When the user can download a file you cannot, ask; give the exact document and revision.
 - Check against the schematic; tick each item in the card's `checklist:` with the confirming section:
   - decoupling per supply pin: count, value, placement
   - enable/reset RC, pull-ups, strapping pins and their levels
@@ -31,6 +39,11 @@ Read `hw-base`, then the board's `BOARD.md` (decisions, commands, order checklis
   - thermal: exposed pad, dissipation, distance to sensors (review; script candidate)
   - layout notes: turn them into `critical.yaml` entries (kicad-layout)
 - `MISSING`: a card or profile value is still `null`. `WARN (unsourced)`: a value has no section or source. Fix both before ordering.
+
+## Swapping a value or part
+- Recompute every formula the part sits in (regulator feedback, current limits, thermistor thresholds) with the new value
+  and the datasheet limits (for example a maximum divider resistance); record the shift in the note (e.g. "+0.9 C").
+- Then follow hw-base "Changing a decision" for every copy of the old value.
 
 ## Stock and alternates
 - List substitutes in `board.yaml` `alternates`, each with a `note` of what else must change.
@@ -55,3 +68,6 @@ Read `hw-base`, then the board's `BOARD.md` (decisions, commands, order checklis
 | Pin 1 or centre pad unclear | fab package name vs KiCad footprint differ | compare land patterns with the datasheet drawing |
 | Part missing from BOM | no fab part number | add it, or it is hand-placed by design |
 | Card value plausible but unsourced | filled from memory or notes | find its section, or set it `null` |
+| Datasheet download is an HTML page | distributor link | maker URL, or ask the user for the PDF |
+| Footprint from one maker, part from another | same series name, other maker | get the listed maker's drawing |
+| Sensor fine on the bench, useless in the field | needs continuous sampling or long warm-up | check against the power cycle at selection |
