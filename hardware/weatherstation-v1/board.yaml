@@ -67,7 +67,11 @@ design:
     vout_v: 3.3
     path_r_ohm: {value: 0.15, source: "assumption: F1 PTC (about 40 mOhm) + M60/M61 AO3400A (about 35 mOhm each) + wiring"}
   panel:
-    vmp_v: {value: 6.0, source: "assumption: 6 V class panels list Vmp 5.76-6.12 V (distributor listings, scratchpad panel.md); replace with the bought panel's datasheet value"}
+    # Reference panel: Voltaic Systems P110 (10 W 6 V ETFE, 22.3 x 27.4 cm, 3.5 x 1.1 mm plug), voltaicsystems.com/p110,
+    # also at DigiKey 12154976. Other 6 V 10 W listings: Lion Energy 6.16 V Vmp / 7.39 V Voc. Avoid "6 V" panels rated
+    # Vmp 9 V / Voc 11 V (made for 6 V lead-acid): Voc above the SMBJ10A 10 V standoff.
+    vmp_v: {value: 5.71, source: "Voltaic P110 product page: Vmp 5.71 V, Imp 1.67 A, 9.54 W, +/-10 %"}
+    voc_v: {value: 6.94, source: "Voltaic P110 product page: Voc 6.94 V. Cold estimate (-0.3 %/K typical mono-Si, not on the page): about 7.9 V at -20 C, below the SMBJ10A 10 V standoff"}
   load:
     peak_a: {value: 0.35, source: "SEN66 datasheet Table 12: peak supply current 300 mA typ, 350 mA max (measurement, 2 ms pulses)"}
     sensor_vmin_v: {value: 3.15, source: "SEN66 datasheet Table 12 + footnote 25: 3.15 V minimum incl. ripple, 3.3 V typ, 3.6 V max"}

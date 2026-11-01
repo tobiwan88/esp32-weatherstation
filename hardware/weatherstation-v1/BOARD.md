@@ -87,7 +87,7 @@ the CN3791/TP4056 or the AP2112K are superseded.
 4. **Hot:** LFP charge stops at 50 C (spec); the chip's warm band starts at 45 C (TS_WARM default). The chip's hot-stop threshold
    is not recorded in this review: check figure 7-11 before relying on it.
 5. **Reverse polarity** of the cell is not protected (JST PH keyed). PV reverse is blocked by the ACFET/RBFET pairs (N-channel, back-to-back; body diodes oppose each other).
-6. **Open technical items:** L1 Isat (VLS252010 candidate); PV: 6 V class panel, Voc at or below 10 V (SMBJ10A standoff); TPS63802 and HY2112
+6. **Open technical items:** L1 Isat (VLS252010 candidate); PV: reference panel Voltaic P110 (Vmp 5.71 V, Voc 6.94 V, about 7.9 V at -20 C; board.yaml panel), Voc must stay at or below 10 V (SMBJ10A standoff); avoid "6 V" panels rated Vmp 9 V / Voc 11 V; TPS63802 and HY2112
    footprints (to verify against the land patterns); `power_budget.py` path resistance 0.15 ohm is an assumption.
    Resolved 2026-11-01: ACFET/RBFET are N-channel (datasheet 7.3.5: ACDRV 5 V above the common source), so AO3401A was replaced by
    AO3400A (C20917). L3 pinout and footprint come from EMTEK T-0602-102D (winding 1→2 and 4→3).

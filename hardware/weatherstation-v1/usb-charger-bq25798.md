@@ -72,7 +72,7 @@ The 4.2 V default would overcharge both cells. Firmware must write before enabli
 | REG01 VREG | 10 mV steps, 3.00-4.99 V for 1S (Table 7-2) | 3.65 V (cell limit 3.75 V) | **3.30 V** (cell maximum 3.35 V; spec 5.2) | Corrected 2026-11-01: the old 3.95 V belonged to the unverified 10 Ah listing and would overcharge the 32140NH. Verify with a DMM |
 | REG03 ICHG | 10 mA steps, 1 A default | 1.5 A | 1.5 A | 0.5C of the minimum 3.9 Ah is 1.95 A; 1.5 A also keeps the HY2112 charge overcurrent (-170 mV minimum) clear: 2 x 48 mOhm x 1.5 A = 144 mV (2026-11-01 review) |
 | REG00 VSYSMIN | 2.5-16 V, 250 mV steps, default 3.5 V (1S) | 4.0 V (charging only; SYS on battery alone follows the cell) | 4.0 V | Battery-only SYS follows the cell voltage; the former AP2112K LDO needed about 3.55 V in; replaced by the TPS63802 buck-boost (BOARD.md power review)
-| REG15 MPPT | VOC_PCT (bits 7-5), default 0x5 = 0.875; EN_MPPT bit 0 | 0x4 = 0.8125 | 0x4 = 0.8125 | Panel Vmp/Voc ratio; panel datasheet value replaces 0.8125 when known |
+| REG15 MPPT | VOC_PCT (bits 7-5), default 0x5 = 0.875; EN_MPPT bit 0 | 0x4 = 0.8125 | 0x4 = 0.8125 | Panel Vmp/Voc ratio: Voltaic P110 5.71 / 6.94 = 0.823, so 0x4 = 0.8125 fits (board.yaml panel) |
 | REG16 | TREG, TSHUT, PD enables | defaults | defaults | Thermal regulation 120 C default |
 | REG17 NTC_0 | JEITA_ISETC (cool band 0-10 C): default 20 % ICHG; 0 = suspend | 0 (suspend) or 1 (20 %) | same | Choose the cool-band policy here (see cold below) |
 | REG18 NTC_1 | TS_COOL 10 C default, TS_WARM 45 C default | defaults | defaults | |
