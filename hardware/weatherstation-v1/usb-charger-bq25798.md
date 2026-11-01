@@ -33,7 +33,7 @@ in the figures are internal: no external power FETs. External parts are only the
 | SYS | 1 uF + 5 x 10 uF | FIG (schematic uses 0.1 uF + 6 x 10 uF) |
 | BAT | internal BATFET between SYS and BAT | |
 | BATP | 100 ohm + 2 x 10 uF | FIG; optional 47 nF for hot plug on long leads |
-| Rs (VBUS to PMID) | 10 mohm candidate (2512, C2903462) | Input current sense, figure 8-1 "Rs". Value not read from the datasheet: OPEN |
+| Rs (VBUS to PMID) | none (removed 2026-11-01) | The "Rs" in figures 8-1/8-2 is the internal sense element (RSNS 8 mohm, electrical table); no external resistor. PARTS-REVIEW A2 |
 
 ## Pin-level netlist (single-input base; add the PV pair for the two-input board)
 | Pin | Connection | Value / note |

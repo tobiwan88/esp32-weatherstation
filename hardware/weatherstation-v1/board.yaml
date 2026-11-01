@@ -79,6 +79,6 @@ design:
     sen66_ma: {value: 110, source: "SEN66 datasheet Table 12: measurement mode average after first 60 s, 90 mA typ, 110 mA max (used: max)"}
     sleep_ua: {value: 100, source: assumption}          # TPS63802 Iq 11 uA + HY2112 3 uA + module + dividers
   solar:
-    panel_w: {value: 6, source: assumption}
+    panel_w: {value: 10, source: "decision 2026-11-01: 6 V class, about 10 W (e.g. Voltaic P110 9.5 W, or 2 x 6 V 5 W in parallel). Covers 0.96 Wh/day from 0.16 peak-sun hours, 1.5x margin from 0.24 h; replace with the bought panel's datasheet"}
     psh_worst_h: {value: 0.7, source: "design value for cloudy December, Germany. PVGIS-SARAH3 2005-2023, 45 deg: Dec mean 1.25 kWh/m2/d Frankfurt, 0.95 Hamburg; 27 % (Frankfurt) to 44 % (Hamburg) of Dec days below 0.5"}  # peak-sun hours per day
     system_eff: {value: 0.6, source: assumption}

@@ -51,3 +51,23 @@ Values could not be read: the PDFs stay closed by rule, and WebFetch returns the
 | SEN66 I2C address | not verified | not verified |
 | ESP32-S3-WROOM-1 strapping pins | not verified | not verified |
 | ESP32-S3-WROOM-1 reserved pins | not verified | not verified |
+
+## Status update 2026-11-01 (design parts)
+Obsolete entries (not in the v1 design any more): CN3791, TP4056, AP2112K-3.3, SWPA6045S220MT, SMBJ12A and SMBJ24A (now SMBJ10A), TYPE-C-31-M-12 only as a placeholder.
+
+| Part (design) | Local file | Source | Status |
+|---|---|---|---|
+| BQ25798RQMR | BQ25798.pdf | TI SLUSDV2C (copy from earlier download) | OK, read as text |
+| TPS63802DLA | TPS63802.pdf | TI (copy from earlier download) | OK |
+| TPS61023DRLR | TPS61023.pdf | TI https://www.ti.com/lit/ds/symlink/tps61023.pdf (SLVSF14B, Aug 2020; read sections 5, 6, 7.3, 8.2) | OK |
+| HY2112-CB | HY2112-CB.pdf | copy hosted by SIS (earlier download); maker URL blocked | OK, V08 |
+| CMF4532F (CMF4532F-102-2P-T) | CMF4532F_EMTEK_T-0602-102D.pdf | EMTEK T-0602-102D | OK |
+| AO3400A (ACFET/RBFET, M60/M61) | AO3400A.pdf | https://www.aosmd.com/res/datasheets/AO3400A.pdf | OK (AOS, 318 KB) |
+| SMBJ10A (PV TVS, Littelfuse, C151250) | MISSING (LCSC and littelfuse.com return HTML) | ratings from DigiKey listing 285966: standoff 10 V, breakdown 11.1-12.3 V, clamp 17 V at 35.3 A, 600 W | distributor data, maker PDF open |
+| CMF4532F-900-2P-T (L3, C963746) | MISSING (family file on hand covers -102 only) | LCSC PDF from jlcparts | open |
+| USBLC6-2SC6 (U4, U5) | MISSING | st.com CD00050750 URL did not download; alldatasheet returned HTML | open |
+| NCP18XH103F03RB (TH1) | MISSING | Murata product page not fetched; LCSC C13564 page is HTML | open |
+| CBAK 26700LT | MISSING | no spec sheet found by search; the cell spec read earlier came from the vendor (cells.md) | open |
+| WPN201610HR47MT (L4) | Sunlord_WPN.pdf | Sunlord WPN series spec rev. 2018/12/13, LCSC copy https://atta.szlcsc.com/upload/public/pdf/source/20190118/C279949_8691A842418E258E770FD4F4C03A4887.pdf; HR47MT: 0.47 uH, DCR 49 mohm max, Isat 4.0 A max / 4.7 typ, Irms 2.7 / 3.1 A; land a 0.7 / b 0.7 / c 1.7 | OK |
+| TYPE-C-31-M-12 (J1) | MISSING | earlier download was HTML | open |
+| VLS252010HBX-1R0M-1 (L1, L5, C88211) | TDK_VLS252010HBX-1.pdf | TDK catalogue 20160411 (Chinese edition), LCSC copy https://atta.szlcsc.com/upload/public/pdf/source/20161226/1482720146834.pdf; 1R0M-1: Rdc 65 mohm max, Isat 3.22 A max-rated / 3.57 typ, Itemp 2.55 / 3.00 A; land 0.6 / 1.3 / 0.6 x 2.0 (page 5) | OK |

@@ -99,6 +99,12 @@ First batch plus one complete station: about EUR 240-300 (5 boards cost about EU
 - ESPHome or Arduino; SEN66 stop/start measurement; discard first readings after power-up; fan-clean schedule.
 - Enable Q2 -> wait for SEN66 warm-up (about 30-60 s for stable PM) -> read -> disable.
 - Task watchdog and RTC-timer wake; GPIO hold for Q3 during sleep.
+- BQ25798 (PARTS-REVIEW B3/B5, 2026-11-01): at every boot write VREG 3.65 V and ICHG before releasing CE (CE is pulled high =
+  charge off). Disable the charger I2C watchdog (WATCHDOG = 00), or re-write VREG before each sleep: on watchdog expiry the
+  registers return to POR defaults (VREG 4.2 V, ICHG 1 A); the HY2112 3.75 V cut is only the backstop. Keep ICHG at 1.5 A or
+  below (L1 Isat 3 A, B4). After the first BC1.2 detection set AUTO_INDET_EN = 0 so D+/D- stay free for the ESP32 USB.
+- I2C: charger bus IO4/IO5, sensor bus IO13/IO14. Set IO13/IO14 to input or low before switching 3V3_SW off.
+- Gas: GAS_EN (IO12) high = TPS61023 on; drive GAS_TXD (IO17) low or input while the boost is off.
 
 ## 7. Open items before ordering
 1. Find LCSC numbers marked TBD in the BOM (0.12 ohm 1206, 39k, 1M, 220 nF, NTC 10k, 3k PROG resistor). The 2N7002 (C8545) and SMBJ12A TVS (C3001973) are now filled in.

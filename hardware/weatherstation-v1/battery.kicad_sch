@@ -1,0 +1,2620 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "83a8a7a8-f6d6-4884-85d0-512d97196f52")
+	(paper "A3")
+	(title_block
+		(title "weatherstation v1")
+		(date "2026-10-31")
+		(rev "v1")
+		(company "weatherstation")
+		(comment 1 "Sheet: Battery")
+		(comment 2 "Cell connector, PTC, cell NTC, HY2112-CB overcharge/overdisc")
+	)
+	(lib_symbols
+		(symbol "Connector_Generic:Conn_01x02"
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "J"
+				(at 0 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Conn_01x02"
+				(at 0 -5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "connector"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "Connector*:*_1x??_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "Conn_01x02_1_1"
+				(rectangle
+					(start -1.27 1.27)
+					(end 1.27 -3.81)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(rectangle
+					(start -1.27 0.127)
+					(end 0 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.27 -2.413)
+					(end 0 -2.667)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -5.08 0 0)
+					(length 3.81)
+					(name "Pin_1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -2.54 0)
+					(length 3.81)
+					(name "Pin_2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "power:PWR_FLAG"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#FLG"
+				(at 0 1.905 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "PWR_FLAG"
+				(at 0 3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Special symbol for telling ERC where power comes from"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "flag power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_0"
+				(pin power_out line
+					(at 0 0 90)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "weatherstation:HY2112-CB"
+			(pin_names
+				(offset 1.016)
+			)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at 0 7.85 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "HY2112-CB"
+				(at 0 -7.85 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.hycontek.com/wp-content/uploads/DS-HY2112_EN.pdf"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "HY2112-CB_0_1"
+				(rectangle
+					(start -7.62 6.35)
+					(end 7.62 -6.35)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "HY2112-CB_1_1"
+				(pin power_in line
+					(at -10.16 1.27 0)
+					(length 2.54)
+					(name "VDD"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -10.16 -1.27 0)
+					(length 2.54)
+					(name "VSS"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 10.16 3.81 180)
+					(length 2.54)
+					(name "OD"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at 10.16 1.27 180)
+					(length 2.54)
+					(name "CS"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 10.16 -1.27 180)
+					(length 2.54)
+					(name "OC"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at 10.16 -3.81 180)
+					(length 2.54)
+					(name "NC"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+			)
+		)
+		(symbol "Transistor_FET:AO3400A"
+			(property "Reference" "Q"
+				(at 5.08 1.905 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "AO3400A"
+				(at 5.08 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+				(at 5.08 -1.905 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(justify left)
+				)
+			)
+			(property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3400A.pdf"
+				(at 5.08 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Description" "30V Vds, 5.7A Id, N-Channel MOSFET, SOT-23"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "N-Channel MOSFET"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "SOT?23*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(embedded_fonts no)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(symbol "AO3400A_0_1"
+				(polyline
+					(pts
+						(xy 0.254 1.905) (xy 0.254 -1.905)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.254 0) (xy -2.54 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 2.286) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 0.508) (xy 0.762 -0.508)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 -1.27) (xy 0.762 -2.286)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 -1.778) (xy 3.302 -1.778) (xy 3.302 1.778) (xy 0.762 1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.016 0) (xy 2.032 0.381) (xy 2.032 -0.381) (xy 1.016 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(circle
+					(center 1.651 0)
+					(radius 2.794)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 2.54) (xy 2.54 1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.54 1.778)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(circle
+					(center 2.54 -1.778)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 -2.54) (xy 2.54 0) (xy 0.762 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.921 0.381) (xy 3.683 0.381)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.302 0.381) (xy 2.921 -0.254) (xy 3.683 -0.254) (xy 3.302 0.381)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "AO3400A_1_1"
+				(pin input line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "G"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 -5.08 90)
+					(length 2.54)
+					(name "S"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 5.08 270)
+					(length 2.54)
+					(name "D"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Device:Fuse"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "F"
+				(at 2.032 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Fuse"
+				(at -1.905 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at -1.778 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Fuse"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "fuse"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "*Fuse*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "Fuse_0_1"
+				(rectangle
+					(start -0.762 -2.54)
+					(end 0.762 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy 0 -2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Fuse_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Device:Thermistor_NTC"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "TH"
+				(at -4.445 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Thermistor_NTC"
+				(at 3.175 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 1.27 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 1.27 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Temperature dependent resistor, negative temperature coefficient"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "thermistor NTC resistor sensor RTD"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "R_* RV_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "Thermistor_NTC_0_1"
+				(arc
+					(start -3.175 2.413)
+					(mid -3.0506 2.3165)
+					(end -3.048 2.159)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -3.048 2.794)
+					(mid -2.9736 2.9736)
+					(end -2.794 3.048)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -2.794 3.048)
+					(mid -2.6144 2.9736)
+					(end -2.54 2.794)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -2.794 2.54)
+					(mid -2.9736 2.6144)
+					(end -3.048 2.794)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -2.794 1.905)
+					(mid -2.9736 1.9794)
+					(end -3.048 2.159)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -2.54 2.159)
+					(mid -2.6144 1.9794)
+					(end -2.794 1.905)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -2.159 2.794)
+					(mid -2.434 2.5608)
+					(end -2.794 2.54)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 2.159) (xy -2.54 2.794)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 -3.683) (xy -2.54 -1.397) (xy -2.794 -2.159) (xy -2.286 -2.159) (xy -2.54 -1.397) (xy -2.54 -1.651)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.778 2.54) (xy -1.778 1.524) (xy 1.778 -1.524) (xy 1.778 -2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.778 -1.397) (xy -1.778 -3.683) (xy -2.032 -2.921) (xy -1.524 -2.921) (xy -1.778 -3.683) (xy -1.778 -3.429)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -1.016 2.54)
+					(end 1.016 -2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Thermistor_NTC_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Device:R"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "R"
+				(at 2.032 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "R"
+				(at 0 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at -1.778 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "R_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Device:C"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.254)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "C"
+				(at 0.635 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "C"
+				(at 0.635 -2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 0.9652 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Unpolarized capacitor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "cap capacitor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "C_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "C_0_1"
+				(polyline
+					(pts
+						(xy -2.032 0.762) (xy 2.032 0.762)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "C_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 2.794)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 2.794)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "power:VCC"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#PWR"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "VCC"
+				(at 0 3.556 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"VCC\""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "VCC_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "VCC_1_1"
+				(pin power_in line
+					(at 0 0 90)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "power:GND"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "GND_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x02")
+		(at 25.4 76.2 0)
+		(mirror y)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "184bf436-2aaa-47cc-97c1-0b2b9856eaf6")
+		(property "Reference" "J6"
+			(at 25.4 78.74 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "BATTERY"
+			(at 25.4 71.12 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical"
+			(at 25.4 76.2 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "add88990-1d1f-4a0e-9bc3-68243e4104dd")
+		)
+		(pin "2"
+			(uuid "235b36e7-2113-4c0c-92e1-b3fcefdc66b0")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "J6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 110.49 53.34 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "1de68775-e2fc-486d-bdaf-865564c2425b")
+		(property "Reference" "#FLG13"
+			(at 110.49 55.245 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (hide yes)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 110.49 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ecb33d1c-cf01-4af7-aa75-a4c96e15a594")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "#FLG13")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 40.64 91.44 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "a7083ab3-ced1-41bb-9a58-83f54b161e7e")
+		(property "Reference" "#FLG14"
+			(at 40.64 93.345 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (hide yes)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 40.64 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5107d276-3a7e-483b-9766-9bd2f5cabb27")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "#FLG14")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "weatherstation:HY2112-CB")
+		(at 116.84 76.2 270)
+		(mirror y)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "d3f5a9a2-7625-4205-9a13-3c7af4fc1b32")
+		(property "Reference" "U6"
+			(at 124.69 76.2 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "HY2112-CB"
+			(at 108.99 76.2 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
+			(at 116.84 76.2 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C168764"
+			(at 119.38 81.2799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left) (hide yes)
+			)
+		)
+		(pin "5"
+			(uuid "a96afa8d-587f-4bf1-ae88-53e7a8d07c71")
+		)
+		(pin "6"
+			(uuid "534bffde-1f72-4f8e-bf35-529ec43c0ebf")
+		)
+		(pin "1"
+			(uuid "10d5d797-7236-497b-9729-d3b86e194f73")
+		)
+		(pin "2"
+			(uuid "dcc0c552-9d10-4eb8-8fea-6d8446a7919f")
+		)
+		(pin "3"
+			(uuid "e389d697-a4cb-4336-9d25-ea2c11e45034")
+		)
+		(pin "4"
+			(uuid "8149b5d8-3d75-4862-b99a-c1362caeae8b")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "U6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Transistor_FET:AO3400A")
+		(at 106.68 121.92 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "ac06d166-40ad-4c9f-8244-5933fe85fc35")
+		(property "Reference" "M60"
+			(at 106.68 127.32 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Value" "AO3400A"
+			(at 106.68 129.12 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+			(at 111.76 120.015 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C20917"
+			(at 109.22 126.9999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "64463717-d0b9-4060-8ac5-20aab3a92579")
+		)
+		(pin "2"
+			(uuid "52ab7ba7-491f-497b-8bda-417743c0fd1a")
+		)
+		(pin "3"
+			(uuid "2b304820-a650-485e-82b9-80820bfd326e")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "M60")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Transistor_FET:AO3400A")
+		(at 152.4 121.92 270)
+		(mirror y)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "07e84c94-0219-44e7-95a0-107323cb52c8")
+		(property "Reference" "M61"
+			(at 152.4 127.32 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Value" "AO3400A"
+			(at 152.4 129.12 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+			(at 157.48 120.015 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C20917"
+			(at 154.94 126.9999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d9f23681-5478-4903-9a57-152c7aaa5e8d")
+		)
+		(pin "2"
+			(uuid "ae2633fd-b615-4c6a-ad91-642c55f606c8")
+		)
+		(pin "3"
+			(uuid "558ffbdf-3a68-4fc1-86b4-2e0a7dc733dd")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "M61")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:Fuse")
+		(at 45.72 76.2 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "6faa2435-83e2-4489-b6ef-e96888421309")
+		(property "Reference" "F1"
+			(at 45.72 71.0 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Value" "PTC 3A"
+			(at 45.72 73.3 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Footprint" "Fuse:Fuse_1812_4532Metric"
+			(at 43.942 76.2 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C21004"
+			(at 48.26 81.2799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "48ccd1b9-8e03-4c61-a5ea-d9ed3f4e7d86")
+		)
+		(pin "2"
+			(uuid "f86cbd88-78b2-47e5-8482-0f8fd0d3d9b1")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "F1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:Thermistor_NTC")
+		(at 66.04 106.68 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "50039dd1-ea03-4111-ae70-8a5d0b4dd188")
+		(property "Reference" "TH1"
+			(at 68.24 105.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(property "Value" "10k NTC"
+			(at 68.24 107.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 66.04 107.95 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C13564"
+			(at 68.58 111.7599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3ab9a8d4-1d99-40bb-8d1c-dfea7943dfc1")
+		)
+		(pin "2"
+			(uuid "7d914b08-42af-40d8-b31b-2f529c8159dd")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "TH1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 91.44 49.53 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "4f464d70-b708-495c-a37f-beda658023a0")
+		(property "Reference" "R60"
+			(at 93.64 48.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(property "Value" "100"
+			(at 93.64 50.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 89.662 49.53 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C22775"
+			(at 93.98 54.6099 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "883223ab-ee15-4be0-9f23-bcaf02f948f2")
+		)
+		(pin "2"
+			(uuid "52cb998d-e1bb-47a9-b852-dd79f4c1eee6")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "R60")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 127 57.15 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "a4d6628a-0519-4de3-b6e9-7ad0e1bfee5f")
+		(property "Reference" "C60"
+			(at 129.2 55.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(property "Value" "0.1u"
+			(at 129.2 58.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 127.9652 53.34 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C14663"
+			(at 129.54 62.2299 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b6d6f0a7-d17a-4800-8084-3d0f3e7fa385")
+		)
+		(pin "2"
+			(uuid "5d2b5605-e8ca-4829-b22f-939ab8485490")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "C60")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 132.08 99.06 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "439e6bf9-edba-4541-9937-980d4a414ed4")
+		(property "Reference" "R61"
+			(at 132.08 93.86 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Value" "2k"
+			(at 132.08 96.16 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 130.302 99.06 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C177639"
+			(at 134.62 104.1399 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c4688579-2073-4106-bbdc-7ec0c98a5fcd")
+		)
+		(pin "2"
+			(uuid "bbd1d363-1e58-4146-a4f7-014e11d718b3")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "R61")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 54.61 76.2 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "da81e8eb-6606-4e45-9412-96e3f80175ed")
+		(property "Reference" "#PWR69"
+			(at 50.8 76.2 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (hide yes)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "BAT_PACK"
+			(at 59.61 76.2 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(pin "1"
+			(uuid "50eef5a2-0e44-4885-bb1e-a81677d15304")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "#PWR69")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 91.44 40.64 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "6b836995-5556-4f0b-828e-17adff6a879d")
+		(property "Reference" "#PWR70"
+			(at 91.44 36.83 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "BAT_PACK"
+			(at 91.44 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "43403e1b-ab27-4c98-a90e-7be0db24f877")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "#PWR70")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 162.56 124.46 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "e707161d-40ed-49d0-872d-1723ac606376")
+		(property "Reference" "#PWR71"
+			(at 168.91 124.46 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (hide yes)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 166.56 124.46 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(pin "1"
+			(uuid "8b856582-5778-4ecb-aba3-4a6368d9d98e")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "#PWR71")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 140.97 99.06 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "0bd3f394-b1b5-48dd-a07f-de5a0e228920")
+		(property "Reference" "#PWR72"
+			(at 147.32 99.06 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (hide yes)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 144.97 99.06 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(pin "1"
+			(uuid "2b3471ed-b4e5-46b2-a89b-542530646195")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "#PWR72")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 66.04 115.57 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "cdccf133-5160-49b8-86a8-60d0ee03ac57")
+		(property "Reference" "#PWR73"
+			(at 66.04 109.22 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 66.04 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "8dc6de26-4216-4382-8879-db07fbf329c3")
+		)
+		(instances
+			(project "weatherstation-v1"
+				(path "/85cf2753-6181-5f74-b525-c66aecc4c100/fcf4ce4f-abbd-591e-af68-6df2da745fea"
+					(reference "#PWR73")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire (pts (xy 49.53 76.2) (xy 54.61 76.2)) (stroke (width 0) (type default)) (uuid "000ddeb2-10ce-57a2-8ad7-955c8b551bf8"))
+	(wire (pts (xy 91.44 40.64) (xy 91.44 45.72)) (stroke (width 0) (type default)) (uuid "e77a8000-ad66-5de7-9fce-c3db36264d64"))
+	(wire (pts (xy 30.48 78.74) (xy 35.56 78.74)) (stroke (width 0) (type default)) (uuid "db631741-3f72-5ade-9016-9bf100353883"))
+	(wire (pts (xy 118.11 60.96) (xy 118.11 66.04)) (stroke (width 0) (type default)) (uuid "46809123-166e-5820-a889-a98823554cfa"))
+	(wire (pts (xy 127.0 60.96) (xy 127.0 66.04)) (stroke (width 0) (type default)) (uuid "c8704e3b-4e1a-50d2-b7fd-cea053a359e8"))
+	(wire (pts (xy 96.52 124.46) (xy 101.6 124.46)) (stroke (width 0) (type default)) (uuid "42847c07-b6c9-57ad-b3fc-4ed7a6b23d08"))
+	(wire (pts (xy 40.64 91.44) (xy 40.64 96.52)) (stroke (width 0) (type default)) (uuid "cf71b249-4b8a-5785-a4f1-91a15bddc934"))
+	(wire (pts (xy 66.04 97.79) (xy 66.04 102.87)) (stroke (width 0) (type default)) (uuid "a1f8d622-7ef9-55e8-b13d-8af84845cdc5"))
+	(wire (pts (xy 157.48 124.46) (xy 162.56 124.46)) (stroke (width 0) (type default)) (uuid "2bd6977f-6579-568b-8391-e71163e3712c"))
+	(wire (pts (xy 135.89 99.06) (xy 140.97 99.06)) (stroke (width 0) (type default)) (uuid "181524b7-c62d-589a-8e9d-e05d2e48ddf0"))
+	(wire (pts (xy 66.04 110.49) (xy 66.04 115.57)) (stroke (width 0) (type default)) (uuid "f3d97f97-0785-586e-9759-622c5062bfa2"))
+	(wire (pts (xy 91.44 53.34) (xy 110.49 53.34)) (stroke (width 0) (type default)) (uuid "14ea5915-ec01-5ec8-a527-456e4ad30a43"))
+	(wire (pts (xy 110.49 53.34) (xy 115.57 53.34)) (stroke (width 0) (type default)) (uuid "a1626fec-95e1-5da1-be61-66410981b4b8"))
+	(wire (pts (xy 115.57 53.34) (xy 115.57 66.04)) (stroke (width 0) (type default)) (uuid "ae6317f9-2c57-504c-ab01-609deff9db1c"))
+	(wire (pts (xy 115.57 53.34) (xy 127.0 53.34)) (stroke (width 0) (type default)) (uuid "d0b246fc-99d5-5151-adc6-4c59431d9c97"))
+	(wire (pts (xy 113.03 86.36) (xy 113.03 91.44)) (stroke (width 0) (type default)) (uuid "614c82df-904b-5a5d-a8cf-5aaa32f13729"))
+	(wire (pts (xy 106.68 91.44) (xy 113.03 91.44)) (stroke (width 0) (type default)) (uuid "83649f08-674c-52c8-ab01-955fac554807"))
+	(wire (pts (xy 106.68 91.44) (xy 106.68 116.84)) (stroke (width 0) (type default)) (uuid "2ad032dc-b94f-55b4-b7f3-57eae80c581e"))
+	(wire (pts (xy 118.11 86.36) (xy 118.11 91.44)) (stroke (width 0) (type default)) (uuid "12c321b7-8037-5287-900d-a3cef3647de8"))
+	(wire (pts (xy 118.11 91.44) (xy 152.4 91.44)) (stroke (width 0) (type default)) (uuid "787fd719-d53d-5020-a144-4d6687e26a49"))
+	(wire (pts (xy 152.4 91.44) (xy 152.4 116.84)) (stroke (width 0) (type default)) (uuid "ebbf5e9c-b1ff-5358-94f5-b756ef04301d"))
+	(wire (pts (xy 115.57 86.36) (xy 115.57 99.06)) (stroke (width 0) (type default)) (uuid "b877d335-8737-5731-aee3-6f13a9019a68"))
+	(wire (pts (xy 115.57 99.06) (xy 128.27 99.06)) (stroke (width 0) (type default)) (uuid "c0ac3459-aac5-59ff-bdc2-9cf302416b96"))
+	(wire (pts (xy 111.76 124.46) (xy 147.32 124.46)) (stroke (width 0) (type default)) (uuid "a9db286c-fc11-5925-9d00-dc30cdc6c4f6"))
+	(wire (pts (xy 30.48 76.2) (xy 41.91 76.2)) (stroke (width 0) (type default)) (uuid "2634e819-6717-53e2-bada-ffa9a74fc5f8"))
+	(junction (at 110.49 53.34) (diameter 0) (color 0 0 0 0) (uuid "cbcd4227-e3e5-5599-b016-34b2993a01b8"))
+	(junction (at 115.57 53.34) (diameter 0) (color 0 0 0 0) (uuid "8ad75496-b58b-57c5-85ab-251061a71a17"))
+	(rectangle (start 10.16 25.4) (end 238.76 152.4) (stroke (width 0.3) (type dash) (color 150 30 60 1)) (fill (type color) (color 250 200 210 0.35)) (uuid "06a05102-90e8-5ae9-a46a-7034dc51e643"))
+	(text "Cell, PTC, NTC and HY2112 protection" (exclude_from_sim no) (at 11.43 26.42 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "8449aae5-71ec-5e32-ab6d-24fe13f5fdbd"))
+	(text "J6 cell (JST PH), F1 PTC 3 A hold, TH1 NTC for BQ25798 TS. HY2112-CB: OVP 3.75 V, ODP 2.10 V; R60/C60/R61 per datasheet section 10; M60 (discharge) and M61 (charge) common-drain in the pack negative, as section 10" (exclude_from_sim no) (at 11.43 31.5 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "19189ca5-8407-579e-ae84-7b8e605042dd"))
+	(label "BAT_CON" (at 35.56 76.2 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "2a0eb40b-1b6e-52bc-a78a-af436a3795a2"))
+	(label "BAT_N" (at 35.56 78.74 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "f2acadc6-5b33-5cd4-9c4a-c5d3a9a4b66d"))
+	(label "BAT_N" (at 118.11 60.96 90) (effects (font (size 1.27 1.27)) (justify left)) (uuid "8dd2aff1-66cd-5576-a0c5-4b4a5ea42c68"))
+	(label "BAT_N" (at 127.0 66.04 270) (effects (font (size 1.27 1.27)) (justify right)) (uuid "d243bb98-e1cd-5ceb-b071-9cf4733e9913"))
+	(label "BAT_N" (at 96.52 124.46 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "ffb024b1-2cdb-5d4a-a07d-3de2571fa64d"))
+	(label "BAT_N" (at 40.64 96.52 270) (effects (font (size 1.27 1.27)) (justify right)) (uuid "7d762c93-1274-52f0-b7ae-8bc27a9fe032"))
+	(label "HY_VDD" (at 101.6 53.34 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "6beeebd3-190f-5454-befa-271273c54a32"))
+	(label "OD" (at 106.68 104.14 90) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "a21cfe76-a7bb-55c3-98f9-6c9c008e5138"))
+	(label "OC" (at 152.4 104.14 90) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "fbf3589c-2c4f-5e95-b2dc-27be7668d264"))
+	(label "PB_MID" (at 129.54 124.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "1b822a7e-9b5c-5709-bd45-91a208184686"))
+	(label "HY_CS" (at 121.92 99.06 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "52f05973-7503-552d-aa27-9b165a673ffc"))
+	(hierarchical_label "TS" (shape bidirectional) (at 66.04 97.79 90) (effects (font (size 1.27 1.27)) (justify left)) (uuid "d773def4-fea0-523d-8d52-33d68dd2ab9b"))
+	(no_connect (at 120.65 86.36) (uuid "c9e1fa71-7734-5af6-9018-98bc8405ebc6"))
+	(text "weatherstation v1: Battery. Cell connector, PTC, cell NTC, HY2112-CB overcharge/overdischarge/overcurrent protection and its pack-negative FETs" (exclude_from_sim no) (at 12.7 7.62 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "7529bf80-c61c-5f6f-bc13-fb8ffed3324c"))
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

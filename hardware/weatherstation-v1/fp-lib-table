@@ -1,4 +1,4 @@
 (fp_lib_table
   (version 7)
-  (lib (name "weatherstation")(type "KiCad")(uri "${KIPRJMOD}/../gen/lib/weatherstation.pretty")(options "")(descr "Project footprints: CMF4532F_4P (spec T-0602-102D section 7-1)"))
+  (lib (name "weatherstation")(type "KiCad")(uri "${KIPRJMOD}/../gen/lib/weatherstation.pretty")(options "")(descr "Project footprints from maker drawings, written by hardware/gen/build_footprints.py"))
 )

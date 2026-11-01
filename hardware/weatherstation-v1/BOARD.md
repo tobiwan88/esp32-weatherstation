@@ -67,8 +67,8 @@ the CN3791/TP4056 or the AP2112K are superseded.
   The chip then applies: no charge below about 0.5 C, 20 % current 0-10 C, reduced charging from 45 C, stop at 60 C.
   The NTC plus firmware is the temperature protection; there is no separate temperature IC.
 - **Cell PTC F1** SMD1812P300TF (C21004, Extended): 3 A hold, between the battery connector and the battery node. Overcurrent backup.
-- **EMC on the PV input:** common-mode choke L3 CMF4532F-102-2P-T (C963748, Extended, 1 kOhm at 100 MHz, 1 A) on PV+ and PV-; the
-  TVS D1 (SMBJ24A) moved in front of it (across PV+ and PV-); C2 0.1 uF after it. Open: L3 pinout (pins 1/2 and 3/4 assumed as
+- **EMC on the PV input:** common-mode choke L3 CMF4532F-900-2P-T (C963746, Extended, 90 Ohm at 100 MHz, 3 A, 70 mOhm; was the 1 A -102, too small
+  for a 10 W 6 V panel) on PV+ and PV-; the TVS D1 (SMBJ10A, was SMBJ24A, see PARTS-REVIEW A6) moved in front of it (across PV+ and PV-); C2 0.1 uF after it. Open: L3 pinout (pins 1/2 and 3/4 assumed as
   one winding each, in on 1 and 3) and footprint (custom 4-pad).
 
 ### Still open (decisions and checks)
@@ -83,31 +83,35 @@ the CN3791/TP4056 or the AP2112K are superseded.
 4. **Hot:** LFP charge stops at 50 C (spec); the chip's warm band starts at 45 C (TS_WARM default). The chip's hot-stop threshold
    is not recorded in this review: check figure 7-11 before relying on it.
 5. **Reverse polarity** of the cell is not protected (JST PH keyed). PV reverse is blocked by the ACFET/RBFET pairs (N-channel, back-to-back; body diodes oppose each other).
-6. **Open technical items:** L1 Isat (VLS252010 candidate); PV Voc at or below 22 V (SMBJ24A standoff 24 V); TPS63802 and HY2112
+6. **Open technical items:** L1 Isat (VLS252010 candidate); PV: 6 V class panel, Voc at or below 10 V (SMBJ10A standoff); TPS63802 and HY2112
    footprints (to verify against the land patterns); `power_budget.py` path resistance 0.15 ohm is an assumption.
    Resolved 2026-11-01: ACFET/RBFET are N-channel (datasheet 7.3.5: ACDRV 5 V above the common source), so AO3401A was replaced by
    AO3400A (C20917). L3 pinout and footprint come from EMTEK T-0602-102D (winding 1→2 and 4→3).
 
 ## Schematic v1 architecture (2026-10-31, supersedes the older charger, LDO and cell sections below)
 - One charger for USB-C and PV: BQ25798 (C2876593). USB and PV each have a back-to-back N-FET pair (ACFET/RBFET, AO3400A
-  C20917) into VBUS; PV is protected by SMBJ24A. CN3791, TP4056, Q1/D3 (ideal diode), CN3791 FETs, Q3/Q4/Q5 are removed.
+  C20917) into VBUS; PV is protected by SMBJ10A (6 V class panel). CN3791, TP4056, Q1/D3 (ideal diode), CN3791 FETs, Q3/Q4/Q5 are removed.
 - Battery: BQ25798 BATFET (integrated) to SYS; J6 battery connector (hand-soldered holder). Battery voltage and temperature
   are read over I2C (BQ25798 ADC and TS), so the battery divider R16/R17 is removed.
 - Variant values (written by firmware over I2C at every boot, before CE is released): VREG 3.65 V (LFP only; the sodium
   value is dropped); ICHG 1.5 A (was 2 A, see the review); VSYSMIN 4.0 V. Cell values: `cells.md`.
-  PROG 3.0 kohm sets 1S and 1.5 MHz. CE is held high by R20 to REGN (charge disabled) until firmware releases it.
+  PROG 3.0 kohm sets 1S and 1.5 MHz. CE is held high by R20 to +3V3 (charge disabled) until firmware releases it.
 - Cold: the chip suspends charging below about 0 C (default; T1 is not a register). Between 0 and 10 C it charges at 20 %
   (JEITA_ISETC default). TS network 5.23k / 30.1k / 10k NTC (candidate values, E96 of the datasheet 5.24k / 30.31k).
 - 3.3 V: TPS63802 buck-boost from SYS (2026-11-01; the AP2112K LDO was dropped, see the review). 3V3_SW: AO3401A switch (Q40) with 2N7002 enable.
-- Gas (ZE25-O3, 3.7-5.5 V): connector J8 on GAS_VCC from SYS through AO3401A (Q42), enable from GPIO. No 5 V boost needed.
-- I2C: 10k pull-ups to +3V3 (not 3V3_SW), so the charger can be read while sensors are off. Check back-power on SEN66 and
-  SHT45 with 3V3_SW off (ESD diode leakage).
-- GPIO map (module pin, GPIO): I2C SDA/SCL 4/5 (IO4/IO5); CHG_CE 17 (IO9); CHG_INT 18 (IO10); SENSOR_EN 19 (IO11);
+- Gas (ZE25-O3, 3.7-5.5 V; PARTS-REVIEW A5, decided 2026-11-01): J8 on GAS_VCC from a TPS61023 boost U7 (C919459) on SYS,
+  5.07 V (FB 511k/68k, VREF 0.595 V). EN = GAS_EN (IO12) with R45 100k pull-down: off by default; off = input and output
+  disconnected, 0.1 uA. L5 1 uH (same part as L1), 10 uF in, 2 x 22 uF out (datasheet SLVSF14B figure 8-1).
+  Firmware: drive GAS_TXD (IO17) low or set it to input while the boost is off (else the ESP32 back-powers the module RX).
+- I2C: two buses (PARTS-REVIEW A4, decided 2026-11-01). CHG_SDA/CHG_SCL (IO4/IO5): BQ25798 only, R54/R55 10k to +3V3, readable
+  with the sensors off. SEN_SDA/SEN_SCL (IO13/IO14): SEN66, SHT45, spare port, R50/R51 10k and U5 VBUS on 3V3_SW, so nothing
+  is back-powered. Firmware sets IO13/IO14 to input or low before it switches 3V3_SW off.
+- GPIO map (module pin, GPIO): CHG_SDA/CHG_SCL 4/5 (IO4/IO5); SEN_SDA/SEN_SCL 21/22 (IO13/IO14); CHG_CE 17 (IO9); CHG_INT 18 (IO10); SENSOR_EN 19 (IO11);
   GAS_EN 20 (IO12); GAS_TXD 10 (IO17); GAS_RXD 11 (IO18); USB D-/D+ 13/14 (IO19/IO20); UART0 36/37; BOOT 27 (IO0).
 - Open items that the schematic does not settle: L1 Isat (VLS252010 candidate, 1 uH, needs 2.5 A+ check), ZE25-O3 pinout
-  (manual), SMBJ24A vs PV Voc (keep panel Voc at or below 22 V; the TVS standoff is 24 V). ACDRV wiring: common-source
+  (manual), SMBJ10A vs PV Voc (6 V class panel only; Voc at or below 10 V). ACDRV wiring: common-source
   N-FET pair with ACDRV on the gates (datasheet 7.3.5); Table 7-7 detail still to check on the final netlist.
-- Generated files: `weatherstation-v1.kicad_sch` (root) and five sheets (`input`, `charger`, `mcu`, `rails`, `sensors`).
+- Generated files: `weatherstation-v1.kicad_sch` (root) and six sheets (`input`, `charger`, `battery`, `mcu`, `rails`, `sensors`). Block layout: `hardware/gen/layout_v1.py`.
   `bom.csv` is written by the generator from the same PARTS list. Run:
   `uv run --package weatherstation-hardware python hardware/gen/weatherstation_v1.py hardware/weatherstation-v1`.
 
@@ -255,25 +259,31 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
 - Keep the outline within 50 x 50 mm (`board.yaml layout.max_board_mm`).
 - Test points: GND, 3V3, 3V3_SW, VSYS, BAT, MPPT; UART0 header J7 as fallback debug.
 
-## Open before ordering
-Closed: LCSC numbers for all TBD parts except C15 (R14 C24435, R15 C23153, R16/R17 C22935, R26 C4211, TH1 Murata
-NCP18XH103F03RB C13564); Basic/Extended class of all parts (from `jlcparts.py`); TP4056 charge formula and PROG table,
-AP2112K 3.3 V dropout (250 mV at 600 mA), SEN66 supply/peak/average current (datasheet Table 12) verified from the PDFs in
-`datasheets/`. SEN66 I2C pull-ups changed to 10 kohm (datasheet sec. 3.1).
+## Open before ordering (updated 2026-11-01)
+The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).
 
-1. **CN3791 datasheet not retrieved** (only an XML error page). Its MPPT pin voltage (1.205 V assumed), Vcs (120 mV assumed) and
-   the Fig.1 application circuit (C4 = 220 nF assumed) are unverified. Needed before the schematic is based on the app note.
-   Drop the PDF in `datasheets/CN3791.pdf` and record the section numbers in `parts/CN3791.yaml`.
-2. `C15` (CN3791 Fig.1 C4) LCSC number: follows from item 1.
-3. **Decided: accept reduced winter accuracy.** The SEN66 datasheet recommends 10 to 40 C (short-term -10 to 50 C, storage
-   -40 to 70 C), and gas sensing is only guaranteed in the recommended range. No heater. Below 10 C, PM, CO2 and NOx accuracy is
-   not guaranteed; log the enclosure temperature so the effect can be checked later. REQUIREMENTS.md section 4 still says
-   -10 to +50 C for operation; amend it to "short-term" for the SEN66.
-4. `design.panel.vmp_v` is still an assumption (6.0 V, candidates 5.76-6.12 V). Choose the panel; then replace with its datasheet Vmp.
-5. Cell: no protected 18650 with a verified low-temperature capacity found. `design.battery.cell_mah` (3000) is an assumption.
-   Needed for the winter autonomy estimate.
-6. Whether JLCPCB forces Standard PCBA for the ESP32 module (check the quote).
-7. Remaining datasheets not downloaded (USBLC6-2SC6, SMBJ12A, SWPA6045S220MT, TYPE-C-31-M-12): see `datasheets/SOURCES.md`.
+1. **Parts and circuit review: `PARTS-REVIEW.md`.** A1-A3 applied 2026-11-01 (common-drain protection FETs, R23 removed,
+   BAT caps on BAT); A6 and A7 applied (SMBJ10A, 3 A choke, 6 V 10 W panel; CE pull-up to +3V3). A4 (two I2C
+   buses) and A5 (TPS61023 5 V boost, enable IO12) applied 2026-11-01. B1 (3V3_SW inrush) accepted as drawn,
+   measure the +3V3 dip on the first board. B2, B4, B5, C (R21) decided and applied; B3
+   in REQUIREMENTS section 6. B6/B7 land patterns
+   drawn from the maker drawings (project footprints). No A or B item open.
+2. Datasheets missing: SMBJ10A maker PDF (ratings from DigiKey: 10 V standoff, 17 V clamp at 35.3 A), CMF4532F-900 page,
+   USBLC6-2SC6, CBAK 26700LT. On file 2026-11-01: TPS61023, Sunlord WPN, TDK VLS252010HBX-1.
+3. **Decided: accept reduced winter accuracy** of the SEN66 below 10 C (no heater; log the enclosure temperature).
+   REQUIREMENTS.md section 4 still says -10 to +50 C for operation; amend it to "short-term" for the SEN66.
+4. `design.panel.vmp_v` is still an assumption (6.0 V). Choose the panel; the TVS choice (A6) depends on its Voc.
+5. Whether JLCPCB forces Standard PCBA for the ESP32 module (check the quote).
+6. ZE25-O3 pinout and supply current (J8).
+
+### Schematic: nets that keep labels (generator `UNWIRED`, 2026-11-01)
+Each is readable as drawn; listed so a reviewer knows they are labels on purpose, not missing wires.
+- Input: CC2 (R10 sits below J1 next to R9; the CC1 wire blocks the direct path), USB_DP/USB_DN at J1/U4 (four stacked
+  connector pins plus the ESD part; labelled per pin like a connector).
+- Battery: BAT_N (cell negative: J6, C60, U6 VSS, M60; a wire would loop around the protection IC and its gate lines).
+- Sensors: SEN_SDA/SEN_SCL at the pull-up and ESD block (the connector bus is wired; the block below joins by label).
+- Hand-drawn (layout_v1.HAND_ROUTES): charger BTST/SW/L1, PV entry J5-D1-L3-PV_IN, HY2112 VDD/OD/OC/CS/PB_MID, sensor bus.
+- Root page: USB_DP, USB_DN span three sheets and keep labels (outside the boxes). All other sheet-to-sheet nets are wires.
 
 ## Pitfalls (carried over from desk_notifier, see its PLAN.md/BOARD.md for details)
 | Symptom | Cause | Fix |

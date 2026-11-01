@@ -1,63 +1,50 @@
 Comment,Designator,Footprint,Quantity,LCSC Part #,Class,Status,Function / notes
-USB-C,J1,Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12,1,C165948,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"USBLC6-2SC6 (USB)",U4,Package_TO_SOT_SMD:SOT-23-6,1,C7519,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-5.1k,"R9,R10",Resistor_SMD:R_0603_1608Metric,2,C23186,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"AO3400A ACFET1 (N-channel, BQ25798 back-to-back)",M1,Package_TO_SOT_SMD:SOT-23,1,C20917,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"AO3400A RBFET1 (N-channel, BQ25798 back-to-back)",M2,Package_TO_SOT_SMD:SOT-23,1,C20917,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"AO3400A ACFET2 (N-channel, BQ25798 back-to-back)",M3,Package_TO_SOT_SMD:SOT-23,1,C20917,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"AO3400A RBFET2 (N-channel, BQ25798 back-to-back)",M4,Package_TO_SOT_SMD:SOT-23,1,C20917,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"300 (candidate; figure 294)","R11,R12",Resistor_SMD:R_0603_1608Metric,2,C23025,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-0.1u,"C1,C2,C6,C9,C13",Capacitor_SMD:C_0603_1608Metric,5,C14663,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"SMBJ24A (PV surge, across the connector pair before L3)",D1,Diode_SMD:D_SMB,1,C87268,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"CM choke 1 kohm 1 A (CMF4532F-102-2P-T; pinout and footprint to confirm)",L3,weatherstation:CMF4532F_4P,1,C963748,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"PV IN",J5,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,
-BQ25798RQMR,U3,Package_DFN_QFN:Texas_RQM0029A_VQFN-29_4x4mm_P0.4mm,1,C2876593,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"1uH (candidate; Isat to confirm)",L1,Inductor_SMD:L_1008_2520Metric,1,C88211,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"PTC 3 A hold (SMD1812P300TF)",F1,Fuse:Fuse_1812_4532Metric,1,C21004,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-47n,"C3,C4",Capacitor_SMD:C_0603_1608Metric,2,C113811,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-4.7u,C5,Capacitor_SMD:C_0603_1608Metric,1,C19666,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-10u,"C7,C8,C10,C11,C12,C14,C15,C16,C17,C18,C19,C20",Capacitor_SMD:C_0805_2012Metric,12,C15850,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-1n,C21,Capacitor_SMD:C_0603_1608Metric,1,C53084481,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"10m Rs (candidate; input current sense)",R23,Resistor_SMD:R_2512_6332Metric,1,C2903462,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-100,R13,Resistor_SMD:R_0603_1608Metric,1,C22775,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"3.0k (PROG: 1S, 1.5 MHz)",R14,Resistor_SMD:R_0603_1608Metric,1,C4211,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-127k,R15,Resistor_SMD:R_0603_1608Metric,1,C22869,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-100k,"R16,R20,R21,R40,R42,R43,R45",Resistor_SMD:R_0603_1608Metric,7,C25803,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"5.23k (candidate; figure 5.24k)",R17,Resistor_SMD:R_0603_1608Metric,1,C23068,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"30.1k (candidate; figure 30.31k)",R18,Resistor_SMD:R_0603_1608Metric,1,C23000,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-2.2k,R19,Resistor_SMD:R_0603_1608Metric,1,C4190,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"STAT red",D2,LED_SMD:LED_0603_1608Metric,1,C2286,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-10k,"R22,R30,R31,R50,R51",Resistor_SMD:R_0603_1608Metric,5,C25804,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
+USB-C,J1,Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12,1,C165948,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+USBLC6-2SC6,"U4,U5",Package_TO_SOT_SMD:SOT-23-6,2,C7519,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U4: USBLC6-2SC6 (USB); U5: USBLC6-2SC6 (I2C)
+5.1k,"R9,R10",Resistor_SMD:R_0603_1608Metric,2,C23186,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+AO3400A,"M1,M2,M3,M4,M60,M61",Package_TO_SOT_SMD:SOT-23,6,C20917,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"M1: AO3400A ACFET1 (N-channel, BQ25798 back-to-back); M2: AO3400A RBFET1 (N-channel, BQ25798 back-to-back); M3: AO3400A ACFET2 (N-channel, BQ25798 back-to-back); M4: AO3400A RBFET2 (N-channel, BQ25798 back-to-back); M60: AO3400A discharge FET (OD); M61: AO3400A charge FET (OC)"
+300,"R11,R12",Resistor_SMD:R_0603_1608Metric,2,C23025,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R11: 300 (candidate; figure 294); R12: 300 (candidate; figure 294)
+0.1u,"C1,C2,C6,C9,C13,C31,C60",Capacitor_SMD:C_0603_1608Metric,7,C14663,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),C31: 100n; C60: 0.1u (HY2112 VDD)
+SMBJ10A,D1,Diode_SMD:D_SMB,1,C151250,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"D1: SMBJ10A (PV surge, standoff 10 V, clamp 17 V)"
+CMC 90R 3A,L3,weatherstation:CMF4532F_4P,1,C963746,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),L3: CM choke 90 ohm 3 A (CMF4532F-900-2P-T; datasheet page to confirm)
+PV IN,J5,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,
+BQ25798RQMR,U3,Package_DFN_QFN:Texas_RQM0029A_VQFN-29_4x4mm_P0.4mm,1,C2876593,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+1uH,"L1,L5",weatherstation:L_TDK_VLS252010,2,C88211,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"L1: 1uH (TDK VLS252010HBX-1R0M-1: Isat 3.22 A, Itemp 2.55 A, 65 mohm max); L5: 1uH (VLS252010HBX-1R0M-1, same as L1)"
+PTC 3A,F1,Fuse:Fuse_1812_4532Metric,1,C21004,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),F1: PTC 3 A hold (SMD1812P300TF)
+47n,"C3,C4",Capacitor_SMD:C_0603_1608Metric,2,C113811,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+4.7u,C5,Capacitor_SMD:C_0603_1608Metric,1,C19666,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+10u,"C7,C8,C10,C11,C12,C14,C15,C16,C17,C18,C19,C20",Capacitor_SMD:C_0805_2012Metric,12,C15850,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+1n,C21,Capacitor_SMD:C_0603_1608Metric,1,C53084481,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+100,"R13,R60",Resistor_SMD:R_0603_1608Metric,2,C22775,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R60: 100 (HY2112 VDD)
+3.0k,R14,Resistor_SMD:R_0603_1608Metric,1,C4211,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"R14: 3.0k (PROG: 1S, 1.5 MHz)"
+127k,R15,Resistor_SMD:R_0603_1608Metric,1,C22869,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+100k,"R16,R20,R40,R42,R45",Resistor_SMD:R_0603_1608Metric,5,C25803,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R45: 100k (EN pull-down: boost off by default)
+5.23k,R17,Resistor_SMD:R_0603_1608Metric,1,C23068,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R17: 5.23k (candidate; figure 5.24k)
+30.1k,R18,Resistor_SMD:R_0603_1608Metric,1,C23000,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R18: 30.1k (candidate; figure 30.31k)
+2.2k,R19,Resistor_SMD:R_0603_1608Metric,1,C4190,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+STAT red,D2,LED_SMD:LED_0603_1608Metric,1,C2286,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+10k,"R22,R30,R31,R50,R51,R54,R55",Resistor_SMD:R_0603_1608Metric,7,C25804,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 BATTERY,J6,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,
-"10k NTC NCP18XH103F03RB (TS, next to J6)",TH1,Resistor_SMD:R_0603_1608Metric,1,C13564,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"HY2112-CB LiFePO4 protection",U6,Package_TO_SOT_SMD:SOT-23-6,1,C168764,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"AO3400A discharge FET (OD)",M60,Package_TO_SOT_SMD:SOT-23,1,C20917,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"AO3400A charge FET (OC)",M61,Package_TO_SOT_SMD:SOT-23,1,C20917,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"100 (HY2112 VDD)",R60,Resistor_SMD:R_0603_1608Metric,1,C22775,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"0.1u (HY2112 VDD)",C60,Capacitor_SMD:C_0603_1608Metric,1,C14663,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"2k (HY2112 CS)",R61,Resistor_SMD:R_0603_1608Metric,1,C177639,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-ESP32-S3-WROOM-1-N8,U1,RF_Module:ESP32-S3-WROOM-1,1,C2913198,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-22u,"C30,C42,C43",Capacitor_SMD:C_0805_2012Metric,3,C45783,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-100n,C31,Capacitor_SMD:C_0603_1608Metric,1,C14663,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-1u,"C32,C33",Capacitor_SMD:C_0603_1608Metric,2,C15849,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-RESET,SW10,Button_Switch_SMD:SW_SPST_TL3342,1,C318884,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-BOOT,SW11,Button_Switch_SMD:SW_SPST_TL3342,1,C318884,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-22,"R32,R33",Resistor_SMD:R_0603_1608Metric,2,C23345,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"DEBUG UART",J7,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,1,n/a,n/a,HAND-SOLDER,
-"TPS63802DLA 3.3 V buck-boost",U2,Package_SON:WSON-10-1EP_2x3mm_P0.5mm_EP0.84x2.4mm,1,C2845237,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"0.47uH 2.7 A (WPN201610HR47MT)",L4,Inductor_SMD:L_Cenker_CKCS201610,1,C97009,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"511k 1% (FB top: 0.5 V x (1 + 511k/91k) = 3.31 V)",R52,Resistor_SMD:R_0603_1608Metric,1,C227946,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"91k 1% (FB bottom)",R53,Resistor_SMD:R_0603_1608Metric,1,C23265,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-10u,"C40,C44",Capacitor_SMD:C_0603_1608Metric,2,C19702,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"22u (TPS63802 output: 22 uF per table 10-1)",C41,Capacitor_SMD:C_0805_2012Metric,1,C45783,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"AO3401A 3V3_SW switch",Q40,Package_TO_SOT_SMD:SOT-23,1,C15127,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"2N7002 (sensor enable)",Q41,Package_TO_SOT_SMD:SOT-23,1,C8545,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-1k,"R41,R44",Resistor_SMD:R_0603_1608Metric,2,C21190,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"AO3401A gas switch",Q42,Package_TO_SOT_SMD:SOT-23,1,C15127,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"2N7002 (gas enable)",Q43,Package_TO_SOT_SMD:SOT-23,1,C8545,Basic,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"SEN66 (GH 6-pin)",J2,Connector_JST:JST_GH_SM06B-GHS-TB_1x06-1MP_P1.25mm_Horizontal,1,C133065,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"SHT45 cable",J3,Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,1,C160404,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"spare port",J4,Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,1,C160404,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"USBLC6-2SC6 (I2C)",U5,Package_TO_SOT_SMD:SOT-23-6,1,C7519,Extended,"VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)",
-"ZE25-O3 (pinout confirm)",J8,Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,
-"Test points","TP1,TP2",TestPoint:TestPoint_Pad_D1.5mm,2,n/a,n/a,"PCB pads only","GND/3V3 test pads"
+10k NTC,TH1,Resistor_SMD:R_0603_1608Metric,1,C13564,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"TH1: 10k NTC NCP18XH103F03RB (TS, next to J6)"
+HY2112-CB,U6,Package_TO_SOT_SMD:SOT-23-6,1,C168764,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U6: HY2112-CB LiFePO4 protection
+2k,R61,Resistor_SMD:R_0603_1608Metric,1,C177639,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R61: 2k (HY2112 CS)
+ESP32-S3-WROOM-1-N8,U1,RF_Module:ESP32-S3-WROOM-1,1,C2913198,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+22u,"C30,C41,C42,C43,C45,C46",Capacitor_SMD:C_0805_2012Metric,6,C45783,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),C41: 22u (TPS63802 output: 22 uF per table 10-1); C45: 22u (boost output); C46: 22u (boost output)
+1u,"C32,C33",Capacitor_SMD:C_0603_1608Metric,2,C15849,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+RESET,"SW10,SW11",Button_Switch_SMD:SW_SPST_TL3342,2,C318884,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),SW11: BOOT
+22,"R32,R33",Resistor_SMD:R_0603_1608Metric,2,C23345,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+DEBUG UART,J7,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,1,n/a,n/a,HAND-SOLDER,
+TPS63802,U2,weatherstation:TPS63802_DLA_VSON-HR-10_2x3mm,1,C2845237,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U2: TPS63802DLA 3.3 V buck-boost
+0.47uH,L4,weatherstation:L_Sunlord_WPN201610H,1,C97009,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"L4: 0.47uH (Sunlord WPN201610HR47MT: Isat 4.0 A max, Irms 2.7 A)"
+511k 1%,"R43,R52",Resistor_SMD:R_0603_1608Metric,2,C227946,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R43: 511k 1% (boost FB top); R52: 511k 1% (FB top: 0.5 V x (1 + 511k/91k) = 3.31 V)
+91k 1%,R53,Resistor_SMD:R_0603_1608Metric,1,C23265,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R53: 91k 1% (FB bottom)
+10u,"C40,C44",Capacitor_SMD:C_0603_1608Metric,2,C19702,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),C44: 10u (boost input)
+AO3401A,Q40,Package_TO_SOT_SMD:SOT-23,1,C15127,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),Q40: AO3401A 3V3_SW switch
+2N7002,Q41,Package_TO_SOT_SMD:SOT-23,1,C8545,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),Q41: 2N7002 (sensor enable)
+1k,R41,Resistor_SMD:R_0603_1608Metric,1,C21190,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+TPS61023,U7,Package_TO_SOT_SMD:SOT-563,1,C919459,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U7: TPS61023DRLR 5 V boost
+68k 1%,R44,Resistor_SMD:R_0603_1608Metric,1,C23231,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R44: 68k 1% (boost FB bottom)
+SEN66,J2,Connector_JST:JST_GH_SM06B-GHS-TB_1x06-1MP_P1.25mm_Horizontal,1,C133065,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),J2: SEN66 (GH 6-pin)
+SHT45 cable,"J3,J4",Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,2,C160404,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),J4: spare port
+ZE25-O3,J8,Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,J8: ZE25-O3 (pinout confirm)
+Test points,"TP1,TP2",TestPoint:TestPoint_Pad_D1.5mm,2,n/a,n/a,PCB pads only,GND/3V3 test pads

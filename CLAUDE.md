@@ -18,9 +18,11 @@ Base created from desk_notifier (board-neutral hardware skills, calc scripts, to
 
 ## Hardware decisions that must not be lost
 - 4 layers, In1 and In2 both solid GND; outline at most 50 x 50 mm (cheapest JLCPCB tier).
-- USB-C = programming, debug (native USB-JTAG) and charging; solar via CN3791 MPPT; USB charger TP4056; USB has hardware priority; firmware cold-inhibit (Q3/Q5, default = charge allowed).
+- USB-C = programming, debug (native USB-JTAG) and charging. One charger for USB and solar: BQ25798 (two inputs via ACFET/RBFET pairs), 1S LiFePO4 cell with HY2112-CB protection (commit 7db8d9c). CE pulled high = charge off until the firmware has written VREG 3.65 V (POR default is 4.2 V); firmware handles cold charging. Open circuit findings: `hardware/weatherstation-v1/PARTS-REVIEW.md`.
 - Sensor rail 3V3_SW switched by a P-FET; SHT45 off-board in a radiation shield; SEN66 on a GH connector; NO2 not on v1.
-- Battery cutoff 3.5 V (LDO headroom, `calc/power_budget.py`).
+- Two I2C buses: charger on IO4/IO5 (pull-ups to +3V3), sensors on IO13/IO14 (pull-ups on 3V3_SW). ZE25-O3 gas module (J8) on
+  a TPS61023 5 V boost from SYS, EN = IO12, off by default (pull-down, true disconnect).
+- 3.3 V from a TPS63802 buck-boost on SYS (the LDO and its 3.5 V cutoff are gone); HY2112 overdischarge 2.10 V is the hardware floor.
 - Thermal: heat corner away from the NTC and sensor connectors. EMC: solid planes, antenna keepout on all layers, ESD on USB and the outdoor I2C cable, TVS on solar input.
 
 ## Reference material (not active)
