@@ -33,10 +33,13 @@ Voltage: 3.65 V CV, cell maximum 3.75 V. Discharge: -40 to 60 C; cut-off 2.0 V.
 5. **Read on each wake:** the TS status bits, VBAT_OVP and the other flags. Any fault stops the session.
 
 ## CE pin and the fail-safe chain
-- CE is pulled high to REGN by R20 (charge off). Firmware drives CE low only during a session.
+- CE is pulled high to +3V3 by R20 (charge off; netlist net CHG_CE, R20 pin 1 on +3V3). Firmware drives CE low only during a session.
 - ESP32 reset or power-on: the GPIO becomes an input, R20 holds CE high, charging stops. This is the main fail-safe.
-- Deep sleep: hold the CE GPIO high during sleep (no session in sleep), so the chip's TS_IGNORE = 0 rule applies to any
-  solar charging that happens while the MCU sleeps.
+- Deep sleep: **open decision (2026-11-01).** The earlier text said "hold CE high during sleep" and also "TS_IGNORE = 0
+  applies to solar charging while the MCU sleeps"; both cannot hold, because CE high stops all charging. With a 600 s cycle
+  and about 15 s awake, CE high in sleep leaves solar charging almost no time. Proposed: hold CE low in deep sleep with
+  TS_IGNORE = 0 (chip JEITA active: no charge below about 1.9 C at TH1), VREG 3.65 V and WATCHDOG = 00 already written in the
+  same wake. A chip POR during sleep also drops SYS, which resets the ESP32 and releases CE high through R20.
 - Use the ESP32 task watchdog so a hung session resets the MCU, which drives CE high through R20.
 
 ## Residual risks (accepted by the user for v1, with the mitigation above)
