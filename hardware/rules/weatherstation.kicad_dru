@@ -1,0 +1,31 @@
+(version 1)
+# Custom DRC rules for weatherstation-v1 (copied by hardware/gen/pcb_v1.py next to the board). Adapted from desk_notifier.
+# No vias in SMD pads: open vias wick solder (LGA/QFN opens, 0402 tombstones); JLC via-in-pad costs extra.
+(rule "no via in SMD pad"
+  (constraint physical_clearance (min 0.1mm))
+  (condition "A.Type == 'Via' && B.Type == 'Pad' && B.Pad_Type == 'SMD'"))
+# A via on the same net as an SMD pad keeps >= 0.15 mm copper to the pad (physical_clearance also sees same-net copper).
+(rule "via to same-net SMD pad"
+  (constraint physical_clearance (min 0.15mm))
+  (condition "A.Type == 'Via' && B.Type == 'Pad' && B.Pad_Type == 'SMD' && A.NetName == B.NetName"))
+# Vias keep 0.35 mm from the board edge (JLC copper-to-edge 0.2 mm; project copper 0.3 mm).
+(rule "via to board edge"
+  (constraint edge_clearance (min 0.35mm))
+  (condition "A.Type == 'Via'"))
+# Plated through-hole annular ring >= 0.15 mm (JLC minimum for PTH pads).
+(rule "THT pad annular ring"
+  (constraint annular_width (min 0.15mm))
+  (condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole'"))
+# Silkscreen text at least 0.8 mm high (JLC minimum).
+(rule "silk text height"
+  (constraint text_height (min 0.8mm))
+  (condition "A.Type == 'Text' && (A.Layer == 'F.Silkscreen' || A.Layer == 'B.Silkscreen')"))
+# Charge path: tracks at least 0.3 mm where they neck into the charger pins (class width 0.65 mm, calc/track_width.py).
+(rule "charge path neck"
+  (constraint track_width (min 0.3mm))
+  (condition "A.Type == 'Track' && A.hasNetclass('Charge')"))
+# The USB-C shell is metal and grounded: no signal copper under it (rule area "j1_shell" in pcb_v1.py).
+(rule "no signal copper under the J1 shell"
+  (constraint disallow track via)
+  (condition "A.NetName != 'GND' && A.intersectsArea('j1_shell')"))
+# No tracks or vias under L1/L4/L5 on B.Cu (REQUIREMENTS E3): B.Cu rule areas in pcb_v1.py, no custom rule needed.

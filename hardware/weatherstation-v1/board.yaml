@@ -1,11 +1,11 @@
 # Board profile: the facts the board-neutral hardware skills and hardware/calc/ scripts read.
 # Skills never hard-code a number; it lives here, in critical.yaml or in parts/<MPN>.yaml.
-# Status: pre-layout. No generators or KiCad files yet (hardware/reference/desk_notifier has a working example).
+# Status: schematic generated; layout in progress (hardware/gen/pcb_v1.py).
 name: weatherstation-v1
 pcb: weatherstation-v1.kicad_pcb
 sch: weatherstation-v1.kicad_sch
 bom: bom.csv
-generators: {schematic: null, layout: null}   # to write: hardware/gen/weatherstation_v1.py, layout_v1.py (see hardware/PLAN.md)
+generators: {schematic: ../gen/weatherstation_v1.py, layout: ../gen/pcb_v1.py}   # gen/layout_v1.py is the schematic block layout
 notes: BOARD.md
 requirements: REQUIREMENTS.md
 
@@ -14,7 +14,7 @@ fab:
   assembly: "JLCPCB PCBA, Economic (one side, SMT only); Standard if the quote forces it for the ESP32 module"
   rules: ../rules/jlc-4layer.json
   router_rules: ../rules/krt-fab.txt
-  custom_drc: null            # to write: copy the rule set from reference/desk_notifier/notifier.kicad_dru and adapt
+  custom_drc: ../rules/weatherstation.kicad_dru
   extended_fee_usd: 3.07      # per unique non-preferred Extended part, Economic PCBA (jlcpcb.com/blog/reduce-pcb-assembly-cost-prototype, 2026-10)
 
 # Requirement: 4 layers, two full ground planes (REQUIREMENTS.md 5). Dielectric/er numbers reused from the desk_notifier
@@ -29,15 +29,22 @@ stackup:
     - {name: In2.Cu, role: plane, net: GND}
     - {name: B.Cu, role: signal, ref: In2.Cu, dielectric_mm: 0.2104, er: 4.4}
 
-net_classes:
+net_classes:   # nets use the full KiCad name (/Sheet/NET; global rails have no sheet). Widths checked by calc/track_width.py
   Default: {track_mm: 0.2, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3}
-  Power: {track_mm: 0.4, clearance_mm: 0.15, nets: [VBUS, VSYS, BAT, +3V3, 3V3_SW, SOLAR_IN, SOLAR_VCC, SW]}
+  # Charge path: 1.7 A (PV Imp 1.67 A, Voltaic P110; ILIM clamp 1.59 A; charge 1.5 A). Fine-pitch charger pins neck down.
+  Charge: {track_mm: 0.65, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3, current_a: 1.7,
+           nets: [USB_VBUS, VBUS, PMID, SYS, BAT_PACK, /Battery/BAT_CON, /Battery/BAT_N, /Battery/PB_MID, /Charger/SW1,
+                  /Charger/SW2, /Charger/PV_IN, /Input/PV_RAW, /Input/PV_N_RAW, /Input/ACF1_MID, /Input/ACF2_MID]}
+  # Rails: +3V3 0.5 A WiFi peak plus 3V3_SW; buck-boost inductor nodes about 1 A at low cell voltage; boost switch node.
+  Power: {track_mm: 0.4, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3, current_a: 1.0,
+          nets: [+3V3, 3V3_SW, 5V_SW, /Rails/BUCK_L1, /Rails/BUCK_L2, /Rails/GAS_SW]}
   USB: {track_mm: 0.27, gap_mm: 0.15, nets: [/USB_DP, /USB_DN]}
 
 layout:
   stitch_pitch_mm: [2, 3]
   thermal_relief: {spoke_mm: 0.3, gap_mm: 0.25, spokes: 4}
   max_board_mm: [50, 50]      # 4-layer boards under 50 x 50 mm are in JLCPCB's cheapest tier (community cost guide)
+  temp_rise_c: 10             # track temperature rise for calc/track_width.py (REQUIREMENTS T5: board rise < 25 C at 1.5 A)
 
 alternates:
   C2913198:

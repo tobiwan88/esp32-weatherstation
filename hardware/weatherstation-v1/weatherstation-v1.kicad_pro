@@ -11,5 +11,209 @@
     "page_layout_descr_file": ""
   },
   "sheets": [],
-  "text_variables": {}
+  "text_variables": {
+    "GIT_SHA": "0000000-dirty"
+  },
+  "board": {
+    "design_settings": {
+      "rules": {
+        "min_clearance": 0.127,
+        "min_track_width": 0.127,
+        "min_via_diameter": 0.45,
+        "min_via_annular_width": 0.1,
+        "min_through_hole_diameter": 0.2,
+        "min_hole_to_hole": 0.5,
+        "min_hole_clearance": 0.2,
+        "min_copper_edge_clearance": 0.3,
+        "min_silk_clearance": 0.15,
+        "min_text_height": 0.8,
+        "min_text_thickness": 0.15,
+        "solder_mask_to_copper_clearance": 0.0,
+        "min_microvia_diameter": 0.2,
+        "min_microvia_drill": 0.1
+      },
+      "defaults": {},
+      "diff_pair_dimensions": [],
+      "drc_exclusions": [],
+      "track_widths": [],
+      "via_dimensions": []
+    }
+  },
+  "boards": [],
+  "net_settings": {
+    "classes": [
+      {
+        "line_style": 0,
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "wire_width": 6,
+        "bus_width": 12,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "diff_pair_via_gap": 0.25,
+        "name": "Default",
+        "track_width": 0.2,
+        "clearance": 0.15,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "diff_pair_width": 0.2,
+        "diff_pair_gap": 0.15,
+        "priority": 2147483647
+      },
+      {
+        "line_style": 0,
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "wire_width": 6,
+        "bus_width": 12,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "diff_pair_via_gap": 0.25,
+        "name": "Charge",
+        "track_width": 0.65,
+        "clearance": 0.15,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "diff_pair_width": 0.2,
+        "diff_pair_gap": 0.15,
+        "priority": 1
+      },
+      {
+        "line_style": 0,
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "wire_width": 6,
+        "bus_width": 12,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "diff_pair_via_gap": 0.25,
+        "name": "Power",
+        "track_width": 0.4,
+        "clearance": 0.15,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "diff_pair_width": 0.2,
+        "diff_pair_gap": 0.15,
+        "priority": 2
+      },
+      {
+        "line_style": 0,
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "wire_width": 6,
+        "bus_width": 12,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "diff_pair_via_gap": 0.25,
+        "name": "USB",
+        "track_width": 0.27,
+        "clearance": 0.15,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "diff_pair_width": 0.27,
+        "diff_pair_gap": 0.15,
+        "priority": 3
+      }
+    ],
+    "meta": {
+      "version": 4
+    },
+    "netclass_patterns": [
+      {
+        "netclass": "Charge",
+        "pattern": "USB_VBUS"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "VBUS"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "PMID"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "SYS"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "BAT_PACK"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "/Battery/BAT_CON"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "/Battery/BAT_N"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "/Battery/PB_MID"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "/Charger/SW1"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "/Charger/SW2"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "/Charger/PV_IN"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "/Input/PV_RAW"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "/Input/PV_N_RAW"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "/Input/ACF1_MID"
+      },
+      {
+        "netclass": "Charge",
+        "pattern": "/Input/ACF2_MID"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "+3V3"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "3V3_SW"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "5V_SW"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "/Rails/BUCK_L1"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "/Rails/BUCK_L2"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "/Rails/GAS_SW"
+      },
+      {
+        "netclass": "USB",
+        "pattern": "/USB_DP"
+      },
+      {
+        "netclass": "USB",
+        "pattern": "/USB_DN"
+      }
+    ]
+  },
+  "pcbnew": {
+    "page_layout_descr_file": ""
+  }
 }

@@ -11,7 +11,7 @@ ESP32-S3-WROOM-1-N8 (C2913198), TPS63802 3.3 V buck-boost, BQ25798 charger (USB 
 switched 3V3_SW sensor rail (Q40), switched 5 V rail 5V_SW (TPS61023), PMS7003 PM sensor on J2 (5V_SW, UART IO4/IO5), SHT45 on
 its own small board in a radiation shield (cable to J3), spare Qwiic port, optional SCD41 CO2 (U8, DNP) and ZE25-O3 (J8).
 USB-C = programming, debug (native USB-JTAG) and charging.
-Status: schematic v1 generated (`hardware/gen/weatherstation_v1.py`, ERC 0 errors, net check OK). Layout not started.
+Status: schematic v1 generated (`hardware/gen/weatherstation_v1.py`, ERC 0 errors, net check OK). Layout: first placement.
 
 ## Sensor set (2026-11-01, user: option A)
 SEN66 dropped for cost; see `sensors.md`. PMS7003 (PM) + own SHT45 board + SCD41 footprint (DNP) + ZE25-O3 (optional).
@@ -266,12 +266,23 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
 6. Update `bom.csv` only after items 3 and 4 are confirmed: remove TP4056 (C16581), R26 (C4211), D2/D3/Q1 only if the BQ25798
    power path replaces them, add BQ25798 and passives, and set R14 to 0.06 ohm (2512) for the CN3795 Rcs.
 
-## Layout specifics (to carry into the layout generator)
-- Antenna at a board edge with a copper keepout on all layers; 15 mm from battery and solar wiring.
-- Heat corner: CN3791, L1, D2, M1, TP4056 (exposed pad on vias), AP2112K together; NTC at the cell; SEN66/SHT45 connectors on the far side.
-- Solar charger switching loop minimal; no signal under L1; stitching vias every 5 mm along the edge and at every layer change.
-- Keep the outline within 50 x 50 mm (`board.yaml layout.max_board_mm`).
-- Test points: GND, 3V3, 3V3_SW, VSYS, BAT, MPPT; UART0 header J7 as fallback debug.
+## Layout (generator `hardware/gen/pcb_v1.py`, build `hardware/tools/build_pcb.sh`, route `hardware/tools/route_krt.sh`)
+- Outline 50 x 50 mm, 4 layers: F.Cu parts and signals, In1 GND, In2 GND, B.Cu signals (`board.yaml` stackup). M3 holes
+  (ISO 7380 head) in the four corners, 3.2 mm copper keepout; board-only footprints H1-H4 (not in the schematic or BOM).
+- Floorplan: module top centre, antenna over the top edge (its footprint keepout lies off the board; a 1 mm strip along
+  the edge has no pours or vias). Battery top-left (J6 on the left edge, TH1 beside it, HY2112 and its FETs, F1). Debug
+  corner top-right (J7, RESET, BOOT). Heat corner bottom-left (J1 USB-C and J5 PV on the left edge, BQ25798 with L1 above
+  it between SW1 and SW2, TPS63802, TPS61023). Sensors bottom-right, opposite the heat corner (J8 on the right edge, J3
+  and J4 on the bottom edge, J2, U8 SCD41 footprint).
+- Placement: big parts by hand (`FIXED`); passives by rule (`NEAR`: each pad next to the pin it serves, critical blocks
+  first, courtyards never overlap). The build prints the courtyard share of the board and renders
+  `hardware/out/review/pcb/annot_*.png`.
+- Net classes from `board.yaml` (Charge 0.65 mm for 1.7 A, Power 0.4 mm, USB 0.27/0.15; `calc/track_width.py`). Custom
+  DRC: `hardware/rules/weatherstation.kicad_dru` (no via in SMD pads, via to edge, J1 shell, charge path neck >= 0.3 mm).
+- Rule areas: no tracks or vias under L1/L4/L5 on B.Cu (REQUIREMENTS E3); only GND under the J1 shell.
+- Critical blocks: `critical.yaml` (switching loops of BQ25798, TPS63802, TPS61023; FB dividers; decoupling; series
+  resistors; USB pair; heat-to-NTC and heat-to-sensor distances).
+- Test points TP1 (+3V3) and TP2 (SYS); UART0 header J7 as fallback debug.
 
 ## Open before ordering (updated 2026-11-01)
 The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).

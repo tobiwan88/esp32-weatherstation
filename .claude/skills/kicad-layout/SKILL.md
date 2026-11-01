@@ -5,10 +5,25 @@ description: Use for PCB placement and routing in KiCad: layout generators, keep
 
 # KiCad layout
 
-Read `hw-base`, then the board's `BOARD.md`, `board.yaml` and `critical.yaml`.
+Read `hw-base`, then the board's `BOARD.md`, `board.yaml` and `critical.yaml`. `BOARD.md` names the generator files and
+commands.
+
+## Before placing (requirements first)
+- Docs against the netlist: `BOARD.md` layout notes, `critical.yaml` refs and pins, net-class net names. After a part or
+  topology change they go stale silently; fix them first and list contradictions for the engineer.
+- Area budget: the generator prints the courtyard share of the board. Above about 60 % with all parts on one side and two
+  signal layers, routing gets hard. Bring options with their cost per unit to the engineer (THT bodies on the back,
+  smaller parts, fewer connectors or holes, a bigger board); never drop a part or grow the outline on your own.
+- Floorplan before coordinates: regions for inputs (at the edge they enter from), heat sources, sensors (opposite the
+  heat), the radio (antenna at the edge), debug access; write it into `BOARD.md`.
+- Track widths come from current: net class `current_a` in `board.yaml`, checked by `calc/track_width.py` (gate).
 
 ## Source of truth
 - Edit the layout generator (placement, outline, planes, keepouts, hand-drawn copper), not the `.kicad_pcb` (review).
+- Big parts get hand positions; passives are placed by rule (each named pad as close as possible to the pin it serves,
+  courtyards never overlap, critical blocks first), so a moved IC takes its passives along and runs are repeatable.
+- The generator merges board settings into the existing `.kicad_pro`; schematic settings in it stay.
+- Parts with no schematic symbol (mounting holes, fiducials): board-only footprints, excluded from BOM and position file.
 - Fab floors live in `board.yaml` `fab.rules` and `fab.router_rules`: change both or neither (review).
 - Custom DRC rules: edit the file at `board.yaml` `fab.custom_drc`; the generator copies it next to the board (gate).
 - One `.kicad_pro` per board in the repo; intermediates go to temp dirs (review).
@@ -25,6 +40,8 @@ Read `hw-base`, then the board's `BOARD.md`, `board.yaml` and `critical.yaml`.
 8. Remove router leftovers, fill zones, run the gate.
 
 ## Rules
+- A module antenna goes over the board edge (or into a full-layer keepout at the edge). A footprint whose courtyard
+  includes its own keepout area needs a body-only courtyard for placement.
 - Every new critical block gets a `critical.yaml` entry before routing (review).
 - Regulator input loop smallest, inductor at the switch node (`switcher_loop`).
 - FB divider at the pin, short FB trace (`feedback`); FB away from the switch node and inductor (review).
@@ -40,6 +57,10 @@ Read `hw-base`, then the board's `BOARD.md`, `board.yaml` and `critical.yaml`.
 - Pours: right net per zone, thermal reliefs from `board.yaml` `layout`, islands removed (review).
 - GND stitching vias at `board.yaml` `layout.stitch_pitch_mm` along pours and at layer changes, outside keepouts (review).
 - A deviation you cannot fix this revision: `known:` on the constraint with the fix for next time. Never loosen a limit to pass (review).
+
+## Review loop (every placement or routing change)
+Regenerate, render (annotated PNG: whole board plus regions), read each PNG against the floorplan and the rules, fix the
+generator, repeat. Findings and leftovers go to `BOARD.md`.
 
 ## Verification
 - Gate: zero DRC errors and zero unhandled warnings. Items in the gate's never-waive list are never waived; other waivers are cosmetic and carry a reason.
@@ -60,6 +81,9 @@ Read `hw-base`, then the board's `BOARD.md`, `board.yaml` and `critical.yaml`.
 | Router results differ between runs | non-deterministic routing | pin the seed; restore the committed board after experiments |
 | Zones missing in gerbers | zones not filled before plotting | fill zones, then plot |
 | `pcbnew` import error | system Python | KiCad's bundled Python (env command in `BOARD.md`) |
+| `yaml` missing in the generator | KiCad's bundled Python has few packages | pass `board.yaml` data as JSON from the build script |
+| Schematic settings gone | generator wrote a fresh `.kicad_pro` | merge into the existing project file |
+| Passives packed with no via room | courtyards touching | leave routing channels in the floorplan; check the render |
 | pcbnew SWIG going away | deprecated, removal planned (verify the KiCad version) | read boards with `calc/pcb.py`; write via IPC API or S-expressions |
 | KiCad opens a stray project | intermediate saved as a project | keep intermediates in temp dirs; remove it from KiCad's recent list |
 | KiCad "already open" | `~*.lck` from a killed instance | delete the lock when no KiCad runs |

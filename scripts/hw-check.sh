@@ -18,10 +18,11 @@ print("profile files: OK")
 PYEOF
 $PY hardware/calc/bom_check.py $B "$@" || rc=1
 $PY hardware/calc/power_budget.py $B || rc=1
-if [ -f $B/weatherstation-v1.kicad_pcb ]; then
+$PY hardware/calc/track_width.py $B || rc=1
+if [ -f $B/weatherstation-v1.kicad_pcb ] && grep -q "(segment" $B/weatherstation-v1.kicad_pcb; then
     $PY hardware/calc/critical.py $B || rc=1
 else
-    echo "SKIP: no routed board yet, critical.py not run (ERC/DRC need KiCad and a board)" >&2
+    echo "SKIP: no routed board yet (placement only), critical.py not run (ERC/DRC need KiCad and a board)" >&2
 fi
 [ $rc -eq 0 ] && echo "hardware checks: OK" || echo "hardware checks: FAILED"
 exit $rc

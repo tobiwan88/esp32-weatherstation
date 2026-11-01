@@ -1,20 +1,55 @@
 # Critical blocks of weatherstation-v1, declared by intent. hardware/calc/critical.py checks them on the routed board.
-# NOT RUN YET: there is no routed board. Reference designators follow bom.csv and will change when the generator numbers parts;
-# pad numbers (REF.PAD) are placeholders until the schematic exists. Fill them in then, and run calc/critical.py.
-# Limits are design targets unless a source is named (then: datasheet + section).
+# Pins are REF.PAD from the generated netlist (hardware/gen/weatherstation_v1.py). Distances are pad centre to pad centre (mm).
+# Nets use the full KiCad name (/Sheet/NET; global rails have no sheet). `known:` turns a FAIL into a WARN for an accepted
+# deviation of this revision, with the fix for the next one. Limits are design targets unless a source is named.
 
-switcher_loop:   # CN3791 buck: input cap, switch and GND as one small loop; inductor tight to the switch node
-  - {name: solar_charger, cin: C11, vin: U3.9, gnd: U3.1, max_mm: 3.0, sw: U3.10, inductor: L1.1, sw_max_mm: 3.0, known: "pins are placeholders until the schematic exists"}
+switcher_loop:   # input (or boost output) cap, switch and GND as one small loop; inductor tight to the switch node
+  # BQ25798 (SLUSDV2C, layout guidelines): PMID cap and SYS cap next to their pins and GND, inductor next to SW1/SW2
+  - {name: charger_pmid, cin: C9, vin: U3.29, gnd: U3.27, max_mm: 3.0, sw: U3.28, inductor: L1.1, sw_max_mm: 3.0}
+  - {name: charger_sys, cin: C13, vin: U3.25, gnd: U3.27, max_mm: 3.0, sw: U3.26, inductor: L1.2, sw_max_mm: 3.0}
+  # TPS63802 (buck-boost): input cap at VIN/GND, output cap at VOUT/GND, inductor at L1/L2
+  - {name: buckboost_in, cin: C40, vin: U2.1, gnd: U2.2, max_mm: 3.0, sw: U2.9, inductor: L4.1, sw_max_mm: 3.0}
+  - {name: buckboost_out, cin: C41, vin: U2.6, gnd: U2.8, max_mm: 3.0, sw: U2.7, inductor: L4.2, sw_max_mm: 3.0}
+  # TPS61023 (boost): the switched loop is the output cap at VOUT/GND
+  - {name: boost_out, cin: C45, vin: U7.6, gnd: U7.4, max_mm: 3.0, sw: U7.5, inductor: L5.2, sw_max_mm: 3.0}
+
+feedback:        # divider at the FB pin, short FB trace, away from the switch node (review)
+  - {name: buckboost_fb, pin: U2.4, divider: [R52.2, R53.1], max_mm: 3.0, net: /Rails/FB, max_len_mm: 5.0}
+  - {name: boost_fb, pin: U7.1, divider: [R43.2, R44.1], max_mm: 3.0, net: /Rails/GAS_FB, max_len_mm: 5.0}
 
 decoupling:      # each cap at the supply pin it serves
-  - {pin: U1.2, cap: C8.1, max_mm: 4.0, known: "placeholder pins"}   # ESP32-S3 module 3V3 pin
-  - {pin: U2.1, cap: C9.1, max_mm: 3.0, known: "placeholder pins"}   # AP2112K input
+  - {pin: U1.2, cap: C31.1, max_mm: 3.0}    # module 3V3 100 nF
+  - {pin: U1.2, cap: C32.1, max_mm: 4.0}    # module 3V3 1 uF
+  - {pin: U1.2, cap: C30.1, max_mm: 5.0}    # module 3V3 22 uF
+  - {pin: U1.3, cap: C33.1, max_mm: 3.0}    # EN RC
+  - {pin: U3.2, cap: C6.1, max_mm: 3.0}     # charger VBUS 100 nF
+  - {pin: U3.5, cap: C5.1, max_mm: 3.0}     # REGN
+  - {pin: U3.22, cap: C19.1, max_mm: 4.0}   # BAT
+  - {pin: U7.3, cap: C44.1, max_mm: 3.0}    # boost input
+  - {pin: U6.5, cap: C60.1, max_mm: 3.0}    # HY2112 VDD
+  - {pin: U4.5, cap: C1.1, max_mm: 4.0}     # USB ESD / VBUS
+  - {pin: U8.19, cap: C47.1, max_mm: 4.0}   # SCD41 VDD (DNP)
 
-thermal_distance:   # heat sources away from temperature-sensitive parts (footprint centres)
-  - {source: U3, sensor: TH1, min_mm: 15}   # solar charger vs battery NTC
-  - {source: U6, sensor: TH1, min_mm: 15}   # TP4056 vs battery NTC
+series_termination:   # series R at the driving pin (USB: Espressif S3 schematic checklist "USB")
+  - {source: U1.14, part: R32.2, max_mm: 4.0}   # USB D+
+  - {source: U1.13, part: R33.2, max_mm: 4.0}   # USB D-
+  - {source: U1.4, part: R48.1, max_mm: 4.0}    # PMS7003 RX
+  - {source: U1.6, part: R49.1, max_mm: 4.0}    # PMS7003 SET
+  - {source: U1.10, part: R46.1, max_mm: 4.0}   # ZE25 RX divider
+
+diff_pair:       # impedance from the stackup (calc/impedance.py), skew and vias from the routed board
+  - {name: usb, p: /USB_DP, n: /USB_DN, net_class: USB, layer: F.Cu, z_diff: 90, tol_ohm: 10, max_skew_mm: 5.0, max_vias: 4}
+
+thermal_distance:   # heat sources (REQUIREMENTS T1) away from the NTC and the sensors (T2, T3); footprint centres
+  - {source: U3, sensor: TH1, min_mm: 15}
   - {source: L1, sensor: TH1, min_mm: 15}
-  - {source: U6, sensor: J2, min_mm: 15}    # TP4056 vs SEN66 connector
+  - {source: U2, sensor: TH1, min_mm: 15}
+  - {source: U7, sensor: TH1, min_mm: 15}
+  - {source: U3, sensor: U8, min_mm: 15}
+  - {source: U2, sensor: U8, min_mm: 15}
+  - {source: U7, sensor: U8, min_mm: 15}
+  - {source: U3, sensor: J3, min_mm: 15}
 
-# Review only (no script yet): return_path (no signal across the GND planes' gaps; both inner layers are solid GND),
-# keepout (ESP32 antenna strip at the board edge; copper keepout on all layers), stitching along the edge every 5 mm.
+# Review only (no script yet): return_path (no signal over a plane gap; In1 and In2 are solid GND), keepout (antenna
+# overhang and strip are DRC rule areas made in gen/pcb_v1.py), no signal under L1/L4/L5 on the outer layers (rule
+# areas), stitching along the edge every 5 mm (REQUIREMENTS E2).

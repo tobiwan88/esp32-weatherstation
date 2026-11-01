@@ -1,7 +1,9 @@
 # Autorouting (read when routing)
 
 ## KiCadRoutingTools (KRT), preferred
-- Planes first (`route_planes.py`): one plane net per `role: plane` layer; plane layers stay solid.
+- Planes first (`route_planes.py`): one plane net per `role: plane` layer, positionally (two GND planes: `--nets GND GND
+  --plane-layers In1.Cu In2.Cu`); plane layers stay solid.
+- Copy the `.kicad_pro` and `.kicad_dru` next to every stage board in the temp dir, or the stages lose the rules.
 - Signals (`route.py`) on `role: signal` layers only (`--layers`).
 - `--ordering inside_out`: the default order put vias into pads.
 - `--same-net-pad-clearance`: keep it at or above the same-net via clearance in the custom DRC file (stops same-net vias in pads).
