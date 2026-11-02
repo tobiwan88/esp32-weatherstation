@@ -4,7 +4,7 @@ USBLC6-2SC6,"U4,U5",Package_TO_SOT_SMD:SOT-23-6,2,C7519,Extended,VERIFIED LCSC p
 5.1k,"R9,R10,R17",Resistor_SMD:R_0603_1608Metric,3,C23186,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R17: 5.1k (TS top; thresholds about +0.9 C vs 5.24k/30.31k)
 AO3400A,"M1,M2,M3,M4,M60,M61",Package_TO_SOT_SMD:SOT-23,6,C20917,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"M1: AO3400A ACFET1 (N-channel, BQ25798 back-to-back); M2: AO3400A RBFET1 (N-channel, BQ25798 back-to-back); M3: AO3400A ACFET2 (N-channel, BQ25798 back-to-back); M4: AO3400A RBFET2 (N-channel, BQ25798 back-to-back); M60: AO3400A discharge FET (OD); M61: AO3400A charge FET (OC)"
 300,"R11,R12",Resistor_SMD:R_0603_1608Metric,2,C23025,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R11: 300 (candidate; figure 294); R12: 300 (candidate; figure 294)
-0.1u,"C1,C2,C6,C9,C13,C31,C60",Capacitor_SMD:C_0603_1608Metric,7,C14663,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),C31: 100n; C60: 0.1u (HY2112 VDD)
+0.1u,"C1,C2,C6,C31,C60",Capacitor_SMD:C_0603_1608Metric,5,C14663,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),C31: 100n; C60: 0.1u (HY2112 VDD)
 SMBJ10A,D1,Diode_SMD:D_SMB,1,C151250,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"D1: SMBJ10A (PV surge, standoff 10 V, clamp 17 V)"
 CMC 90R 3A,L3,weatherstation:CMF4532F_4P,1,C963746,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),L3: CM choke 90 ohm 3 A (CMF4532F-900-2P-T; datasheet page to confirm)
 PV IN,J5,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,
@@ -14,6 +14,7 @@ PTC 3A,F1,Fuse:Fuse_1812_4532Metric,1,C21004,Extended,VERIFIED LCSC part (class 
 47n,"C3,C4",Capacitor_SMD:C_0603_1608Metric,2,C1622,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 4.7u,C5,Capacitor_SMD:C_0603_1608Metric,1,C19666,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 10u,"C7,C8,C10,C11,C12,C14,C15,C16,C17,C18,C19,C20",Capacitor_SMD:C_0805_2012Metric,12,C15850,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+0.1u,"C9,C13",Capacitor_SMD:C_0402_1005Metric,2,C307331,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 1n,C21,Capacitor_SMD:C_0603_1608Metric,1,C1588,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 100,"R13,R60",Resistor_SMD:R_0603_1608Metric,2,C22775,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R60: 100 (HY2112 VDD)
 3.0k,R14,Resistor_SMD:R_0603_1608Metric,1,C4211,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"R14: 3.0k (PROG: 1S, 1.5 MHz)"

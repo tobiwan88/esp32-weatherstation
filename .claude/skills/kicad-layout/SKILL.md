@@ -84,6 +84,9 @@ generator, repeat. Findings and leftovers go to `BOARD.md`.
 | `yaml` missing in the generator | KiCad's bundled Python has few packages | pass `board.yaml` data as JSON from the build script |
 | Schematic settings gone | generator wrote a fresh `.kicad_pro` | merge into the existing project file |
 | Passives packed with no via room | courtyards touching | leave routing channels in the floorplan; check the render |
+| Switching charger/regulator won't route, or routes with vias at the pins | autorouter cannot share a QFN's 0.4 mm pin row between power and signals | draw the power stage in the generator from the datasheet layout example (caps on the pin row, SW through vias), lock it; keep parts off it and escape bands free beside the signal pins |
+| Bulk caps of one net spread across the board | greedy placer puts each cap at its nearest free spot | place each cap next to the previous cap of its net (pads aligned), or fix the block by hand |
+| Gate runs routed-board checks on a placement | "has tracks" no longer means routed once the generator draws copper | generator copper is locked, router copper is not; the gate keys on unlocked tracks |
 | pcbnew SWIG going away | deprecated, removal planned (verify the KiCad version) | read boards with `calc/pcb.py`; write via IPC API or S-expressions |
 | KiCad opens a stray project | intermediate saved as a project | keep intermediates in temp dirs; remove it from KiCad's recent list |
 | KiCad "already open" | `~*.lck` from a killed instance | delete the lock when no KiCad runs |

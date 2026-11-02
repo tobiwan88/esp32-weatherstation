@@ -4,9 +4,10 @@
 # deviation of this revision, with the fix for the next one. Limits are design targets unless a source is named.
 
 switcher_loop:   # input (or boost output) cap, switch and GND as one small loop; inductor tight to the switch node
-  # BQ25798 (SLUSDV2C, layout guidelines): PMID cap and SYS cap next to their pins and GND, inductor next to SW1/SW2
-  - {name: charger_pmid, cin: C9, vin: U3.29, gnd: U3.27, max_mm: 3.0, sw: U3.28, inductor: L1.1, sw_max_mm: 3.0}
-  - {name: charger_sys, cin: C13, vin: U3.25, gnd: U3.27, max_mm: 3.0, sw: U3.26, inductor: L1.2, sw_max_mm: 3.0}
+  # BQ25798 (SLUSDV2C 8.4.1 items 1-2): 0402 PMID and SYS caps on top of the pin row, so SW1/SW2 drop through vias
+  # under the IC and reach the inductor beyond the caps (TI's own layout, Figure 8-21): inductor limit 4.5 mm, not 3
+  - {name: charger_pmid, cin: C9, vin: U3.29, gnd: U3.27, max_mm: 3.0, sw: U3.28, inductor: L1.1, sw_max_mm: 4.5}
+  - {name: charger_sys, cin: C13, vin: U3.25, gnd: U3.27, max_mm: 3.0, sw: U3.26, inductor: L1.2, sw_max_mm: 4.5}
   # TPS63802 (buck-boost): input cap at VIN/GND, output cap at VOUT/GND, inductor at L1/L2
   - {name: buckboost_in, cin: C40, vin: U2.1, gnd: U2.2, max_mm: 3.0, sw: U2.9, inductor: L4.1, sw_max_mm: 3.0}
   - {name: buckboost_out, cin: C41, vin: U2.6, gnd: U2.8, max_mm: 3.0, sw: U2.7, inductor: L4.2, sw_max_mm: 3.0}

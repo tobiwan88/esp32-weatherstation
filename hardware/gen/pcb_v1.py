@@ -21,7 +21,8 @@ sys.path.insert(0, str(HERE.parent / "tools"))
 from pcb_from_netlist import parse  # noqa: E402
 from write_project import write  # noqa: E402
 
-W, H = 50.0, 50.0
+W0 = H0 = 50.0  # floorplan drawn for 50 x 50; PCB_W/PCB_H grow it (extra width right of x 28, extra height below y 20)
+W, H = float(os.environ.get("PCB_W", W0)), float(os.environ.get("PCB_H", H0))
 OX, OY = 100.0, 100.0  # board origin on the page
 mm = pcbnew.FromMM
 LIBS = {"weatherstation": HERE / "lib" / "weatherstation.pretty"}
@@ -40,12 +41,55 @@ FIXED = {  # ref: (x, y, rotation[, "B"]); hand-soldered THT connectors sit on t
     "J7": (48.0, 16.5, 0, "B"), "SW10": (40.5, 10.3, 0), "SW11": (40.5, 17.0, 0),
     # inputs: USB-C opening out of the left edge, PV connector on the bottom edge
     "J1": (3.4, 28.5, 270), "J5": (3.3, 40.5, 270, "B"),
-    # charger: inductor above the IC between SW1 and SW2; buck-boost right of it, boost below, each with room for its loop
-    "U3": (16.5, 35.5, 0), "L1": (16.5, 31.7, 0),
-    "U2": (25.0, 38.5, 0), "U7": (23.0, 46.8, 0),
+    # charger (its power stage is CHARGER below); buck-boost right of it, boost below, each with room for its loop
+    "U3": (16.5, 35.5, 0),
+    "U2": (26.5, 38.5, 0), "U7": (23.0, 46.8, 0),
     # sensors
-    "U8": (39.0, 30.0, 0), "J8": (47.4, 37.0, 270, "B"), "J2": (29.0, 29.5, 0, "B"),
-    "J3": (38.6, 47.4, 0),
+    # J2's front pads sit in the free column between the charger and U8, not inside the charger block
+    "U8": (40.0, 30.0, 0), "J8": (47.4, 37.0, 270, "B"), "J2": (32.2, 29.5, 0, "B"),
+    "J3": (38.6, 46.65, 0),  # mounting pads 0.3 mm inside the bottom edge
+}
+
+FIXED = {r: (p[0] + (W - W0 if p[0] > 28 else 0), p[1] + (H - H0 if p[1] > 20 else 0), *p[2:])
+         if not r.startswith("H") and r != "U1" else p for r, p in FIXED.items()}
+
+# BQ25798 power stage drawn by hand (SLUSDV2C 8.4.1/8.4.2, priority order): 0402 PMID and SYS caps on top of the
+# PMID-SW1-GND-SW2-SYS pin row sharing the GND pin; SW1/SW2 drop through vias under the IC to B.Cu and come back up at
+# the inductor above the caps; bulk caps in a column beside each, joined by F.Cu pours. Offsets from U3's centre (mm).
+CHARGER = {
+    "C9": (-0.95, -3.0, 0), "C13": (0.95, -3.0, 180), "L1": (0.0, -5.6, 0),
+    "C10": (-3.6, -3.55, 180), "C11": (-3.6, -5.55, 180), "C12": (-3.6, -7.55, 180),
+    "C14": (3.6, -3.55, 0), "C15": (3.6, -5.55, 0), "C16": (3.6, -7.55, 0),
+}
+_U3 = FIXED["U3"]
+FIXED.update({r: (_U3[0] + dx, _U3[1] + dy, deg) for r, (dx, dy, deg) in CHARGER.items()})
+
+
+def _mirror(pts):
+    return [(-x, y) for x, y in pts]
+
+
+_PMID = [(-1.0, -1.3), (-0.8, -1.3), (-0.8, -2.45), (-1.1, -2.45), (-1.1, -3.5), (-1.6, -3.5), (-1.6, -8.4),
+         (-3.25, -8.4), (-3.25, -2.3), (-1.0, -2.3)]
+_SW1_B = [(-0.45, 0.25), (-0.45, -0.55), (-1.0, -1.1), (-1.0, -7.85)]
+CHARGER_COPPER = {  # same offsets; tracks (net, layer, width, points), vias (net, x, y), pours (net, layer, polygon)
+    "pours": [
+        ("PMID", "F", _PMID), ("SYS", "F", _mirror(_PMID)),
+        ("GND", "F", [(-0.1, -1.3), (0.1, -1.3), (0.1, -2.6), (0.8, -2.6), (0.8, -3.4), (0.3, -3.4), (0.3, -4.95),
+                      (-0.3, -4.95), (-0.3, -3.4), (-0.8, -3.4), (-0.8, -2.6), (-0.1, -2.6)]),
+    ],
+    "tracks": [
+        ("/Charger/SW1", "F", 0.3, [(-0.45, -1.25), (-0.45, 0.25)]),
+        ("/Charger/SW1", "B", 0.6, _SW1_B),
+        ("/Charger/SW1", "F", 0.6, [(-1.0, -7.85), (-1.0, -7.05), (-0.95, -6.0)]),
+        ("/Charger/SW2", "F", 0.3, [(0.45, -1.25), (0.45, 0.25)]),
+        ("/Charger/SW2", "B", 0.6, _mirror(_SW1_B)),
+        ("/Charger/SW2", "F", 0.6, [(1.0, -7.85), (1.0, -7.05), (0.95, -6.0)]),
+    ] + [("GND", "F", 0.4, [(sx * 4.55, y), (sx * 5.45, y)]) for sx in (-1, 1) for y in (-3.55, -5.55, -7.55)],
+    "vias": [("/Charger/SW1", -0.45, -0.55), ("/Charger/SW1", -0.45, 0.25), ("/Charger/SW1", -1.0, -7.05),
+             ("/Charger/SW1", -1.0, -7.85), ("/Charger/SW2", 0.45, -0.55), ("/Charger/SW2", 0.45, 0.25),
+             ("/Charger/SW2", 1.0, -7.05), ("/Charger/SW2", 1.0, -7.85), ("GND", 0.0, -3.85), ("GND", 0.0, -4.65)]
+            + [("GND", sx * 5.45, y) for sx in (-1, 1) for y in (-3.55, -5.55, -7.55)],
 }
 
 # ref: [(pad, target ref, target pad), ...]; the part goes where these pads are closest to their targets. Order = priority.
@@ -55,9 +99,14 @@ NEAR = [
     ("U4", [("1", "J1", "A6"), ("3", "J1", "A7")]), ("C1", [("1", "U4", "5")]),
     ("R9", [("1", "J1", "A5")]), ("R10", [("1", "J1", "B5")]),
     # switching loops, bootstrap, FB and IC decoupling of all three converters (critical.yaml)
-    ("C9", [("1", "U3", "29"), ("2", "U3", "27")]), ("C13", [("1", "U3", "25"), ("2", "U3", "27")]),
-    ("C3", [("1", "U3", "4"), ("2", "L1", "1")]), ("C4", [("1", "U3", "19"), ("2", "L1", "2")]),
-    ("C6", [("1", "U3", "2")]), ("C5", [("1", "U3", "5")]), ("C19", [("1", "U3", "22")]), ("C21", [("1", "U3", "24")]),
+    ("C6", [("1", "U3", "2")]), ("C5", [("1", "U3", "5")]),
+    # C3/C4: BTST side at the pin; the SW side reaches the B.Cu SW track through a via
+    ("C3", [("1", "U3", "4")]), ("C4", [("1", "U3", "19")]), ("C19", [("1", "U3", "22")]), ("C21", [("1", "U3", "24")]),
+    # charger bulk caps: each beside the previous cap of its net, pads aligned (one short wide copper run per net)
+    ("C17", [("1", "C16", "1"), ("2", "C16", "2")]),
+    ("C18", [("1", "C17", "1"), ("2", "C17", "2")]),
+    ("C20", [("1", "C19", "1"), ("2", "C19", "2")]),
+    ("C7", [("1", "C6", "1"), ("2", "C6", "2")]), ("C8", [("1", "C7", "1"), ("2", "C7", "2")]),
     ("C40", [("1", "U2", "1"), ("2", "U2", "2")]), ("L4", [("1", "U2", "9"), ("2", "U2", "7")]),
     ("C41", [("1", "U2", "6"), ("2", "U2", "8")]), ("R53", [("1", "U2", "4")]), ("R52", [("2", "U2", "4")]),
     ("C45", [("1", "U7", "6"), ("2", "U7", "4")]), ("L5", [("2", "U7", "5")]), ("C44", [("1", "U7", "3")]),
@@ -69,10 +118,6 @@ NEAR = [
     ("R18", [("1", "U3", "16")]), ("R17", [("2", "U3", "16")]), ("R13", [("2", "U3", "18")]),
     ("D2", [("1", "U3", "1")]), ("R19", [("2", "D2", "2")]),
     ("R20", [("2", "U3", "13")]), ("R22", [("1", "U3", "21")]), ("R54", [("1", "U3", "15")]), ("R55", [("1", "U3", "14")]),
-    # charger bulk caps
-    ("C20", [("1", "U3", "23")]), ("C10", [("1", "U3", "29")]), ("C11", [("1", "U3", "29")]), ("C12", [("1", "U3", "29")]),
-    ("C14", [("1", "U3", "25")]), ("C15", [("1", "U3", "25")]), ("C16", [("1", "U3", "25")]),
-    ("C17", [("1", "U3", "25")]), ("C18", [("1", "U3", "25")]), ("C7", [("1", "U3", "3")]), ("C8", [("1", "U3", "3")]),
     # module (decoupling, EN RC, series resistors at the driving pin)
     ("C31", [("1", "U1", "2")]), ("C33", [("1", "U1", "3")]), ("C32", [("1", "U1", "2")]),
     ("R30", [("2", "U1", "3")]), ("C30", [("1", "U1", "2")]),
@@ -90,6 +135,12 @@ NEAR = [
 ]
 # courtyard used for placement where the footprint's own courtyard includes an off-board keepout (local mm)
 COURTYARD = {"U1": (-9.74, -6.75, 9.74, 13.45)}
+# gap kept free around every NEAR part's courtyard: room for a via (0.45 mm) or a 0.4 mm power track between parts
+# (critical.yaml parts and the battery corner stay tight: their connections are short pad-to-pad links)
+HALO = float(os.environ.get("PCB_HALO", "0.35"))
+TIGHT = {"C3", "C4", "C6", "C5", "C19", "C40", "C41", "L4", "R52", "R53", "C45", "L5", "C44", "R43", "R44",
+         "C31", "C32", "C33", "C30", "R30", "R48", "R49", "R46", "R47", "R32", "R33",
+         "TH1", "F1", "M60", "M61", "C60", "R60", "R61", "TP1"}
 HOLE_KEEPOUT = 3.2  # M3 (ISO 7380 head 5.7 mm): no copper within this radius
 ANTENNA_STRIP = [(UX - 16, 0), (UX + 16, 0), (UX + 16, 1.0), (UX - 16, 1.0)]  # no pours or vias beside the antenna
 
@@ -177,6 +228,36 @@ def rules(board, classes):
         nc.SetNetclass(name, cls)
         for pattern in c["nets"]:
             nc.SetNetclassPatternAssignment(pattern, name)
+
+
+def draw_charger(board, origin):
+    """CHARGER_COPPER at U3's position, locked (the router keeps and never rips it)."""
+    ox, oy = origin
+    layer = {"F": pcbnew.F_Cu, "B": pcbnew.B_Cu}
+    for net, side, pts in CHARGER_COPPER["pours"]:
+        zone(board, layer[side], net, [(ox + x, oy + y) for x, y in pts], clearance=0.15)
+        z = board.Zones()[-1]
+        z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
+        z.SetMinThickness(mm(0.15))
+        z.SetLocked(True)
+    for net, side, w, pts in CHARGER_COPPER["tracks"]:
+        for (x1, y1), (x2, y2) in zip(pts, pts[1:]):
+            t = pcbnew.PCB_TRACK(board)
+            t.SetStart(v(ox + x1, oy + y1))
+            t.SetEnd(v(ox + x2, oy + y2))
+            t.SetWidth(mm(w))
+            t.SetLayer(layer[side])
+            t.SetNet(board.FindNet(net))
+            t.SetLocked(True)
+            board.Add(t)
+    for net, x, y in CHARGER_COPPER["vias"]:
+        t = pcbnew.PCB_VIA(board)
+        t.SetPosition(v(ox + x, oy + y))
+        t.SetWidth(mm(0.45))
+        t.SetDrill(mm(0.25))
+        t.SetNet(board.FindNet(net))
+        t.SetLocked(True)
+        board.Add(t)
 
 
 def load_fp(fpid):
@@ -316,19 +397,35 @@ def main():
             c = q.GetPosition()
             real_pads[ref].setdefault(q.GetNumber(), (pcbnew.ToMM(c.x) - OX, pcbnew.ToMM(c.y) - OY))
 
+    # hand-drawn charger copper on F.Cu (vias count on both sides): no part lands on it
+    ux3, uy3 = placed["U3"][:2]
+    for net, side, w, pts in CHARGER_COPPER["tracks"]:
+        if side == "F":
+            for (x1, y1), (x2, y2) in zip(pts, pts[1:]):
+                g = w / 2 + 0.2
+                taken.append((ux3 + min(x1, x2) - g, uy3 + min(y1, y2) - g, ux3 + max(x1, x2) + g, uy3 + max(y1, y2) + g))
+    for net, x, y in CHARGER_COPPER["vias"]:
+        taken.append((ux3 + x - 0.45, uy3 + y - 0.45, ux3 + x + 0.45, uy3 + y + 0.45))
+    # escape bands for U3's signal pins (TS/ILIM/BATP/BTST2/PROG/INT on the right below BAT, the bottom row, D+/D-/
+    # PV_IN on the left below REGN): no part there, so every pin can fan out before the router takes over
+    for bx0, by0, bx1, by1 in ((2.4, -0.55, 4.3, 2.7), (-2.7, 2.4, 2.7, 4.3), (-4.3, 0.25, -2.4, 2.7)):
+        taken.append((ux3 + bx0, uy3 + by0, ux3 + bx1, uy3 + by1))
+
     def place_near(ref, wants):
         targets = [(num, pad_at(tr, tp)) for num, tr, tp in wants]
         cx = sum(t[1][0] for t in targets) / len(targets)
         cy = sum(t[1][1] for t in targets) / len(targets)
         best = None
         step = 0.25
+        halo = 0.0 if ref in TIGHT else HALO
         for r in range(0, 64):  # rings of candidate centres around the targets' mean, out to 16 mm
             ring = [(i, j) for i in range(-r, r + 1) for j in range(-r, r + 1) if max(abs(i), abs(j)) == r]
             for i, j in ring:
                 x, y = round(cx + i * step, 3), round(cy + j * step, 3)
                 for deg in (0, 90, 180, 270):
                     b = box_at(boxes[ref], x, y, deg)
-                    if b[0] < 0 or b[1] < 0 or b[2] > W or b[3] > H or any(overlaps(b, t) for t in taken):
+                    g = (b[0] - halo, b[1] - halo, b[2] + halo, b[3] + halo)
+                    if b[0] < 0 or b[1] < 0 or b[2] > W or b[3] > H or any(overlaps(g, t) for t in taken):
                         continue
                     cost = sum(math.dist((x + rot(*pad_local[ref][n], deg)[0], y + rot(*pad_local[ref][n], deg)[1]), p)
                                for n, p in targets)
@@ -361,8 +458,9 @@ def main():
     # J1's metal shell sits on the board: only GND under it (rule "no signal copper under the J1 shell")
     b = box_at((-4.52, -3.7, 4.52, 3.7), *placed["J1"])
     keepout(board, [pcbnew.F_Cu, pcbnew.B_Cu], [(b[0], b[1]), (b[2], b[1]), (b[2], b[3]), (b[0], b[3])], pours=False, name="j1_shell")
-    # no tracks or vias under the inductors on B.Cu (REQUIREMENTS E3); F.Cu under them is their own pads
-    for ref in ("L1", "L4", "L5"):
+    # no tracks or vias under the inductors on B.Cu (REQUIREMENTS E3); F.Cu under them is their own pads. L1 is
+    # exempt: its own SW1/SW2 tracks and the charger GND vias run under it (TI layout, engineer decision 2026-11-02)
+    for ref in ("L4", "L5"):
         b = box_at(boxes[ref], *placed[ref])
         keepout(board, [pcbnew.B_Cu], [(b[0], b[1]), (b[2], b[1]), (b[2], b[3]), (b[0], b[3])], tracks=True, vias=True,
                 pours=False, name="under_" + ref)
@@ -372,6 +470,7 @@ def main():
         keepout(board, copper, [(hx + r_ko * math.cos(math.pi * k / 16), hy + r_ko * math.sin(math.pi * k / 16))
                                 for k in range(32)], tracks=True, vias=True)
 
+    draw_charger(board, placed["U3"][:2])
     pcbnew.ZONE_FILLER(board).Fill(board.Zones())
     t = pcbnew.PCB_TEXT(board)
     t.SetText("weatherstation v1 ${GIT_SHA}")

@@ -19,7 +19,11 @@ PYEOF
 $PY hardware/calc/bom_check.py $B "$@" || rc=1
 $PY hardware/calc/power_budget.py $B || rc=1
 $PY hardware/calc/track_width.py $B || rc=1
-if [ -f $B/weatherstation-v1.kicad_pcb ] && grep -q "(segment" $B/weatherstation-v1.kicad_pcb; then
+# routed = the board carries router copper; the generator's hand-drawn copper (charger power stage) is always locked
+routed() { python3 -c 'import re, sys
+blocks = re.findall(r"\(segment\b.*?\(uuid", open(sys.argv[1]).read(), re.S)
+sys.exit(0 if any("(locked yes)" not in b for b in blocks) else 1)' "$1"; }
+if [ -f $B/weatherstation-v1.kicad_pcb ] && routed $B/weatherstation-v1.kicad_pcb; then
     $PY hardware/calc/critical.py $B || rc=1
 else
     echo "SKIP: no routed board yet (placement only), critical.py not run (ERC/DRC need KiCad and a board)" >&2

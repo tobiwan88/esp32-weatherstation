@@ -25,6 +25,7 @@ from schkit import Sheet, Router, part_boxes, root_sheet, check_nets  # noqa: E4
 from layout_v1 import BLOCKS, HAND_LABELS, HAND_ROUTES, TAG_POS, TAGS_BELOW, SHEET_NOTES, ROOT_BOX, SHEET_COLOR, SHEET_PURPOSE  # noqa: E402
 
 R0603, C0603, C0805 = "Resistor_SMD:R_0603_1608Metric", "Capacitor_SMD:C_0603_1608Metric", "Capacitor_SMD:C_0805_2012Metric"
+C0402 = "Capacitor_SMD:C_0402_1005Metric"
 JST_PH2 = "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical"
 TP = "TestPoint:TestPoint_Pad_D1.5mm"
 SHEET_FILES = {"Input": "input.kicad_sch", "Charger": "charger.kicad_sch", "Battery": "battery.kicad_sch", "MCU": "mcu.kicad_sch",
@@ -70,11 +71,11 @@ PARTS = {
     "C6": ("Device:C", "0.1u", C0603, "C14663", "Charger"),
     "C7": ("Device:C", "10u", C0805, "C15850", "Charger"),
     "C8": ("Device:C", "10u", C0805, "C15850", "Charger"),
-    "C9": ("Device:C", "0.1u", C0603, "C14663", "Charger"),
+    "C9": ("Device:C", "0.1u", C0402, "C307331", "Charger"),  # 0402 on the pin row (SLUSDV2C 8.4.1 item 1), 50 V
     "C10": ("Device:C", "10u", C0805, "C15850", "Charger"),
     "C11": ("Device:C", "10u", C0805, "C15850", "Charger"),
     "C12": ("Device:C", "10u", C0805, "C15850", "Charger"),
-    "C13": ("Device:C", "0.1u", C0603, "C14663", "Charger"),
+    "C13": ("Device:C", "0.1u", C0402, "C307331", "Charger"),
     "C14": ("Device:C", "10u", C0805, "C15850", "Charger"),
     "C15": ("Device:C", "10u", C0805, "C15850", "Charger"),
     "C16": ("Device:C", "10u", C0805, "C15850", "Charger"),
@@ -796,7 +797,8 @@ JLC_CLASS = {"C165948": "Extended", "C7519": "Extended", "C23186": "Basic", "C15
              "C919459": "Extended", "C23231": "Basic",
              # Basic swaps 2026-11-01
              "C1622": "Basic", "C1588": "Basic", "C25808": "Basic", "C22984": "Basic", "C22975": "Basic",
-             "C22961": "Basic", "C23153": "Basic", "C23192": "Basic"}  # TPS61023DRLR 44.7k stock, 68k (2026-11-01)
+             "C22961": "Basic", "C23153": "Basic", "C23192": "Basic",
+             "C307331": "Basic"}  # 0402 100n 50 V, 21 M stock (2026-11-02)  # TPS61023DRLR 44.7k stock, 68k (2026-11-01)
 HAND_SOLDER = {"J2", "J5", "J6", "J7", "J8"}  # JST PH and pin header: hand-soldered, not in the assembly BOM
 
 

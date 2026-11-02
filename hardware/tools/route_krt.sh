@@ -4,13 +4,14 @@
 # Usage: route_krt.sh placed.kicad_pcb routed.kicad_pcb
 # Stage boards live in a temp dir (no stray KiCad projects in the repo); logs go to hardware/out/route/.
 set -e
+. "$(dirname "$0")/../../scripts/kicad-env.sh" >/dev/null 2>&1
 # Pin Python's hash order (KRT_SEED, default 1); the result also depends on the object ids of the input board.
 export PYTHONHASHSEED="${KRT_SEED:-1}"
 here="$(cd "$(dirname "$0")/.." && pwd)"
 K="$here/.tools/KiCadRoutingTools"; P="$K/.venv/bin/python"; F="$here/rules/krt-fab.txt"
 [ -x "$P" ] || { echo "KiCadRoutingTools missing: run hardware/tools/setup_tools.sh" >&2; exit 1; }
 in="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"; out="$2"
-work="$(mktemp -d)"; logs="$here/out/route"
+work="$(mktemp -d)"; logs="${KRT_LOGS:-$here/out/route}"
 trap 'mkdir -p "$logs"; cp "$work"/*.log "$work"/route.json "$logs"/ 2>/dev/null; rm -rf "$work"' EXIT
 cd "$work"
 pro="${in%.kicad_pcb}.kicad_pro"
@@ -22,10 +23,35 @@ $P "$K/py_router/route_planes.py" placed.kicad_pcb poured.kicad_pcb --nets GND G
 # Widths = board.yaml net classes (calc/track_width.py): Charge 0.65 mm, Power 0.4 mm
 CHARGE="USB_VBUS VBUS PMID SYS BAT_PACK /Battery/BAT_CON /Battery/BAT_N /Battery/PB_MID /Charger/SW1 /Charger/SW2 /Charger/PV_IN /Input/PV_RAW /Input/PV_N_RAW /Input/ACF1_MID /Input/ACF2_MID"
 POWER="+3V3 3V3_SW 5V_SW /Rails/BUCK_L1 /Rails/BUCK_L2 /Rails/GAS_SW"
-widths=""; for n in $CHARGE; do widths="$widths 0.65"; done; for n in $POWER; do widths="$widths 0.4"; done
-$P "$K/py_router/route.py" poured.kicad_pcb routed.kicad_pcb --nets "*" --layers F.Cu B.Cu --ordering inside_out \
-    --power-nets $CHARGE $POWER GND --power-nets-widths $widths 0.3 --track-width 0.2 \
-    --clearance 0.15 --json-out route.json --keep-input-copper $common > route.log 2>&1 || true
-grep -h "JSON_SUMMARY_MIN" route.log | cut -c1-600
+widths=""; for n in $CHARGE; do widths="$widths ${CHARGE_W:-0.65}"; done; for n in $POWER; do widths="$widths 0.4"; done
+pw="--power-nets $CHARGE $POWER GND --power-nets-widths $widths 0.3 --track-width 0.2 --clearance 0.15"
+# Stages run in order on one board; each stage's copper is locked before the next (unlocked earlier copper gets
+# ripped). Hand-drawn copper from gen/pcb_v1.py arrives locked. KRT_STAGES picks the stages (default below):
+#   fanout  45-degree stubs on the charger IC's signal pins (its power pins carry hand-drawn pours)
+#   power   Charge and Power class nets at class width on the otherwise empty board
+#   rest    every net (inside-out order)
+lock() { "$KICAD_PYTHON" -c 'import pcbnew, sys
+b = pcbnew.LoadBoard(sys.argv[1])
+for t in b.GetTracks():
+    t.SetLocked(True)
+pcbnew.SaveBoard(sys.argv[1], b)' "$1" 2>/dev/null; }
+ESC="/Charger/* !/Charger/SW1 !/Charger/SW2 !/Charger/PV_IN REGN /Battery/TS /USB_DP /USB_DN USB_VBUS VBUS BAT_PACK"
+cur=poured
+for s in ${KRT_STAGES:-fanout power rest}; do
+    case $s in
+    fanout) $P "$K/py_router/qfn_fanout.py" $cur.kicad_pcb -o $s.kicad_pcb -c U3 --nets $ESC --width 0.2 \
+                --clearance 0.15 --fab-overrides $F --no-fix-drc-settings > $s.log 2>&1 || cp $cur.kicad_pcb $s.kicad_pcb
+            grep -h "^JSON_SUMMARY" $s.log | cut -c1-200 ;;
+    power)  $P "$K/py_router/route.py" $cur.kicad_pcb $s.kicad_pcb --nets $CHARGE $POWER --layers F.Cu B.Cu \
+                $pw --keep-input-copper $common > $s.log 2>&1 || true ;;
+    rest)   $P "$K/py_router/route.py" $cur.kicad_pcb $s.kicad_pcb --nets "*" --layers F.Cu B.Cu --ordering inside_out \
+                $pw --json-out route.json --keep-input-copper $common > $s.log 2>&1 || true
+            cp $s.log route.log ;;
+    esac
+    grep -h "JSON_SUMMARY_MIN" $s.log | sed "s/^/$s: /" | cut -c1-600
+    cp poured.kicad_pro $s.kicad_pro; cp poured.kicad_dru $s.kicad_dru
+    cur=$s
+    [ "$s" = rest ] || lock $s.kicad_pcb  # the final stage stays unlocked (editable; marks the board as routed)
+done
 cd - >/dev/null
-cp "$work/routed.kicad_pcb" "$out"
+cp "$work/$cur.kicad_pcb" "$out"

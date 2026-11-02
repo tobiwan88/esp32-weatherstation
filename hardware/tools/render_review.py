@@ -1,4 +1,4 @@
-"""Annotated board renders for review agents: no pours, nets coloured and named, big reference labels.
+"""Annotated board renders for review agents: outer pours light, nets coloured and named, big reference labels.
 
 Reads the JSON from board_geom.py. Writes full-board and region PNGs with a mm grid, so a
 reviewer can read distances and follow nets. Colours: F.Cu tracks red, B.Cu blue, inner
@@ -46,6 +46,9 @@ def render(geom, out: Path, region=None, scale=40, labels=True):
         if fp["box"]:
             (a, b) = fp["box"]
             d.rectangle([P(a), P(b)], outline=(190, 190, 255))
+    for q in geom.get("pours", []):  # outer pours as light fills of the layer colour, under the pads
+        c = LAYER[q["layer"]]
+        d.polygon([P(p) for p in q["pts"]], fill=tuple(255 - (255 - v) // 3 for v in c), outline=c)
     for p in geom["pads"]:
         (a, b) = p["box"]
         col = NET.get(p["net"], (0, 150, 150) if p["net"] else (210, 210, 210))

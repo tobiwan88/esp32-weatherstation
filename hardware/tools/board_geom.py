@@ -17,7 +17,8 @@ def pt(p):
     return [round(mm(p.x - ox), 3), round(mm(p.y - oy), 3)]
 
 
-geom = {"size": [mm(box.GetWidth()), mm(box.GetHeight())], "edges": [], "pads": [], "tracks": [], "vias": [], "footprints": []}
+geom = {"size": [mm(box.GetWidth()), mm(box.GetHeight())], "edges": [], "pads": [], "tracks": [], "vias": [], "footprints": [],
+        "pours": []}
 for d in board.GetDrawings():
     if d.GetLayer() == pcbnew.Edge_Cuts and d.GetShape() == pcbnew.SHAPE_T_SEGMENT:
         geom["edges"].append([pt(d.GetStart()), pt(d.GetEnd())])
@@ -37,5 +38,16 @@ for t in board.GetTracks():
     else:
         geom["tracks"].append({"a": pt(t.GetStart()), "b": pt(t.GetEnd()), "w": mm(t.GetWidth()),
                                "layer": board.GetLayerName(t.GetLayer()), "net": t.GetNetname()})
+for z in board.Zones():  # filled outer-layer pours (the inner GND planes would cover everything)
+    if z.GetIsRuleArea():
+        continue
+    for layer in (pcbnew.F_Cu, pcbnew.B_Cu):
+        if not z.IsOnLayer(layer):
+            continue
+        polys = z.GetFilledPolysList(layer)
+        for i in range(polys.OutlineCount()):
+            o = polys.Outline(i)
+            geom["pours"].append({"layer": board.GetLayerName(layer), "net": z.GetNetname(),
+                                  "pts": [pt(o.CPoint(j)) for j in range(o.PointCount())]})
 json.dump(geom, open(sys.argv[2], "w"))
 print(f"{len(geom['pads'])} pads, {len(geom['tracks'])} tracks, {len(geom['vias'])} vias")

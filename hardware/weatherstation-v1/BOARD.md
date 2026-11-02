@@ -279,7 +279,8 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
   `hardware/out/review/pcb/annot_*.png`.
 - Net classes from `board.yaml` (Charge 0.65 mm for 1.7 A, Power 0.4 mm, USB 0.27/0.15; `calc/track_width.py`). Custom
   DRC: `hardware/rules/weatherstation.kicad_dru` (no via in SMD pads, via to edge, J1 shell, charge path neck >= 0.3 mm).
-- Rule areas: no tracks or vias under L1/L4/L5 on B.Cu (REQUIREMENTS E3); only GND under the J1 shell.
+- Rule areas: no tracks or vias under L4/L5 on B.Cu (REQUIREMENTS E3; L1 carries its own SW tracks, see below); only GND
+  under the J1 shell.
 - Critical blocks: `critical.yaml` (switching loops of BQ25798, TPS63802, TPS61023; FB dividers; decoupling; series
   resistors; USB pair; heat-to-NTC and heat-to-sensor distances).
 - Test points TP1 (+3V3) and TP2 (SYS); UART0 header J7 as fallback debug.
@@ -292,6 +293,18 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
   nets, 11 open, all in the charger corner or the USB pair (PMID, SYS, BAT_PACK, USB_VBUS, REGN, BATP, +3V3, SEN_SDA,
   GAS_SW, USB_DP/DN), 2 vias in pads. Next: draw the charger power copper (PMID/SYS/BAT/VBUS) and the USB pair in the
   generator and lock them (kicad-layout order of work step 6), then route the rest.
+- Charger power stage drawn by hand (2026-11-02, `CHARGER` and `CHARGER_COPPER` in `gen/pcb_v1.py`, TI SLUSDV2C
+  8.4.1/Figure 8-21): C9/C13 (now 0402, 100 nF 50 V C307331, Basic) on top of the PMID-SW1-GND-SW2-SYS pin row sharing
+  the GND pin; SW1/SW2 drop through 2 vias each under the IC to 0.6 mm B.Cu tracks and come back up at L1 above the
+  caps (engineer: vias and the SW tracks under L1 are fine, the B.Cu keepout stays for L4/L5); PMID and SYS bulk caps in
+  a column each, joined by F.Cu pours, one GND via per cap. All locked; the placer keeps parts off it and keeps escape
+  bands free beside U3's signal pins. KiCad DRC on the drawn copper: clean. Critical checks of both BQ25798 loops OK.
+- Why by hand: no autorouter order (power first, signals first, QFN fanout first, 0.4 mm charge tracks) closed the
+  charger at 50 x 50 or 55 x 55; each order walled in the other half of U3's 0.4 mm pitch pins, and the routed switch
+  nodes wandered (vias at the pins, PMID across the block). Routing trial 3 with the hand-drawn stage: 10 of 71 nets
+  open at 50 x 50 and at 55 x 55, almost all U3 signal pins (BTST1/2, PROG, ILIM, INT, SDA/SCL) and the USB pair.
+  Next: place the charger's small parts by hand and script U3's signal escapes the same way; then route the rest.
+  Engineer allows a slightly bigger outline (55 x 55) if needed; JLCPCB assembly takes 10x10 to 470x500 mm boards.
 
 ## Open before ordering (updated 2026-11-01)
 The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).

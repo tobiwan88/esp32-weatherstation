@@ -21,3 +21,6 @@ mkdir -p hardware/out/review/pcb
 "$KICAD_PYTHON" hardware/tools/board_geom.py $P.kicad_pcb hardware/out/geom.json 2>&1 | grep -v -e Fontconfig -e stdpbase -e swig
 uv run --package weatherstation-hardware python hardware/tools/render_review.py hardware/out/geom.json hardware/out/review/pcb \
     heat=0,20,30,50 top=0,0,50,22 sensors=22,20,50,50
+# KiCad's own top view (3D renderer, real footprints and copper) next to the annotated renders
+kicad-cli pcb render --side top --width 1600 --height 1600 --quality basic --background opaque \
+    -o hardware/out/review/pcb/kicad_top.png $P.kicad_pcb 2>&1 | grep -v -e Fontconfig -e "^Successfully" || true
