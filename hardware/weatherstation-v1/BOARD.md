@@ -305,6 +305,15 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
   open at 50 x 50 and at 55 x 55, almost all U3 signal pins (BTST1/2, PROG, ILIM, INT, SDA/SCL) and the USB pair.
   Next: place the charger's small parts by hand and script U3's signal escapes the same way; then route the rest.
   Engineer allows a slightly bigger outline (55 x 55) if needed; JLCPCB assembly takes 10x10 to 470x500 mm boards.
+- 0402 pass (engineer 2026-11-02: 0402 wherever a Basic part exists, same part numbers where possible): 34 passives to
+  0402 Basic (5.1k C25905, 100R C25076, 100k C25741, 2.2k C25879, 10k C25744, 2k C4109, 22R C25092, 1k C11702,
+  100n 50 V C307331, 1n C1523, 1u 25 V C52923). Stay 0603: values without a Basic 0402 (3k, 120k, 30k, 220k, 39k,
+  510k, 68k, 47n, 300R) and caps that lose too much capacitance at their DC bias in 0402 (C5 4.7u on REGN, 10u on
+  SYS/3V3). Extended parts unchanged (14). Front courtyards 69 % -> 65 %.
+- Charger small parts placed by hand in a ring in pin order (`CHARGER`): BAT cap beside the BAT pins, PROG, BTST2,
+  ILIM, TS rows on the right, BATP sense and SDRV cap further out; VBUS 100n, BTST1 and REGN caps on the left. The
+  charger's INT/CE/SDA/SCL pull-ups moved to the MCU end of those nets. Routing trial 4 (one pass): 5 of 71 nets open
+  (PV_IN, Rails/FB, USB_DP, 3V3_SW, BAT_PACK). Next: TPS63802 block by hand (FB divider at the pin), USB pair drawn.
 
 ## Open before ordering (updated 2026-11-01)
 The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).

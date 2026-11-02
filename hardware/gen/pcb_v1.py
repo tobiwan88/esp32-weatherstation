@@ -60,6 +60,12 @@ CHARGER = {
     "C9": (-0.95, -3.0, 0), "C13": (0.95, -3.0, 180), "L1": (0.0, -5.6, 0),
     "C10": (-3.6, -3.55, 180), "C11": (-3.6, -5.55, 180), "C12": (-3.6, -7.55, 180),
     "C14": (3.6, -3.55, 0), "C15": (3.6, -5.55, 0), "C16": (3.6, -7.55, 0),
+    # small parts, one ring around the pins in pin order so every pin fans out without crossing (items 3-5, 7):
+    # right: BAT cap beside the BAT pins, then PROG, BTST2, ILIM, TS rows; BATP sense and SDRV cap further out
+    "C19": (5.6, -1.35, 0), "C21": (8.3, -1.35, 0), "R14": (4.7, 0.45, 0), "R13": (7.2, 0.45, 0),
+    "C4": (4.7, 2.0, 0), "R16": (4.6, 3.3, 0), "R15": (7.05, 3.55, 180), "R18": (4.9, 5.1, 0), "R17": (7.5, 5.1, 180),
+    # left: VBUS 100 nF at the VBUS pins, BTST1 cap, REGN cap (2 GND vias to the plane, item 3)
+    "C6": (-3.45, -1.15, 180), "C3": (-4.4, 0.1, 180), "C5": (-4.4, 1.75, 180),
 }
 _U3 = FIXED["U3"]
 FIXED.update({r: (_U3[0] + dx, _U3[1] + dy, deg) for r, (dx, dy, deg) in CHARGER.items()})
@@ -99,9 +105,6 @@ NEAR = [
     ("U4", [("1", "J1", "A6"), ("3", "J1", "A7")]), ("C1", [("1", "U4", "5")]),
     ("R9", [("1", "J1", "A5")]), ("R10", [("1", "J1", "B5")]),
     # switching loops, bootstrap, FB and IC decoupling of all three converters (critical.yaml)
-    ("C6", [("1", "U3", "2")]), ("C5", [("1", "U3", "5")]),
-    # C3/C4: BTST side at the pin; the SW side reaches the B.Cu SW track through a via
-    ("C3", [("1", "U3", "4")]), ("C4", [("1", "U3", "19")]), ("C19", [("1", "U3", "22")]), ("C21", [("1", "U3", "24")]),
     # charger bulk caps: each beside the previous cap of its net, pads aligned (one short wide copper run per net)
     ("C17", [("1", "C16", "1"), ("2", "C16", "2")]),
     ("C18", [("1", "C17", "1"), ("2", "C17", "2")]),
@@ -114,10 +117,9 @@ NEAR = [
     # charger input FETs (VBUS pins), gate resistors, set resistors
     ("M2", [("3", "U3", "3")]), ("M4", [("3", "U3", "2")]), ("M1", [("2", "M2", "2")]), ("M3", [("2", "M4", "2")]),
     ("R11", [("2", "U3", "11"), ("1", "M1", "1")]), ("R12", [("2", "U3", "10"), ("1", "M3", "1")]),
-    ("R14", [("1", "U3", "20")]), ("R16", [("1", "U3", "17")]), ("R15", [("2", "U3", "17")]),
-    ("R18", [("1", "U3", "16")]), ("R17", [("2", "U3", "16")]), ("R13", [("2", "U3", "18")]),
     ("D2", [("1", "U3", "1")]), ("R19", [("2", "D2", "2")]),
-    ("R20", [("2", "U3", "13")]), ("R22", [("1", "U3", "21")]), ("R54", [("1", "U3", "15")]), ("R55", [("1", "U3", "14")]),
+    # charger I2C/INT/CE pull-ups at the MCU end of those nets (frees U3's pin ring)
+    ("R20", [("2", "U1", "17")]), ("R22", [("1", "U1", "18")]), ("R54", [("1", "U1", "39")]), ("R55", [("1", "U1", "38")]),
     # module (decoupling, EN RC, series resistors at the driving pin)
     ("C31", [("1", "U1", "2")]), ("C33", [("1", "U1", "3")]), ("C32", [("1", "U1", "2")]),
     ("R30", [("2", "U1", "3")]), ("C30", [("1", "U1", "2")]),
@@ -138,7 +140,7 @@ COURTYARD = {"U1": (-9.74, -6.75, 9.74, 13.45)}
 # gap kept free around every NEAR part's courtyard: room for a via (0.45 mm) or a 0.4 mm power track between parts
 # (critical.yaml parts and the battery corner stay tight: their connections are short pad-to-pad links)
 HALO = float(os.environ.get("PCB_HALO", "0.35"))
-TIGHT = {"C3", "C4", "C6", "C5", "C19", "C40", "C41", "L4", "R52", "R53", "C45", "L5", "C44", "R43", "R44",
+TIGHT = {"C40", "C41", "L4", "R52", "R53", "C45", "L5", "C44", "R43", "R44",
          "C31", "C32", "C33", "C30", "R30", "R48", "R49", "R46", "R47", "R32", "R33",
          "TH1", "F1", "M60", "M61", "C60", "R60", "R61", "TP1"}
 HOLE_KEEPOUT = 3.2  # M3 (ISO 7380 head 5.7 mm): no copper within this radius
