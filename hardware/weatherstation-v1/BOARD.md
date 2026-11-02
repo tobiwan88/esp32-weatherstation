@@ -314,6 +314,11 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
   ILIM, TS rows on the right, BATP sense and SDRV cap further out; VBUS 100n, BTST1 and REGN caps on the left. The
   charger's INT/CE/SDA/SCL pull-ups moved to the MCU end of those nets. Routing trial 4 (one pass): 5 of 71 nets open
   (PV_IN, Rails/FB, USB_DP, 3V3_SW, BAT_PACK). Next: TPS63802 block by hand (FB divider at the pin), USB pair drawn.
+- TPS63802 block placed by hand (`BUCKBOOST` in `gen/pcb_v1.py`, layout per TI SLVSEU9D section 12.1): U2 at
+  (28.3, 41.5), input cap C40 above VIN, L4 right beside L1/L2, output cap C41 below VOUT, FB divider R52/R53 at the
+  FB pin. Critical checks pass (loops 1.3-2.95 mm, FB divider 0.9/1.7 mm). Routing trial 5: 6 of 71 open (CHG_SCL,
+  CHG_SDA, PV_IN, USB_DP, 3V3_SW, REGN); FB now closes. The unrouted board shows 8 isolated-copper warnings on
+  In1/In2: these are GND plane pieces that no via reaches yet, and they go away after the plane stage adds vias.
 
 ## Open before ordering (updated 2026-11-01)
 The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).

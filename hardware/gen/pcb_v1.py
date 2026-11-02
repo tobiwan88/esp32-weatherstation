@@ -43,7 +43,7 @@ FIXED = {  # ref: (x, y, rotation[, "B"]); hand-soldered THT connectors sit on t
     "J1": (3.4, 28.5, 270), "J5": (3.3, 40.5, 270, "B"),
     # charger (its power stage is CHARGER below); buck-boost right of it, boost below, each with room for its loop
     "U3": (16.5, 35.5, 0),
-    "U2": (26.5, 38.5, 0), "U7": (23.0, 46.8, 0),
+    "U2": (28.3, 41.5, 0), "U7": (23.0, 46.8, 0),
     # sensors
     # J2's front pads sit in the free column between the charger and U8, not inside the charger block
     "U8": (40.0, 30.0, 0), "J8": (47.4, 37.0, 270, "B"), "J2": (32.2, 29.5, 0, "B"),
@@ -69,6 +69,12 @@ CHARGER = {
 }
 _U3 = FIXED["U3"]
 FIXED.update({r: (_U3[0] + dx, _U3[1] + dy, deg) for r, (dx, dy, deg) in CHARGER.items()})
+# TPS63802 (SLVSEU9D 12.1/Figure 12-1): input cap across both VIN pins above, inductor right of the L1/L2 pins, output
+# cap at VOUT/GND, FB divider at the FB pin on the far side from the switch pins. Offsets from U2's centre (mm).
+BUCKBOOST = {"C40": (-1.0, -2.6, 180), "L4": (2.75, 0.0, -90), "C41": (0.45, 2.82, 0),
+             "R53": (-3.05, 0.5, 180), "R52": (-3.05, 2.1, 0)}
+_U2 = FIXED["U2"]
+FIXED.update({r: (_U2[0] + dx, _U2[1] + dy, deg) for r, (dx, dy, deg) in BUCKBOOST.items()})
 
 
 def _mirror(pts):
@@ -110,8 +116,6 @@ NEAR = [
     ("C18", [("1", "C17", "1"), ("2", "C17", "2")]),
     ("C20", [("1", "C19", "1"), ("2", "C19", "2")]),
     ("C7", [("1", "C6", "1"), ("2", "C6", "2")]), ("C8", [("1", "C7", "1"), ("2", "C7", "2")]),
-    ("C40", [("1", "U2", "1"), ("2", "U2", "2")]), ("L4", [("1", "U2", "9"), ("2", "U2", "7")]),
-    ("C41", [("1", "U2", "6"), ("2", "U2", "8")]), ("R53", [("1", "U2", "4")]), ("R52", [("2", "U2", "4")]),
     ("C45", [("1", "U7", "6"), ("2", "U7", "4")]), ("L5", [("2", "U7", "5")]), ("C44", [("1", "U7", "3")]),
     ("R44", [("1", "U7", "1")]), ("R43", [("2", "U7", "1")]), ("C46", [("1", "U7", "6")]), ("R45", [("1", "U7", "2")]),
     # charger input FETs (VBUS pins), gate resistors, set resistors
