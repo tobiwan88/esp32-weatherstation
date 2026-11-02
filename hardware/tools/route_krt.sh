@@ -42,6 +42,9 @@ for s in ${KRT_STAGES:-fanout power rest}; do
     fanout) $P "$K/py_router/qfn_fanout.py" $cur.kicad_pcb -o $s.kicad_pcb -c U3 --nets $ESC --width 0.2 \
                 --clearance 0.15 --fab-overrides $F --no-fix-drc-settings > $s.log 2>&1 || cp $cur.kicad_pcb $s.kicad_pcb
             grep -h "^JSON_SUMMARY" $s.log | cut -c1-200 ;;
+    usb)    $P "$K/py_router/route_diff.py" $cur.kicad_pcb --output $s.kicad_pcb --nets "/USB_D*" --layers F.Cu B.Cu \
+                --track-width 0.27 --diff-pair-gap 0.15 --clearance 0.15 --keep-input-copper $common > $s.log 2>&1 \
+                || cp $cur.kicad_pcb $s.kicad_pcb ;;
     power)  $P "$K/py_router/route.py" $cur.kicad_pcb $s.kicad_pcb --nets $CHARGE $POWER --layers F.Cu B.Cu \
                 $pw --keep-input-copper $common > $s.log 2>&1 || true ;;
     rest)   $P "$K/py_router/route.py" $cur.kicad_pcb $s.kicad_pcb --nets "*" --layers F.Cu B.Cu --ordering inside_out \
