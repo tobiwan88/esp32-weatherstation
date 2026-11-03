@@ -37,17 +37,21 @@ FIXED = {  # ref: (x, y, rotation[, "B"]); hand-soldered THT connectors sit on t
     "H1": (3.5, 3.5, 0), "H2": (W - 3.5, 3.5, 0), "H3": (3.5, H - 3.5, 0), "H4": (W - 3.5, H - 3.5, 0),
     # battery: cell connector on the left edge, NTC beside it
     "J6": (3.3, 14.0, 270, "B"), "U6": (8.8, 14.0, 0),
+    # pinned 2026-11-03 at their NEAR positions (the BAT_PACK trunk lands next to F1.2 and M60)
+    "F1": (7.55, 10.25, 0), "M60": (12.688, 10.55, 0), "C60": (11.438, 14.5, -90), "R60": (8.688, 16.25, 0),
     # debug corner
     "J7": (48.0, 16.5, 0, "B"), "JP1": (40.5, 10.3, 0), "JP2": (40.5, 12.8, 0),  # tweezer pads
     # inputs: USB-C opening out of the left edge, PV connector on the bottom edge
     "J1": (3.4, 28.5, 270), "J5": (3.3, 40.5, 270, "B"),
     # charger (its power stage is CHARGER below); buck-boost right of it, boost below, each with room for its loop
     "U3": (16.5, 35.5, 0),
-    "U2": (28.3, 41.5, 0), "U7": (23.0, 46.2, 0),
+    "U2": (28.3, 41.5, 0), "U7": (23.0, 46.2, 0), "M1": (7.4, 20.012, 90), "R11": (4.425, 21.175, -90), "R12": (23.675, 23.655, -90), "R20": (23.31, 21.25, 180), "R49": (14.25, 7.84, 180), "R48": (14.25, 6.05, 180),
     # sensors
     # J2's front pads sit in the free column between the charger and U8, not inside the charger block
     "U8": (40.0, 30.0, 0), "J8": (47.4, 37.0, 270, "B"), "J2": (32.2, 29.5, 0, "B"),
     "J3": (38.6, 46.65, 0),  # mounting pads 0.3 mm inside the bottom edge
+    # charger STAT LED (debug only) in the free strip below the REGN cap; by rule it landed at the far left edge
+    "D2": (11.0, 39.0, 0), "R19": (11.6, 40.55, 180),
 }
 
 FIXED = {r: (p[0] + (W - W0 if p[0] > 28 else 0), p[1] + (H - H0 if p[1] > 20 else 0), *p[2:])
@@ -59,14 +63,18 @@ FIXED = {r: (p[0] + (W - W0 if p[0] > 28 else 0), p[1] + (H - H0 if p[1] > 20 el
 CHARGER = {
     "C9": (-0.95, -3.0, 0), "C13": (0.95, -3.0, 180), "L1": (0.0, -5.6, 0),
     "C10": (-3.6, -3.55, 180), "C11": (-3.6, -5.55, 180), "C12": (-3.6, -7.55, 180),
-    "C14": (3.6, -3.55, 0), "C15": (3.6, -5.55, 0), "C16": (3.6, -7.55, 0), "C17": (3.6, -10.05, 0),
+    "C14": (3.6, -3.55, 0), "C15": (3.6, -5.55, 0), "C16": (3.6, -7.55, 0), "C17": (3.6, -10.05, 0), "C20": (8.1, -4.1, 0),
     "C18": (3.6, -12.55, 0),
     # small parts, one ring around the pins in pin order so every pin fans out without crossing (items 3-5, 7):
     # right: BAT cap beside the BAT pins, then PROG, BTST2, ILIM, TS rows; BATP sense and SDRV cap further out
-    "C19": (5.6, -1.35, 0), "C21": (8.3, -1.35, 0), "R14": (4.7, 0.45, 0), "R13": (7.2, 0.45, 0),
-    "C4": (4.7, 2.0, 0), "R16": (4.6, 3.3, 0), "R15": (7.05, 3.55, 180), "R18": (4.9, 5.1, 0), "R17": (7.5, 5.1, 180),
+    "C19": (5.6, -1.35, 0), "C21": (8.3, -1.35, 0), "R14": (4.7, 0.6, 0), "R13": (7.2, 0.45, 0),
+    "C4": (4.7, 2.15, 0), "R16": (4.6, 3.45, 0), "R15": (7.05, 3.7, 180), "R18": (4.9, 5.3, 0), "R17": (7.5, 5.3, 180),
     # left: VBUS 100 nF at the VBUS pins, BTST1 cap, REGN cap (2 GND vias to the plane, item 3)
     "C6": (-3.45, -1.15, 180), "C3": (-4.4, 0.1, 180), "C5": (-4.4, 1.75, 180),
+    # ACFET1/RBFET1 output FET M2: its VBUS pin at the top of the hand-drawn VBUS channel
+    "M2": (-1.4, -11.05, -90),
+    # PV input cap C2 at the end of the VAC2 sense line below the escape band
+    "C2": (-0.38, 6.7, 180),
 }
 _U3 = FIXED["U3"]
 FIXED.update({r: (_U3[0] + dx, _U3[1] + dy, deg) for r, (dx, dy, deg) in CHARGER.items()})
@@ -74,12 +82,29 @@ FIXED.update({r: (_U3[0] + dx, _U3[1] + dy, deg) for r, (dx, dy, deg) in CHARGER
 # cap at VOUT/GND, FB divider at the FB pin on the far side from the switch pins. Offsets from U2's centre (mm).
 BUCKBOOST = {"C40": (-1.0, -2.6, 180), "L4": (2.75, 0.0, -90), "C41": (0.45, 2.82, 0),
              "R53": (-3.05, 0.5, 180), "R52": (-3.05, 2.1, 0)}
+# +3V3 output: VOUT pin to the output cap, output cap to the top of the FB divider (the router left them an island)
+RAILS_COPPER = {"pours": [], "tracks": [
+    ("+3V3", "F", 0.4, [(0.75, 1.0), (0.0, 1.75), (-0.5, 2.25), (-0.5, 2.5)]),
+    ("+3V3", "F", 0.3, [(-0.5, 2.93), (-3.88, 2.93), (-3.88, 2.4)]),
+    # TPS61023 FB node (U7.1 to the divider) and EN pull-down: local links the router kept losing to the power runs
+    ("/Rails/GAS_FB", "F", 0.2, [(-5.95, 4.2), (-5.95, 2.975)]), ("/Rails/GAS_FB", "F", 0.2, [(-7.5, 2.975), (-5.95, 2.975)]),
+    # EN leaves through a via between FB and the input cap, B.Cu down to the pull-down R45 (frees VIN for C44)
+    ("/MCU/BOOST_EN", "F", 0.2, [(-6.015, 4.7), (-6.475, 4.7), (-6.775, 4.225)]), ("/MCU/BOOST_EN", "B", 0.2, [(-6.775, 4.225), (-6.975, 4.425), (-6.975, 6.225)]),
+    ("/MCU/BOOST_EN", "F", 0.2, [(-6.975, 6.225), (-7.5, 6.95)]),
+    # boost input: C44 (SYS pad toward the IC) to VIN, VIN straight down to L5
+    ("SYS", "F", 0.35, [(-7.1, 5.2), (-6.1, 5.2)]), ("SYS", "F", 0.4, [(-6.015, 5.4), (-6.015, 6.2)]),
+    # buck-boost VIN pins 1 and 10 joined above the GND/L1 pins, C40 dropped into the link
+    # buck-boost FB pin straight to the divider tap R53/R52 (TI: short FB node)
+    ("/Rails/FB", "F", 0.2, [(-1.0, 0.5), (-2.2, 0.5), (-2.2, 2.1)]),
+    ("SYS", "F", 0.3, [(-0.9, -1.0), (0.75, -1.0)]), ("SYS", "F", 0.4, [(-0.225, -2.6), (-0.225, -1.0)])],
+    "vias": [("/MCU/BOOST_EN", -6.775, 4.225),
+             ("/MCU/BOOST_EN", -6.975, 6.225)]}
 _U2 = FIXED["U2"]
 FIXED.update({r: (_U2[0] + dx, _U2[1] + dy, deg) for r, (dx, dy, deg) in BUCKBOOST.items()})
 # TPS61023 (SLVSF14B 10.2/Figure 10-1): inductor below the IC from the VIN pin to the SW pin, output cap at VOUT/GND,
 # input cap left of VIN, FB divider above the FB pin. Offsets from U7's centre (mm).
-BOOST = {"L5": (0.25, 2.3, 0), "C45": (2.863, 0.0, -90), "C44": (-2.8, 0.5, 0),
-         "R43": (-0.65, -2.55, -90), "R44": (-2.2, -2.55, 90)}
+BOOST = {"L5": (0.25, 2.3, 0), "C45": (2.863, 0.0, -90), "C44": (-2.8, 0.5, 180),
+         "R43": (-0.65, -2.55, -90), "R44": (-2.2, -2.55, 90), "R45": (-2.713, 2.25, 180)}
 _U7 = FIXED["U7"]
 FIXED.update({r: (_U7[0] + dx, _U7[1] + dy, deg) for r, (dx, dy, deg) in BOOST.items()})
 # USB 2.0 pair drawn by hand: J1 row B7 A6 A7 B6 = DN DP DN DP. DN joins on F.Cu, DP drops through two vias and
@@ -101,12 +126,15 @@ USB_COPPER = {  # absolute board mm (the J1 block does not move with PCB_W/PCB_H
         (_DP, "B", 0.2, [(8.625, 29.245), (8.625, 28.245), (10.0, 28.245), (12.15, 26.095), (12.525, 26.475)]),
         (_DP, "F", 0.2, [(12.525, 26.475), (12.075, 26.025)]),
         (_DP, "F", 0.27, [(11.895, 23.365), (11.895, 19.575), (13.475, 17.995), (13.745, 17.995)]),
+        # USBLC6 flow-through: each line runs under U4 from pin to pin (pads 3/4 and 1/6 are separate pads in KiCad)
+        (_DN, "F", 0.27, [(9.995, 23.365), (9.995, 26.055)]), (_DP, "F", 0.27, [(11.895, 23.365), (11.895, 26.025)]),
         ("/MCU/ESP_DN", "F", 0.27, [(14.765, 16.725), (16.2, 16.725)]),
         ("/MCU/ESP_DP", "F", 0.27, [(14.765, 17.995), (16.2, 17.995)]),
         (_CC1, "F", 0.2, [(7.9, 27.245), (8.625, 27.175)]),
         (_CC1, "B", 0.2, [(8.625, 27.175), (7.875, 27.925), (7.875, 31.415), (8.825, 32.365)]),
         (_CC1, "F", 0.2, [(8.825, 32.365), (9.695, 32.365)]),
-        (_VB, "F", 0.3, [(10.945, 25.9), (10.5, 26.85)]), (_VB, "F", 0.3, [(10.945, 20.635), (10.945, 19.925)]),
+        ("/Input/CC2", "F", 0.2, [(7.9, 30.25), (9.5, 30.25)]),  # B5 straight to R10 (left open by the router)
+        (_VB, "F", 0.3, [(10.945, 20.635), (10.945, 19.925)]),
         ("GND", "F", 0.3, [(10.945, 21.595), (10.945, 23.365)]),
         # BC1.2 detection stubs to U3 pins 6/7: vias under U3's body (clear of the SW1 vias), B.Cu to the pair
         (_DP, "F", 0.2, [(14.6, 35.9), (15.3, 35.85)]), (_DN, "F", 0.2, [(14.6, 36.3), (15.0, 36.3), (15.3, 36.6)]),
@@ -115,9 +143,60 @@ USB_COPPER = {  # absolute board mm (the J1 block does not move with PCB_W/PCB_H
         (_DN, "B", 0.2, [(9.25, 28.745), (9.6, 29.095), (9.6, 33.9), (12.3, 36.6), (15.3, 36.6)]),
     ],
     "vias": [(_DP, 8.625, 28.245), (_DP, 8.625, 29.245), (_DP, 12.525, 26.475), (_CC1, 8.625, 27.175),
-             (_CC1, 8.825, 32.365), (_VB, 10.5, 26.85), (_VB, 10.945, 19.925), ("GND", 10.945, 22.275),
+             (_CC1, 8.825, 32.365), (_VB, 10.945, 19.925), ("GND", 10.945, 22.275),
              (_DP, 15.3, 35.85), (_DN, 15.3, 36.6), (_DN, 9.25, 28.745)],
 }
+# Charge trunks at class width, absolute board mm (the autorouter necks these down to 0.2 mm in the crowded middle):
+# BAT_PACK from the bulk cap C20 on B.Cu diagonally under U1's pin column to two 0.6/0.3 vias, up to the fuse F1;
+# USB_VBUS from J1's A4/B9 pad right of the shell keepout, between M1 and U4, to M1's source.
+TRUNKS = {"pours": [], "tracks": [
+    ("BAT_PACK", "F", 0.5, [(23.275, 30.125), (24.075, 30.125)]), ("BAT_PACK", "F", 0.65, [(23.655, 30.125), (23.655, 30.9)]),
+    ("BAT_PACK", "B", 0.65, [(23.275, 30.125), (24.075, 30.125)]),
+    ("BAT_PACK", "B", 0.65, [(23.675, 30.125), (23.675, 23.475), (12.475, 12.275), (10.775, 12.275)]),
+    ("BAT_PACK", "F", 0.5, [(10.775, 12.275), (9.875, 11.575)]),
+    ("USB_VBUS", "F", 0.5, [(7.9, 26.05), (8.85, 26.05), (9.175, 25.725)]),
+    ("USB_VBUS", "F", 0.65, [(9.175, 25.725), (9.175, 20.0)]),
+    ("USB_VBUS", "F", 0.5, [(9.175, 20.0), (7.4, 19.1)]),
+    # U3 bottom row (0.4 mm pitch), pre-routed as one nested B.Cu bundle (the router left these open in every
+    # trial). ACDRV1 drops to B.Cu and runs west, up the left edge under J1 (B.Cu, screened) to R11. ACDRV2, CE, SDA,
+    # SCL drop through staggered vias and run east on B.Cu at y 38.35/38.95/39.6/40.25, then turn north at x
+    # 26.0/26.6/27.2/27.8 (inner lane turns first, so nothing crosses): ACDRV2 to R12, CE to R20 between R12 and R20,
+    # SDA/SCL under U1 to vias beside its IO pins.
+    ("/Charger/ACDRV1", "F", 0.2, [(15.9, 37.6), (15.9, 39.6)]),
+    ("/Charger/ACDRV1", "B", 0.2, [(15.9, 39.6), (14.95, 39.6), (12.65, 37.3), (1.3, 37.3), (0.9, 36.9), (0.9, 23.4),
+                                   (1.3, 23.0), (4.43, 23.0)]),
+    ("/Charger/ACDRV1", "F", 0.2, [(4.43, 23.0), (4.43, 22.1)]),
+    ("/Charger/ACDRV2", "F", 0.2, [(15.5, 37.6), (15.5, 38.0), (15.15, 38.35)]),
+    ("/Charger/ACDRV2", "B", 0.2, [(15.15, 38.35), (26.0, 38.35), (26.0, 25.95), (24.65, 25.3)]),
+    ("/Charger/ACDRV2", "F", 0.2, [(24.65, 25.3), (24.0, 24.65)]),
+    ("/Charger/CHG_CE", "F", 0.2, [(16.7, 37.6), (16.7, 37.85), (16.4, 38.15), (16.4, 38.95)]),
+    ("/Charger/CHG_CE", "B", 0.2, [(16.4, 38.95), (26.6, 38.95), (26.6, 22.45), (25.9, 21.75), (24.9, 21.75)]),
+    ("/Charger/CHG_CE", "F", 0.2, [(24.9, 21.75), (24.6, 22.0), (22.8, 22.0), (22.8, 21.3)]),
+    ("/Charger/CHG_SDA", "F", 0.2, [(17.5, 37.6), (17.5, 39.6)]),
+    ("/Charger/CHG_SDA", "B", 0.2, [(17.5, 39.6), (27.2, 39.6), (27.2, 2.76), (32.3, 2.76)]),
+    ("/Charger/CHG_SDA", "F", 0.2, [(32.3, 2.76), (33.3, 2.76)]),
+    ("/Charger/CHG_SCL", "F", 0.2, [(17.1, 37.6), (17.1, 38.35), (16.95, 38.5), (16.95, 40.25)]),
+    ("/Charger/CHG_SCL", "B", 0.2, [(16.95, 40.25), (27.8, 40.25), (27.8, 4.03), (32.3, 4.03)]),
+    ("/Charger/CHG_SCL", "F", 0.2, [(32.3, 4.03), (33.3, 4.03)]),
+    # REGN: C5 down past D2 to R19 (flipped, REGN pad toward C5), B.Cu lane east below the bundle to R17/R15
+    ("REGN", "F", 0.25, [(12.75, 37.5), (12.75, 40.55), (12.85, 41.0)]), ("REGN", "F", 0.25, [(12.75, 40.55), (12.2, 40.55)]),
+    ("REGN", "B", 0.25, [(12.85, 41.0), (13.25, 41.4), (24.85, 41.4), (25.25, 41.0)]),
+    ("REGN", "F", 0.25, [(25.25, 41.0), (24.6, 40.8)]), ("REGN", "F", 0.25, [(24.5, 40.6), (24.45, 39.4)]),
+    ("/Charger/LED_A", "F", 0.2, [(11.6, 39.3), (11.1, 40.35)]),
+    # TS divider: R18 (to GND) and R17 (to REGN) joined above R18's GND pad, below the R15/R16 row
+    ("/Battery/TS", "F", 0.2, [(20.6, 40.45), (21.05, 40.0), (23.45, 40.0), (23.49, 40.55)]),
+    # GND of the BAT bulk cap C20 and the SDRV cap C21: one plane via between them (B.Cu lanes boxed them in)
+    ("GND", "F", 0.3, [(25.55, 32.0), (25.45, 33.0), (25.3, 34.0)]),
+    # PM_SETIN leaves R49 through a via between the R48 and R49 rows (the router dropped its via into the pad)
+    ("/Sensors/PM_SETIN", "F", 0.2, [(13.74, 7.84), (13.74, 7.03)]),
+    ("/Sensors/PM_RXIN", "F", 0.2, [(13.74, 6.05), (12.95, 6.05)]),  # same for R48, via to its left
+], "vias": [("BAT_PACK", 23.275, 30.125, 0.6, 0.3), ("BAT_PACK", 24.075, 30.125, 0.6, 0.3),
+            ("BAT_PACK", 10.775, 12.275, 0.6, 0.3), ("/Charger/ACDRV1", 15.9, 39.6), ("/Charger/ACDRV1", 4.43, 23.0),
+            ("/Charger/ACDRV2", 15.15, 38.35), ("/Charger/ACDRV2", 24.65, 25.3), ("REGN", 12.85, 41.0),
+            ("REGN", 25.25, 41.0), ("/Charger/CHG_CE", 16.4, 38.95), ("/Charger/CHG_CE", 24.9, 21.75),
+            ("/Charger/CHG_SDA", 17.5, 39.6), ("/Charger/CHG_SDA", 32.3, 2.76),
+            ("/Charger/CHG_SCL", 16.95, 40.25), ("/Charger/CHG_SCL", 32.3, 4.03), ("GND", 25.45, 33.0), ("/Sensors/PM_SETIN", 13.74, 7.03),
+            ("/Sensors/PM_RXIN", 12.95, 6.05)]}
 # the block sits below y 20, so it moves down with PCB_H like FIXED (points above y 20 stay with U1)
 _sy = lambda y: y + (H - H0 if y > 20 else 0)  # noqa: E731
 USB_COPPER = {"pours": [], "tracks": [(n, sd, w, [(x, _sy(y)) for x, y in pts]) for n, sd, w, pts in USB_COPPER["tracks"]],
@@ -128,8 +207,10 @@ def _mirror(pts):
     return [(-x, y) for x, y in pts]
 
 
+# bottom edge raised to -2.75 left of x -1.75 (still covers the C10/C14 pads): a channel above the pin row for STAT
+# (left) and SDRV (right, mirrored SYS pour)
 _PMID = [(-1.0, -1.3), (-0.8, -1.3), (-0.8, -2.45), (-1.1, -2.45), (-1.1, -3.5), (-1.6, -3.5), (-1.6, -8.4),
-         (-3.25, -8.4), (-3.25, -2.3), (-1.0, -2.3)]
+         (-3.25, -8.4), (-3.25, -2.75), (-1.75, -2.75), (-1.75, -2.3), (-1.0, -2.3)]
 _SW1_B = [(-0.45, 0.25), (-0.45, -0.55), (-1.0, -1.1), (-1.0, -7.85)]
 # U3 bottom row (net, pin x, bend y, via x): ACDRV2, ACDRV1, CE, SCL, SDA, TS (pin 12 QON unused)
 _FAN = [("/Charger/ACDRV2", -1.0, 2.7, -1.1), ("/Charger/ACDRV1", -0.6, 2.6, -0.3), ("/Charger/CHG_CE", 0.2, 2.6, 0.5),
@@ -152,6 +233,41 @@ CHARGER_COPPER = {  # same offsets; tracks (net, layer, width, points), vias (ne
         ("/Charger/SW2", "F", 0.6, [(1.0, -7.85), (1.0, -7.05), (0.95, -6.0)]),
         # SYS bulk caps above the pour joined to it (the router left the pour island unconnected)
         ("SYS", "F", 0.65, [(2.655, -7.55), (2.655, -12.55)]),
+        # VBUS pins + C6 were an island (the rest of VBUS is M2 above, C7/C8 left): via left of C6, B.Cu up the free
+        # channel between the DP stub and SW1, one 0.6/0.3 via up to M2's VBUS pin
+        ("VBUS", "F", 0.4, [(-3.1, -1.9), (-2.97, -1.3)]), ("VBUS", "F", 0.3, [(-2.97, -1.15), (-1.9, -1.0)]),
+        ("VBUS", "B", 0.45, [(-3.1, -1.9), (-2.4, -2.6)]), ("VBUS", "B", 0.65, [(-2.4, -2.6), (-2.4, -8.75)]),
+        ("VBUS", "F", 0.5, [(-2.4, -8.75), (-2.1, -8.75), (-1.4, -9.45)]),  # one 0.6/0.3 via (KRT drops parallel-via links)
+        # STAT (top-left corner pin) left above C6 in the pour channel, down beside C3/C5 to the debug LED D2
+        # (pins 1 and 24 are L-shaped corner pads open toward the corner: the stubs leave through that notch)
+        ("/Charger/STAT", "F", 0.2, [(-1.38, -1.9), (-2.2, -1.9), (-2.7, -2.4), (-4.9, -2.4), (-6.05, -1.25),
+                                     (-6.05, 3.1), (-6.29, 3.5)]),
+        # SDRV (top-right corner pin) right in the SYS pour channel, above C19, down to its 1 nF C21
+        # left pins in one fan: BTST1 and REGN to their caps, VAC2 (PV_IN sense, uA) between pins 7 and 9 at the
+        # 0.3 mm charge-class floor (0.15 mm each side), down past the REGN cap to C2
+        ("/Charger/BTST1", "F", 0.2, [(-1.9, -0.4), (-2.9, -0.4), (-3.3, 0.0)]),
+        ("REGN", "F", 0.2, [(-1.9, 0.0), (-2.55, 0.0), (-2.85, 0.3), (-2.85, 1.05), (-3.3, 1.5)]),
+        ("/Charger/PV_IN", "F", 0.3, [(-1.9, 1.2), (-2.3, 1.2), (-2.65, 1.55), (-2.65, 3.1), (0.11, 5.86), (0.11, 6.45)]),
+        # right column in pin order (no crossings): PROG into R14's upper pad half, BTST2 down to C4, BATP through a
+        # via under the body (clear of the SW2 vias) and B.Cu to R13, ILIM down to R16, TS from the corner pad's
+        # inner arm down to R18, INT to a via for its long run to the MCU; BAT pins to the BAT cap at 0.4 mm
+        ("/Charger/PROG", "F", 0.2, [(1.9, 0.0), (3.0, 0.0), (3.25, 0.25), (3.5, 0.25)]),
+        ("/Charger/BTST2", "F", 0.2, [(1.9, 0.4), (2.7, 0.4), (3.1, 0.8), (3.1, 1.7), (3.45, 2.05)]),
+        ("/Charger/BATP", "F", 0.2, [(1.9, 0.8), (1.25, 0.8), (1.1, 0.65)]),
+        ("/Charger/BATP", "B", 0.2, [(1.1, 0.65), (1.7, 1.25), (7.8, 1.25)]),
+        ("/Charger/BATP", "F", 0.2, [(7.8, 1.25), (7.71, 0.45)]),
+        ("/Charger/ILIM", "F", 0.2, [(1.9, 1.2), (2.5, 1.2), (2.5, 2.7), (3.25, 3.45), (4.0, 3.45)]),
+        ("/Battery/TS", "F", 0.2, [(1.4, 2.0), (1.4, 3.8), (2.9, 5.3), (4.0, 5.3)]),
+        ("/Charger/CHG_INT", "F", 0.2, [(1.9, -0.4), (3.05, -0.5)]),
+        ("BAT_PACK", "F", 0.4, [(1.9, -1.1), (4.4, -1.1)]),
+        ("BAT_PACK", "F", 0.3, [(1.95, -1.2), (1.95, -0.85)]),  # BAT pins 23 and 22 joined at 0.3 mm
+        # BATP sense resistor R13 to the BAT cap C19, under C19's GND pad
+        ("BAT_PACK", "F", 0.3, [(6.69, 0.45), (6.69, -0.3), (4.65, -0.3), (4.65, -0.8)]),
+        ("/Charger/SDRV", "F", 0.2, [(1.35, -1.9), (2.2, -1.9), (2.775, -2.325)]),
+        ("/Charger/SDRV", "B", 0.2, [(2.775, -2.325), (7.775, -2.175)]),
+        ("/Charger/SDRV", "F", 0.2, [(7.775, -2.175), (7.8, -1.35)]),
+        # BAT cap C19 to the bulk cap C20 diagonally (SDRV dropped to B.Cu to free this path)
+        ("BAT_PACK", "F", 0.65, [(4.925, -1.825), (5.825, -2.725), (7.075, -3.625)]),
     ] + [("GND", "F", 0.4, [(sx * 4.55, y), (sx * 5.45, y)]) for sx in (-1, 1) for y in (-3.55, -5.55, -7.55)]
       + [("GND", "F", 0.4, [(4.55, y), (5.45, y)]) for y in (-10.05, -12.55)]
       # bottom-row escapes to a via row (0.8 mm pitch): bends staggered so the 0.4 mm pitch fan keeps 0.15 mm
@@ -160,33 +276,34 @@ CHARGER_COPPER = {  # same offsets; tracks (net, layer, width, points), vias (ne
              ("/Charger/SW1", -1.0, -7.85), ("/Charger/SW2", 0.45, -0.55), ("/Charger/SW2", 0.45, 0.25),
              ("/Charger/SW2", 1.0, -7.05), ("/Charger/SW2", 1.0, -7.85), ("GND", 0.0, -3.85), ("GND", 0.0, -4.65)]
             + [("GND", sx * 5.45, y) for sx in (-1, 1) for y in (-3.55, -5.55, -7.55)]
+            + [("VBUS", -3.1, -1.9), ("VBUS", -2.4, -8.75, 0.6, 0.3)]
+            + [("/Charger/SDRV", 2.775, -2.325), ("/Charger/SDRV", 7.775, -2.175)]
+            + [("/Charger/BATP", 1.1, 0.65), ("/Charger/BATP", 7.8, 1.25), ("/Charger/CHG_INT", 3.05, -0.5)]
             + [("GND", 5.45, y) for y in (-10.05, -12.55)] + [(n, vx, 3.9) for n, px, by, vx in _FAN],
 }
 
 # ref: [(pad, target ref, target pad), ...]; the part goes where these pads are closest to their targets. Order = priority.
 NEAR = [
     # inputs first (they need the edge): PV TVS at the connector, then the choke; USB ESD at the connector
-    ("D1", [("1", "J5", "1"), ("2", "J5", "2")]), ("L3", [("1", "D1", "1"), ("4", "D1", "2")]), ("C2", [("1", "L3", "2")]),
+    ("D1", [("1", "J5", "1"), ("2", "J5", "2")]), ("L3", [("1", "D1", "1"), ("4", "D1", "2")]), 
     # switching loops, bootstrap, FB and IC decoupling of all three converters (critical.yaml)
     # charger bulk caps: each beside the previous cap of its net, pads aligned (one short wide copper run per net)
-    ("C20", [("1", "C19", "1"), ("2", "C19", "2")]),
     ("C7", [("1", "C6", "1"), ("2", "C6", "2")]), ("C8", [("1", "C7", "1"), ("2", "C7", "2")]),
-    ("C46", [("1", "C45", "1"), ("2", "C45", "2")]), ("R45", [("1", "U7", "2")]),
+    ("C46", [("1", "C45", "1"), ("2", "C45", "2")]),
     # charger input FETs (VBUS pins), gate resistors, set resistors
-    ("M2", [("3", "U3", "3")]), ("M4", [("3", "U3", "2")]), ("M1", [("2", "M2", "2")]), ("M3", [("2", "M4", "2")]),
-    ("R11", [("2", "U3", "11"), ("1", "M1", "1")]), ("R12", [("2", "U3", "10"), ("1", "M3", "1")]),
-    ("D2", [("1", "U3", "1")]), ("R19", [("2", "D2", "2")]),
+    ("M4", [("3", "U3", "2")]), ("M3", [("2", "M4", "2")]),
+
     # charger I2C/INT/CE pull-ups at the MCU end of those nets (frees U3's pin ring)
-    ("R20", [("2", "U1", "17")]), ("R22", [("1", "U1", "18")]), ("R54", [("1", "U1", "39")]), ("R55", [("1", "U1", "38")]),
+    ("R22", [("1", "U1", "18")]), ("R54", [("1", "U1", "39")]), ("R55", [("1", "U1", "38")]),
     # module (decoupling, EN RC, series resistors at the driving pin)
     ("C31", [("1", "U1", "2")]), ("C33", [("1", "U1", "3")]), ("C32", [("1", "U1", "2")]),
     ("R30", [("2", "U1", "3")]), ("C30", [("1", "U1", "2")]),
-    ("R48", [("1", "U1", "4")]), ("R49", [("1", "U1", "6")]), ("R46", [("1", "U1", "10")]), ("R47", [("1", "R46", "2")]),
+    ("R46", [("1", "U1", "10")]), ("R47", [("1", "R46", "2")]),
     ("R31", [("2", "U1", "27")]),
     ("R34", [("1", "U1", "34")]), ("R35", [("1", "U1", "35")]), ("D10", [("2", "R34", "2")]), ("D11", [("2", "R35", "2")]),
     # battery protection
-    ("TH1", [("2", "J6", "2")]), ("F1", [("1", "J6", "1")]), ("M60", [("2", "U6", "6")]), ("M61", [("3", "M60", "3")]),
-    ("C60", [("1", "U6", "5")]), ("R60", [("2", "U6", "5")]), ("R61", [("1", "U6", "2")]),
+    ("TH1", [("2", "J6", "2")]), ("M61", [("3", "M60", "3")]),
+    ("R61", [("1", "U6", "2")]),
     # sensors: I2C ESD at the cable connectors, switched rail
     ("U5", [("1", "J3", "3"), ("3", "J3", "4")]), ("R50", [("1", "U5", "1")]), ("R51", [("1", "U5", "3")]),
     ("Q40", [("3", "U5", "5")]), ("C42", [("1", "Q40", "3")]), ("C43", [("1", "Q40", "3")]), ("C47", [("1", "U8", "19")]),
@@ -197,6 +314,9 @@ NEAR = [
 COURTYARD = {"U1": (-9.74, -6.75, 9.74, 13.45)}
 # gap kept free around every NEAR part's courtyard: room for a via (0.45 mm) or a 0.4 mm power track between parts
 # (critical.yaml parts and the battery corner stay tight: their connections are short pad-to-pad links)
+# (ref, pad, via distance from the pad centre mm, stub width mm): U5's supply pin sits between the SDA/SCL pins, every
+# route to it must enter between their tracks (routing trial 9 left 3V3_SW open there)
+PAD_VIAS = [("U5", "5", 1.2, 0.4)]
 HALO = float(os.environ.get("PCB_HALO", "0.35"))
 TIGHT = {"C40", "C41", "L4", "R52", "R53", "C45", "L5", "C44", "R43", "R44",
          "C31", "C32", "C33", "C30", "R30", "R48", "R49", "R46", "R47", "R32", "R33",
@@ -310,11 +430,12 @@ def draw_copper(board, copper, origin=(0.0, 0.0)):
             t.SetNet(board.FindNet(net))
             t.SetLocked(True)
             board.Add(t)
-    for net, x, y in copper["vias"]:
+    for net, x, y, *size in copper["vias"]:  # optional (diameter, drill), default 0.45/0.25
+        d, drill = size or (0.45, 0.25)
         t = pcbnew.PCB_VIA(board)
         t.SetPosition(v(ox + x, oy + y))
-        t.SetWidth(mm(0.45))
-        t.SetDrill(mm(0.25))
+        t.SetWidth(mm(d))
+        t.SetDrill(mm(drill))
         t.SetNet(board.FindNet(net))
         t.SetLocked(True)
         board.Add(t)
@@ -459,13 +580,14 @@ def main():
 
     # hand-drawn copper on F.Cu (vias count on both sides): no part lands on it
     ux3, uy3 = placed["U3"][:2]
-    for copper, (ox, oy) in ((CHARGER_COPPER, (ux3, uy3)), (USB_COPPER, (0.0, 0.0))):
+    for copper, (ox, oy) in ((CHARGER_COPPER, (ux3, uy3)), (USB_COPPER, (0.0, 0.0)), (RAILS_COPPER, placed["U2"][:2]),
+                                  (TRUNKS, (0.0, 0.0))):
         for net, side, w, pts in copper["tracks"]:
             if side == "F":
                 for (x1, y1), (x2, y2) in zip(pts, pts[1:]):
                     g = w / 2 + 0.2
                     taken.append((ox + min(x1, x2) - g, oy + min(y1, y2) - g, ox + max(x1, x2) + g, oy + max(y1, y2) + g))
-        for net, x, y in copper["vias"]:
+        for net, x, y, *_ in copper["vias"]:
             taken.append((ox + x - 0.45, oy + y - 0.45, ox + x + 0.45, oy + y + 0.45))
     # escape bands for U3's signal pins (TS/ILIM/BATP/BTST2/PROG/INT on the right below BAT, the bottom row, D+/D-/
     # PV_IN on the left below REGN): no part there, so every pin can fan out before the router takes over
@@ -517,9 +639,11 @@ def main():
     zone(board, pcbnew.In1_Cu, "GND", full)
     zone(board, pcbnew.In2_Cu, "GND", full)
     keepout(board, copper, ANTENNA_STRIP, vias=True)
-    # J1's metal shell sits on the board: only GND under it (rule "no signal copper under the J1 shell")
+    # J1's metal shell sits on the top side: no signal copper on F.Cu under it (rule "no signal copper under the J1
+    # shell"). B.Cu under it is screened by both GND planes and stays a routing lane (2026-11-03).
     b = box_at((-4.52, -3.7, 4.52, 3.7), *placed["J1"])
-    keepout(board, [pcbnew.F_Cu, pcbnew.B_Cu], [(b[0], b[1]), (b[2], b[1]), (b[2], b[3]), (b[0], b[3])], pours=False, name="j1_shell")
+    keepout(board, [pcbnew.F_Cu], [(b[0], b[1]), (b[2], b[1]), (b[2], b[3]), (b[0], b[3])], tracks=True,
+            vias=True, pours=False, name="j1_shell")  # real keepout: the router ignores the custom rule
     # no tracks or vias under the inductors on B.Cu (REQUIREMENTS E3); F.Cu under them is their own pads. L1 is
     # exempt: its own SW1/SW2 tracks and the charger GND vias run under it (TI layout, engineer decision 2026-11-02)
     for ref in ("L4", "L5"):
@@ -534,6 +658,23 @@ def main():
 
     draw_copper(board, CHARGER_COPPER, placed["U3"][:2])
     draw_copper(board, USB_COPPER)
+    draw_copper(board, RAILS_COPPER, placed["U2"][:2])
+    draw_copper(board, TRUNKS)
+    # escape vias for pads the router finds boxed in: via `dist` mm from the pad centre, straight away from the part
+    # centre, joined by a locked stub (the router starts from the via, on either layer)
+    pv = {"pours": [], "tracks": [], "vias": []}
+    for ref, num, dist, w in PAD_VIAS:
+        fp = fps[ref]
+        c = fp.GetPosition()
+        q = next(p for p in fp.Pads() if p.GetNumber() == num)
+        net = q.GetNetname()
+        px, py = pcbnew.ToMM(q.GetPosition().x) - OX, pcbnew.ToMM(q.GetPosition().y) - OY
+        dx, dy = px - (pcbnew.ToMM(c.x) - OX), py - (pcbnew.ToMM(c.y) - OY)
+        n = math.hypot(dx, dy)
+        vx, vy = round(px + dx / n * dist, 3), round(py + dy / n * dist, 3)
+        pv["tracks"].append((net, "F", w, [(px, py), (vx, vy)]))
+        pv["vias"].append((net, vx, vy))
+    draw_copper(board, pv)
     pcbnew.ZONE_FILLER(board).Fill(board.Zones())
     t = pcbnew.PCB_TEXT(board)
     t.SetText("weatherstation v1 ${GIT_SHA}")

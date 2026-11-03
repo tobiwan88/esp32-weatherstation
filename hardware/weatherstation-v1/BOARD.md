@@ -136,6 +136,8 @@ the CN3791/TP4056 or the AP2112K are superseded.
   review loop `scripts/schematic-review.sh` (ERC, geometry, PNGs in `hardware/out/review/`); pin positions for hand routes
   `uv run --package weatherstation-hardware python hardware/gen/pins.py <Sheet> [ref|net ...]`.
 - Second board (outdoor SHT45): `uv run --package weatherstation-hardware python hardware/gen/sht45_board.py` (`hardware/sht45-board/`).
+- Layout: `hardware/tools/build_pcb.sh --no-schematic` (placed board from the generator), then
+  `hardware/tools/route_v1.sh` (routes it in place, prints DRC errors; `KRT_ARGS=...` to try router settings).
 - Reference pipeline (schematic generator, placement, KRT routing, fab package) from desk_notifier: `hardware/reference/desk_notifier/`
   (copy and adapt, see `hardware/PLAN.md`; the board-neutral skills assume that layout).
 
@@ -266,7 +268,7 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
 6. Update `bom.csv` only after items 3 and 4 are confirmed: remove TP4056 (C16581), R26 (C4211), D2/D3/Q1 only if the BQ25798
    power path replaces them, add BQ25798 and passives, and set R14 to 0.06 ohm (2512) for the CN3795 Rcs.
 
-## Layout (generator `hardware/gen/pcb_v1.py`, build `hardware/tools/build_pcb.sh`, route `hardware/tools/route_krt.sh`)
+## Layout (generator `hardware/gen/pcb_v1.py`, build `hardware/tools/build_pcb.sh`, route `hardware/tools/route_v1.sh`)
 - Outline 50 x 50 mm, 4 layers: F.Cu parts and signals, In1 GND, In2 GND, B.Cu signals (`board.yaml` stackup). M3 holes
   (ISO 7380 head) in the four corners, 3.2 mm copper keepout; board-only footprints H1-H4 (not in the schematic or BOM).
 - Floorplan: module top centre, antenna over the top edge (its footprint keepout lies off the board; a 1 mm strip along
@@ -280,7 +282,8 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
 - Net classes from `board.yaml` (Charge 0.65 mm for 1.7 A, Power 0.4 mm, USB 0.27/0.15; `calc/track_width.py`). Custom
   DRC: `hardware/rules/weatherstation.kicad_dru` (no via in SMD pads, via to edge, J1 shell, charge path neck >= 0.3 mm).
 - Rule areas: no tracks or vias under L4/L5 on B.Cu (REQUIREMENTS E3; L1 carries its own SW tracks, see below); only GND
-  under the J1 shell.
+  on F.Cu under the J1 shell (B.Cu under it is screened by In1/In2 and is a routing lane; a track/via keepout, since
+  the router does not read the custom rule).
 - Critical blocks: `critical.yaml` (switching loops of BQ25798, TPS63802, TPS61023; FB dividers; decoupling; series
   resistors; USB pair; heat-to-NTC and heat-to-sensor distances).
 - Test points TP1 (+3V3) and TP2 (SYS); UART0 header J7 as fallback debug.
@@ -334,6 +337,29 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
   on IO41/IO42 with 1k (engineer). Courtyards 66 %. Scripted escape of U3's bottom row (`_FAN`, off by default): it closed
   those nets but its via row blocked the channel under U3 (10 open vs 6). Routing trial 8: 6 of 73 open (ACDRV2, BATP,
   CHG_INT, CHG_SDA, STAT, SW1); the open set moves between runs, always U3's signal pins.
+- **Routing trial 12 (2026-11-03): fully routed, DRC clean.** `hardware/tools/route_v1.sh` (placed board in place ->
+  routed board): KRT planes, power, rest (`--max-ripup 4 --ripup-blocker-select cost`), rip-up finishing pass
+  (`route_finish.sh`), Charge tracks widened where they fit (`widen_charge.py`), via nudge and dangling cleanup
+  (`finish_v1.py`). Result: 0 DRC errors, 0 unconnected pads, schematic parity clean, no copper on In1/In2 (both solid
+  GND), 1444 tracks, 210 vias; `critical.py` OK (C1 WARN accepted). Five of six router settings give the same clean
+  result, so the hand copper, not the seed, carries it. Remaining DRC warnings are silkscreen only (7). What closed it:
+  - Hand-drawn (`gen/pcb_v1.py`, locked): U3's right column fan (PROG, BTST2, BATP via, ILIM, TS, INT via); U3's bottom
+    row as one nested B.Cu bundle (ACDRV1 west, up the left edge under J1 to R11; ACDRV2, CE, SDA, SCL east at
+    y 38.35-40.25 and north at x 26.0-27.8, inner lane turns first); REGN B.Cu lane to R15/R17; BAT_PACK trunk C20 to F1
+    (0.65 mm B.Cu, 0.6/0.3 vias) and USB_VBUS trunk J1 A4/B9 to M1 (0.5-0.65 mm); C19-C20 link (SDRV moved to B.Cu);
+    boost EN/FB/VIN, buck-boost FB and VIN links; USBLC6 flow-through links under U4; TS divider, CC2, LED_A; escape vias
+    for R48/R49 (the router dropped vias into those pads).
+  - Router settings: the J1 shell area is a real track/via keepout on F.Cu (KRT ignores the custom DRC rule; B.Cu under
+    the shell is screened by both planes and is a lane); KRT fab floors pinned to the project DRC (clearance 0.15,
+    via to edge 0.35, `rules/krt-fab.txt`); no `ctrl` stage, no automatic QFN fan-out stage.
+  - Rule "charge path neck" exempts USB_VBUS: its current path is the locked trunk, the rest are taps without load
+    current (U3 VAC1 sense, U4, C1, the second VBUS pad pair).
+  - Parts pinned where the new copper reservation pushed NEAR parts off (M1, R11, R12, R20, R45, R48, R49, C20, F1,
+    M60, C60, R60); C44 turned 180 degrees (SYS pad to VIN), R19 turned (REGN pad toward C5).
+  - Tried and dropped: Freerouting 2.5 as router (43 open) and as finisher on the KRT board (100 open, it re-counts the
+    plane nets); a `ctrl` stage for the long control nets (6-11 open).
+  - Open for the engineer: the VBUS layer change at U3 (C6 side) is one 0.45/0.25 via (about 1 A rating; input current
+    up to about 1.3 A at full charge); the M2 side is one 0.6/0.3 via. Two vias in parallel are dropped by KRT.
 
 ## Open before ordering (updated 2026-11-01)
 The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).

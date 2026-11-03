@@ -21,9 +21,12 @@
   (constraint text_height (min 0.8mm))
   (condition "A.Type == 'Text' && (A.Layer == 'F.Silkscreen' || A.Layer == 'B.Silkscreen')"))
 # Charge path: tracks at least 0.3 mm where they neck into the charger pins (class width 0.65 mm, calc/track_width.py).
+# USB_VBUS is exempt: its current path (J1 A4/B9 to the input FET M1) is a locked hand-drawn trunk of 0.5-0.65 mm
+# (TRUNKS in gen/pcb_v1.py); its other members are taps without load current (U3 VAC1 sense, U4 TVS, C1, the
+# second VBUS pad pair of J1) that cannot run at 0.3 mm beside the USB pair.
 (rule "charge path neck"
   (constraint track_width (min 0.3mm))
-  (condition "A.Type == 'Track' && A.hasNetclass('Charge')"))
+  (condition "A.Type == 'Track' && A.hasNetclass('Charge') && A.NetName != 'USB_VBUS'"))
 # The USB-C shell is metal and grounded: no signal copper under it (rule area "j1_shell" in pcb_v1.py).
 (rule "no signal copper under the J1 shell"
   (constraint disallow track via)

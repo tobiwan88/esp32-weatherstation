@@ -29,13 +29,16 @@ pw="--power-nets $CHARGE $POWER GND --power-nets-widths $widths 0.3 --track-widt
 # ripped). Hand-drawn copper from gen/pcb_v1.py arrives locked. KRT_STAGES picks the stages (default below):
 #   fanout  45-degree stubs on the charger IC's signal pins (its power pins carry hand-drawn pours)
 #   power   Charge and Power class nets at class width on the otherwise empty board
-#   rest    every net (inside-out order)
+#   ctrl    the long control nets (CTRL, or KRT_CTRL) before the rest
+#   rest    every net (inside-out order); KRT_ARGS adds route.py options (e.g. --max-ripup 6)
 lock() { "$KICAD_PYTHON" -c 'import pcbnew, sys
 b = pcbnew.LoadBoard(sys.argv[1])
 for t in b.GetTracks():
     t.SetLocked(True)
 pcbnew.SaveBoard(sys.argv[1], b)' "$1" 2>/dev/null; }
 ESC="/Charger/* !/Charger/SW1 !/Charger/SW2 !/Charger/PV_IN REGN /Battery/TS /USB_DP /USB_DN USB_VBUS VBUS BAT_PACK"
+# long control nets from the charger and the rails to the MCU: routed before the short local nets take the channels
+CTRL="/Charger/CHG_SCL /Charger/CHG_SDA /Charger/CHG_CE /Charger/CHG_INT /MCU/BOOST_EN /Rails/FB /Rails/GAS_FB"
 cur=poured
 for s in ${KRT_STAGES:-fanout power rest}; do
     case $s in
@@ -46,9 +49,11 @@ for s in ${KRT_STAGES:-fanout power rest}; do
                 --track-width 0.27 --diff-pair-gap 0.15 --clearance 0.15 --keep-input-copper $common > $s.log 2>&1 \
                 || cp $cur.kicad_pcb $s.kicad_pcb ;;
     power)  $P "$K/py_router/route.py" $cur.kicad_pcb $s.kicad_pcb --nets $CHARGE $POWER --layers F.Cu B.Cu \
-                $pw --keep-input-copper $common > $s.log 2>&1 || true ;;
+                $pw --keep-input-copper $common ${KRT_PARGS:-} > $s.log 2>&1 || true ;;
+    ctrl)   $P "$K/py_router/route.py" $cur.kicad_pcb $s.kicad_pcb --nets ${KRT_CTRL:-$CTRL} --layers F.Cu B.Cu $pw \
+                --keep-input-copper $common ${KRT_ARGS:-} > $s.log 2>&1 || true ;;
     rest)   $P "$K/py_router/route.py" $cur.kicad_pcb $s.kicad_pcb --nets "*" --layers F.Cu B.Cu --ordering inside_out \
-                $pw --json-out route.json --keep-input-copper $common > $s.log 2>&1 || true
+                $pw --json-out route.json --keep-input-copper $common ${KRT_ARGS:-} > $s.log 2>&1 || true
             cp $s.log route.log ;;
     esac
     grep -h "JSON_SUMMARY_MIN" $s.log | sed "s/^/$s: /" | cut -c1-600

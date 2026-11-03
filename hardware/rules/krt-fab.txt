@@ -1,8 +1,10 @@
-# KiCadRoutingTools fab floors = hardware/rules/jlc-4layer.json (keep in sync)
+# KiCadRoutingTools fab floors: the router may escalate down to these. JLC 4-layer floors are in
+# hardware/rules/jlc-4layer.json; clearance and board edge are pinned to the project DRC (0.15 mm clearance,
+# rule "via to board edge" 0.35 mm), so escalation never produces a DRC error.
 via_diameter = 0.45
 via_drill = 0.2
-clearance = 0.127
+clearance = 0.15
 track_width = 0.127
 hole_to_hole = 0.5
 pad_hole_to_hole = 0.5
-board_edge = 0.3
+board_edge = 0.35
