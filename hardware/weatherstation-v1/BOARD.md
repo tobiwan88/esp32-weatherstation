@@ -323,8 +323,8 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
   launch room at J1/U4. U4 rotated 270 (flow-through: DN left, DP right on both rows); J1 B7/A7 (DN) join on F.Cu,
   A6/B6 (DP) drop to B.Cu and come back up beside U4; R9 moved below R10, CC1 on B.Cu outside the shell keepout; BC1.2
   stubs to U3 pins 6/7 through vias under U3's body (clear of the SW1 vias) on B.Cu. USB closes in every routing run.
-  Proposed deviations (critical.yaml `known:`, engineer to accept): C1 5.0 mm from U4 VBUS (max 4), 6 vias on the pair
-  (max 4; J1 to U1 path has 2 on DP, 0 on DN; full speed 12 Mbit/s).
+  Engineer 2026-11-03: C1 5.0 mm from U4 VBUS accepted (critical.yaml `known:`); USB via limit 6 (J1 to U1 path has 2
+  on DP, 0 on DN; full speed 12 Mbit/s); BC1.2 D+/D- to the BQ25798 stays (chargers were not detected without it).
 - TPS61023 block placed by hand (`BOOST`, SLVSF14B Figure 10-1): inductor below the IC from VIN to SW, output cap at
   VOUT/GND, input cap left of VIN, FB divider above FB. Placer keeps courtyards 0.15 mm inside the edge (pads 0.3 mm).
 - Routing trial 6 (50 x 50, all hand blocks): 7 of 71 open (TS, ACDRV2, CHG_CE, CHG_SCL, PV_IN, 3V3_SW, SYS). 55 x 55

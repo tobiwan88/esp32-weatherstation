@@ -29,7 +29,7 @@ decoupling:      # each cap at the supply pin it serves
   - {pin: U7.3, cap: C44.1, max_mm: 3.0}    # boost input
   - {pin: U6.5, cap: C60.1, max_mm: 3.0}    # HY2112 VDD
   - {pin: U4.5, cap: C1.1, max_mm: 4.0,    # USB ESD / VBUS
-     known: "proposed, engineer to accept: C1 above U4 (5.0 mm), VBUS pin below; the hand-drawn pair leaves no 0402 room below U4 (pcb_v1.py USB_COPPER)"}
+     known: "accepted by the engineer 2026-11-03: C1 above U4 (5.0 mm), VBUS pin below; the hand-drawn pair leaves no 0402 room below U4 (pcb_v1.py USB_COPPER)"}
   - {pin: U8.19, cap: C47.1, max_mm: 4.0}   # SCD41 VDD (DNP)
 
 series_termination:   # series R at the driving pin (USB: Espressif S3 schematic checklist "USB")
@@ -40,8 +40,9 @@ series_termination:   # series R at the driving pin (USB: Espressif S3 schematic
   - {source: U1.10, part: R46.1, max_mm: 4.0}   # ZE25 RX divider
 
 diff_pair:       # impedance from the stackup (calc/impedance.py), skew and vias from the routed board
-  - {name: usb, p: /USB_DP, n: /USB_DN, net_class: USB, layer: F.Cu, z_diff: 90, tol_ohm: 10, max_skew_mm: 5.0, max_vias: 4,
-     known: "proposed, engineer to accept: 6 vias = DP: A6/B6 drops and the return beside U4 (3) plus its BC1.2 stub under U3 (1); DN: BC1.2 stub (2). J1 to U1 path: 2 on DP, 0 on DN; full speed 12 Mbit/s"}
+  - {name: usb, p: /USB_DP, n: /USB_DN, net_class: USB, layer: F.Cu, z_diff: 90, tol_ohm: 10, max_skew_mm: 5.0, max_vias: 6}
+    # max_vias 6 (engineer 2026-11-03): DP A6/B6 drops and the return beside U4 (3), BC1.2 stubs under U3 (DP 1, DN 2);
+    # the J1 to U1 path has 2 on DP, 0 on DN; full speed 12 Mbit/s. BC1.2 stays: chargers were not detected without it.
 
 thermal_distance:   # heat sources (REQUIREMENTS T1) away from the NTC and the sensors (T2, T3); footprint centres
   - {source: U3, sensor: TH1, min_mm: 15}
