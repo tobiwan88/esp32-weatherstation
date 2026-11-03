@@ -116,7 +116,7 @@ the CN3791/TP4056 or the AP2112K are superseded.
 - I2C: two buses (PARTS-REVIEW A4, decided 2026-11-01). CHG_SDA/CHG_SCL (IO1/IO2, moved 2026-11-01 from IO4/IO5 to the RTC I2C pins for the ULP core): BQ25798 only, R54/R55 10k to +3V3, readable
   with the sensors off. SEN_SDA/SEN_SCL (IO13/IO14): SHT45 cable, spare port, SCD41 (DNP), R50/R51 10k and U5 VBUS on 3V3_SW, so nothing
   is back-powered. Firmware sets IO13/IO14 to input or low before it switches 3V3_SW off.
-- GPIO map (module pin, GPIO): CHG_SDA/CHG_SCL 39/38 (IO1/IO2); SEN_SDA/SEN_SCL 21/22 (IO13/IO14); CHG_CE 17 (IO9); CHG_INT 18 (IO10); SENSOR_EN 19 (IO11);
+- GPIO map (module pin, GPIO): LED1/LED2 34/35 (IO41/IO42); CHG_SDA/CHG_SCL 39/38 (IO1/IO2); SEN_SDA/SEN_SCL 21/22 (IO13/IO14); CHG_CE 17 (IO9); CHG_INT 18 (IO10); SENSOR_EN 19 (IO11);
   PM_TXD 4 (IO4, via R48 1k to J2.7); PM_RXD 5 (IO5, J2.9); PM_SET 6 (IO6, via R49 1k to J2.10); BOOST_EN 20 (IO12); GAS_TXD 10 (IO17, to J8.5 through R46 1k / R47 10k = 3.0 V); GAS_RXD 11 (IO18, J8.6); GAS_DAC 7 (IO7, ADC1, J8.2); USB D-/D+ 13/14 (IO19/IO20); UART0 36/37; BOOT 27 (IO0).
 - Open items that the schematic does not settle: L1 Isat (VLS252010 candidate, 1 uH, needs 2.5 A+ check), ZE25-O3 supply current
   (pinout from Winsen table 2: J8 7-pin 1:1, cable pitch still to confirm), SMBJ10A vs PV Voc (6 V class panel only; Voc at or below 10 V). ACDRV wiring: common-source
@@ -329,6 +329,11 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
   VOUT/GND, input cap left of VIN, FB divider above FB. Placer keeps courtyards 0.15 mm inside the edge (pads 0.3 mm).
 - Routing trial 6 (50 x 50, all hand blocks): 7 of 71 open (TS, ACDRV2, CHG_CE, CHG_SCL, PV_IN, 3V3_SW, SYS). 55 x 55
   with the same blocks was worse (9-12 open): the outline transform pulls the blocks apart and stretches long nets.
+- 2026-11-03: SYS bulk caps C17/C18 fixed above C16 and joined to the SYS pour by a hand track (the router left the
+  pour an island). RESET/BOOT buttons (5.1 mm) replaced by tweezer pads JP1/JP2 (engineer); two red status LEDs D10/D11
+  on IO41/IO42 with 1k (engineer). Courtyards 66 %. Scripted escape of U3's bottom row (`_FAN`, off by default): it closed
+  those nets but its via row blocked the channel under U3 (10 open vs 6). Routing trial 8: 6 of 73 open (ACDRV2, BATP,
+  CHG_INT, CHG_SDA, STAT, SW1); the open set moves between runs, always U3's signal pins.
 
 ## Open before ordering (updated 2026-11-01)
 The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).

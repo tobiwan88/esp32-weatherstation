@@ -50,12 +50,15 @@ BLOCKS = {
          (4, 10, 76, 58), {
              "U1": (40, 36, 0), "C30": (10, 22, 0), "C31": (15, 22, 0), "C32": (20, 22, 0),
              "R33": (62, 29, 270), "R32": (62, 35, 270)}),
-        ("Reset and boot", "EN: RC delay 10k / 1 uF and RESET switch. IO0: 10k pull-up and BOOT switch (hold BOOT, press RESET = download mode)",
+        ("Reset and boot", "EN: RC delay 10k / 1 uF, RESET tweezer pads JP1. IO0: 10k pull-up, BOOT pads JP2 (short BOOT, then RESET = download mode)",
          (86, 10, 40, 30), {
-             "R30": (92, 22, 0), "C33": (98, 32, 0), "SW10": (104, 32, 270), "R31": (112, 22, 0), "SW11": (118, 32, 270)}),
+             "R30": (92, 22, 0), "C33": (98, 32, 0), "JP1": (104, 32, 270), "R31": (112, 22, 0), "JP2": (118, 32, 270)}),
         ("Debug UART", "UART0 header J7: 1 +3V3, 2 TXD0 (IO43), 3 RXD0 (IO44), 4 GND",
          (86, 46, 40, 30), {
              "J7": (110, 60, 0)}),
+        ("Status LEDs", "Active high: IO41 -> 1k -> LED1, IO42 -> 1k -> LED2 (red 0603, about 1.3 mA)",
+         (4, 74, 50, 28), {
+             "R34": (16, 82, 0), "D10": (16, 92, 90), "R35": (36, 82, 0), "D11": (36, 92, 90)}),
     ],
     "Rails": [
         ("3.3 V buck-boost", "TPS63802DLA from SYS (VIN = EN = SYS, MODE = GND: power save). FB 220k / 39k: 0.5 V x (1 + 220/39) = 3.32 V. L4 0.47 uH; 10 uF in, 22 uF out",

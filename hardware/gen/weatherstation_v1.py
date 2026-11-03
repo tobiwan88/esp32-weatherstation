@@ -121,11 +121,20 @@ PARTS = {
     "C32": ("Device:C", "1u", C0402, "C52923", "MCU"),
     "R30": ("Device:R", "10k", R0402, "C25744", "MCU"),
     "C33": ("Device:C", "1u", C0402, "C52923", "MCU"),
-    "SW10": ("Switch:SW_Push", "RESET", "Button_Switch_SMD:SW_SPST_TL3342", "C318884", "MCU"),
+    # RESET and BOOT as tweezer pads (engineer 2026-11-03: the 5.1 mm buttons are too big; short with tweezers). Not
+    # assembled. Normal flashing needs neither: esptool resets the S3 over USB-JTAG; the pads recover a board whose
+    # firmware sleeps or disables USB (short BOOT, then RESET).
+    "JP1": ("Jumper:SolderJumper_2_Open", "RESET", "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm", None, "MCU"),
     "R31": ("Device:R", "10k", R0402, "C25744", "MCU"),
-    "SW11": ("Switch:SW_Push", "BOOT", "Button_Switch_SMD:SW_SPST_TL3342", "C318884", "MCU"),
+    "JP2": ("Jumper:SolderJumper_2_Open", "BOOT", "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm", None, "MCU"),
     "R32": ("Device:R", "22", R0402, "C25092", "MCU"),
     "R33": ("Device:R", "22", R0402, "C25092", "MCU"),
+    # two status LEDs (engineer 2026-11-03), active high on IO41/IO42 (module pins 34/35, free; JTAG pins only if the
+    # pad-JTAG eFuse is burnt, not used here). Same red 0603 as D2 (Basic, Vf about 2 V); 1k gives about 1.3 mA.
+    "R34": ("Device:R", "1k", R0402, "C11702", "MCU"),
+    "D10": ("Device:LED", "LED1 red", "LED_SMD:LED_0603_1608Metric", "C2286", "MCU"),
+    "R35": ("Device:R", "1k", R0402, "C11702", "MCU"),
+    "D11": ("Device:LED", "LED2 red", "LED_SMD:LED_0603_1608Metric", "C2286", "MCU"),
     "J7": ("Connector_Generic:Conn_01x04", "DEBUG UART", "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", None, "MCU"),
     # --- Rails -------------------------------------------------------------------------------
     # 3.3 V buck-boost (replaces the AP2112K LDO: the LDO needs about 3.55 V in, and both cells sit below that).
@@ -238,8 +247,12 @@ NETS = {
     "SEN_SDA": [("U1", "21"), ("U8", "10"), ("J3", "3"), ("R50", "1"), ("U5", "1"), ("U5", "6")],
     "SEN_SCL": [("U1", "22"), ("U8", "9"), ("J3", "4"), ("R51", "1"), ("U5", "3"), ("U5", "4")],
     # MCU sheet
-    "EN": [("U1", "3"), ("R30", "2"), ("C33", "1"), ("SW10", "1")],
-    "IO0": [("U1", "27"), ("R31", "2"), ("SW11", "1")],
+    "EN": [("U1", "3"), ("R30", "2"), ("C33", "1"), ("JP1", "1")],
+    "IO0": [("U1", "27"), ("R31", "2"), ("JP2", "1")],
+    "LED1": [("U1", "34"), ("R34", "1")],
+    "LED1_A": [("R34", "2"), ("D10", "2")],
+    "LED2": [("U1", "35"), ("R35", "1")],
+    "LED2_A": [("R35", "2"), ("D11", "2")],
     "ESP_DP": [("R32", "2"), ("U1", "14")],
     "ESP_DN": [("R33", "2"), ("U1", "13")],
     "TXD0": [("U1", "37"), ("J7", "2")],
@@ -276,7 +289,7 @@ NETS = {
             ("C9", "2"), ("C10", "2"), ("C11", "2"), ("C12", "2"), ("C13", "2"), ("C14", "2"), ("C15", "2"), ("C16", "2"),
             ("C17", "2"), ("C18", "2"), ("C19", "2"), ("C20", "2"), ("C21", "2"), ("R14", "2"), ("R16", "2"), ("R18", "2"),
             ("U1", "1"), ("U1", "40"), ("U1", "41"), ("C30", "2"), ("C31", "2"), ("C32", "2"),
-            ("C33", "2"), ("SW10", "2"), ("SW11", "2"), ("J7", "4"), ("C40", "2"), ("C41", "2"), ("Q41", "2"),
+            ("C33", "2"), ("JP1", "2"), ("JP2", "2"), ("D10", "1"), ("D11", "1"), ("J7", "4"), ("C40", "2"), ("C41", "2"), ("Q41", "2"),
             ("R42", "2"), ("C42", "2"), ("C43", "2"), ("U7", "4"), ("R44", "2"), ("R45", "2"), ("C44", "2"), ("C45", "2"),
             ("C46", "2"), ("J2", "3"), ("J2", "4"), ("U8", "6"), ("U8", "20"), ("U8", "21"), ("C47", "2"), ("J3", "1"),
             ("U5", "2"), ("J8", "3"), ("R47", "2"), ("#FLG12", "1")],

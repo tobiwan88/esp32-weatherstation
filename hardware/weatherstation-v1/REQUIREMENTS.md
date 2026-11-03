@@ -25,7 +25,7 @@ port, and an optional ZE25-O3 ozone module on its own 5 V boost. NO2 is out of s
   awake charge session firmware may take over (cold charging, `charge-policy.md`).
 - F6 Report battery voltage, input voltages and currents, charge state and TS through the charger ADC over I2C
   (charger bus); INT to the MCU.
-- F7 Program and debug over native USB-C (USB-JTAG and serial on IO19/IO20); RESET (SW10) and BOOT (SW11, IO0) buttons;
+- F7 Program and debug over native USB-C (USB-JTAG and serial on IO19/IO20); RESET (JP1) and BOOT (JP2, IO0) as tweezer pads (engineer 2026-11-03); two status LEDs on IO41/IO42;
   UART0 header J7 as a fallback.
 - F8 Sensor rail 3V3_SW switched by Q40 (P-FET), driven by SENSOR_EN (IO11) through Q41; off by default (R40 pull-up).
 - F9 5 V rail 5V_SW (PMS7003 and gas module) from U7 TPS61023 on SYS, EN = BOOST_EN (IO12), R45 pull-down: off by default, output

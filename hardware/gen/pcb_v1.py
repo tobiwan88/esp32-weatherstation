@@ -38,7 +38,7 @@ FIXED = {  # ref: (x, y, rotation[, "B"]); hand-soldered THT connectors sit on t
     # battery: cell connector on the left edge, NTC beside it
     "J6": (3.3, 14.0, 270, "B"), "U6": (8.8, 14.0, 0),
     # debug corner
-    "J7": (48.0, 16.5, 0, "B"), "SW10": (40.5, 10.3, 0), "SW11": (40.5, 17.0, 0),
+    "J7": (48.0, 16.5, 0, "B"), "JP1": (40.5, 10.3, 0), "JP2": (40.5, 12.8, 0),  # tweezer pads
     # inputs: USB-C opening out of the left edge, PV connector on the bottom edge
     "J1": (3.4, 28.5, 270), "J5": (3.3, 40.5, 270, "B"),
     # charger (its power stage is CHARGER below); buck-boost right of it, boost below, each with room for its loop
@@ -59,7 +59,8 @@ FIXED = {r: (p[0] + (W - W0 if p[0] > 28 else 0), p[1] + (H - H0 if p[1] > 20 el
 CHARGER = {
     "C9": (-0.95, -3.0, 0), "C13": (0.95, -3.0, 180), "L1": (0.0, -5.6, 0),
     "C10": (-3.6, -3.55, 180), "C11": (-3.6, -5.55, 180), "C12": (-3.6, -7.55, 180),
-    "C14": (3.6, -3.55, 0), "C15": (3.6, -5.55, 0), "C16": (3.6, -7.55, 0),
+    "C14": (3.6, -3.55, 0), "C15": (3.6, -5.55, 0), "C16": (3.6, -7.55, 0), "C17": (3.6, -10.05, 0),
+    "C18": (3.6, -12.55, 0),
     # small parts, one ring around the pins in pin order so every pin fans out without crossing (items 3-5, 7):
     # right: BAT cap beside the BAT pins, then PROG, BTST2, ILIM, TS rows; BATP sense and SDRV cap further out
     "C19": (5.6, -1.35, 0), "C21": (8.3, -1.35, 0), "R14": (4.7, 0.45, 0), "R13": (7.2, 0.45, 0),
@@ -130,6 +131,12 @@ def _mirror(pts):
 _PMID = [(-1.0, -1.3), (-0.8, -1.3), (-0.8, -2.45), (-1.1, -2.45), (-1.1, -3.5), (-1.6, -3.5), (-1.6, -8.4),
          (-3.25, -8.4), (-3.25, -2.3), (-1.0, -2.3)]
 _SW1_B = [(-0.45, 0.25), (-0.45, -0.55), (-1.0, -1.1), (-1.0, -7.85)]
+# U3 bottom row (net, pin x, bend y, via x): ACDRV2, ACDRV1, CE, SCL, SDA, TS (pin 12 QON unused)
+_FAN = [("/Charger/ACDRV2", -1.0, 2.7, -1.1), ("/Charger/ACDRV1", -0.6, 2.6, -0.3), ("/Charger/CHG_CE", 0.2, 2.6, 0.5),
+        ("/Charger/CHG_SCL", 0.6, 2.5, 1.3), ("/Charger/CHG_SDA", 1.0, 2.4, 2.1), ("/Battery/TS", 1.85, 2.6, 2.9)]
+# off by default: trial 7 (2026-11-03) closed the bottom-row nets but the via row cut the channel under U3 (10 open
+# with it, 6 without); PCB_FAN=1 brings it back for experiments
+_FAN = _FAN if os.environ.get("PCB_FAN", "0") == "1" else []
 CHARGER_COPPER = {  # same offsets; tracks (net, layer, width, points), vias (net, x, y), pours (net, layer, polygon)
     "pours": [
         ("PMID", "F", _PMID), ("SYS", "F", _mirror(_PMID)),
@@ -143,11 +150,17 @@ CHARGER_COPPER = {  # same offsets; tracks (net, layer, width, points), vias (ne
         ("/Charger/SW2", "F", 0.3, [(0.45, -1.25), (0.45, 0.25)]),
         ("/Charger/SW2", "B", 0.6, _mirror(_SW1_B)),
         ("/Charger/SW2", "F", 0.6, [(1.0, -7.85), (1.0, -7.05), (0.95, -6.0)]),
-    ] + [("GND", "F", 0.4, [(sx * 4.55, y), (sx * 5.45, y)]) for sx in (-1, 1) for y in (-3.55, -5.55, -7.55)],
+        # SYS bulk caps above the pour joined to it (the router left the pour island unconnected)
+        ("SYS", "F", 0.65, [(2.655, -7.55), (2.655, -12.55)]),
+    ] + [("GND", "F", 0.4, [(sx * 4.55, y), (sx * 5.45, y)]) for sx in (-1, 1) for y in (-3.55, -5.55, -7.55)]
+      + [("GND", "F", 0.4, [(4.55, y), (5.45, y)]) for y in (-10.05, -12.55)]
+      # bottom-row escapes to a via row (0.8 mm pitch): bends staggered so the 0.4 mm pitch fan keeps 0.15 mm
+      + [(n, "F", 0.2, [(px, 1.6 if n == "/Battery/TS" else 1.9), (px, by), (vx, by + abs(vx - px)), (vx, 3.9)]) for n, px, by, vx in _FAN],
     "vias": [("/Charger/SW1", -0.45, -0.55), ("/Charger/SW1", -0.45, 0.25), ("/Charger/SW1", -1.0, -7.05),
              ("/Charger/SW1", -1.0, -7.85), ("/Charger/SW2", 0.45, -0.55), ("/Charger/SW2", 0.45, 0.25),
              ("/Charger/SW2", 1.0, -7.05), ("/Charger/SW2", 1.0, -7.85), ("GND", 0.0, -3.85), ("GND", 0.0, -4.65)]
-            + [("GND", sx * 5.45, y) for sx in (-1, 1) for y in (-3.55, -5.55, -7.55)],
+            + [("GND", sx * 5.45, y) for sx in (-1, 1) for y in (-3.55, -5.55, -7.55)]
+            + [("GND", 5.45, y) for y in (-10.05, -12.55)] + [(n, vx, 3.9) for n, px, by, vx in _FAN],
 }
 
 # ref: [(pad, target ref, target pad), ...]; the part goes where these pads are closest to their targets. Order = priority.
@@ -156,8 +169,6 @@ NEAR = [
     ("D1", [("1", "J5", "1"), ("2", "J5", "2")]), ("L3", [("1", "D1", "1"), ("4", "D1", "2")]), ("C2", [("1", "L3", "2")]),
     # switching loops, bootstrap, FB and IC decoupling of all three converters (critical.yaml)
     # charger bulk caps: each beside the previous cap of its net, pads aligned (one short wide copper run per net)
-    ("C17", [("1", "C16", "1"), ("2", "C16", "2")]),
-    ("C18", [("1", "C17", "1"), ("2", "C17", "2")]),
     ("C20", [("1", "C19", "1"), ("2", "C19", "2")]),
     ("C7", [("1", "C6", "1"), ("2", "C6", "2")]), ("C8", [("1", "C7", "1"), ("2", "C7", "2")]),
     ("C46", [("1", "C45", "1"), ("2", "C45", "2")]), ("R45", [("1", "U7", "2")]),
@@ -172,6 +183,7 @@ NEAR = [
     ("R30", [("2", "U1", "3")]), ("C30", [("1", "U1", "2")]),
     ("R48", [("1", "U1", "4")]), ("R49", [("1", "U1", "6")]), ("R46", [("1", "U1", "10")]), ("R47", [("1", "R46", "2")]),
     ("R31", [("2", "U1", "27")]),
+    ("R34", [("1", "U1", "34")]), ("R35", [("1", "U1", "35")]), ("D10", [("2", "R34", "2")]), ("D11", [("2", "R35", "2")]),
     # battery protection
     ("TH1", [("2", "J6", "2")]), ("F1", [("1", "J6", "1")]), ("M60", [("2", "U6", "6")]), ("M61", [("3", "M60", "3")]),
     ("C60", [("1", "U6", "5")]), ("R60", [("2", "U6", "5")]), ("R61", [("1", "U6", "2")]),
