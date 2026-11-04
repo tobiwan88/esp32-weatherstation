@@ -207,10 +207,10 @@ def _mirror(pts):
     return [(-x, y) for x, y in pts]
 
 
-# bottom edge raised to -2.75 left of x -1.75 (still covers the C10/C14 pads): a channel above the pin row for STAT
+# bottom edge raised to -2.8 left of x -1.75 (still covers the C10/C14 pads): a channel above the pin row for STAT
 # (left) and SDRV (right, mirrored SYS pour)
 _PMID = [(-1.0, -1.3), (-0.8, -1.3), (-0.8, -2.45), (-1.1, -2.45), (-1.1, -3.5), (-1.6, -3.5), (-1.6, -8.4),
-         (-3.25, -8.4), (-3.25, -2.75), (-1.75, -2.75), (-1.75, -2.3), (-1.0, -2.3)]
+         (-3.25, -8.4), (-3.25, -2.8), (-1.75, -2.8), (-1.75, -2.3), (-1.0, -2.3)]
 _SW1_B = [(-0.45, 0.25), (-0.45, -0.55), (-1.0, -1.1), (-1.0, -7.85)]
 # U3 bottom row (net, pin x, bend y, via x): ACDRV2, ACDRV1, CE, SCL, SDA, TS (pin 12 QON unused)
 _FAN = [("/Charger/ACDRV2", -1.0, 2.7, -1.1), ("/Charger/ACDRV1", -0.6, 2.6, -0.3), ("/Charger/CHG_CE", 0.2, 2.6, 0.5),
@@ -234,13 +234,14 @@ CHARGER_COPPER = {  # same offsets; tracks (net, layer, width, points), vias (ne
         # SYS bulk caps above the pour joined to it (the router left the pour island unconnected)
         ("SYS", "F", 0.65, [(2.655, -7.55), (2.655, -12.55)]),
         # VBUS pins + C6 were an island (the rest of VBUS is M2 above, C7/C8 left): via left of C6, B.Cu up the free
-        # channel between the DP stub and SW1, one 0.6/0.3 via up to M2's VBUS pin
-        ("VBUS", "F", 0.4, [(-3.1, -1.9), (-2.97, -1.3)]), ("VBUS", "F", 0.3, [(-2.97, -1.15), (-1.9, -1.0)]),
-        ("VBUS", "B", 0.45, [(-3.1, -1.9), (-2.4, -2.6)]), ("VBUS", "B", 0.65, [(-2.4, -2.6), (-2.4, -8.75)]),
+        # channel between the DP stub and SW1, one 0.6/0.3 via up to M2's VBUS pin. The via at C6 is 0.6/0.3 too
+        # (input current up to the 1.59 A ILIM clamp); STAT runs 0.15 mm higher to make room for it.
+        ("VBUS", "F", 0.4, [(-3.0, -1.95), (-2.97, -1.3)]), ("VBUS", "F", 0.3, [(-2.97, -1.15), (-1.9, -1.0)]),
+        ("VBUS", "B", 0.65, [(-3.0, -1.95), (-2.4, -2.6)]), ("VBUS", "B", 0.65, [(-2.4, -2.6), (-2.4, -8.75)]),
         ("VBUS", "F", 0.5, [(-2.4, -8.75), (-2.1, -8.75), (-1.4, -9.45)]),  # one 0.6/0.3 via (KRT drops parallel-via links)
         # STAT (top-left corner pin) left above C6 in the pour channel, down beside C3/C5 to the debug LED D2
         # (pins 1 and 24 are L-shaped corner pads open toward the corner: the stubs leave through that notch)
-        ("/Charger/STAT", "F", 0.2, [(-1.38, -1.9), (-2.2, -1.9), (-2.7, -2.4), (-4.9, -2.4), (-6.05, -1.25),
+        ("/Charger/STAT", "F", 0.2, [(-1.38, -1.9), (-2.0, -1.9), (-2.65, -2.55), (-4.75, -2.55), (-6.05, -1.25),
                                      (-6.05, 3.1), (-6.29, 3.5)]),
         # SDRV (top-right corner pin) right in the SYS pour channel, above C19, down to its 1 nF C21
         # left pins in one fan: BTST1 and REGN to their caps, VAC2 (PV_IN sense, uA) between pins 7 and 9 at the
@@ -276,7 +277,7 @@ CHARGER_COPPER = {  # same offsets; tracks (net, layer, width, points), vias (ne
              ("/Charger/SW1", -1.0, -7.85), ("/Charger/SW2", 0.45, -0.55), ("/Charger/SW2", 0.45, 0.25),
              ("/Charger/SW2", 1.0, -7.05), ("/Charger/SW2", 1.0, -7.85), ("GND", 0.0, -3.85), ("GND", 0.0, -4.65)]
             + [("GND", sx * 5.45, y) for sx in (-1, 1) for y in (-3.55, -5.55, -7.55)]
-            + [("VBUS", -3.1, -1.9), ("VBUS", -2.4, -8.75, 0.6, 0.3)]
+            + [("VBUS", -3.0, -1.95, 0.6, 0.3), ("VBUS", -2.4, -8.75, 0.6, 0.3)]
             + [("/Charger/SDRV", 2.775, -2.325), ("/Charger/SDRV", 7.775, -2.175)]
             + [("/Charger/BATP", 1.1, 0.65), ("/Charger/BATP", 7.8, 1.25), ("/Charger/CHG_INT", 3.05, -0.5)]
             + [("GND", 5.45, y) for y in (-10.05, -12.55)] + [(n, vx, 3.9) for n, px, by, vx in _FAN],

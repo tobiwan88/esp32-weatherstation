@@ -12,7 +12,7 @@ was dropped for cost. Reasoning:
 | PM1/2.5/10 | Plantower PMS7003 | J2, 2x5 1.27 mm, hand-soldered, on 5V_SW | 4.5-5.5 V, <= 100 mA active, <= 200 uA standby, stable data >= 30 s after wake-up, -10..60 C, 0-99 %RH, MTTF >= 3 years, 48 x 37 x 12 mm; pins 1/2 VCC, 3/4 GND, 5 RESET, 7 RX, 9 TX, 10 SET (low = sleep), 6/8 NC; data 3.3 V TTL (Plantower PMS7003 manual V2.5, `datasheets/PMS7003_manual_V2.5.pdf`) |
 | Outdoor T/RH | Sensirion SHT45 (or SHT40) | own small PCB in the radiation shield, cable to J3 (Qwiic order) | LCSC SHT45-AD1B-R2 C5221601 USD 5.73, 7280 in stock; SHT40-AD1B-R3 C2848306 USD 1.86, 15786 in stock (jlcparts.py, 2026-11-01). Board still to design |
 | CO2 (optional) | Sensirion SCD41-D-R2 | U8 footprint on the main board, DNP | LCSC C3659294 USD 19.49, 1993 in stock. VDD 2.4-5.5 V, peak 175/205 mA at 3.3 V, ripple <= 30 mV, single shot 0.45 mA average at one reading per 5 min, VDD and VDDH tied at the sensor (SCD4x datasheet v1.7, `datasheets/SCD4x_v1.7.pdf`) |
-| O3 (optional) | Winsen ZE25-O3 | J8 on 5V_SW | 3.7-5.5 V, warm-up <= 3 min, response <= 90 s, 0-10 ppm, UART 3 V and DAC 0.4-2.0 V, life 2 years in air, -10..55 C (winsen-sensor.com product page). Current not published |
+| O3 (optional) | Winsen ZE25-O3 | J8 on 5V_SW | 3.7-5.5 V, warm-up <= 3 min, response <= 90 s, 0-10 ppm, UART 3 V and DAC 0.4-2.0 V, life 2 years in air, -10..55 C (winsen-sensor.com product page). Current 10 mA at 5 V (user, 2026-11-04; not in the manual pages read) |
 
 Cost per station for the sensors: about EUR 20-25 without CO2 and O3 (PMS7003 about USD 12-18 retail, research snippets;
 SHT45 board a few EUR). Prices other than the LCSC rows are from search results, not quotes: check before buying.

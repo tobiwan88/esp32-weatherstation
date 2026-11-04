@@ -118,8 +118,8 @@ the CN3791/TP4056 or the AP2112K are superseded.
   is back-powered. Firmware sets IO13/IO14 to input or low before it switches 3V3_SW off.
 - GPIO map (module pin, GPIO): LED1/LED2 34/35 (IO41/IO42); CHG_SDA/CHG_SCL 39/38 (IO1/IO2); SEN_SDA/SEN_SCL 21/22 (IO13/IO14); CHG_CE 17 (IO9); CHG_INT 18 (IO10); SENSOR_EN 19 (IO11);
   PM_TXD 4 (IO4, via R48 1k to J2.7); PM_RXD 5 (IO5, J2.9); PM_SET 6 (IO6, via R49 1k to J2.10); BOOST_EN 20 (IO12); GAS_TXD 10 (IO17, to J8.5 through R46 1k / R47 10k = 3.0 V); GAS_RXD 11 (IO18, J8.6); GAS_DAC 7 (IO7, ADC1, J8.2); USB D-/D+ 13/14 (IO19/IO20); UART0 36/37; BOOT 27 (IO0).
-- Open items that the schematic does not settle: L1 Isat (VLS252010 candidate, 1 uH, needs 2.5 A+ check), ZE25-O3 supply current
-  (pinout from Winsen table 2: J8 7-pin 1:1, cable pitch still to confirm), SMBJ10A vs PV Voc (6 V class panel only; Voc at or below 10 V). ACDRV wiring: common-source
+- Open items that the schematic does not settle: L1 Isat (VLS252010 candidate, 1 uH, needs 2.5 A+ check), ZE25-O3 cable pitch
+  (pinout from Winsen table 2: J8 7-pin 1:1; supply current 10 mA at 5 V, user 2026-11-04), SMBJ10A vs PV Voc (6 V class panel only; Voc at or below 10 V). ACDRV wiring: common-source
   N-FET pair with ACDRV on the gates (datasheet 7.3.5); Table 7-7 detail still to check on the final netlist.
 - Generated files: `weatherstation-v1.kicad_sch` (root) and six sheets (`input`, `charger`, `battery`, `mcu`, `rails`, `sensors`). Block layout: `hardware/gen/layout_v1.py`.
   `bom.csv` is written by the generator from the same PARTS list. Run:
@@ -176,7 +176,10 @@ the CN3791/TP4056 or the AP2112K are superseded.
   about 20 uA no-load) is the choice. TPS61040 has no disconnect in shutdown (output follows input through the inductor and
   Schottky, datasheet 6.3.3), so it needs a P-FET load switch. TPS61088-Q1 (10 A, 2.7-12 V, automotive grade, large external
   network) is overkill and is dropped.
-  ZE25-O3 current: the user reports about 10 mA; the manual pages read (1-6) do not state it. Open until a page confirms it.
+  ZE25-O3 current: 10 mA at 5 V (user confirmed 2026-11-04; the manual pages read (1-6) do not state it). board.yaml
+  `o3_ma` = 20 mA at the cell. Duty-cycled (4 min per hour): 18.2 mA average, 1.40 Wh/day, 7.1 days autonomy.
+  Continuous (if the 24-48 h warm-up rules out duty cycling): about 37 mA average, 2.8 Wh/day, 1.48x margin on the
+  4.2 Wh/day December yield, 3.5 days autonomy.
   At 10 mA continuous from the cell, the gas module adds about 1.4 Wh/day (boost efficiency about 85 %, assumed).
   The manual also requires a 24-48 h warm-up at first power-on, so duty-cycling it is not viable.
   Energy-based check (PVGIS-SARAH3 hourly, 2005-2023, 45 deg, December, 0.7 performance ratio, 3000 mAh cell from 80 %):
@@ -328,6 +331,13 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
   stubs to U3 pins 6/7 through vias under U3's body (clear of the SW1 vias) on B.Cu. USB closes in every routing run.
   Engineer 2026-11-03: C1 5.0 mm from U4 VBUS accepted (critical.yaml `known:`); USB via limit 6 (J1 to U1 path has 2
   on DP, 0 on DN; full speed 12 Mbit/s); BC1.2 D+/D- to the BQ25798 stays (chargers were not detected without it).
+- USB impedance check (2026-11-04, `calc/impedance.py`, JLC04161H-7628): the net class 0.27/0.15 mm on F.Cu gives
+  90.6 ohm differential (90.0 with JLC's calculator inputs: 8.6 mil prepreg, 1.6 mil copper; 87.0 with 1.2 mil mask
+  between the traces). The routed pair does not use that geometry: 0.2 mm at 0.3-1.6 mm gap (B.Cu and the U4/J1/U3
+  stubs) and 0.27 mm at 0.8-1.6 mm gap, so it is 115-135 ohm, loosely coupled. Lengths: DP about 29 mm, DN about
+  30 mm (J1 to U1), skew under 1 mm. Accepted: the ESP32-S3 USB is full speed only (12 Mbit/s, edges >= 4 ns); the
+  length where impedance starts to matter is about 165 mm (4 ns rise), or 61 mm at the strict 10 % rule. 30 mm is
+  under both. No impedance control ordered. A high-speed design would need the pair redrawn at 0.27/0.15.
 - TPS61023 block placed by hand (`BOOST`, SLVSF14B Figure 10-1): inductor below the IC from VIN to SW, output cap at
   VOUT/GND, input cap left of VIN, FB divider above FB. Placer keeps courtyards 0.15 mm inside the edge (pads 0.3 mm).
 - Routing trial 6 (50 x 50, all hand blocks): 7 of 71 open (TS, ACDRV2, CHG_CE, CHG_SCL, PV_IN, 3V3_SW, SYS). 55 x 55
@@ -358,8 +368,15 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
     M60, C60, R60); C44 turned 180 degrees (SYS pad to VIN), R19 turned (REGN pad toward C5).
   - Tried and dropped: Freerouting 2.5 as router (43 open) and as finisher on the KRT board (100 open, it re-counts the
     plane nets); a `ctrl` stage for the long control nets (6-11 open).
-  - Open for the engineer: the VBUS layer change at U3 (C6 side) is one 0.45/0.25 via (about 1 A rating; input current
-    up to about 1.3 A at full charge); the M2 side is one 0.6/0.3 via. Two vias in parallel are dropped by KRT.
+  - VBUS layer change at U3 (engineer 2026-11-04, hand copper OK): the C6-side via is now 0.6/0.3 like the M2 side,
+    with a 0.65 mm B.Cu link. STAT runs 0.15 mm higher beside it (PMID pour edge -2.8); its west diagonal stays where
+    it was, because the router's only USB_VBUS path to U4/J1 A9 runs past it at x 10.4 (shifting it left 3 open).
+    A second parallel via has no room (C10, C6, STAT, the DP track on B.Cu). Rating at the 1.59 A ILIM clamp: the
+    IPC-2221 outer formula on the barrel (0.3 mm, 18 um plating) gives 1.47 A at 10 C rise and 2.0 A at 20 C. That
+    formula is for long conductors. The 1.6 mm barrel is 1.5 mOhm and drops about 4 mW at 1.59 A into the copper on
+    both ends, so the real rise is negligible. Re-routed: 0 DRC errors, gate OK.
+  - Left as routed: J1 A9/B4 (second VBUS pad pair) to U4 pin 5 is a 0.127 mm router track (about 9 mm). The load
+    current flows through A4/B9 and the hand trunk; the plug joins all four VBUS contacts.
 
 ## Open before ordering (updated 2026-11-01)
 The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).
@@ -376,7 +393,7 @@ The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design
    REQUIREMENTS.md section 4 still says -10 to +50 C for operation; amend it to "short-term" for the SEN66.
 4. `design.panel.vmp_v` is still an assumption (6.0 V). Choose the panel; the TVS choice (A6) depends on its Voc.
 5. Whether JLCPCB forces Standard PCBA for the ESP32 module (check the quote).
-6. ZE25-O3 supply current and cable pitch (J8; pinout from Winsen table 2, 2026-11-01).
+6. ZE25-O3 cable pitch (J8; pinout from Winsen table 2, 2026-11-01). Supply current closed: 10 mA at 5 V (2026-11-04).
 
 ### Schematic: nets that keep labels (generator `UNWIRED`, 2026-11-01)
 Each is readable as drawn; listed so a reviewer knows they are labels on purpose, not missing wires.

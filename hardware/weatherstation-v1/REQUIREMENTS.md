@@ -128,8 +128,8 @@ port, and an optional ZE25-O3 ozone module on its own 5 V boost. NO2 is out of s
 - Battery: below 2.4 V turn sensors off and sleep long; report the charger ADC values each cycle.
 
 ## 7. Open items before ordering
-1. ZE25-O3 supply current and cable/connector pitch (J8).
+1. ZE25-O3 cable/connector pitch (J8). Supply current: 10 mA at 5 V (user, 2026-11-04).
 2. CMF4532F-900 land pattern and pinout from a HongyeX drawing (the footprint uses the EMTEK drawing).
 3. JLCPCB Standard vs Economic PCBA for the ESP32 module (quote).
-4. SHT45 board: schematic in `hardware/sht45-board/` (layout open). ZE25-O3 supply current (assumed 80 mA at the cell).
+4. SHT45 board: schematic in `hardware/sht45-board/` (layout open).
 5. Layout not started; plan one prototype batch and bench-test charging, sleep current and the TH1-to-cell offset.
