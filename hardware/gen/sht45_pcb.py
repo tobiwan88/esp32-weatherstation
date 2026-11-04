@@ -96,6 +96,7 @@ def main():
         fp.SetPath(pcbnew.KIID_PATH("/" + uuid))
         for k, val in fields.items():
             fp.SetField(k, val)
+            fp.GetField(k).SetVisible(False)  # LCSC number etc.: data, not silkscreen
         board.Add(fp)
         x, y, deg = PLACE[ref]
         fp.SetPosition(v(x, y)); fp.SetOrientationDegrees(deg)

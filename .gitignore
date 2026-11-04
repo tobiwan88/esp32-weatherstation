@@ -33,8 +33,8 @@ fp-info-cache
 *.lck
 firmware/build*/
 hardware/weatherstation-v1/*.net
-hardware/sht45-board/*.net
-hardware/sht45-board/*.kicad_prl
+hardware/*-board/*.net
+hardware/*-board/*.kicad_prl
 *.dsn
 *.ses
 *.freerouting.log

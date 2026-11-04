@@ -1,7 +1,8 @@
 """Writes the project symbol library hardware/gen/lib/weatherstation.kicad_sym (parts missing from the KiCad libraries).
 
 Pin numbers and names come from the datasheets (TPS63802 DLA: TI SLVSEU9D table 7-1; HY2112-CB: HYCON DS-HY2112 V08 table 2;
-TPS61023 DRL: TI SLVSF14B section 5).
+TPS61023 DRL: TI SLVSF14B section 5; BMP585: Bosch BST-BMP585-DS003-02 rev 1.2 table 26;
+VEML6030: Vishay 84366 rev 1.8 figure 1 and "Top View Pinning").
 Run: python3 hardware/gen/build_symbols.py
 """
 
@@ -63,6 +64,22 @@ TPS61023 = symbol(  # TI SLVSF14B section 5 (DRL, SOT563): 1 FB, 2 EN, 3 VIN, 4 
      "R": [("passive", "SW", "5"), ("power_out", "VOUT", "6"), ("input", "FB", "1")]},
     5.08)
 
+BMP585 = symbol(  # Bosch BST-BMP585-DS003-02 table 26 (SDO typed input: I2C address select here,
+    # it is the SPI data output only in 4-wire SPI); pin 9 (laser-mark pad) has no connection and no land
+    "BMP585", "BMP585", "weatherstation:BMP585_LGA-8_3.25x3.25mm",
+    "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp585-ds003.pdf",
+    {"L": [("power_in", "VDD", "8"), ("power_in", "VDDIO", "4"), ("input", "CSB", "7"), ("input", "SDO", "3")],
+     "R": [("input", "SCX", "1"), ("bidirectional", "SDX", "2"), ("output", "INT", "5"), ("power_in", "VSS", "6")]},
+    6.35)
+
+VEML6030 = symbol(  # Vishay 84366 rev 1.8: 1 GND, 2 SDA, 3 INT (open drain), 4 ADDR, 5 SCL, 6 VDD
+    "VEML6030", "VEML6030", "weatherstation:Vishay_VEML6030_2x2mm",
+    "https://www.vishay.com/docs/84366/veml6030.pdf",
+    {"L": [("power_in", "VDD", "6"), ("input", "ADDR", "4"), ("power_in", "GND", "1")],
+     "R": [("input", "SCL", "5"), ("bidirectional", "SDA", "2"), ("open_collector", "INT", "3")]},
+    5.08)
+
+
 def cmc(name, value, footprint, datasheet):
     """2-line common-mode choke: both windings left to right, inputs 1 (top) and 4 (bottom) on the left, outputs 2 and 3
     on the right (EMTEK CMF4532F: winding A 1 -> 2, winding B 4 -> 3). Coils bulge outward from a two-line core."""
@@ -94,7 +111,7 @@ def cmc(name, value, footprint, datasheet):
 CMC = cmc("CMC_2line", "CMC", "weatherstation:CMF4532F_4P", "")
 
 LIB = ('(kicad_symbol_lib (version 20231120) (generator "weatherstation_build_symbols") (generator_version "1.0")\n'
-       + "\n".join([TPS63802, HY2112, TPS61023, CMC]) + "\n)\n")
+       + "\n".join([TPS63802, HY2112, TPS61023, CMC, BMP585, VEML6030]) + "\n)\n")
 
 if __name__ == "__main__":
     OUT.parent.mkdir(parents=True, exist_ok=True)

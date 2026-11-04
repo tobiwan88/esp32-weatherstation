@@ -4,7 +4,8 @@ A small PCB in the radiation shield, connected to J3 of the main board (weathers
 Generators: `hardware/gen/sht45_board.py` (schematic, `bom.csv`, net check) and `hardware/gen/sht45_pcb.py` (board, all copper
 by hand). One command: `hardware/tools/build_sht45.sh` (schematic -> netlist -> board -> DRC with parity -> render in
 `hardware/out/review/sht45/`). Status (2026-11-04): ERC 0, nets OK, layout done: 0 DRC errors, 0 unconnected, parity
-clean; silkscreen warnings only (library footprint outlines at the 0.15 mm silk clearance).
+clean, 0 DRC violations including warnings (the silk warnings were the LCSC fields printed on silk, hidden
+since 2026-11-04).
 
 ## Circuit
 - U1 SHT45-AD1F-R2 (LCSC C5360602, Extended, 4019 in stock, USD 6.53): SHT45 with an on-package polyimide membrane
@@ -20,7 +21,8 @@ clean; silkscreen warnings only (library footprint outlines at the 0.15 mm silk 
 
 ## Extending it (2026-11-04)
 - The board is one link in an I2C chain: J2 carries the same four wires as J1. Any Qwiic / STEMMA QT board (SparkFun,
-  Adafruit, or our own) plugs into J2: pressure, light, a second T/RH point. Rules for a chained board: 3.3 V I2C, an
+  Adafruit, or our own) plugs into J2: pressure, light, a second T/RH point. Our own add-ons with the same base:
+  `hardware/bmp585-board/` (pressure, 0x46) and `hardware/veml6030-board/` (light, 0x10). Rules for a chained board: 3.3 V I2C, an
   address free on the sensor bus (SHT45 0x44, SCD41 0x62 on the main board), its own pull-ups off or removed (the main
   board has 10k on 3V3_SW; parallel pull-ups lower the total, keep it at or above about 2k), and a total cable length the
   10k pull-ups can drive at 100 kHz (keep the whole chain short; a few hundred pF in total).

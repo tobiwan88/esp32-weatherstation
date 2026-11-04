@@ -1,0 +1,6 @@
+Comment,Designator,Footprint,Quantity,LCSC Part #,Class
+BMP585,U1,weatherstation:BMP585_LGA-8_3.25x3.25mm,1,C18184976,Extended
+100n,C1,Capacitor_SMD:C_0603_1608Metric,1,C14663,Basic
+100n,C2,Capacitor_SMD:C_0603_1608Metric,1,C14663,Basic
+CABLE IN (Qwiic order),J1,Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,1,C160404,Extended
+CHAIN OUT (Qwiic order),J2,Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,1,C160404,Extended

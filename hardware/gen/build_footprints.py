@@ -9,6 +9,12 @@ Each footprint names its source in the descr. Courtyard = pads and body + 0.25 m
   Body 2.0 x 1.6 x 1.0 max.
 - L_TDK_VLS252010: TDK VLS252010HBX-1 catalogue (20160411) page 5: land 0.6 / 1.3 / 0.6 x 2.0. Body 2.5 x 2.0 x 1.0 max.
 - CMF4532F_4P: EMTEK spec T-0602-102D section 7-1 (4.8 / 2.5 / 3.8 / 0.7 mm). Body 4.5 x 3.2.
+- BMP585_LGA-8_3.25x3.25mm: Bosch BST-BMP585-DS003-02 rev 1.2 figure 29 (bottom view) and section 9.3.3: lands = package
+  pads + 25 um per side (0.55 x 0.8 -> 0.6 x 0.85), side pads at x +/-1.225, y 0 / +/-1.1, middle pads at y +/-1.225;
+  pin 9 (laser-mark pad) gets no land. No solder mask under the sensor (9.3.3): one mask opening over the body
+  + 20 um, so the footprint allows mask bridges. No traces or vias under it: rule area in the board generator.
+- Vishay_VEML6030_2x2mm: Vishay 84366 rev 1.8 page 10 "Recommended Footprint": 6 pads 0.55 x 0.3, outer span 2.3 x 1.6
+  (centres x +/-0.875, y 0 / +/-0.65). Top-view pinning: 1 GND bottom right, counter-clockwise to 6 VDD bottom left.
 """
 
 from pathlib import Path
@@ -74,6 +80,28 @@ def cmf():
                      "CMF4532F common mode choke", pads, (2.25, 1.6), silk, pin1=(-2.7, -1.55))
 
 
+def bmp585():
+    side = [("1", -1.225, -1.1), ("2", -1.225, 0.0), ("3", -1.225, 1.1), ("5", 1.225, 1.1), ("6", 1.225, 0.0), ("7", 1.225, -1.1)]
+    pads = [(n, x, y, 0.6, 0.85, "roundrect", 0.15) for n, x, y in side]
+    pads += [("4", 0.0, 1.225, 0.85, 0.6, "roundrect", 0.15), ("8", 0.0, -1.225, 0.85, 0.6, "roundrect", 0.15)]
+    silk = [((-1.0, -1.8), (1.0, -1.8)), ((-1.0, 1.8), (1.0, 1.8))]
+    text = footprint("BMP585_LGA-8_3.25x3.25mm",
+                     "Bosch BMP585 LGA 3.25x3.25 mm, lands = pads + 25 um (BST-BMP585-DS003-02 rev 1.2 fig. 29, sec. 9.3.3); "
+                     "no solder mask under the body; keep traces and vias out from under the sensor",
+                     "BMP585 pressure LGA", pads, (1.625, 1.625), silk, pin1=(-2.0, -1.1))
+    mask = ('  (fp_rect (start -1.645 -1.645) (end 1.645 1.645) (stroke (width 0) (type default)) (fill solid) (layer "F.Mask"))')
+    return text.replace("  (attr smd)", "  (attr smd allow_soldermask_bridges)").replace("\n  (pad ", "\n" + mask + "\n  (pad ", 1)
+
+
+def veml6030():
+    pos = [("1", 0.875, 0.65), ("2", 0.875, 0.0), ("3", 0.875, -0.65), ("4", -0.875, -0.65), ("5", -0.875, 0.0), ("6", -0.875, 0.65)]
+    pads = [(n, x, y, 0.55, 0.3, "roundrect", 0.15) for n, x, y in pos]
+    silk = [((-0.9, -1.15), (0.9, -1.15)), ((-0.9, 1.15), (0.9, 1.15))]
+    return footprint("Vishay_VEML6030_2x2mm",
+                     "Vishay VEML6030 2x2 mm, recommended footprint (doc. 84366 rev 1.8 page 10): 0.55 x 0.3 pads, span 2.3 x 1.6",
+                     "VEML6030 ambient light", pads, (1.0, 1.0), silk, pin1=(1.45, 1.05))
+
+
 FOOTPRINTS = {
     "TPS63802_DLA_VSON-HR-10_2x3mm": dla(),
     # Sunlord WPN201610H: pads b = 0.7 wide, c = 1.7 tall, gap a = 0.7 -> centres at +/-(0.35 + 0.35)
@@ -85,6 +113,8 @@ FOOTPRINTS = {
                                "TDK VLS252010HBX-1 2.5x2.0 mm power inductor, land pattern 0.6 / 1.3 / 0.6 x 2.0 (TDK catalogue 20160411 page 5)",
                                "inductor TDK VLS252010", 0.95, 0.6, 2.0, (1.25, 1.0)),
     "CMF4532F_4P": cmf(),
+    "BMP585_LGA-8_3.25x3.25mm": bmp585(),
+    "Vishay_VEML6030_2x2mm": veml6030(),
 }
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "eeschema")
 	(generator_version "9.0")
-	(uuid "10df2bc3-a324-4696-9cea-177c3bdd8380")
+	(uuid "9104645a-e18f-4aaa-a377-91317f217afd")
 	(paper "A4")
 	(title_block
 		(title "SHT45 outdoor T/RH board")
@@ -1034,7 +1034,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "ea0a4308-d5a0-466b-9f68-e62536f84d5b")
+		(uuid "33b12030-53c3-41a5-a220-a58d07c4c477")
 		(property "Reference" "J1"
 			(at 39.14 72.34 0)
 			(effects
@@ -1070,16 +1070,16 @@
 			)
 		)
 		(pin "1"
-			(uuid "e4558988-0972-4209-be7a-ddd4fd0eb50a")
+			(uuid "b3000fb6-8d79-4c99-bf7e-962244b0272b")
 		)
 		(pin "2"
-			(uuid "5360bf7d-ccf5-4342-97c2-6cefd8b53ddb")
+			(uuid "d8b522d8-fad8-4aca-b619-bd9f3ffce25e")
 		)
 		(pin "3"
-			(uuid "2bac81dd-9189-4caa-8050-71b6ce3ee239")
+			(uuid "ed528688-ecc9-4ffe-b6a3-f25266392687")
 		)
 		(pin "4"
-			(uuid "a1d1517e-4c55-4a94-a9e6-d5a10e21eeb5")
+			(uuid "f42cf5e4-585b-4a6b-9232-be3fa4743fa8")
 		)
 		(instances
 			(project "sht45-board"
@@ -1099,7 +1099,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "30db8aa9-86af-4995-9ce6-7666d05b634f")
+		(uuid "61484370-d5a6-4ced-b824-d4633fcf9812")
 		(property "Reference" "U1"
 			(at 101.6 85.09 0.0000)
 			(effects
@@ -1137,16 +1137,16 @@
 			)
 		)
 		(pin "1"
-			(uuid "cf0fef53-b6c3-4055-8156-1a7a05b4d5e9")
+			(uuid "4849c1ea-3f66-4dad-a886-e0c4fd5ff214")
 		)
 		(pin "2"
-			(uuid "b36b9db2-696c-464a-b5ba-548bbd1c0537")
+			(uuid "9d3b805a-5070-4ca3-8541-ca758b79efcc")
 		)
 		(pin "3"
-			(uuid "471feee4-46ea-4ab1-9c1b-d45cf459f8b1")
+			(uuid "2bfe95ed-6157-498e-8dfa-1d2f63ea79f5")
 		)
 		(pin "4"
-			(uuid "78f355cd-288a-4aaa-a1ca-6913b79a348f")
+			(uuid "722a8f6a-04b8-4b1c-a89d-cd78d0648b45")
 		)
 		(instances
 			(project "sht45-board"
@@ -1166,7 +1166,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "a38ae47b-091d-4093-998d-7f61437aed6a")
+		(uuid "aa691700-164a-4f6c-89fb-0153d822b594")
 		(property "Reference" "C1"
 			(at 119.04 74.9 0)
 			(effects
@@ -1202,10 +1202,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "1652bdb6-d080-4cd8-8839-03b6876b5d10")
+			(uuid "cbafdc4b-468c-42e4-a0bb-e32fcf7c7781")
 		)
 		(pin "2"
-			(uuid "3b29c09b-048d-45bb-bd5c-f3211a96985b")
+			(uuid "7d4bd954-3f68-4333-9823-20d47aba22d9")
 		)
 		(instances
 			(project "sht45-board"
@@ -1225,7 +1225,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "78d990b3-d5fa-4416-b0a0-a97eba5b68fb")
+		(uuid "218d9847-83a6-4f74-a615-f65a3519dce4")
 		(property "Reference" "#PWR01"
 			(at 104.14 59.69 0.0000)
 			(effects
@@ -1245,7 +1245,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "6f98e56d-e775-4a26-8857-dac6685e7ed1")
+			(uuid "da3d6239-1956-4dac-a9d6-e2ebb5073f84")
 		)
 		(instances
 			(project "sht45-board"
@@ -1265,7 +1265,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "ff3aab3e-24c8-45de-acf3-8374f96aa648")
+		(uuid "b433422d-3c0e-4c62-b66d-344eb863223a")
 		(property "Reference" "#PWR02"
 			(at 104.14 82.55 0.0000)
 			(effects
@@ -1285,7 +1285,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "1b57f3d8-b34a-43f5-81f4-4e9caa960590")
+			(uuid "c5492fb6-dfc8-4528-8bd8-9ff250f834d8")
 		)
 		(instances
 			(project "sht45-board"
@@ -1305,7 +1305,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "11a5dcb3-e738-4254-ac04-6317ab87e9e0")
+		(uuid "3781317d-c7cf-4cc3-aed0-1075f6cb6acb")
 		(property "Reference" "#PWR03"
 			(at 46.99 78.74 270)
 			(effects
@@ -1325,7 +1325,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "74a5ce8b-52f7-4da9-bd4b-eacc2450cb6e")
+			(uuid "becb699c-401f-4be9-88bf-e1418e9889e7")
 		)
 		(instances
 			(project "sht45-board"
@@ -1345,7 +1345,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "f3946b7b-cfeb-4616-a132-a0b8ce316398")
+		(uuid "1e5e4a05-40e7-4d4d-aeed-38b41492ad09")
 		(property "Reference" "#PWR04"
 			(at 57.15 81.28 90)
 			(effects
@@ -1365,7 +1365,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "ce3c7bbd-2f52-42ab-8b86-4e80863accad")
+			(uuid "353d6bee-a5cf-4a9b-bd67-17768d10269f")
 		)
 		(instances
 			(project "sht45-board"
@@ -1385,7 +1385,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "42c16889-7647-405a-a8be-ce5d2d8ef598")
+		(uuid "48a5b402-9a83-4210-a675-9216747cb7ab")
 		(property "Reference" "J2"
 			(at 39.14 95.2 0)
 			(effects
@@ -1421,16 +1421,16 @@
 			)
 		)
 		(pin "1"
-			(uuid "5817f804-56c7-41c5-b042-3bc61fd65d28")
+			(uuid "d2dbee68-5d86-4a99-96e6-7519f07f2f29")
 		)
 		(pin "2"
-			(uuid "6b7aae71-679d-4046-b266-fc7f661b0ddc")
+			(uuid "3dadde49-7b70-42b4-a261-89e6981b3f67")
 		)
 		(pin "3"
-			(uuid "0eace8fa-c35e-4363-b134-0f5a45fb1999")
+			(uuid "c1fe2091-fb3e-45e2-8dee-3ba6f19c4266")
 		)
 		(pin "4"
-			(uuid "f4ee9f21-1bf9-4357-9d71-43922cdbdb51")
+			(uuid "3ff222fa-f001-48b8-957e-3d99d3a85a52")
 		)
 		(instances
 			(project "sht45-board"
@@ -1450,7 +1450,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "7e4f350c-05ea-4b1e-ba92-d3d8a7659699")
+		(uuid "1e4c147f-2b50-4ead-a84d-3f3454870535")
 		(property "Reference" "#PWR05"
 			(at 46.99 101.6 270)
 			(effects
@@ -1470,7 +1470,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "fc163df8-88f8-40eb-81fe-2ecbdd153918")
+			(uuid "bfc3f0c4-6a00-4ca6-a66c-8a1ac787b6f5")
 		)
 		(instances
 			(project "sht45-board"
@@ -1490,7 +1490,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "9c46e9d1-779e-44e8-909b-b01bc9fe9534")
+		(uuid "bf6f8d68-0999-4cb5-b377-3c4381b74ce0")
 		(property "Reference" "#PWR06"
 			(at 57.15 104.14 90)
 			(effects
@@ -1510,7 +1510,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "fc932fe3-d367-4146-b51d-3e8500ac47c0")
+			(uuid "3d7226c8-f988-44ca-bea2-54578db17f2a")
 		)
 		(instances
 			(project "sht45-board"
@@ -1530,7 +1530,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "c74f71c0-8c89-4ed6-a7a5-339871556308")
+		(uuid "6bdd9865-9f6e-4ba8-8259-42d76df5a950")
 		(property "Reference" "H1"
 			(at 132.08 121.92 0.0000)
 			(effects
@@ -1576,7 +1576,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "9f25c2e8-6e8c-4add-9542-f0f4b3dadd12")
+		(uuid "ef92a32f-c7c6-4894-9a10-82cec427ca2e")
 		(property "Reference" "#FLG1"
 			(at 116.84 65.405 0.0000)
 			(effects
@@ -1596,7 +1596,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "f04188da-48e8-428d-9fd5-398c48a7d3d9")
+			(uuid "2faea72a-493a-4bc0-bcdd-ebeb6f10dd38")
 		)
 		(instances
 			(project "sht45-board"
@@ -1616,7 +1616,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "c0c26134-e7ce-425c-afee-2f2bf3a10e33")
+		(uuid "2205ae51-c7e6-4501-b6cf-26221141cfed")
 		(property "Reference" "#FLG2"
 			(at 116.84 86.995 180)
 			(effects
@@ -1636,7 +1636,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "a6662440-3442-4932-8473-61aa5724f4dd")
+			(uuid "4b4ce0a9-c698-47c5-b7dc-6d0f7bcf2523")
 		)
 		(instances
 			(project "sht45-board"

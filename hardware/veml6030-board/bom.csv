@@ -1,0 +1,5 @@
+Comment,Designator,Footprint,Quantity,LCSC Part #,Class
+VEML6030,U1,weatherstation:Vishay_VEML6030_2x2mm,1,C132182,Extended
+100n,C1,Capacitor_SMD:C_0603_1608Metric,1,C14663,Basic
+CABLE IN (Qwiic order),J1,Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,1,C160404,Extended
+CHAIN OUT (Qwiic order),J2,Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,1,C160404,Extended

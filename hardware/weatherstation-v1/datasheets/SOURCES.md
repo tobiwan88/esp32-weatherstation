@@ -18,6 +18,8 @@ Downloaded for hardware/weatherstation-v1. Every file was checked to start with 
 | SHT45.pdf | https://sensirion.com/media/documents/33FD6951/6A7C10A0/HT_DS_Datasheet_SHT4x_V7.3.pdf (linked from https://sensirion.com/products/catalog/SHT45) | V7.3, 04/2025 (per Sensirion product page) | 1049911 | OK |
 | TYPE-C-31-M-12.pdf | MISSING. Tried: https://www.lcsc.com/datasheet/lcsc_datasheet_2410010003_Korean-Hroparts-Elec-TYPE-C-31-M-12_C165948.pdf (HTML); https://www.krhro.com/upload/pdf/TYPE-C-31-M-12.pdf (HTTP 404); https://www.hro.com.tw/upload/pdf/TYPE-C-31-M-12.pdf (DNS failure). Viewer link from search: https://en.krhro.com/npublic/opdfjs/web/viewer.html (not fetched). Pin count conflicts across listings (12 vs 16); check the PDF. | n/a | 0 | MISSING |
 | 2N7002.pdf | https://www.vishay.com/docs/70226/70226.pdf (Vishay, 8 pages). Alternative: onsemi 2n7002e-d.pdf returned HTTP 403 to curl. | not verified | 98640 | OK |
+| BMP585.pdf | https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp585-ds003.pdf | BST-BMP585-DS003-02 rev 1.2 (read from the PDF, 2026-11-04) | 71 pages | OK |
+| VEML6030.pdf | https://www.vishay.com/docs/84366/veml6030.pdf | doc. 84366 rev 1.8, 28-Nov-2024 (read from the PDF) | 14 pages | OK |
 
 ## App notes (appnotes/)
 
