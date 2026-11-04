@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "eeschema")
 	(generator_version "9.0")
-	(uuid "defd788a-b2a6-4943-9fa0-422df76a74f6")
+	(uuid "10df2bc3-a324-4696-9cea-177c3bdd8380")
 	(paper "A4")
 	(title_block
 		(title "SHT45 outdoor T/RH board")
@@ -810,6 +810,105 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Mechanical:MountingHole"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom no)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "H"
+				(at 0 5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "MountingHole"
+				(at 0 3.175 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Mounting Hole without connection"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "mounting hole"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "MountingHole*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "MountingHole_0_1"
+				(circle
+					(center 0 0)
+					(radius 1.27)
+					(stroke
+						(width 1.27)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "power:PWR_FLAG"
 			(power global)
 			(pin_numbers
@@ -935,7 +1034,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "f8d2f774-6041-42f7-8ba4-4f5c1a5a107f")
+		(uuid "ea0a4308-d5a0-466b-9f68-e62536f84d5b")
 		(property "Reference" "J1"
 			(at 39.14 72.34 0)
 			(effects
@@ -971,16 +1070,16 @@
 			)
 		)
 		(pin "1"
-			(uuid "9ed8c3b1-febe-428a-810a-8a629b76221f")
+			(uuid "e4558988-0972-4209-be7a-ddd4fd0eb50a")
 		)
 		(pin "2"
-			(uuid "ca629838-57f4-41b1-a3a7-340c668669ad")
+			(uuid "5360bf7d-ccf5-4342-97c2-6cefd8b53ddb")
 		)
 		(pin "3"
-			(uuid "88183a67-b49f-4ea4-8db7-82213c428382")
+			(uuid "2bac81dd-9189-4caa-8050-71b6ce3ee239")
 		)
 		(pin "4"
-			(uuid "ea05b0ec-5139-4f2f-ba79-f7c525399396")
+			(uuid "a1d1517e-4c55-4a94-a9e6-d5a10e21eeb5")
 		)
 		(instances
 			(project "sht45-board"
@@ -1000,7 +1099,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "531c6d73-3cc1-465d-b000-a333c357d1ea")
+		(uuid "30db8aa9-86af-4995-9ce6-7666d05b634f")
 		(property "Reference" "U1"
 			(at 101.6 85.09 0.0000)
 			(effects
@@ -1038,16 +1137,16 @@
 			)
 		)
 		(pin "1"
-			(uuid "13479b33-4e05-4815-b78b-12cc6d33cf61")
+			(uuid "cf0fef53-b6c3-4055-8156-1a7a05b4d5e9")
 		)
 		(pin "2"
-			(uuid "fb9fdfae-e53b-4050-bf3d-0f79c6676cf8")
+			(uuid "b36b9db2-696c-464a-b5ba-548bbd1c0537")
 		)
 		(pin "3"
-			(uuid "5374666a-b20d-48ec-9f63-adcae332ece1")
+			(uuid "471feee4-46ea-4ab1-9c1b-d45cf459f8b1")
 		)
 		(pin "4"
-			(uuid "d2b7b9fb-19f4-4f64-8d1e-c8c60fd1af7c")
+			(uuid "78f355cd-288a-4aaa-a1ca-6913b79a348f")
 		)
 		(instances
 			(project "sht45-board"
@@ -1067,7 +1166,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "7aea3992-f4db-446a-bc5c-425e15838fd3")
+		(uuid "a38ae47b-091d-4093-998d-7f61437aed6a")
 		(property "Reference" "C1"
 			(at 119.04 74.9 0)
 			(effects
@@ -1103,10 +1202,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "c426315c-09ee-4d65-9f9c-f121a2f66aac")
+			(uuid "1652bdb6-d080-4cd8-8839-03b6876b5d10")
 		)
 		(pin "2"
-			(uuid "c9b3a36c-be2a-4330-844f-1d04a572d662")
+			(uuid "3b29c09b-048d-45bb-bd5c-f3211a96985b")
 		)
 		(instances
 			(project "sht45-board"
@@ -1126,7 +1225,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "958fd73b-54ef-4d38-9ef6-83ee3b1a9877")
+		(uuid "78d990b3-d5fa-4416-b0a0-a97eba5b68fb")
 		(property "Reference" "#PWR01"
 			(at 104.14 59.69 0.0000)
 			(effects
@@ -1146,7 +1245,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "880c8359-356e-4bf4-a1d8-315515e90715")
+			(uuid "6f98e56d-e775-4a26-8857-dac6685e7ed1")
 		)
 		(instances
 			(project "sht45-board"
@@ -1166,7 +1265,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "966e01a8-1539-46a6-99ce-b76ee4fe5a9c")
+		(uuid "ff3aab3e-24c8-45de-acf3-8374f96aa648")
 		(property "Reference" "#PWR02"
 			(at 104.14 82.55 0.0000)
 			(effects
@@ -1186,7 +1285,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "11336342-8249-4834-a195-5a34f08264cf")
+			(uuid "1b57f3d8-b34a-43f5-81f4-4e9caa960590")
 		)
 		(instances
 			(project "sht45-board"
@@ -1206,7 +1305,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "ffce481c-6a9e-474c-99a7-aca162f23dce")
+		(uuid "11a5dcb3-e738-4254-ac04-6317ab87e9e0")
 		(property "Reference" "#PWR03"
 			(at 46.99 78.74 270)
 			(effects
@@ -1226,7 +1325,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "aeb63e55-f92a-4365-b12f-76f5e82a03f5")
+			(uuid "74a5ce8b-52f7-4da9-bd4b-eacc2450cb6e")
 		)
 		(instances
 			(project "sht45-board"
@@ -1246,7 +1345,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "d885ce1d-110f-41dc-99b6-4d9dff484723")
+		(uuid "f3946b7b-cfeb-4616-a132-a0b8ce316398")
 		(property "Reference" "#PWR04"
 			(at 57.15 81.28 90)
 			(effects
@@ -1266,12 +1365,203 @@
 			)
 		)
 		(pin "1"
-			(uuid "2815822b-d38c-42f0-b320-e010bff02be6")
+			(uuid "ce3c7bbd-2f52-42ab-8b86-4e80863accad")
 		)
 		(instances
 			(project "sht45-board"
 				(path "/092c924b-434c-5ec7-99c7-41f197969c95/3243e9ff-ddd8-5205-b938-ebfc06fefa23"
 					(reference "#PWR04")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x04")
+		(at 40.64 101.6 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "42c16889-7647-405a-a8be-ce5d2d8ef598")
+		(property "Reference" "J2"
+			(at 39.14 95.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Value" "CHAIN OUT (Qwiic order)"
+			(at 39.14 108.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) 
+			)
+		)
+		(property "Footprint" "Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal"
+			(at 40.64 101.6 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C160404"
+			(at 43.18 106.6799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left) (hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5817f804-56c7-41c5-b042-3bc61fd65d28")
+		)
+		(pin "2"
+			(uuid "6b7aae71-679d-4046-b266-fc7f661b0ddc")
+		)
+		(pin "3"
+			(uuid "0eace8fa-c35e-4363-b134-0f5a45fb1999")
+		)
+		(pin "4"
+			(uuid "f4ee9f21-1bf9-4357-9d71-43922cdbdb51")
+		)
+		(instances
+			(project "sht45-board"
+				(path "/092c924b-434c-5ec7-99c7-41f197969c95/3243e9ff-ddd8-5205-b938-ebfc06fefa23"
+					(reference "J2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 50.8 101.6 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "7e4f350c-05ea-4b1e-ba92-d3d8a7659699")
+		(property "Reference" "#PWR05"
+			(at 46.99 101.6 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (hide yes)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "VDD"
+			(at 55.8 101.6 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(pin "1"
+			(uuid "fc163df8-88f8-40eb-81fe-2ecbdd153918")
+		)
+		(instances
+			(project "sht45-board"
+				(path "/092c924b-434c-5ec7-99c7-41f197969c95/3243e9ff-ddd8-5205-b938-ebfc06fefa23"
+					(reference "#PWR05")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 50.8 104.14 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "9c46e9d1-779e-44e8-909b-b01bc9fe9534")
+		(property "Reference" "#PWR06"
+			(at 57.15 104.14 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (hide yes)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 54.8 104.14 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				) (justify left)
+			)
+		)
+		(pin "1"
+			(uuid "fc932fe3-d367-4146-b51d-3e8500ac47c0")
+		)
+		(instances
+			(project "sht45-board"
+				(path "/092c924b-434c-5ec7-99c7-41f197969c95/3243e9ff-ddd8-5205-b938-ebfc06fefa23"
+					(reference "#PWR06")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole")
+		(at 132.08 116.84 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced no)
+		(uuid "c74f71c0-8c89-4ed6-a7a5-339871556308")
+		(property "Reference" "H1"
+			(at 132.08 121.92 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "M3"
+			(at 132.08 120.015 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+			(at 132.08 116.84 0.0000)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(instances
+			(project "sht45-board"
+				(path "/092c924b-434c-5ec7-99c7-41f197969c95/3243e9ff-ddd8-5205-b938-ebfc06fefa23"
+					(reference "H1")
 					(unit 1)
 				)
 			)
@@ -1286,7 +1576,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "d57aa814-8278-4070-9c84-9ff0a7ee0e83")
+		(uuid "9f25c2e8-6e8c-4add-9542-f0f4b3dadd12")
 		(property "Reference" "#FLG1"
 			(at 116.84 65.405 0.0000)
 			(effects
@@ -1306,7 +1596,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "dd0e102d-75e3-4ea8-b61d-1aed97adda3e")
+			(uuid "f04188da-48e8-428d-9fd5-398c48a7d3d9")
 		)
 		(instances
 			(project "sht45-board"
@@ -1326,7 +1616,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "5bae4744-ce63-4226-b113-cfdfd1af7ae7")
+		(uuid "c0c26134-e7ce-425c-afee-2f2bf3a10e33")
 		(property "Reference" "#FLG2"
 			(at 116.84 86.995 180)
 			(effects
@@ -1346,7 +1636,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "69c1f34e-88f0-4df1-8153-3b323d9821cb")
+			(uuid "a6662440-3442-4932-8473-61aa5724f4dd")
 		)
 		(instances
 			(project "sht45-board"
@@ -1357,28 +1647,34 @@
 			)
 		)
 	)
-	(wire (pts (xy 45.72 73.66) (xy 93.98 73.66)) (stroke (width 0) (type default)) (uuid "b954ac1d-bd98-545c-a6ad-040665e52136"))
-	(wire (pts (xy 45.72 76.2) (xy 86.36 76.2)) (stroke (width 0) (type default)) (uuid "6eed6f3d-cde6-5db0-af30-0897fe8913ba"))
-	(wire (pts (xy 86.36 76.2) (xy 86.36 78.74)) (stroke (width 0) (type default)) (uuid "3b326b24-97b3-5baa-b9d3-cd45d18b0105"))
-	(wire (pts (xy 86.36 78.74) (xy 93.98 78.74)) (stroke (width 0) (type default)) (uuid "35d3d920-2daa-5c11-a0a3-13f58c261eeb"))
-	(wire (pts (xy 104.14 63.5) (xy 104.14 68.58)) (stroke (width 0) (type default)) (uuid "c6866f9d-86c2-5fbb-b2a1-252679863cc1"))
-	(wire (pts (xy 104.14 63.5) (xy 116.84 63.5)) (stroke (width 0) (type default)) (uuid "42871e15-6423-5fb4-9eec-c797ad01b200"))
-	(wire (pts (xy 116.84 63.5) (xy 116.84 72.39)) (stroke (width 0) (type default)) (uuid "315dfe83-e5ac-5ad7-b5d2-07488c60f0dd"))
-	(wire (pts (xy 104.14 83.82) (xy 104.14 88.9)) (stroke (width 0) (type default)) (uuid "0b4ef78d-40c9-51f4-af49-14f9f8447ef6"))
-	(wire (pts (xy 104.14 88.9) (xy 116.84 88.9)) (stroke (width 0) (type default)) (uuid "de83beaf-0647-5b11-98a2-050c0d6f3fce"))
-	(wire (pts (xy 116.84 80.01) (xy 116.84 88.9)) (stroke (width 0) (type default)) (uuid "51288678-2a50-5545-a512-7878ec04ec65"))
-	(wire (pts (xy 45.72 78.74) (xy 50.8 78.74)) (stroke (width 0) (type default)) (uuid "bed62e74-06ff-5bb7-a7d3-73766a5ec96a"))
-	(wire (pts (xy 45.72 81.28) (xy 50.8 81.28)) (stroke (width 0) (type default)) (uuid "b30bab7c-b279-5b6e-afb1-29427aad496a"))
-	(junction (at 104.14 63.5) (diameter 0) (color 0 0 0 0) (uuid "7d5071a8-7f57-5a64-8763-99ffa6ff9f63"))
-	(junction (at 104.14 88.9) (diameter 0) (color 0 0 0 0) (uuid "766680d9-d41e-5256-9a38-582e86f54aaf"))
-	(junction (at 116.84 63.5) (diameter 0) (color 0 0 0 0) (uuid "501f947f-1fab-51f4-b0e8-c09d34de20da"))
-	(junction (at 116.84 88.9) (diameter 0) (color 0 0 0 0) (uuid "1604830d-7e14-562a-bd89-422655dbc0ce"))
+	(wire (pts (xy 45.72 73.66) (xy 93.98 73.66)) (stroke (width 0) (type default)) (uuid "3b326b24-97b3-5baa-b9d3-cd45d18b0105"))
+	(wire (pts (xy 45.72 76.2) (xy 86.36 76.2)) (stroke (width 0) (type default)) (uuid "35d3d920-2daa-5c11-a0a3-13f58c261eeb"))
+	(wire (pts (xy 86.36 76.2) (xy 86.36 78.74)) (stroke (width 0) (type default)) (uuid "c6866f9d-86c2-5fbb-b2a1-252679863cc1"))
+	(wire (pts (xy 86.36 78.74) (xy 93.98 78.74)) (stroke (width 0) (type default)) (uuid "42871e15-6423-5fb4-9eec-c797ad01b200"))
+	(wire (pts (xy 104.14 63.5) (xy 104.14 68.58)) (stroke (width 0) (type default)) (uuid "315dfe83-e5ac-5ad7-b5d2-07488c60f0dd"))
+	(wire (pts (xy 104.14 63.5) (xy 116.84 63.5)) (stroke (width 0) (type default)) (uuid "0b4ef78d-40c9-51f4-af49-14f9f8447ef6"))
+	(wire (pts (xy 116.84 63.5) (xy 116.84 72.39)) (stroke (width 0) (type default)) (uuid "de83beaf-0647-5b11-98a2-050c0d6f3fce"))
+	(wire (pts (xy 104.14 83.82) (xy 104.14 88.9)) (stroke (width 0) (type default)) (uuid "51288678-2a50-5545-a512-7878ec04ec65"))
+	(wire (pts (xy 104.14 88.9) (xy 116.84 88.9)) (stroke (width 0) (type default)) (uuid "bed62e74-06ff-5bb7-a7d3-73766a5ec96a"))
+	(wire (pts (xy 116.84 80.01) (xy 116.84 88.9)) (stroke (width 0) (type default)) (uuid "b30bab7c-b279-5b6e-afb1-29427aad496a"))
+	(wire (pts (xy 45.72 78.74) (xy 50.8 78.74)) (stroke (width 0) (type default)) (uuid "7d5071a8-7f57-5a64-8763-99ffa6ff9f63"))
+	(wire (pts (xy 45.72 81.28) (xy 50.8 81.28)) (stroke (width 0) (type default)) (uuid "766680d9-d41e-5256-9a38-582e86f54aaf"))
+	(wire (pts (xy 45.72 96.52) (xy 60.96 96.52)) (stroke (width 0) (type default)) (uuid "501f947f-1fab-51f4-b0e8-c09d34de20da"))
+	(wire (pts (xy 45.72 99.06) (xy 60.96 99.06)) (stroke (width 0) (type default)) (uuid "1604830d-7e14-562a-bd89-422655dbc0ce"))
+	(wire (pts (xy 45.72 101.6) (xy 50.8 101.6)) (stroke (width 0) (type default)) (uuid "30fd55f4-4058-5e65-85bc-777a66a4737f"))
+	(wire (pts (xy 45.72 104.14) (xy 50.8 104.14)) (stroke (width 0) (type default)) (uuid "6f78ccb1-46f2-57d7-9b2f-8d99857ac5e6"))
+	(junction (at 104.14 63.5) (diameter 0) (color 0 0 0 0) (uuid "2faf1949-1dc8-5a1f-a985-fc36490b4429"))
+	(junction (at 104.14 88.9) (diameter 0) (color 0 0 0 0) (uuid "ebcd442a-23dd-5680-917b-01088994bed5"))
+	(junction (at 116.84 63.5) (diameter 0) (color 0 0 0 0) (uuid "7dad0582-e413-53b7-9923-acf4678e463a"))
+	(junction (at 116.84 88.9) (diameter 0) (color 0 0 0 0) (uuid "3f60f667-dffa-50f5-bec8-50770b3bec9c"))
 	(rectangle (start 25.4 45.72) (end 142.24 101.6) (stroke (width 0.3) (type dash) (color 20 120 120 1)) (fill (type color) (color 195 238 238 0.35)) (uuid "44d1b520-506d-5628-8f65-f5da35040eb0"))
 	(text "SHT45 outdoor sensor" (exclude_from_sim no) (at 26.67 46.74 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "12d8174e-a601-571f-96f1-447c95edfdaf"))
-	(text "Sensirion SHT4x datasheet v7.3 figure 1: 100 nF on VDD; I2C pull-ups 10k on the main board (R50/R51). J1 = Qwiic order like main-board J3. Address 0x44" (exclude_from_sim no) (at 26.67 51.82 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "29ec2e36-66ea-5d6e-8379-62194a4a02f2"))
-	(label "SDA" (at 66.04 76.2 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "6dfce77e-8a55-52bc-9721-ca2ff94ea47e"))
-	(label "SCL" (at 66.04 73.66 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c54c7950-04be-5a85-a097-549d87a3e1d1"))
-	(text "SHT45 outdoor T/RH board: SHT45-AD1F (membrane) in the radiation shield, cable to main-board J3" (exclude_from_sim no) (at 25.4 7.62 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "8af6cf7c-731a-5353-9889-e0da84f59a4b"))
+	(text "Sensirion SHT4x datasheet v7.3 figure 1: 100 nF on VDD; I2C pull-ups 10k on the main board (R50/R51). J1 = Qwiic in (main-board J3), J2 = Qwiic out (chain more sensors). Address 0x44" (exclude_from_sim no) (at 26.67 51.82 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "29ec2e36-66ea-5d6e-8379-62194a4a02f2"))
+	(label "SCL" (at 60.96 96.52 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "6dfce77e-8a55-52bc-9721-ca2ff94ea47e"))
+	(label "SDA" (at 60.96 99.06 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c54c7950-04be-5a85-a097-549d87a3e1d1"))
+	(label "SDA" (at 66.04 76.2 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "8af6cf7c-731a-5353-9889-e0da84f59a4b"))
+	(label "SCL" (at 66.04 73.66 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "b954ac1d-bd98-545c-a6ad-040665e52136"))
+	(text "SHT45 outdoor T/RH board: SHT45-AD1F (membrane) in the radiation shield, cable to main-board J3" (exclude_from_sim no) (at 25.4 7.62 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "6eed6f3d-cde6-5db0-af30-0897fe8913ba"))
 	(sheet_instances
 		(path "/"
 			(page "1")

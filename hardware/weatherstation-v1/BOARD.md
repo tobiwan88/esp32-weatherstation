@@ -375,8 +375,12 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
     IPC-2221 outer formula on the barrel (0.3 mm, 18 um plating) gives 1.47 A at 10 C rise and 2.0 A at 20 C. That
     formula is for long conductors. The 1.6 mm barrel is 1.5 mOhm and drops about 4 mW at 1.59 A into the copper on
     both ends, so the real rise is negligible. Re-routed: 0 DRC errors, gate OK.
-  - Left as routed: J1 A9/B4 (second VBUS pad pair) to U4 pin 5 is a 0.127 mm router track (about 9 mm). The load
-    current flows through A4/B9 and the hand trunk; the plug joins all four VBUS contacts.
+  - J1 A9/B4 (second VBUS pad pair, engineer 2026-11-04: draw wider): hand link under R10 to the USB_VBUS node,
+    0.4 mm with a 2.4 mm neck at 0.25 mm between R10 and R9 (the router had 9 mm at 0.127 mm). R9's GND pad got its own
+    plane via (8.9, 33.4), because the link takes the path the router used for it. U4 pin 5 (USBLC6 VBUS reference)
+    stays with the router at 0.2 mm (was 0.127). A hand link up to it needs the only F.Cu gap across the DP B.Cu
+    fence, and the C3 bootstrap (SW1) path needs that gap too. With both by hand: 15 DRC errors in all six router
+    settings. Widening it further means moving the CC resistors or C3 (engineer call). 0 DRC errors, gate OK.
 
 ## Open before ordering (updated 2026-11-01)
 The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).

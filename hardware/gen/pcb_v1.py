@@ -110,7 +110,9 @@ FIXED.update({r: (_U7[0] + dx, _U7[1] + dy, deg) for r, (dx, dy, deg) in BOOST.i
 # USB 2.0 pair drawn by hand: J1 row B7 A6 A7 B6 = DN DP DN DP. DN joins on F.Cu, DP drops through two vias and
 # crosses under it on B.Cu to a via beside U4 (rotated so DN/DP sit left/right on both rows, flow-through), then
 # straight up to the series resistors at U1. CC1 is enclosed by the pair: via to B.Cu just outside the shell keepout,
-# R9 below R10. C1's GND pad faces U4's GND pin. The diff-pair router finds no launch room here (2026-11-02).
+# R9 below R10. C1's GND pad faces U4's GND pin. J1 A9/B4 (second VBUS pad pair) runs under R10 to U4's VBUS pin
+# (2026-11-04; the router had squeezed 0.127 mm between R10's pads). R10 cannot move: J1's courtyard, the DN via and
+# the C10-C12 GND vias box it in. The diff-pair router finds no launch room here (2026-11-02).
 FIXED.update({r: (x, y + (H - H0 if y > 20 else 0), d) for r, (x, y, d) in {
     "U4": (10.945, 24.5, 270), "C1": (10.945, 21.115, 270), "R10": (9.695, 30.75, 270), "R9": (9.695, 32.875, 270),
     "R33": (14.25, 16.73, 0), "R32": (14.25, 18.0, 0)}.items()})
@@ -134,6 +136,12 @@ USB_COPPER = {  # absolute board mm (the J1 block does not move with PCB_W/PCB_H
         (_CC1, "B", 0.2, [(8.625, 27.175), (7.875, 27.925), (7.875, 31.415), (8.825, 32.365)]),
         (_CC1, "F", 0.2, [(8.825, 32.365), (9.695, 32.365)]),
         ("/Input/CC2", "F", 0.2, [(7.9, 30.25), (9.5, 30.25)]),  # B5 straight to R10 (left open by the router)
+        # J1 A9/B4 (second VBUS pad pair) under R10 to the USB_VBUS node at x 10.45: 0.4 mm, necked to 0.25 mm for 2.4 mm
+        # past R10's corner and between R10 and R9. U4 pin 5 stays with the router: a hand link up to it takes the only
+        # F.Cu gap across the DP B.Cu fence, which the C3 bootstrap (SW1) path needs (2026-11-04, 15 DRC errors with it)
+        (_VB, "F", 0.4, [(7.9, 30.95), (8.38, 30.95)]), (_VB, "F", 0.25, [(8.38, 30.95), (9.24, 31.81), (10.45, 31.81)]),
+        (_VB, "F", 0.4, [(10.45, 31.81), (10.45, 31.0)]),
+        ("GND", "F", 0.3, [(9.695, 33.385), (8.9, 33.4)]),  # R9's GND pad to its own plane via (the link took its path)
         (_VB, "F", 0.3, [(10.945, 20.635), (10.945, 19.925)]),
         ("GND", "F", 0.3, [(10.945, 21.595), (10.945, 23.365)]),
         # BC1.2 detection stubs to U3 pins 6/7: vias under U3's body (clear of the SW1 vias), B.Cu to the pair
@@ -144,7 +152,7 @@ USB_COPPER = {  # absolute board mm (the J1 block does not move with PCB_W/PCB_H
     ],
     "vias": [(_DP, 8.625, 28.245), (_DP, 8.625, 29.245), (_DP, 12.525, 26.475), (_CC1, 8.625, 27.175),
              (_CC1, 8.825, 32.365), (_VB, 10.945, 19.925), ("GND", 10.945, 22.275),
-             (_DP, 15.3, 35.85), (_DN, 15.3, 36.6), (_DN, 9.25, 28.745)],
+             (_DP, 15.3, 35.85), (_DN, 15.3, 36.6), (_DN, 9.25, 28.745), ("GND", 8.9, 33.4)],
 }
 # Charge trunks at class width, absolute board mm (the autorouter necks these down to 0.2 mm in the crowded middle):
 # BAT_PACK from the bulk cap C20 on B.Cu diagonally under U1's pin column to two 0.6/0.3 vias, up to the fuse F1;

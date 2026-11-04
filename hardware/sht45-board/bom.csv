@@ -2,3 +2,4 @@ Comment,Designator,Footprint,Quantity,LCSC Part #,Class
 SHT45-AD1F-R2,U1,Sensor_Humidity:Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad,1,C5360602,Extended
 100n,C1,Capacitor_SMD:C_0603_1608Metric,1,C14663,Basic
 CABLE (Qwiic order),J1,Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,1,C160404,Extended
+CHAIN OUT (Qwiic order),J2,Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,1,C160404,Extended

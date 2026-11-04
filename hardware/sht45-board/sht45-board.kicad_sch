@@ -10,7 +10,7 @@
 		(property "Sheetfile" "sht45.kicad_sch" (at 25.4 56.879999999999995 0) (effects (font (size 1.27 1.27)) (justify left top)))
 		(instances (project "sht45-board" (path "/092c924b-434c-5ec7-99c7-41f197969c95" (page "2"))))
 	)
-	(text "Outdoor T/RH sensor board. One sheet; see BOARD.md for the layout rules (slits, no copper near the sensor)" (exclude_from_sim no) (at 26.67 30.48 0) (effects (font (size 1.5 1.5)) (justify left top)) (uuid "30fd55f4-4058-5e65-85bc-777a66a4737f"))
+	(text "Outdoor T/RH sensor board. One sheet; see BOARD.md for the layout rules (slits, no copper near the sensor)" (exclude_from_sim no) (at 26.67 30.48 0) (effects (font (size 1.5 1.5)) (justify left top)) (uuid "2c4de5b5-343a-573f-8438-fbb17f499f3f"))
 	(sheet_instances (path "/" (page "1")))
 	(embedded_fonts no)
 )

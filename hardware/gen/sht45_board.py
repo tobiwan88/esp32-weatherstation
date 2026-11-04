@@ -1,5 +1,9 @@
 """SHT45 outdoor T/RH board (sensor option A, 2026-11-01): a small PCB in the radiation shield, cable to J3 of the main board.
 
+Extensible (2026-11-04): J1 = Qwiic in (cable from main-board J3), J2 = Qwiic out, wired 1:1. Any Qwiic/STEMMA QT I2C
+board (pressure, light, a later flex sensor head) chains behind it on the same sensor bus (3V3_SW, pull-ups on the main
+board). Layout: hardware/gen/sht45_pcb.py.
+
 Circuit = Sensirion SHT4x datasheet v7.3 figure 1: 100 nF on VDD; the 10k I2C pull-ups sit on the main board (R50/R51 on
 3V3_SW). Connector order = Qwiic / main board J3: 1 GND, 2 VDD, 3 SDA, 4 SCL. SHT4x pins (datasheet 5.4): 1 SDA, 2 SCL,
 3 VDD, 4 VSS; die pad not connected and not soldered (footprint without central pad).
@@ -25,14 +29,17 @@ PARTS = {  # ref: (symbol, value, footprint, LCSC, class)
     "C1": ("Device:C", "100n", "Capacitor_SMD:C_0603_1608Metric", "C14663", "Basic"),
     "J1": ("Connector_Generic:Conn_01x04", "CABLE (Qwiic order)",
            "Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal", "C160404", "Extended"),
+    "J2": ("Connector_Generic:Conn_01x04", "CHAIN OUT (Qwiic order)",
+           "Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal", "C160404", "Extended"),
+    "H1": ("Mechanical:MountingHole", "M3", "MountingHole:MountingHole_3.2mm_M3", None, None),
     "#FLG1": ("power:PWR_FLAG", "PWR_FLAG", None, None, None),
     "#FLG2": ("power:PWR_FLAG", "PWR_FLAG", None, None, None),
 }
 NETS = {
-    "SDA": [("J1", "3"), ("U1", "1")],
-    "SCL": [("J1", "4"), ("U1", "2")],
-    "VDD": [("J1", "2"), ("U1", "3"), ("C1", "1"), ("#FLG1", "1")],
-    "GND": [("J1", "1"), ("U1", "4"), ("C1", "2"), ("#FLG2", "1")],
+    "SDA": [("J1", "3"), ("J2", "3"), ("U1", "1")],
+    "SCL": [("J1", "4"), ("J2", "4"), ("U1", "2")],
+    "VDD": [("J1", "2"), ("J2", "2"), ("U1", "3"), ("C1", "1"), ("#FLG1", "1")],
+    "GND": [("J1", "1"), ("J2", "1"), ("U1", "4"), ("C1", "2"), ("#FLG2", "1")],
 }
 
 
@@ -41,7 +48,7 @@ def build(out: Path) -> Path:
     s = Sheet("SHT45", "sht45.kicad_sch", PARTS, "A4", "SHT45 sensor, 100 nF, cable connector", project=PROJECT, title=TITLE)
     s.frame(10, 18, 56, 40, "SHT45 outdoor sensor", (20, 120, 120), (195, 238, 238))
     s.text(10.5, 20.4, "Sensirion SHT4x datasheet v7.3 figure 1: 100 nF on VDD; I2C pull-ups 10k on the main board (R50/R51). "
-                       "J1 = Qwiic order like main-board J3. Address 0x44", 1.1)
+                       "J1 = Qwiic in (main-board J3), J2 = Qwiic out (chain more sensors). Address 0x44", 1.1)
     s.part("J1", 16, 31, 180)            # pins right: 4 SCL (y 29), 3 SDA (30), 2 VDD (31), 1 GND (32)
     s.tag("J1", reference=(-1.5, -6.4), value=(-1.5, 6.4), just="center")
     s.part("U1", 40, 30, 0)              # 2 SCL (37, 29), 1 SDA (37, 31), 3 VDD top (41, 27), 4 VSS bottom (41, 33)
@@ -56,6 +63,17 @@ def build(out: Path) -> Path:
     s.wire(("J1", "1"), (20, 32))
     s.power("VDD", 20, 31, lib="power:VCC", rot=270)
     s.power("GND", 20, 32, rot=90)
+    s.part("J2", 16, 40, 180)            # chain out: 4 SCL (y 38), 3 SDA (39), 2 VDD (40), 1 GND (41)
+    s.tag("J2", reference=(-1.5, -6.4), value=(-1.5, 6.4), just="center")
+    s.wire(("J2", "4"), (24, 38))
+    s.wire(("J2", "3"), (24, 39))
+    s.wire(("J2", "2"), (20, 40))
+    s.wire(("J2", "1"), (20, 41))
+    s.power("VDD", 20, 40, lib="power:VCC", rot=270)
+    s.power("GND", 20, 41, rot=90)
+    s.label("SCL", 24, 38, 0)
+    s.label("SDA", 24, 39, 0)
+    s.part("H1", 52, 46, 0)
     s.part("#FLG1", 46, 25, 0)
     s.part("#FLG2", 46, 35, 180)
     s.label("SDA", 26, 30, 0)
@@ -74,7 +92,7 @@ def build(out: Path) -> Path:
 def write_bom(path: Path) -> None:
     rows = [["Comment", "Designator", "Footprint", "Quantity", "LCSC Part #", "Class"]]
     for ref, (sym, value, fp, lcsc, cls) in PARTS.items():
-        if not ref.startswith("#"):
+        if not ref.startswith("#") and lcsc:  # H1 (hole) has no part
             rows.append([value, ref, fp, "1", lcsc, cls])
     with path.open("w", newline="") as f:
         csv.writer(f, lineterminator="\n").writerows(rows)

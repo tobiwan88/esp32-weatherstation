@@ -7,7 +7,8 @@ Base created from desk_notifier (board-neutral hardware skills, calc scripts, to
 
 ## Start here
 - Hardware: read `.claude/skills/hw-base` first, then `hardware/weatherstation-v1/BOARD.md` and `board.yaml`.
-  Second board: `hardware/sht45-board/` (outdoor SHT45, generator `hardware/gen/sht45_board.py`). Requirements: `hardware/weatherstation-v1/REQUIREMENTS.md`. Plan: `hardware/PLAN.md`.
+  Second board: `hardware/sht45-board/` (outdoor SHT45 sensor head with a Qwiic chain-out, generators
+  `hardware/gen/sht45_board.py` + `sht45_pcb.py`, build `hardware/tools/build_sht45.sh`). Requirements: `hardware/weatherstation-v1/REQUIREMENTS.md`. Plan: `hardware/PLAN.md`.
 - Skills (board-neutral, in `.claude/skills/`): `hw-base`, `kicad-schematic`, `kicad-layout`, `hw-parts`.
 - Numbers come from scripts in `hardware/calc/` (rule in `hw-base`): `bom_check.py`, `power_budget.py`, `critical.py`, `buck.py`, `impedance.py`.
 
