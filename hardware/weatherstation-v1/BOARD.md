@@ -382,6 +382,20 @@ cell cut-off of 1.5 V is below its start threshold but above its 1.3 V input min
     fence, and the C3 bootstrap (SW1) path needs that gap too. With both by hand: 15 DRC errors in all six router
     settings. Widening it further means moving the CC resistors or C3 (engineer call). 0 DRC errors, gate OK.
 
+## Production files (2026-11-05)
+- `python3 -I hardware/tools/fab_package.py [--require-clean] hardware/weatherstation-v1/weatherstation-v1.kicad_pcb`
+  (after `source scripts/kicad-env.sh`): DRC gate, gerbers + drill zip, BOM, CPL into `hardware/out/fab/`. Order
+  options, rails remark and fit results: `ORDER.md`.
+- CPL from a fit of JLC's own (EasyEDA) footprint onto our pads, not from a rotation table (`fab_package.py` docstring).
+- **L3 land pattern fixed (2026-11-05):** the CMF4532F footprint had 0.7 x 1.15 mm pads at y +/-1.55; in EMTEK
+  T-0602-102D 7-1 the 0.7 mm is the gap between the pad rows. Now 1.15 x 1.55 mm pads at (+/-1.825, +/-1.125): they
+  cover the D1 1.0 x D2 1.2 mm terminals, and JLC's footprint for C963746 is the same pattern turned 90 deg. Swapped on
+  the routed board with `tools/swap_footprint.py`; one router GND track under the choke (now in the 0.7 mm row gap) was
+  removed, GND stays connected through the planes (0 unconnected).
+- Silk: `tools/silk_fix.py` (last step of `route_v1.sh`) clips outlines at the board edge (J1, U1 overhang), moves
+  two pin-1 marks and one outline 0.02-0.16 mm. The five footprints it edits differ from the library on purpose:
+  `drc-waivers.csv` (warning type and reference only; the fab gate accepts nothing else).
+
 ## Open before ordering (updated 2026-11-01)
 The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design (commit 7db8d9c).
 
@@ -391,13 +405,14 @@ The CN3791/TP4056/AP2112K items of the old list are gone with the BQ25798 design
    measure the +3V3 dip on the first board. B2, B4, B5, C (R21) decided and applied; B3
    in REQUIREMENTS section 6. B6/B7 land patterns
    drawn from the maker drawings (project footprints). No A or B item open.
-2. Datasheets missing: SMBJ10A maker PDF (ratings from DigiKey: 10 V standoff, 17 V clamp at 35.3 A), CMF4532F-900 page,
-   USBLC6-2SC6, CBAK 26700LT. On file 2026-11-01: TPS61023, Sunlord WPN, TDK VLS252010HBX-1.
+2. Datasheets missing: SMBJ10A maker PDF (ratings from DigiKey: 10 V standoff, 17 V clamp at 35.3 A), CMF4532F-900 page (land
+   pattern settled 2026-11-05, see Production files), USBLC6-2SC6, CBAK 26700LT. On file 2026-11-01: TPS61023, Sunlord WPN, TDK VLS252010HBX-1.
 3. **Decided: accept reduced winter accuracy** of the SEN66 below 10 C (no heater; log the enclosure temperature).
    REQUIREMENTS.md section 4 still says -10 to +50 C for operation; amend it to "short-term" for the SEN66.
 4. `design.panel.vmp_v` is still an assumption (6.0 V). Choose the panel; the TVS choice (A6) depends on its Voc.
 5. Whether JLCPCB forces Standard PCBA for the ESP32 module (check the quote).
 6. ZE25-O3 cable pitch (J8; pinout from Winsen table 2, 2026-11-01). Supply current closed: 10 mA at 5 V (2026-11-04).
+7. Production files built (2026-11-05): choose ENIG and the rails remark in `ORDER.md`.
 
 ### Schematic: nets that keep labels (generator `UNWIRED`, 2026-11-01)
 Each is readable as drawn; listed so a reviewer knows they are labels on purpose, not missing wires.

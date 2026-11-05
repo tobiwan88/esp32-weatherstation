@@ -20,6 +20,9 @@ Base created from desk_notifier (board-neutral hardware skills, calc scripts, to
 - KiCad: `source scripts/kicad-env.sh` (kicad-cli, `$KICAD_PYTHON`, symbol/footprint dirs). On Linux install KiCad 7+ from apt for kicad-cli/pcbnew.
 - ESP-IDF v6.1 (firmware, later): `source scripts/idf-env.sh`.
 - Stock and price: `python3 hardware/tools/jlcparts.py C123456` or `-s "keyword"`.
+- JLCPCB production files (gerbers, drill, BOM, CPL fitted to JLC's own footprints): `python3 -I hardware/tools/fab_package.py
+  [--require-clean] hardware/<board>/<board>.kicad_pcb ...` -> `hardware/out/fab/`. Order notes: `hardware/weatherstation-v1/ORDER.md`,
+  `hardware/ORDER-sensor-boards.md`.
 
 ## Hardware decisions that must not be lost
 - 4 layers, In1 and In2 both solid GND; outline at most 50 x 50 mm (cheapest JLCPCB tier).

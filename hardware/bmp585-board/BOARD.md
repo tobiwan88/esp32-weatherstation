@@ -24,3 +24,6 @@ Status (2026-11-04): ERC 0, nets OK, 0 DRC violations (warnings included), 0 unc
 ## Mounting
 - Static pressure only: inside the radiation shield or the main enclosure (vented), out of direct wind and rain.
   The 0x46 address is free on the sensor bus (SHT45 0x44, SCD41 0x62, VEML6030 0x10).
+
+## Ordering
+Production files and PCB/assembly options: `hardware/ORDER-sensor-boards.md`.

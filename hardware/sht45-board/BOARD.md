@@ -50,6 +50,7 @@ since 2026-11-04).
 - Reflow and handling per Sensirion's handling instructions (`weatherstation-v1/datasheets/appnotes/sht4x-handling.pdf`).
 
 ## Ordering
+- Production files and PCB/assembly options: `hardware/ORDER-sensor-boards.md` (2026-11-05).
 - As its own JLCPCB order this adds PCBA setup (about USD 8.18), stencil (USD 1.53), 2 Extended fees (USD 6.14) and the
   bare boards. Alternative: put it in the same panel as the main board (one PCBA order), but the main board is kept at or
   below 50 x 50 mm for the cheapest tier. Decide when the main-board layout is known.

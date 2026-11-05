@@ -8,7 +8,7 @@ Each footprint names its source in the descr. Courtyard = pads and body + 0.25 m
 - L_Sunlord_WPN201610H: Sunlord WPN series spec (rev. 2018/12/13), recommended land pattern a = 0.7 (gap), b = 0.7, c = 1.7.
   Body 2.0 x 1.6 x 1.0 max.
 - L_TDK_VLS252010: TDK VLS252010HBX-1 catalogue (20160411) page 5: land 0.6 / 1.3 / 0.6 x 2.0. Body 2.5 x 2.0 x 1.0 max.
-- CMF4532F_4P: EMTEK spec T-0602-102D section 7-1 (4.8 / 2.5 / 3.8 / 0.7 mm). Body 4.5 x 3.2.
+- CMF4532F_4P: EMTEK spec T-0602-102D section 7-1 (4.8 / 2.5 / 3.8 / 0.7 mm; 0.7 = gap between the pad rows). Body 4.5 x 3.2.
 - BMP585_LGA-8_3.25x3.25mm: Bosch BST-BMP585-DS003-02 rev 1.2 figure 29 (bottom view) and section 9.3.3: lands = package
   pads + 25 um per side (0.55 x 0.8 -> 0.6 x 0.85), side pads at x +/-1.225, y 0 / +/-1.1, middle pads at y +/-1.225;
   pin 9 (laser-mark pad) gets no land. No solder mask under the sensor (9.3.3): one mask opening over the body
@@ -72,12 +72,16 @@ def two_pad(name, descr, tags, centre, w, h, body):
 
 
 def cmf():
-    pads = [("1", -1.825, -1.55, 1.15, 0.7, "rect"), ("2", 1.825, -1.55, 1.15, 0.7, "rect"),
-            ("3", 1.825, 1.55, 1.15, 0.7, "rect"), ("4", -1.825, 1.55, 1.15, 0.7, "rect")]
+    # 7-1: 4.8 outer and 2.5 inner span along the length -> pads 1.15 wide at x +/-1.825; 3.8 outer span and 0.7 gap
+    # between the rows across the width -> pads 1.55 high at y +/-1.125 (fixed 2026-11-05: 0.7 had been read as the pad
+    # height). Check: terminals D1 1.0 x D2 1.2 at the body corners (centres x +/-1.75, y +/-1.0) sit inside the lands;
+    # the LCSC/EasyEDA footprint of C963746 is the same pattern turned 90 deg (1.5 mm pads at +/-1.75, +/-1.15).
+    pads = [("1", -1.825, -1.125, 1.15, 1.55, "rect"), ("2", 1.825, -1.125, 1.15, 1.55, "rect"),
+            ("3", 1.825, 1.125, 1.15, 1.55, "rect"), ("4", -1.825, 1.125, 1.15, 1.55, "rect")]
     silk = [((-1.0, -1.7), (1.0, -1.7)), ((-1.0, 1.7), (1.0, 1.7))]
     return footprint("CMF4532F_4P",
                      "EMTEK CMF4532F 2-line common-mode filter, 4.5x3.2 mm, land pattern from spec T-0602-102D section 7-1 (4.8 / 2.5 / 3.8 / 0.7 mm)",
-                     "CMF4532F common mode choke", pads, (2.25, 1.6), silk, pin1=(-2.7, -1.55))
+                     "CMF4532F common mode choke", pads, (2.25, 1.6), silk, pin1=(-2.7, -1.125))
 
 
 def bmp585():

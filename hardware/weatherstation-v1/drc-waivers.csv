@@ -1,0 +1,6 @@
+type,ref,reason
+lib_footprint_mismatch,U1,"silk only: tools/silk_fix.py clipped the module outline where the antenna overhangs the top edge"
+lib_footprint_mismatch,J1,"silk only: tools/silk_fix.py clipped the USB-C shell outline at the left edge (connector overhangs on purpose)"
+lib_footprint_mismatch,U3,"silk only: tools/silk_fix.py moved the pin-1 mark off C6's pad"
+lib_footprint_mismatch,U6,"silk only: tools/silk_fix.py moved the pin-1 mark 0.02-0.16 mm away from F1's outline"
+lib_footprint_mismatch,L5,"silk only: tools/silk_fix.py moved one outline segment 0.02-0.16 mm away from U7's outline"
