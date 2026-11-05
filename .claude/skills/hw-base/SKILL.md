@@ -28,11 +28,16 @@ Board-neutral. Facts about one board live in its profile, never in a skill.
 
 ## Changing a decision (review; gate)
 - A change of part, chemistry, value or pin is not done until every copy is updated: search the repo for the old name and
-  value (profile, `BOARD.md`, requirements, firmware rules, calc scripts, generator notes, skills' examples) and fix each.
+  value (profile, `BOARD.md`, requirements, order notes `ORDER.md`, firmware rules, calc scripts, generator notes,
+  skills' examples) and fix each.
 - Hidden copies are constants in scripts (a nominal voltage, a threshold): read the calc scripts the change touches.
 - Docs state what the netlist does (pull-up targets, pin map, enable defaults). When they differ, the netlist wins and the
   doc is fixed; a contradiction between two docs is a question for the engineer.
 - Old decisions stay as dated history; the current state sits at the top of `BOARD.md`.
+- KiCad's GUI rewrites `.kicad_pro` files when a project is opened (defaults, view state). Commit such a change only
+  if it changes a setting on purpose; otherwise restore it (keep a copy) before a clean-tree step such as the order build.
+- Work time: a tooling detour (a binding quirk, an undocumented file format) gets a few tries, then the simpler route
+  (a plain file the gate reads, a step the human does) and a note.
 
 ## Rule: numbers come from scripts
 - Any check with a number (distance, impedance, voltage, current, timing, length, stock) runs a script. Never estimate in the reply.
@@ -69,7 +74,7 @@ Board-neutral. Facts about one board live in its profile, never in a skill.
 | return path | continuous reference plane under every signal (review; not a `critical.yaml` key) |
 | keepout | no-copper area (antenna, shell, thermal island) as a DRC rule area (not a `critical.yaml` key) |
 | gate | the board's check command; must print OK before commit and order |
-| waiver | accepted ERC/DRC item with a reviewer's reason; never for the gate's never-waive list |
+| waiver | accepted ERC/DRC warning with a reviewer's reason, in `<board>/drc-waivers.csv` (type, reference, reason); errors never |
 | known deviation | `known:` text on a constraint: accepted this revision, shown as WARN, with the fix |
 
 ## Gate

@@ -28,5 +28,16 @@ if [ -f $B/weatherstation-v1.kicad_pcb ] && routed $B/weatherstation-v1.kicad_pc
 else
     echo "SKIP: no routed board yet (placement only), critical.py not run (ERC/DRC need KiCad and a board)" >&2
 fi
+# footprint fit against the fab's own footprints (cached; fill the cache with one fab_package.py run without --offline)
+[ -f scripts/kicad-env.sh ] && . scripts/kicad-env.sh >/dev/null 2>&1
+if [ -n "$KICAD_PYTHON" ] && "$KICAD_PYTHON" -c "import pcbnew" >/dev/null 2>&1; then
+    for pcb in $B/weatherstation-v1.kicad_pcb hardware/*-board/*-board.kicad_pcb; do
+        [ -f "$pcb" ] || continue
+        fit=$(python3 -I hardware/tools/fab_package.py --fit-only --offline "$pcb" 2>&1) || rc=1
+        printf '%s\n' "$fit" | grep -v "^LAND"
+    done
+else
+    echo "SKIP: placement fit (needs KiCad's pcbnew: source scripts/kicad-env.sh)" >&2
+fi
 [ $rc -eq 0 ] && echo "hardware checks: OK" || echo "hardware checks: FAILED"
 exit $rc

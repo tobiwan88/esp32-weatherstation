@@ -2,6 +2,8 @@
 
 Usage (from the repo root, after `source scripts/kicad-env.sh`):
   python3 -I hardware/tools/fab_package.py [--require-clean] [--offline] hardware/<board>/<board>.kicad_pcb [...]
+  --fit-only (with --offline in the gate): placement fit only, no DRC, no files; a part without a cached fab footprint
+  is a MISSING row (passes), FAIL/CHECK fail. Run it as soon as a footprint is placed, not only at order time.
 Writes hardware/out/fab/<board>/ only (gitignored); the board is only read.
 
 - Gate first: DRC with schematic parity and refilled zones must report 0 violations and 0 unconnected items; a
@@ -212,6 +214,9 @@ def placements(parts: list[dict], offline: bool) -> tuple[list[list[str]], list[
             continue
         if p["side"] != "Top":
             sys.exit(f"{p['ref']}: assembled part on the bottom: not handled (mirrored EasyEDA fit)")
+        if offline and not (CACHE / p["lcsc"] / "component.json").exists():
+            report.append(f"MISSING {p['ref']:5} {p['lcsc']:10} no cached fab footprint: run once without --offline")
+            continue
         title, eda = easyeda_pads(p["lcsc"], offline)
         kicad = [(q["num"], q["x"], q["y"]) for q in p["pads"]]
         knum, enum = set(centres(kicad)), set(centres(eda))
@@ -259,7 +264,8 @@ def bom(parts: list[dict]) -> list[list[str]]:
 def main() -> None:
     flags = {a for a in sys.argv[1:] if a.startswith("--")}
     boards = [Path(a).resolve() for a in sys.argv[1:] if not a.startswith("--")]
-    sha = git_sha("--require-clean" in flags)
+    fit_only = "--fit-only" in flags
+    sha = "" if fit_only else git_sha("--require-clean" in flags)
     py = os.environ.get("KICAD_PYTHON")
     if not py:
         sys.exit("KICAD_PYTHON not set: source scripts/kicad-env.sh")
@@ -269,12 +275,18 @@ def main() -> None:
         out.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
-            drc_gate(pcb, tmp)
-            z = gerbers(pcb, out, sha)
+            if not fit_only:
+                drc_gate(pcb, tmp)
+                z = gerbers(pcb, out, sha)
             subprocess.run([py, str(ROOT / "hardware/tools/pcb_parts.py"), str(pcb), str(tmp / "parts.json")],
                            check=True, capture_output=True)
             parts = json.loads((tmp / "parts.json").read_text())
         rows, report, ok = placements(parts, "--offline" in flags)
+        if fit_only:  # gate mode (scripts/hw-check.sh): fit report only, no files written
+            print("\n".join(r for r in report if not r.startswith("OK ")) or f"{pcb.stem}: all {len(rows)} placements fit")
+            print(f"placement fit {pcb.stem}: {'OK' if ok else 'FAILED'}")
+            failed |= not ok
+            continue
         b = bom(parts)
         with open(out / f"{pcb.stem}-bom.csv", "w", newline="") as f:
             csv.writer(f).writerows([["Comment", "Designator", "Footprint", "LCSC Part #"], *b])

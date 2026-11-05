@@ -17,6 +17,11 @@ Read `hw-base`, then the board's `BOARD.md` (decisions, commands, order checklis
 - The fab listing's maker must match the datasheet's maker. Same series name from another maker = another drawing.
 - Stock covers boards x parts per board (gate FAILs below 1x, flags LOW STOCK below 2x).
 - Compare the footprint's land pattern and pin 1 with the datasheet drawing, not only the package name.
+- A footprint drawn by hand is checked twice before it goes on a board (review; gate):
+  - each terminal from the package drawing (body size, terminal length and width) lies inside its land: compute the
+    overlap, do not eyeball it. Read every dimension off its arrow ends: a gap between pad rows and a pad size look alike.
+  - the fab's own footprint for the part number fits onto it (`fab_package.py --fit-only`, in the gate): pads within
+    0.25 mm, or the difference explained.
 - Add the part to the schematic generator with its fab part number; no number = not assembled.
 - Place it in the layout generator, outside keepouts (kicad-layout).
 - A module or pin-compatible swap may change firmware config or pin maps: check and note it.
@@ -51,7 +56,15 @@ Read `hw-base`, then the board's `BOARD.md` (decisions, commands, order checklis
 - Volatile stock: consider buying the part into the fab's parts inventory ahead (review).
 
 ## Fab outputs
-- Confirm every IC, connector and polarised part in the fab's placement preview. Fix a wrong one in the board's rotation-correction table (`BOARD.md`), never in the CPL (review).
+- CPL angle and centre come from fitting the fab's own footprint (the one its placement preview draws, for JLCPCB the
+  EasyEDA footprint of the LCSC part) onto the placed pads (`tools/fab_package.py`), not from a rotation table: tables
+  date from other library versions and miss origin shifts (a module's origin, a USB-C shell).
+- Pad numbers that differ between the two libraries (shell legs, mounting tabs, other pin numbering) are fitted on
+  geometry; a human confirms the angle once and records it with the reason (`GEOMETRY_OK` in the script).
+- Confirm every IC, connector and polarised part in the fab's placement preview anyway. A wrong one is fixed in the
+  footprint or in `GEOMETRY_OK`, never in the CPL (review).
+- Fab APIs rate-limit: one request every few seconds, cache each answer in its own folder, back off on 403/429. Never
+  change the User-Agent or otherwise get round a refusal; rerun later.
 - The stackup in `board.yaml` is part of the order. Cross-check `calc/impedance.py` with the fab's calculator (a human runs it); write its inputs and result into the order notes (review).
 
 ## Before ordering
@@ -64,7 +77,9 @@ Read `hw-base`, then the board's `BOARD.md` (decisions, commands, order checklis
 | Stock check fails | part out of stock | alternate from `board.yaml`, follow its note |
 | Stock drops between check and order | volatile part | re-check right before ordering; buy ahead |
 | Unexpected cost | setup fees | basic-part equivalent |
-| Part rotated wrong in preview | old rotation table | correction entry per footprint |
+| Part rotated or shifted in preview | rotation table instead of a fit; origin differs between libraries | fit the fab footprint (`fab_package.py`) |
+| Land covers only part of the terminal | a gap dimension read as a pad size | overlap check against the package drawing; fab-footprint fit |
+| Fab footprint numbers pins differently | other maker's numbering, same body | fit on geometry; confirm pairing (windings, pin 1) from the drawing |
 | Pin 1 or centre pad unclear | fab package name vs KiCad footprint differ | compare land patterns with the datasheet drawing |
 | Part missing from BOM | no fab part number | add it, or it is hand-placed by design |
 | Card value plausible but unsourced | filled from memory or notes | find its section, or set it `null` |

@@ -37,7 +37,7 @@ commands.
 5. Planes on the `role: plane` layers of the stackup.
 6. Critical copper drawn by the generator and locked: short, geometric, or what the router keeps failing. Coordinates from the placed pads, never hard-coded; assert the orientation you rely on.
 7. Autoroute the rest on `role: signal` layers only. Router details: `references/routing.md`.
-8. Remove router leftovers, fill zones, run the gate.
+8. Remove router leftovers, fill zones, clean the silkscreen (outlines clipped at the edge, pin-1 marks off pads), run the gate.
 
 ## Rules
 - A module antenna goes over the board edge (or into a full-layer keepout at the edge). A footprint whose courtyard
@@ -63,12 +63,18 @@ Regenerate, render (annotated PNG: whole board plus regions), read each PNG agai
 generator, repeat. Findings and leftovers go to `BOARD.md`.
 
 ## Verification
-- Gate: zero DRC errors and zero unhandled warnings. Items in the gate's never-waive list are never waived; other waivers are cosmetic and carry a reason.
+- Gate: zero DRC errors and zero unhandled warnings, run at all severities in the routing pipeline too (an errors-only
+  run hides silkscreen and library warnings until the fab step). Errors are never waived; a warning may be, in
+  `<board>/drc-waivers.csv` (type, reference, reason), which the fab gate reads. Not KiCad DRC exclusions from scripts
+  (their key format is internal).
 - `calc/critical.py hardware/<board>`: every block OK or a `known` WARN (gate).
 - Annotated renders (no pours, nets named and coloured, mm grid): read each region against the rules (review).
 - 3D view: height conflicts, connector alignment, parts past the edge (review).
 - Whole-board review by a fresh strong model, then the human review in KiCad (review).
 - Gerbers and drill: zones filled before plotting (`kicad-cli --check-zones`).
+- A land-pattern fix on a routed board: fix the footprint generator, swap the footprint in place
+  (`tools/swap_footprint.py`, keeps position and nets), DRC, clear what now clashes. Write the hand step in `BOARD.md`:
+  a later full regenerate/reroute does not replay it.
 
 ## Pitfalls
 | Symptom | Cause | Fix |
@@ -87,6 +93,8 @@ generator, repeat. Findings and leftovers go to `BOARD.md`.
 | Switching charger/regulator won't route, or routes with vias at the pins | autorouter cannot share a QFN's 0.4 mm pin row between power and signals | draw the power stage in the generator from the datasheet layout example (caps on the pin row, SW through vias), lock it; keep parts off it and escape bands free beside the signal pins |
 | Bulk caps of one net spread across the board | greedy placer puts each cap at its nearest free spot | place each cap next to the previous cap of its net (pads aligned), or fix the block by hand |
 | Gate runs routed-board checks on a placement | "has tracks" no longer means routed once the generator draws copper | generator copper is locked, router copper is not; the gate keys on unlocked tracks |
+| `SwigPyObject has no attribute ...` after editing a footprint | removing footprint items, or un-cast items from `GraphicalItems()` | move items to the Fab layer instead of removing; `.Cast()` items; read rules from `.kicad_pro`, not `GetDesignSettings()` |
+| `lib_footprint_mismatch` after a silk or land edit | board footprint differs from the library on purpose | fix the library footprint, or waive per reference with the reason |
 | pcbnew SWIG going away | deprecated, removal planned (verify the KiCad version) | read boards with `calc/pcb.py`; write via IPC API or S-expressions |
 | KiCad opens a stray project | intermediate saved as a project | keep intermediates in temp dirs; remove it from KiCad's recent list |
 | KiCad "already open" | `~*.lck` from a killed instance | delete the lock when no KiCad runs |

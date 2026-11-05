@@ -20,6 +20,6 @@ for f in f w; do cp $P.kicad_pro "$work/$f.kicad_pro"; cp $P.kicad_dru "$work/$f
 "$KICAD_PYTHON" hardware/tools/widen_charge.py "$work/f.kicad_pcb" "$work/w.kicad_pcb" 2>/dev/null | head -1
 "$KICAD_PYTHON" hardware/tools/finish_v1.py "$work/w.kicad_pcb" 2>/dev/null | grep "^finish"
 "$KICAD_PYTHON" hardware/tools/silk_fix.py "$work/w.kicad_pcb" 2>/dev/null | grep "^silk: [0-9]" || true
-kicad-cli pcb drc --refill-zones --severity-error -o "$work/drc.txt" "$work/w.kicad_pcb" >/dev/null 2>&1 || true
-echo "DRC errors: $(grep -c '^\[' "$work/drc.txt" || true) ($(grep '^\[' "$work/drc.txt" | cut -d']' -f1 | tr -d '[' | sort | uniq -c | tr '\n' ' '))"
+kicad-cli pcb drc --refill-zones --severity-all -o "$work/drc.txt" "$work/w.kicad_pcb" >/dev/null 2>&1 || true
+echo "DRC items (all severities; waivers in drc-waivers.csv): $(grep -c '^\[' "$work/drc.txt" || true) ($(grep '^\[' "$work/drc.txt" | cut -d']' -f1 | tr -d '[' | sort | uniq -c | tr '\n' ' '))"
 cp "$work/w.kicad_pcb" "$out"
