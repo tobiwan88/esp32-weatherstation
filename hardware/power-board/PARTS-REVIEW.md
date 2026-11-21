@@ -46,5 +46,5 @@ decision for the engineer (topology unchanged in phase A).
 ## Open decisions after the review (2026-11-21, for the engineer)
 | Review # | Decision | Numbers / options |
 |---|---|---|
-| B5 | ICHG vs the HY2112 charge-overcurrent trip: at a hot cell the trip can be about 1.48 A (AO3400A 48 mOhm x 1.2 per FET) | ICHG at most 1.2 A (FIRMWARE-RULES.md default, marked OPEN), or a lower-Rds dual FET, or measure. `calc/power_budget.py` still checks 1.5 A at 25 C (board.yaml) until you decide |
+| B5 | ICHG vs the HY2112 charge-overcurrent trip: at a hot cell the trip can be about 1.48 A (AO3400A 48 mOhm x 1.2 per FET) | **Decided 2026-11-21: ICHG stays 1.5 A** (cell allows 0.5C-2C); measure the trip and FET temperature on the first board. `calc/power_budget.py` checks 1.5 A at 25 C (board.yaml) |
 | Cost | Order at qty 5: USD 55.03 before the bare PCB, joints and shipping: parts 23.83 (4.77 per board) + 7 Extended x 3.07 + setup 8.18 + stencil 1.53 (`calc/bom_check.py --stock --qty 5`) | no action needed |

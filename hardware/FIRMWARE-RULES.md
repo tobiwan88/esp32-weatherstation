@@ -13,10 +13,11 @@ address and bit position against the datasheet when the driver is written: this 
 3. **Check the cell count first** (PROG resistor R14 3.0k = 1S, 1.5 MHz; read back the cell-count field). The VREG range and
    step depend on it, so VREG is written only after 1S is confirmed.
 4. **VREG = 3.65 V** (cell maximum 3.75 V). Read it back. Verify with a DMM on the first samples.
-5. **ICHG = 1.2 A: OPEN** (review B5, the engineer has not decided). At a hot cell the HY2112 charge-overcurrent trip can be
-   about 1.48 A (AO3400A 48 mOhm x 1.2 per FET), so 1.5 A could trip the protection. 1.2 A is the default until B5 is
-   decided (alternatives: a lower-Rds dual FET, or a bench measurement). **Clamp in firmware:** never write more than this
-   value anywhere in the code (review B6: the chip accepts up to 5 A; the only hardware backstops are L1 Isat 3.22 A and
+5. **ICHG = 1.5 A** (decided by the engineer 2026-11-21: the cell takes 0.5C to 2C, 1.5 A is 0.38C of 3.9 Ah, so it is realistic;
+   review B5 is closed on the cell side). Residual hardware point: at a hot cell with worst-case FET resistance the HY2112
+   charge-overcurrent trip can be about 1.48 A (AO3400A 48 mOhm x 1.2 per FET); a trip only pauses charging, so measure the
+   charge current and the FET temperature on the first board and lower ICHG only if it trips. **Clamp in firmware:** never
+   write more than this value anywhere in the code (review B6: the chip accepts up to 5 A; the only hardware backstops are L1 Isat 3.22 A and
    the HY2112).
 6. **VSYSMIN = 3.0 V** (review B3, range 2.5-3.0 V). The old 4.0 V kept the BATFET in linear mode for the whole charge
    (about 1 W, about 18 % of the solar energy lost); its reason, the AP2112K LDO, is gone (TPS63802 runs down to 1.3 V in).
