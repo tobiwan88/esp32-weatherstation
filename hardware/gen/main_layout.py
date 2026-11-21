@@ -19,7 +19,7 @@ BLOCKS = {
              "#FLG21": (130, 46, 180)}),
     ],
     "MCU": [
-        ("ESP32-S3-WROOM-1-N8", "N8: 8 MB flash, no PSRAM. Strapping: IO0 (BOOT), EN (RESET). Native USB on IO19/IO20 with 22 ohm series resistors",
+        ("ESP32-S3-WROOM-1-N8", "N8: 8 MB flash, no PSRAM. Strapping: IO0 (BOOT), EN (RESET). Native USB on IO19/IO20 with 22 ohm series resistors. Open pins (no-connect flags): IO3, IO45, IO46 are strapping pins left at their defaults; IO35-IO37 stay free (octal PSRAM on N8R8 modules); IO21, IO38-IO40, IO47, IO48 spare",
          (4, 10, 76, 58), {
              "U1": (40, 36, 0), "C30": (10, 22, 0), "C31": (15, 22, 0), "C32": (20, 22, 0),
              "R33": (62, 29, 270), "R32": (62, 35, 270)}),
@@ -45,7 +45,7 @@ BLOCKS = {
              "C42": (44, 80, 0), "C43": (49, 80, 0)}),
         ("5V_SW 5 V boost", "TPS61023: SYS -> 5.06 V for the PMS7003 and the ZE25-O3. EN = BOOST_EN (IO12); R45 = off by default; off = output disconnected, 0.1 uA. FB 0.595 V x (1 + 510k/68k)",
          (72, 56, 56, 36), {
-             "C44": (76, 76, 0), "L5": (92, 66, 90), "U7": (92, 74, 0), "R45": (82, 84, 0),
+             "C44": (75, 76, 0), "L5": (92, 66, 90), "U7": (92, 74, 0), "R45": (80, 84, 0),
              "R43": (108, 76, 0), "R44": (108, 85, 0), "C45": (116, 77, 0), "C46": (121, 77, 0)}),
     ],
     "I2C": [
