@@ -1,0 +1,24 @@
+# Datasheet card: facts from the OFFICIAL datasheet only, each with its section.
+# value null = not read yet (scripts report MISSING); section: not stated = datasheet silent.
+# PDF: ../../weatherstation-v1/datasheets/ (shared with the single-board design).
+mpn: BMP585
+role: barometric pressure sensor (I2C 0x46 with SDO low), on the main-board sensor bus (phase B, U9)
+lcsc: C18184976
+source:
+  url: https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/bmp585/
+  revision: "BST-BMP585-DS003-02 rev 1.2"
+  file: weatherstation-v1/datasheets/BMP585.pdf
+values:
+  vdd_v: {value: "1.71-3.6", section: "1 features (VDD and VDDIO independent)"}
+  vddio_v: {value: "1.08-3.6", section: "1 features"}
+  pressure_accuracy_pa: {value: "+/-30 typ absolute (extended range), +/-60 after soldering", section: "2 table (Ap_abs, Ap_abs_soldered)"}
+  standby_ua: {value: "0.5 typ at 25 C", section: "2 electrical table (standby current)"}
+  deep_standby_ua: {value: "0.4 typ at 25 C", section: "2 electrical table (deep standby current)"}
+  i2c_address: {value: "0x46 (SDO low), 0x47 (SDO high)", section: "5.6 (per hardware/gen/addon_boards.py note; page check open)"}
+  i2c_mode: {value: "CSB tied to VDDIO selects I2C", section: "6.2.3"}
+  pin_capacitance_pf: {value: null, section: not stated}
+checklist:
+  - "100 nF at VDD and VDDIO (figure 25): C90/C91"
+  - "SDO (pin 3) to GND, INT (pin 5) open: as the addon bmp585 board"
+  - "on 3V3_SW: the sensor is unpowered in deep sleep, no standby budget needed"
+  - "address 0x46 free on the sensor bus (SHT45 0x44, SCD41 0x62, VEML6030 0x10)"

@@ -59,3 +59,21 @@ design:
   load:
     peak_a: {value: 0.6, source: "estimate: ESP32 TX about 0.4 A + PMS7003 0.19 A at the cell (PMS7003 manual V2.5: active <= 100 mA at 5 V)"}
     sensor_vmin_v: {value: 2.4, source: "SCD4x datasheet v1.7 table 4: VDD 2.4-5.5 V (SHT45 1.08-3.6 V); 3V3_SW is 3.32 V"}
+  i2c_bus:                 # sensor bus SEN_SDA/SEN_SCL (IO13/IO14), checked by calc/i2c_bus.py
+    vdd_v: {value: 3.3, source: "3V3_SW from the TPS63802 (3.32 V)"}
+    pullup_ohm: {value: 2200, source: "R50/R51 (Sensors sheet), 2.2k since phase B (was 10k: rise time 2.3 us with 2 m of cable)"}
+    freq_khz: {value: 100, source: "firmware choice: standard mode for the outdoor cable"}
+    pcb_pf: {value: 20, source: "assumption: about 10 cm of trace on 4 layers plus 4 connector pads"}
+    cable_pf_per_m: {value: 100, source: "assumption: unshielded 4-core cable or Qwiic flex, 50-100 pF/m class; measure the bought cable"}
+    cable_m: {value: 2, source: "assumption: SHT head in its radiation shield up to 2 m from the enclosure (one Qwiic cable)"}
+    devices_pf:
+      value: {U1: 2, U5: 3.5, U9_BMP585: 10, U8_SCD41: 10, SHT_head: 10, SEN0460: 10, qwiic_module: 10}
+      source: "ESP32-S3-WROOM-1 v1.8 table 6-3 CIN 2 pF; USBLC6-2 DS4260 Rev 7 3.5 pF max; sensors not stated: NXP UM10204 table 10 Ci max 10 pF"
+    module_pullups_ohm: {value: [2200], source: "one bought Qwiic module with its 2.2k pull-ups enabled (SparkFun boards ship 2.2k or 4.7k, community.sparkfun.com Qwiic pull-up threads)"}
+  pulse_port:              # J12 rain gauge + anemometer reed contacts (IO15, IO16), checked by calc/i2c_bus.py
+    vdd_v: {value: 3.3, source: "+3V3 (always on: the ULP counts in deep sleep)"}
+    pullup_ohm: {value: 1000000, source: "R70/R71 1M (C26083 Basic)"}
+    cap_f: {value: 4.7e-9, source: "C70/C71 4.7 nF (C1538 Basic) at the GPIO behind the 1k series R72/R73"}
+    inputs: {value: 2, source: "rain + wind contacts; worst case both resting closed"}
+    sleep_budget_ua: {value: 100, source: "REQUIREMENTS-system.md section 4: whole-stack sleep under 100 uA"}
+    max_rate_hz: {value: 42, source: "assumption: SparkFun SEN-15901 weather meter class, 2.4 km/h per contact closure per second; 100 km/h = 42 Hz"}

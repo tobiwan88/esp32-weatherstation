@@ -20,5 +20,5 @@ values:
   isd_na: {value: "45 typ, 600 max", section: "8.5 ISD into VIN"}
 checklist:
   - "FB 220k/39k: 0.5 V x (1 + 220/39) = 3.32 V (8.5 VFB)"
-  - "L4 0.47 uH inside 0.37-0.57 uH (8.3); C40 10 uF in, C41 22 uF out: effective values after DC bias still to check (10.2.2.3/10.2.2.4)"
+  - "L4 0.47 uH inside 0.37-0.57 uH (8.3); C40 10 uF in, C41 22 uF out: effective values after DC bias still to check (10.2.2 output and input capacitor selection)"
   - "SYS on the main-board pins must stay <= 5.5 V: bench supply limit in hardware/ARCHITECTURE.md"

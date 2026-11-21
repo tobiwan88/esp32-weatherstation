@@ -23,7 +23,7 @@ from main_layout import (BLOCKS, HAND_LABELS, HAND_ROUTES, ROOT_BOX, SHEET_COLOR
 
 PROJECT, TITLE, SHEET_PREFIX = "main-board", "weatherstation main board", "main board"
 SHEET_FILES = {"USB": "usb.kicad_sch", "Header": "header.kicad_sch", "MCU": "mcu.kicad_sch",
-               "Rails": "rails.kicad_sch", "Sensors": "sensors.kicad_sch"}
+               "Rails": "rails.kicad_sch", "Sensors": "sensors.kicad_sch", "Ports": "ports.kicad_sch"}
 
 # ref: (symbol, value, footprint, LCSC or None, sheet)
 PARTS = {
@@ -105,12 +105,33 @@ PARTS = {
     "J3": ("Connector_Generic:Conn_01x04", "SHT45 cable", JST_SH4, "C160404", "Sensors"),
     "U5": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (I2C)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "Sensors"),
     # Sensor I2C bus (IO13/IO14): pull-ups and U5 VBUS on 3V3_SW, so nothing back-powers the sensors when the rail is off.
-    "R50": ("Device:R", "10k", R0402, "C25744", "Sensors"),
-    "R51": ("Device:R", "10k", R0402, "C25744", "Sensors"),
+    # 2.2k since phase B: 2 m outdoor cable + up to 7 devices = about 280 pF; 10k gave 2.3 us rise (calc/i2c_bus.py)
+    "R50": ("Device:R", "2.2k", R0402, "C25879", "Sensors"),
+    "R51": ("Device:R", "2.2k", R0402, "C25879", "Sensors"),
     # ZE25-O3 7-pin (Winsen table 2): 1 reserved, 2 DAC, 3 GND, 4 Vin 3.7-5.5 V, 5 RXD (0-3.0 V in), 6 TXD, 7 reserved.
     "J8": ("Connector_Generic:Conn_01x07", "ZE25-O3 (cable pitch to confirm)", "Connector_JST:JST_PH_B7B-PH-K_1x07_P2.00mm_Vertical", None, "Sensors"),
     "R46": ("Device:R", "1k (GAS RXD level: 3.3 V x 10/11 = 3.0 V)", R0402, "C11702", "Sensors"),
     "R47": ("Device:R", "10k", R0402, "C25744", "Sensors"),
+    # --- Ports (phase B): BMP585 on the sensor bus, second Qwiic port, 2.54 mm I2C header ---------------------------------
+    # BMP585 as hardware/gen/addon_boards.py bmp585 (Bosch BST-BMP585-DS003-02 rev 1.2): CSB = VDDIO (I2C, 6.2.3),
+    # SDO low = 0x46 (5.6), 100 nF at VDD and VDDIO (figure 25), INT open.
+    "U9": ("weatherstation:BMP585", "BMP585 (0x46)", "weatherstation:BMP585_LGA-8_3.25x3.25mm", "C18184976", "Ports"),
+    "C90": ("Device:C", "100n", C0603, "C14663", "Ports"),
+    "C91": ("Device:C", "100n", C0603, "C14663", "Ports"),
+    "J4": ("Connector_Generic:Conn_01x04", "Qwiic 2", JST_SH4, "C160404", "Ports"),
+    "J11": ("Connector_Generic:Conn_01x04", "I2C 2.54 (GND 3V3_SW SDA SCL)", "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", None, "Ports"),
+}
+
+# Parts that are not in weatherstation-v1 (tools/split_check.py) and v1 parts changed on purpose after the split.
+ADDED = {
+    "U9": "phase B: BMP585 pressure on the sensor bus (REQUIREMENTS-system.md 9: BMP585 on main)",
+    "C90": "phase B: BMP585 VDD 100 nF", "C91": "phase B: BMP585 VDDIO 100 nF",
+    "J4": "phase B: second Qwiic port (REQUIREMENTS-system.md 5 ports)",
+    "J11": "phase B: 4-pin 2.54 mm I2C header (GND, 3V3_SW, SDA, SCL)",
+}
+CHANGED = {
+    "R50": "phase B: 10k -> 2.2k, I2C rise time with 2 m cable (calc/i2c_bus.py, PARTS-REVIEW.md B5)",
+    "R51": "phase B: 10k -> 2.2k, as R50",
 }
 
 NETS = add_header({
@@ -127,8 +148,10 @@ NETS = add_header({
     "CHG_INT": [("R22", "1"), ("U1", "18")],
     "CHG_SDA": [("U1", "39"), ("R54", "1")],
     "CHG_SCL": [("U1", "38"), ("R55", "1")],
-    "SEN_SDA": [("U1", "21"), ("U8", "10"), ("J3", "3"), ("R50", "1"), ("U5", "1"), ("U5", "6")],
-    "SEN_SCL": [("U1", "22"), ("U8", "9"), ("J3", "4"), ("R51", "1"), ("U5", "3"), ("U5", "4")],
+    "SEN_SDA": [("U1", "21"), ("U8", "10"), ("J3", "3"), ("R50", "1"), ("U5", "1"), ("U5", "6"),
+                ("U9", "2"), ("J4", "3"), ("J11", "3")],
+    "SEN_SCL": [("U1", "22"), ("U8", "9"), ("J3", "4"), ("R51", "1"), ("U5", "3"), ("U5", "4"),
+                ("U9", "1"), ("J4", "4"), ("J11", "4")],
     # MCU
     "EN": [("U1", "3"), ("R30", "2"), ("C33", "1"), ("JP1", "1")],
     "IO0": [("U1", "27"), ("R31", "2"), ("JP2", "1")],
@@ -148,7 +171,8 @@ NETS = add_header({
     "GAS_DAC": [("U1", "7"), ("J8", "2")],  # IO7 = ADC1: backup reading if the UART fails
     # Rails
     "3V3_SW": [("Q40", "3"), ("C42", "1"), ("C43", "1"), ("U8", "7"), ("U8", "19"), ("C47", "1"), ("J3", "2"), ("U5", "5"),
-               ("R50", "2"), ("R51", "2"), ("#FLG10", "1")],
+               ("R50", "2"), ("R51", "2"), ("#FLG10", "1"),
+               ("U9", "8"), ("U9", "4"), ("U9", "7"), ("C90", "1"), ("C91", "1"), ("J4", "2"), ("J11", "2")],
     "SEN_G": [("Q40", "1"), ("R40", "2"), ("Q41", "3")],
     "SEN_EN_G": [("Q41", "1"), ("R41", "2"), ("R42", "1")],
     "GAS_SW": [("U7", "5"), ("L5", "2")],
@@ -170,17 +194,20 @@ NETS = add_header({
             ("C31", "2"), ("C32", "2"), ("C33", "2"), ("JP1", "2"), ("JP2", "2"), ("D10", "1"), ("D11", "1"), ("J7", "4"),
             ("C40", "2"), ("C41", "2"), ("Q41", "2"), ("R42", "2"), ("C42", "2"), ("C43", "2"), ("U7", "4"), ("R44", "2"),
             ("R45", "2"), ("C44", "2"), ("C45", "2"), ("C46", "2"), ("J2", "3"), ("J2", "4"), ("U8", "6"), ("U8", "20"),
-            ("U8", "21"), ("C47", "2"), ("J3", "1"), ("U5", "2"), ("J8", "3"), ("R47", "2"), ("#FLG12", "1")],
+            ("U8", "21"), ("C47", "2"), ("J3", "1"), ("U5", "2"), ("J8", "3"), ("R47", "2"), ("#FLG12", "1"),
+            ("U9", "3"), ("U9", "6"), ("C90", "2"), ("C91", "2"), ("J4", "1"), ("J11", "1")],
 })
 POWER_SYMBOLS = ("GND", "+3V3", "3V3_SW", "SYS", "USB_VBUS", "5V_SW")
 RAIL_LIB = {"GND": "power:GND", "+3V3": "power:+3V3"}  # others: power:VCC with the net as value
 
 SHEET_VALUE = {"U4": "USBLC6-2SC6", "U5": "USBLC6-2SC6", "L4": "0.47uH", "U2": "TPS63802", "Q40": "AO3401A",
-               "Q41": "2N7002", "U7": "TPS61023", "L5": "1uH", "J10": "J_PWR 2x9"}
-HAND_SOLDER = {"J2", "J7", "J8", "J10"}  # pin headers and JST PH: hand-soldered, not in the assembly BOM
+               "Q41": "2N7002", "U7": "TPS61023", "L5": "1uH", "J10": "J_PWR 2x9", "U9": "BMP585", "J4": "QWIIC 2",
+               "J11": "I2C 2.54"}
+HAND_SOLDER = {"J2", "J7", "J8", "J10", "J11"}  # pin headers and JST PH: hand-soldered, not in the assembly BOM
 TP_NOTE = "SYS/3V3 test pads"
-# D+/D- join three sheets (USB, MCU, Header): no crossing-free route on the root, so both keep labels there
-ROOT_LABELLED = ("USB_DP", "USB_DN")
+# D+/D- join three sheets (USB, MCU, Header), the sensor bus three (MCU, Sensors, Ports): no crossing-free route on the
+# root, so these keep labels there
+ROOT_LABELLED = ("USB_DP", "USB_DN", "SEN_SDA", "SEN_SCL")
 ROOT_TEXTS = [
     (6, 6, "#weatherstation main board: block diagram"),
     (6, 10, "Each box is a sheet. Wires join the sheet pins (hierarchical labels). Rails (GND, +3V3, 3V3_SW, SYS, USB_VBUS, 5V_SW) are power symbols."),

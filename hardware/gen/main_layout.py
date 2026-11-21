@@ -66,6 +66,14 @@ BLOCKS = {
          (70, 60, 54, 30), {
              "J8": (100, 74, 0), "R46": (84, 72, 90), "R47": (88, 80, 0)}),
     ],
+    "Ports": [
+        ("BMP585 pressure (BST-BMP585-DS003-02 rev 1.2)", "I2C: CSB = VDDIO (6.2.3), SDO low = 0x46 (5.6), 100 nF at VDD and VDDIO (figure 25)",
+         (4, 10, 56, 40), {
+             "U9": (32, 30, 0), "C90": (12, 26, 0), "C91": (18, 26, 0)}),
+        ("Qwiic port 2 and I2C header", "Same bus as J3, order GND, 3V3_SW, SDA, SCL. Module pull-ups: one 2.2k pair at most",
+         (64, 10, 50, 40), {
+             "J4": (90, 22, 0), "J11": (90, 34, 0)}),
+    ],
 }
 
 HAND_ROUTES = {
@@ -81,6 +89,11 @@ HAND_ROUTES = {
         "CHG_SCL": [[("J10", "14"), (46, 32), ("R55", "1")]],
         "CHG_CE": [[("J10", "18"), (52, 34), ("R20", "2")]],
     },
+    # second Qwiic port and the 2.54 mm header share one vertical line per signal (SDA x 82, SCL x 80)
+    "Ports": {
+        "SEN_SDA": [[("J4", "3"), (82, 23)], [(82, 23), (82, 44)], [("J11", "3"), (82, 35)]],
+        "SEN_SCL": [[("J4", "4"), (80, 24)], [(80, 24), (80, 44)], [("J11", "4"), (80, 36)]],
+    },
     # sensor I2C bus: one vertical line per signal left of the connectors (SDA x 26, SCL x 24; SCL crosses SDA, no dot)
     "Sensors": {
         "SEN_SDA": [[("J3", "3"), (26, 37)], [(26, 37), (26, 51)]],
@@ -88,6 +101,7 @@ HAND_ROUTES = {
     },
 }
 HAND_LABELS = {"Sensors": {"SEN_SDA": (26, 51, 270), "SEN_SCL": (24, 51, 270)},
+               "Ports": {"SEN_SDA": (82, 44, 270), "SEN_SCL": (80, 44, 270)},
                "Header": {"CHG_SDA": (16, 32, 180), "CHG_INT": (10, 34, 180), "CHG_SCL": (46, 32, 0), "CHG_CE": (52, 34, 0)}}
 SHEET_DX = 2  # every block 2 cells right of the sheet border
 SHEET_TEXTS = {"Header": [(8, 39, HEADER_NOTE)]}
@@ -101,11 +115,12 @@ SHEET_NOTES = {
     "MCU": "ESP32-S3-WROOM-1-N8: decoupling, reset and boot, USB data series resistors, UART debug, status LEDs",
     "Rails": "SYS to 3.3 V (TPS63802), switched 3V3_SW sensor rail and the 5V_SW 5 V boost (TPS61023, enable from IO12)",
     "Sensors": "PMS7003 PM sensor, SHT45 cable, I2C ESD and pull-ups, optional SCD41 (DNP), ZE25-O3 gas connector",
+    "Ports": "BMP585 pressure sensor, second Qwiic port and 2.54 mm I2C header on the sensor bus",
 }
 
 ROOT_BOX = {
     "USB": (6, 28, 34, 22), "Header": (6, 58, 34, 28), "MCU": (58, 18, 40, 68),
-    "Rails": (116, 18, 40, 30), "Sensors": (116, 58, 40, 28),
+    "Rails": (116, 18, 40, 18), "Sensors": (116, 40, 40, 32), "Ports": (116, 76, 40, 14),
 }
 
 SHEET_COLOR = {
@@ -114,6 +129,7 @@ SHEET_COLOR = {
     "MCU": ((100, 50, 160), (225, 210, 248)),
     "Rails": ((40, 120, 60), (205, 238, 205)),
     "Sensors": ((20, 120, 120), (195, 238, 238)),
+    "Ports": ((150, 110, 20), (245, 232, 190)),
 }
 
 SHEET_PURPOSE = {
@@ -122,4 +138,5 @@ SHEET_PURPOSE = {
     "MCU": "ESP32-S3 module: runs the firmware, USB data, reset and boot, debug UART, status LEDs. Controls the charger over I2C and switches the sensor rails.",
     "Rails": "SYS to 3.3 V buck-boost (TPS63802). Switched 3V3_SW for the sensor bus; TPS61023 5 V boost (5V_SW) for the PMS7003 and the O3 module, enabled by the ESP32.",
     "Sensors": "PMS7003 PM sensor (5 V, UART), the outdoor SHT45 board, optional SCD41 CO2 (not fitted) and the ZE25-O3 gas sensor; I2C pull-ups and ESD protection.",
+    "Ports": "BMP585 pressure sensor (0x46), second Qwiic port and a 2.54 mm I2C header, all on the switched sensor bus.",
 }

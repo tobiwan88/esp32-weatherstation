@@ -25,6 +25,7 @@ PYEOF
 $PY hardware/calc/bom_check.py $D "$@" || rc=1
 $PY hardware/calc/power_budget.py $D || rc=1
 $PY hardware/calc/track_width.py $D || rc=1
+$PY hardware/calc/i2c_bus.py $D >/dev/null && echo "i2c_bus: OK" || { $PY hardware/calc/i2c_bus.py $D; rc=1; }
 done
 echo "== split"
 $PY -I hardware/tools/split_check.py | tail -1 || rc=1
