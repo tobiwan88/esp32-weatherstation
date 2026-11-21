@@ -31,10 +31,10 @@ BLOCKS = {
              "C13": (106, 22, 0), "C14": (111, 22, 0), "C15": (116, 22, 0), "C16": (121, 22, 0),
              "C17": (126, 22, 0), "C18": (131, 22, 0),
              "R13": (106, 42, 0), "C19": (114, 44, 0), "C20": (120, 44, 0), "C21": (130, 44, 0)}),
-        ("Programming, thermal and status", "PROG 3.0k = 1S, 1.5 MHz (table 7-1). ILIM 120k/100k = 1.59 A (eq. 1). TS 5.1k/30k + NTC TH1 (Battery sheet). STAT LED from REGN. QON open (internal pull-up). CE, INT, SDA, SCL go to J10: their pull-ups to +3V3 are on the main board",
+        ("Programming, thermal and status", "PROG 3.0k = 1S, 1.5 MHz (table 7-1). ILIM 120k/100k = 1.59 A (eq. 1). TS 5.1k/30k + NTC TH1 (Battery sheet). STAT LED from REGN. QON open (internal pull-up). R23 1M CE to BAT_PACK (charge off alone); INT/I2C pull-ups on the main board",
          (4, 66, 96, 28), {
              "R14": (12, 78, 0), "R15": (26, 78, 0), "R16": (26, 88, 0), "R17": (40, 78, 0), "R18": (40, 88, 0),
-             "R19": (58, 76, 0), "D2": (58, 86, 90)}),
+             "R19": (58, 76, 0), "D2": (58, 86, 90), "R23": (72, 80, 180)}),
     ],
     "Battery": [
         ("Cell, PTC, NTC and HY2112 protection", "J6 cell (JST PH), F1 PTC 3 A hold, TH1 NTC for BQ25798 TS. HY2112-CB: OVP 3.75 V, ODP 2.10 V; R60/C60/R61 per datasheet section 10; M60 (discharge) and M61 (charge) common-drain in the pack negative, as section 10",

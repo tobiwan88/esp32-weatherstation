@@ -37,8 +37,9 @@ PARTS = {
     # --- Header: J10 and the charger host pull-ups (moved from the old Charger sheet) ----------------------------------
     "J10": header_part("Header", "main"),
     # CE pull-up to +3V3 (not REGN: CE is also an ESP32 GPIO, 3.3 V I/O; v1 PARTS-REVIEW A7): charge off until firmware
-    # has written VREG 3.65 V and drives CE low.
-    "R20": ("Device:R", "100k", R0402, "C25741", "Header"),
+    # has written VREG 3.65 V and drives CE low. 1M since 2026-11-21 (review B1): CE is held low through deep sleep, 3.3 uA
+    # instead of 33 uA; the power board has its own 1M to BAT_PACK, so CE never floats on either side.
+    "R20": ("Device:R", "1M", R0402, "C26083", "Header"),
     "R22": ("Device:R", "10k", R0402, "C25744", "Header"),
     # Charger I2C bus (IO1 SDA / IO2 SCL: the RTC I2C pins of the ULP RISC-V driver): own 10k pull-ups to +3V3, readable
     # while the sensor rail is off (v1 PARTS-REVIEW A4).
@@ -75,6 +76,11 @@ PARTS = {
     "C41": ("Device:C", "22u (TPS63802 output: 22 uF per table 10-1)", C0805, "C45783", "Rails"),
     "Q40": ("Transistor_FET:AO3401A", "AO3401A 3V3_SW switch", SOT23, "C15127", "Rails"),
     "R40": ("Device:R", "100k", R0402, "C25741", "Rails"),
+    # Q40 turn-on ramp (review A3, 2026-11-21): R76 10k from the Q41 drain to the gate node and C48 22 nF gate to drain
+    # (3V3_SW) hold Q40 on its Miller plateau: about 0.35 ms ramp, 0.3-0.45 A inrush into the 3V3_SW caps instead of a
+    # 1.5 us charge dump that pulled +3V3 under the ESP32 minimum (calc/rail_switch.py hardware/main-board).
+    "R76": ("Device:R", "10k (Q40 gate ramp)", R0402, "C25744", "Rails"),
+    "C48": ("Device:C", "22n (Q40 gate-drain ramp)", C0402, "C1532", "Rails"),
     "Q41": ("Transistor_FET:2N7002", "2N7002 (sensor enable)", SOT23, "C8545", "Rails"),
     "R41": ("Device:R", "1k", R0402, "C11702", "Rails"),
     "R42": ("Device:R", "100k", R0402, "C25741", "Rails"),
@@ -101,8 +107,13 @@ PARTS = {
     "R49": ("Device:R", "1k (PM SET series)", R0402, "C11702", "Sensors"),
     # optional CO2: Sensirion SCD41-D-R2 (LCSC C3659294), footprint only (DNP). VDD and VDDH tied at the sensor.
     "U8": ("Sensor_Gas:SCD41-D-R2", "SCD41 DNP (C3659294)", "Sensor:Sensirion_SCD4x-1EP_10.1x10.1mm_P1.25mm_EP4.8x4.8mm", None, "Sensors"),
-    "C47": ("Device:C", "10u (SCD41 VDD)", C0603, "C19702", "Sensors"),
-    "J3": ("Connector_Generic:Conn_01x04", "SHT45 cable", JST_SH4, "C160404", "Sensors"),
+    "C47": ("Device:C", "10u DNP (C19702; SCD41 VDD, fit with U8)", C0603, None, "Sensors"),
+    "J3": ("Connector_Generic:Conn_01x04", "SHT head cable (Qwiic)", JST_SH4, "C160404", "Sensors"),
+    # Outdoor cable supply (review B11, 2026-11-21): no Basic resettable fuse exists at JLCPCB (all PTCs Extended, +3.07 per
+    # order), so a 100 ohm 1206 series resistor feeds J3 pin 2: a cable short draws 33 mA (0.11 W of 0.25 W) and +3V3 stays
+    # up; the SHT head draws at most 0.5 mA (SHT4x 4.5 table, heater off: 50 mV drop). Never use the SHT heater (FIRMWARE-RULES).
+    # J4/J11 stay on 3V3_SW directly: a SEN0460 on Qwiic draws up to 100 mA (open: PARTS-REVIEW).
+    "R77": ("Device:R", "100 1206 (outdoor cable feed)", "Resistor_SMD:R_1206_3216Metric", "C17901", "Sensors"),
     "U5": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (I2C)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "Sensors"),
     # Sensor I2C bus (IO13/IO14): pull-ups and U5 VBUS on 3V3_SW, so nothing back-powers the sensors when the rail is off.
     # 2.2k since phase B: 2 m outdoor cable + up to 7 devices = about 280 pF; 10k gave 2.3 us rise (calc/i2c_bus.py)
@@ -146,12 +157,22 @@ ADDED = {
     "C90": "phase B: BMP580 VDD 100 nF", "C91": "phase B: BMP580 VDDIO 100 nF",
     "J4": "phase B: second Qwiic port (REQUIREMENTS-system.md 5 ports)",
     "J11": "phase B: 4-pin 2.54 mm I2C header (GND, 3V3_SW, SDA, SCL)",
+    "R76": "2026-11-21 review A3: Q40 gate ramp resistor", "C48": "2026-11-21 review A3: Q40 gate-drain ramp capacitor",
+    "R77": "2026-11-21 review B11: series resistor in the outdoor cable supply (J3 pin 2)",
     **{r: "phase B: rain/wind/vane pulse port J12 (REQUIREMENTS-system.md 5 ports)" for r in
        ("J12", "U10", "U11", "R70", "R71", "R72", "R73", "C70", "C71", "R74", "R75", "C72")},
 }
 CHANGED = {
+    "R20": "2026-11-21 review B1: 100k -> 1M (sleep current with CE held low), power board adds its own 1M",
+    "C47": "2026-11-21 review C: not fitted while U8 (SCD41) is not fitted",
+    "J3": "2026-11-21 review C: value text 'SHT45 cable' -> 'SHT head cable (Qwiic)' (no part change)",
     "R50": "phase B: 10k -> 2.2k, I2C rise time with 2 m cable (calc/i2c_bus.py, PARTS-REVIEW.md B5)",
     "R51": "phase B: 10k -> 2.2k, as R50",
+}
+
+REWIRED = {
+    ("Q41", "3"): "2026-11-21 review A3: Q41 drain now reaches the Q40 gate through R76 (net SEN_PULL)",
+    ("J3", "2"): "2026-11-21 review B11: J3 supply through R77 (net 3V3_CABLE)",
 }
 
 NETS = add_header({
@@ -197,11 +218,13 @@ NETS = add_header({
     "WIND": [("R73", "2"), ("C71", "1"), ("U1", "9")],    # IO16 (RTC GPIO)
     "VANE": [("R75", "2"), ("C72", "1"), ("U1", "12")],   # IO8 = ADC1_CH7
     # Rails
-    "3V3_SW": [("Q40", "3"), ("C42", "1"), ("C43", "1"), ("U8", "7"), ("U8", "19"), ("C47", "1"), ("J3", "2"), ("U5", "5"),
+    "3V3_SW": [("Q40", "3"), ("C42", "1"), ("C43", "1"), ("U8", "7"), ("U8", "19"), ("C47", "1"), ("R77", "1"), ("U5", "5"),
                ("R50", "2"), ("R51", "2"), ("#FLG10", "1"),
                ("U9", "10"), ("U9", "1"), ("U9", "6"), ("C90", "1"), ("C91", "1"), ("J4", "2"), ("J11", "2"),
-               ("R74", "2")],
-    "SEN_G": [("Q40", "1"), ("R40", "2"), ("Q41", "3")],
+               ("R74", "2"), ("C48", "2")],
+    "3V3_CABLE": [("R77", "2"), ("J3", "2")],
+    "SEN_G": [("Q40", "1"), ("R40", "2"), ("R76", "1"), ("C48", "1")],
+    "SEN_PULL": [("R76", "2"), ("Q41", "3")],
     "SEN_EN_G": [("Q41", "1"), ("R41", "2"), ("R42", "1")],
     "GAS_SW": [("U7", "5"), ("L5", "2")],
     "GAS_FB": [("U7", "1"), ("R43", "2"), ("R44", "1")],

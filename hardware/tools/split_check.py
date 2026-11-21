@@ -8,6 +8,8 @@ Checks (rows OK / WARN / FAIL, last line `split_check: OK|FAILED`, exit 1 on FAI
      v1 pins, and each pin sits on the board of its part
   3. a net present on both boards is a header net, and both boards carry J10 with boards_common.HEADER_PINS
   4. a new net name touches only ADDED parts, or v1 pins that were unconnected in v1 (a free GPIO)
+  Declared changes after the split (each a WARN row with its reason): RENAMED = {v1 net: new name} (the pins move with
+  the name), REWIRED = {(ref, pin): reason} (a v1 pin moved to another net on purpose; it is left out of checks 2 and 4).
 Power flags (#FLG) and power symbols are not parts and are ignored.
 Runs without KiCad and without kicad-sch-api (a stub stands in for the drawing library: only PARTS/NETS are read), so
 the gate (scripts/hw-check.sh) can run it everywhere.
@@ -77,13 +79,19 @@ def check(old, new: dict, common) -> list[tuple[str, str, str]]:
             else:
                 rows.append(("FAIL", f"added {ref} on {b}", "not in v1 and not listed in ADDED"))
     skip = {b: added[b] | {hdr} for b in new}
+    renamed = {o: n for m in new.values() for o, n in getattr(m, "RENAMED", {}).items()}
+    rewired = {p: (b, why) for b, m in new.items() for p, why in getattr(m, "REWIRED", {}).items()}
+    for o, n in renamed.items():
+        rows.append(("WARN", f"net {o}", f"renamed to {n} after the split"))
+    for p, (b, why) in rewired.items():
+        rows.append(("WARN", f"pin {p[0]}.{p[1]}", f"rewired on {b}: {why}"))
     # 2. v1 nets keep their pins
     for net, pins in old.NETS.items():
-        want = real(pins)
+        want = {p for p in real(pins) if p not in rewired}
         got: set = set()
         for b, m in new.items():
-            for p in real(m.NETS.get(net, [])):
-                if p[0] in skip[b]:
+            for p in real(m.NETS.get(renamed.get(net, net), [])):
+                if p[0] in skip[b] or p in rewired:
                     continue
                 if p[0] in m.PARTS and p in want:
                     got.add(p)
@@ -112,9 +120,9 @@ def check(old, new: dict, common) -> list[tuple[str, str, str]]:
     old_used = {p for pins in old.NETS.values() for p in real(pins)}
     for b, m in new.items():
         for net, pins in m.NETS.items():
-            if net in old.NETS:
+            if net in old.NETS or net in renamed.values():
                 continue
-            v1_pins = {p for p in real(pins) if p[0] not in added[b] | {hdr}}
+            v1_pins = {p for p in real(pins) if p[0] not in added[b] | {hdr} and p not in rewired}
             clash = sorted(v1_pins & old_used)
             if clash:
                 rows.append(("FAIL", f"new net {net} on {b}", f"uses v1 pins that were on other nets {clash}"))

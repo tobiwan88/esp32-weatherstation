@@ -13,10 +13,10 @@ bench supply). Contract and pin table: `../ARCHITECTURE.md`.
 | Sheet | Content |
 |---|---|
 | USB | J1 USB-C, CC pull-downs R9/R10, USBLC6 U4; USB_VBUS and D+/D- on to J10 |
-| Header | J10 keyed 2x10 2.54 mm male (pin 3 pulled), charger host pull-ups R20 (CE 100k), R22 (INT), R54/R55 (I2C) on +3V3, pin map note |
+| Header | J10 keyed 2x10 2.54 mm male (pin 3 pulled), charger host pull-ups R20 (CE 1M), R22 (INT), R54/R55 (I2C) on +3V3, pin map note |
 | MCU | ESP32-S3-WROOM-1-N8 U1, decoupling, EN/IO0 strapping, JP1/JP2, R32/R33, J7 debug UART, LEDs |
-| Rails | TPS63802 U2 (SYS -> +3V3), Q40/Q41 3V3_SW switch, TPS61023 U7 (SYS -> 5V_SW), TP1/TP2 |
-| Sensors | J2 PMS7003, J3 Qwiic (SHT head), U8 SCD41 (DNP), I2C pull-ups R50/R51 (2.2k) and USBLC6 U5, J8 ZE25-O3 |
+| Rails | TPS63802 U2 (SYS -> +3V3), Q40/Q41 3V3_SW switch with the R76/C48 ramp, TPS61023 U7 (SYS -> 5V_SW), TP1/TP2 |
+| Sensors | J2 PMS7003, J3 Qwiic (SHT head, supply through R77 100 ohm), U8 SCD41 and C47 (DNP), I2C pull-ups R50/R51 (2.2k) and USBLC6 U5, J8 ZE25-O3 |
 | Ports | BMP580 U9 (0x46, was BMP585 until 2026-11-21) with C90/C91; Qwiic J4 and 2.54 mm header J11 (GND, 3V3_SW, SDA, SCL); J12 rain/wind/vane port with U10/U11, R70-R75, C70-C72 |
 
 ## Decisions

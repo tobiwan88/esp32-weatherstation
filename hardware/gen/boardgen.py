@@ -60,7 +60,7 @@ JLC_CLASS = {"C165948": "Extended", "C7519": "Extended", "C23186": "Basic", "C15
              "C25905": "Basic", "C25076": "Basic", "C25741": "Basic", "C25879": "Basic", "C25744": "Basic",
              "C4109": "Basic", "C25092": "Basic", "C11702": "Basic", "C1523": "Basic", "C52923": "Basic",
              "C18184976": "Extended", "C26083": "Basic", "C1538": "Basic",
-             "C22391138": "Extended"}
+             "C22391138": "Extended", "C1532": "Basic", "C17901": "Basic"}
 
 
 def _on_seg(p, seg) -> bool:
@@ -404,8 +404,8 @@ class Generator:
                     rot = (deg + 90) % 360 if net == "GND" else (deg - 90) % 360
                     s.power(net, cx, cy, lib=b.RAIL_LIB.get(net, "power:VCC"), rot=rot)
             elif it.get("above") and net in b.HAND_LABELS.get(name, {}):
-                hx, hy, hdeg = b.HAND_LABELS[name][net]
-                s.label(net, hx + dx, hy, hdeg, "hier" if net in cross_nets else "local")
+                hx, hy, hdeg, *opt = b.HAND_LABELS[name][net]  # optional 4th item "above": text beside the wire
+                s.label(net, hx + dx, hy, hdeg, "hier" if net in cross_nets else "local", above="above" in opt)
             else:
                 s.label(net, cx, cy, it["deg"], "hier" if net in cross_nets else "local", above=it.get("above", False))
         for ref in refs:

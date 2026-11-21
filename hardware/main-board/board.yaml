@@ -77,3 +77,26 @@ design:
     inputs: {value: 2, source: "rain + wind contacts; worst case both resting closed"}
     sleep_budget_ua: {value: 100, source: "REQUIREMENTS-system.md section 4: whole-stack sleep under 100 uA"}
     max_rate_hz: {value: 42, source: "assumption: SparkFun SEN-15901 weather meter class, 2.4 km/h per contact closure per second; 100 km/h = 42 Hz"}
+  rail_switch:             # Q40 3V3_SW high-side switch with the R76/C48 ramp (review A3), checked by calc/rail_switch.py
+    v_rail: {value: 3.32, source: "+3V3 from the TPS63802 divider 220k/39k (Rails sheet)"}
+    rs_ohm: {value: 10000, source: "R76 10k (C25744), Q41 drain to the Q40 gate node; 2N7002 on-resistance (ohms) neglected"}
+    rpu_ohm: {value: 100000, source: "R40 100k gate pull-up to +3V3"}
+    cgd_ext_f: {value: 2.2e-8, source: "C48 22 nF X7R 50 V 0402 (C1532 Basic), gate to drain"}
+    crss_f: {value: 5.5e-11, source: "AO3401A Rev 3.1 electrical table: Crss 55 pF typ"}
+    ciss_f: {value: 6.45e-10, source: "AO3401A Rev 3.1 electrical table: Ciss 645 pF typ"}
+    vth_v: {value: [0.5, 0.9, 1.3], source: "AO3401A Rev 3.1: VGS(th) -0.5 min, -0.9 typ, -1.3 max (magnitudes)"}
+    gfs_s: {value: 17, source: "AO3401A Rev 3.1: gFS 17 S at VDS -5 V, ID -4 A (square-law K derived from it)"}
+    gfs_id_a: {value: 4.0, source: "AO3401A Rev 3.1: gFS test current 4 A"}
+    vgs_rds_spec_v: {value: 2.5, source: "AO3401A Rev 3.1: RDS(on) 85 mOhm max specified at VGS -2.5 V"}
+    c_load_eff_f: {value: 2.86e-5, source: "assumption: C42 + C43 22 uF 25 V X5R 0805 (C45783) at 60 % under 3.3 V DC bias = 26.4 uF, C90/C91 0.2 uF, 2 uF for bought Qwiic modules on J4/J11; C47 not fitted; the SHT head sits behind R77 100 ohm"}
+    c_load_nom_f: {value: 4.62e-5, source: "C42 + C43 nominal 44 uF + 0.2 uF + 2 uF modules (worst case for inrush)"}
+    c_rail_eff_f: {value: 2.84e-5, source: "assumption: +3V3 caps C41 + C30 22 uF at 60 % = 26.4 uF + C31/C32/C33 about 2 uF"}
+    v_min_mcu: {value: 3.0, source: "ESP32-S3-WROOM-1 v1.8 table 6-2 (recommended operating conditions): VDD33 3.0 V minimum"}
+    dip_ref_v: {value: 0.106, source: "TPS63802 SLVSEU9D figure 10-22 (buck-boost, VI 3.3 V, 0.1 -> 1 A load step, 1 us edge): cursor dip 106 mV"}
+    dip_ref_step_a: {value: 0.9, source: "TPS63802 SLVSEU9D figure 10-22: 0.1 A to 1 A step"}
+    inrush_max_a: {value: 0.9, source: "TPS63802 SLVSEU9D figure 10-22: the load step the datasheet shows (0.9 A); the dip scaling is only trusted inside it"}
+  cable_feed:              # R77 in the J3 supply (outdoor SHT cable, review B11), checked by calc/rail_switch.py
+    r_ohm: {value: 100, source: "R77 100 ohm 1206 (C17901 Basic)"}
+    p_rated_w: {value: 0.25, source: "C17901 LCSC listing: 250 mW (1206 thick film)"}
+    i_load_max_a: {value: 0.002, source: "SHT4x datasheet V7.3 4.5: 500 uA max while measuring (heater off; heater forbidden) plus 1.5 mA for one more low-power sensor chained on the head"}
+    drop_max_v: {value: 0.3, source: "remote sensor I/O limit VDD + 0.3 V with the bus pull-ups on the main board at 3.3 V"}

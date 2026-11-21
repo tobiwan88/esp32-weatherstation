@@ -80,16 +80,20 @@ b. **USB D+/D- (BC1.2): carried over the header (pins 7/8). ENGINEER DECISION.**
    and the D+/D- stubs reach the power board (full speed 12 Mbit/s, stubs short when stacked). Firmware still sets
    AUTO_INDET_EN = 0 after the first detection so a later re-detection does not disturb enumeration (v1 B5) and must
    never enable HVDCP (9/12 V on USB_VBUS would exceed the USBLC6 U4 VBR of 6 V on the main board).
-c. **Pull-ups live on the main board** (Header sheet): R20 CE 100k, R22 INT 10k, R54/R55 I2C 10k, all to +3V3. The
+c. **Pull-ups live on the main board** (Header sheet): R20 CE 1M (100k until 2026-11-21), R22 INT 10k, R54/R55 I2C 10k,
+   all to +3V3. Exception: the power board carries its own CE pull-up R23 1M to BAT_PACK (d). The
    power board has no 3.3 V rail; REGN (5 V) is above the ESP32's 3.6 V and is the wrong rail for INT (7.3.11.2).
    A bought charger module brings its own rail; its pull-ups then sit in parallel (10k || its value).
 d. **CE default: high (charge off)** through R20 until the firmware has written VREG 3.65 V (POR default 4.2 V is
    above the LFP limit 3.75 V). Main board without a power board: nothing on SYS, the board is unpowered unless a bench
    supply feeds SYS (bring-up below); the I2C pull-ups and R20 hang on +3V3 with nothing behind the header.
-   **Power board without a main board: CE floats** (BQ25798 "must be pulled HIGH or LOW", 7.3), and the BQ25798 may
-   charge to the POR 4.2 V. The TI EVM keeps its CE pull-up on the charger board (SLUUCB5, JP17). Open finding
-   power-board/PARTS-REVIEW.md A1: add a CE pull-up on the power board (e.g. 100k to REGN with a divider to stay
-   below the ESP32's 3.6 V, or to BAT_PACK).
+   **Power board without a main board:** R23 1M from CHG_CE to BAT_PACK holds CE high (review A1, done 2026-11-21; the
+   TI EVM also keeps its CE pull-up on the charger board, SLUUCB5 JP17). BAT_PACK (2.1-3.75 V for LFP) is inside the CE
+   abs max of 6 V (SLUSDV2C 6.1) and above VIH_CE 1.3 V (6.5) down to about 2.3 V even with the 1 uA maximum CE leakage
+   through 1M; below that the charger may precharge an empty cell, which is the wanted behaviour. With both boards the
+   two 1M pull-ups sit in parallel (CE about 3.3-3.5 V when the GPIO floats, under the ESP32's 3.6 V abs max for an LFP
+   cell; a 4.1 V sodium cell would give 3.7 V: then fit R23 to REGN through a divider instead). The ESP32 GPIO overrides
+   both; holding CE low in deep sleep costs 3.3 + 3.2 uA (`calc/power_budget.py` sleep sum).
 e. **No back-feed with the main board unplugged:** USB_VBUS pins connect only to the ACFET1 drain and VAC1; RBFET1 M2
    blocks VBUS/PV from the USB_VBUS pins (figure 8-2). SYS pins stay live (cell voltage through the BQ25798 BATFET);
    exposed SYS pins on a loose power board are a short risk, not a back-feed.

@@ -76,6 +76,10 @@ PARTS = {
     "R19": ("Device:R", "2.2k", R0402, "C25879", "Charger"),
     "D2": ("Device:LED", "STAT red", "LED_SMD:LED_0603_1608Metric", "C2286", "Charger"),
     "#FLG3": ("power:PWR_FLAG", "PWR_FLAG", None, None, "Charger"),
+    # CE pull-up on this board (review A1, 2026-11-21): 1M to BAT_PACK keeps CE high (charge off) when the main board is
+    # absent. BQ25798 SLUSDV2C 6.5: VIH_CE 1.3 V, leakage 1 uA max; 6.1: CE abs max 6 V (BAT_PACK <= 3.75 V for LFP).
+    # With the main board R20 1M to +3V3 in parallel; the ESP32 GPIO overrides both.
+    "R23": ("Device:R", "1M (CE pull-up to BAT_PACK)", R0402, "C26083", "Charger"),
     # --- Battery ------------------------------------------------------------------------------------------------------
     # Cell overcurrent backup: PTC hold 3 A, trip 5 A, 8 V. Backup to the HY2112 overcurrent cut.
     "F1": ("Device:Fuse", "PTC 3 A hold (SMD1812P300TF)", "Fuse:Fuse_1812_4532Metric", "C21004", "Battery"),
@@ -97,6 +101,9 @@ PARTS = {
     "J10": header_part("Header", "power"),
     "#FLG20": ("power:PWR_FLAG", "PWR_FLAG", None, None, "Header"),  # GND: on this board only passive pins drive it
 }
+
+# Parts that are not in weatherstation-v1 (tools/split_check.py)
+ADDED = {"R23": "2026-11-21 review A1: CE pull-up 1M to BAT_PACK on the power board"}
 
 NETS = add_header({
     # Inputs: USB VBUS (from J10) -> ACFET1/RBFET1 -> VBUS; PV J5 -> TVS -> CM choke -> ACFET2/RBFET2 -> VBUS
@@ -131,13 +138,13 @@ NETS = add_header({
     "LED_A": [("R19", "2"), ("D2", "2")],
     # QON (pin 12) left open: internal pull-up (v1 PARTS-REVIEW C, R21 removed 2026-11-01); no-connect marker.
     # Host pins: pull-ups R20 (CE), R22 (INT), R54/R55 (I2C) to +3V3 are on the main board (no 3.3 V here).
-    "CHG_CE": [("U3", "13")],
+    "CHG_CE": [("U3", "13"), ("R23", "1")],
     "CHG_INT": [("U3", "21")],
     "CHG_SDA": [("U3", "15")],
     "CHG_SCL": [("U3", "14")],
     # Battery: BAT caps C19/C20 on BAT (table 5-1); BATP only senses through R13 100 ohm
     "BAT_CON": [("J6", "1"), ("F1", "1")],
-    "BAT_PACK": [("U3", "22"), ("U3", "23"), ("R13", "1"), ("F1", "2"), ("R60", "1"), ("C19", "1"), ("C20", "1")],
+    "BAT_PACK": [("U3", "22"), ("U3", "23"), ("R13", "1"), ("R23", "2"), ("F1", "2"), ("R60", "1"), ("C19", "1"), ("C20", "1")],
     "BAT_N": [("J6", "2"), ("U6", "6"), ("C60", "2"), ("M60", "2"), ("#FLG14", "1")],
     "HY_VDD": [("R60", "2"), ("C60", "1"), ("U6", "5"), ("#FLG13", "1")],
     "OD": [("U6", "1"), ("M60", "1")],

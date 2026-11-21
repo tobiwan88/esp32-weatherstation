@@ -19,6 +19,7 @@ BQ25798RQMR,U3,Package_DFN_QFN:Texas_RQM0029A_VQFN-29_4x4mm_P0.4mm,1,C2876593,Ex
 30k,R18,Resistor_SMD:R_0603_1608Metric,1,C22984,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R18: 30k (TS bottom)
 2.2k,R19,Resistor_SMD:R_0402_1005Metric,1,C25879,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 STAT red,D2,LED_SMD:LED_0603_1608Metric,1,C2286,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+1M,R23,Resistor_SMD:R_0402_1005Metric,1,C26083,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R23: 1M (CE pull-up to BAT_PACK)
 PTC 3A,F1,Fuse:Fuse_1812_4532Metric,1,C21004,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),F1: PTC 3 A hold (SMD1812P300TF)
 BATTERY,J6,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,
 10k NTC,TH1,Resistor_SMD:R_0603_1608Metric,1,C13564,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"TH1: 10k NTC NCP18XH103F03RB (TS, next to J6)"
