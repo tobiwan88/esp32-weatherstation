@@ -27,16 +27,19 @@ Bought: solar panel, cell, PM sensor modules, rain gauge, anemometer, extra I2C 
 Light (VEML6030) and BMP585 add-on boards are retired as ordered designs (generators stay in the repo); pressure moves to the main board (BMP580, engineer 2026-11-21).
 
 ### 3.1 Power-board header (board-to-board contract)
-One 2.54 mm header, hand-soldered (no JLC fee), about 10-12 pins, stacked or side by side; the ESP32 antenna keepout end of
-the main board stays free of the power board.
-| Signal | Direction | Note |
-|---|---|---|
-| GND (2-3 pins) | | |
-| SYS (2 pins) | power -> main | system rail, cell-referred 1.5-5.5 V window, at least 1 A |
-| VBUS (1-2 pins) | main -> power | from USB-C on the main board, to the charger input |
-| CHG_SDA, CHG_SCL | main <-> power | charger I2C (IO1/IO2 on the ULP-capable pins) |
-| CHG_INT | power -> main | |
-| CHG_CE | main -> power | pulled so that charging is off until firmware has written VREG |
+One keyed 2 x 10 2.54 mm header J10, hand-soldered (no JLC fee): male pins on the main board with pin 3 pulled, socket on
+the power board with hole 3 blocked; stacked or side by side; the ESP32 antenna keepout end of the main board stays free
+of the power board. 18 nets on 19 pins plus the key; full pin table, keying and mounting rules: `ARCHITECTURE.md` (J10).
+| Signal | Pins | Direction | Note |
+|---|---|---|---|
+| SYS | 1, 2 | power -> main | system rail, cell-referred, 1.8-5.5 V window on the main board, at least 1 A |
+| key | 3 | | no pin, hole blocked |
+| GND | 4, 5, 6, 9, 10, 13, 14, 17, 18 | | a GND pair between every two signal pairs |
+| USB_DP, USB_DN | 7, 8 | main -> power | BC1.2 detection on the charger (engineer decision, `ARCHITECTURE.md` b) |
+| CHG_SDA, CHG_SCL | 11, 12 | main <-> power | charger I2C (IO1/IO2 on the ULP-capable pins) |
+| CHG_INT | 15 | power -> main | |
+| CHG_CE | 16 | main -> power | pulled so that charging is off until firmware has written VREG |
+| USB_VBUS | 19, 20 | main -> power | from USB-C on the main board, to the charger input |
 The contract is documented so a bought charger module that supplies SYS (and ignores the I2C pins) can replace the power board.
 The 3.3 V and 5 V rails are made on the main board from SYS, so the header carries no regulated rail.
 Main board alone (development): SYS from a bench supply on the header or a pad; USB programming works without the power board.

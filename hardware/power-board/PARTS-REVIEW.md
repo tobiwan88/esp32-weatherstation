@@ -14,14 +14,14 @@ decision for the engineer (topology unchanged in phase A).
 | # | Where | Finding | Proposed fix | Source |
 |---|---|---|---|---|
 | B1 | Header: SYS pins | With the main board unplugged SYS is live at cell voltage on two bare pins; a dropped power board can short SYS to GND (BQ25798 SYS short protection limits, the cell side is protected by HY2112 short detection 0.55-1.15 V across M60/M61, 200-400 us). | Socket (female) on the power board side if it is the board that is handled alone; document in the bring-up notes. | BQ25798 7.3.13.1.5; HY2112 DS-HY2112-V08 9.1/9.2 |
-| B2 | Header: misplug | A rotated cable (pin 1 to 18) puts SYS on CHG_CE/CHG_INT of the main board (ESP32 3.6 V abs max) and USB_VBUS on CHG_SDA/SCL. | Stacked boards: rotation impossible by mechanics. Cable: keyed/shrouded 2x9 (Extended or hand-soldered). | ESP32-S3-WROOM-1 v1.8 6.1 |
+| B2 | Header: misplug | A rotated cable (pin 1 to 18) puts SYS on CHG_CE/CHG_INT of the main board (ESP32 3.6 V abs max) and USB_VBUS on CHG_SDA/SCL. | **Done 2026-11-21 (engineer decision, review A2):** keyed 2x10, pin 3 removed and its socket hole blocked, asymmetric mounting holes; `tools/header_check.py` proves every rotation, mirror and column offset blocked and the row offsets power-safe. The earlier claim that stacking prevents rotation was wrong. | ESP32-S3-WROOM-1 v1.8 6.1; ARCHITECTURE.md J10 |
 | B3 | Charger: HVDCP | USB_VBUS now leaves this board to the main board's USBLC6 U4 (VBR 6 V minimum). An enabled HVDCP handshake would raise VBUS to 9/12 V. | Firmware rule: EN_HVDCP stays 0 (POR default). Note in the firmware design. | BQ25798 7.3.4.5.2; USBLC6-2 DS4260 Rev 7 |
 | B4 | Energy budget | With the system inputs (5 W panel, 15 min cycle, 90 s PM window) the worst-month yield is 2.10 Wh/day for 1.70 Wh/day: 1.24x, below the 1.5x target; REQUIREMENTS-system.md says about 2x (that holds at a 30 min cycle). | Confirm the cycle (30 min in winter) or the panel; power_budget.py WARN row. | `calc/power_budget.py hardware/power-board` |
 
 ## C: cleanup
 | # | Where | Finding | Proposed fix | Source |
 |---|---|---|---|---|
-| C1 | Header: J10 | No LCSC part (hand-soldered), so its cost is outside the PCBA estimate. | Buy 2x9 2.54 mm headers/sockets with the cells. | board.yaml fab |
+| C1 | Header: J10 | No LCSC part (hand-soldered), so its cost is outside the PCBA estimate. | Buy 2x10 2.54 mm male headers and 2x10 sockets with the cells (pull pin 3, block socket hole 3). | board.yaml fab |
 | C2 | AO3400A in the ACFET/RBFET pairs | ACDRV gate voltage vs VGS +/-12 V not entered in the card. | Read BQ25798 7.3.5.1 ACDRV level, tick the AO3400A card. | parts/AO3400A.yaml |
 
 ## Checked and fine

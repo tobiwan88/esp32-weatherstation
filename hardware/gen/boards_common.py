@@ -12,28 +12,36 @@ JST_SH4 = "Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal"
 TP = "TestPoint:TestPoint_Pad_D1.5mm"
 SOT23 = "Package_TO_SOT_SMD:SOT-23"
 
-# J10 = J_PWR: 2 x 9, 2.54 mm, through-hole, hand-soldered (no JLC fee). Odd pins = row A, even pins = row B.
-# Every signal row has a GND row on both sides; SYS (row 1) and VBUS (row 3) sit at the far end from the I2C rows.
+# J10 = J_PWR: keyed 2 x 10, 2.54 mm, through-hole, hand-soldered (no JLC fee). Odd pins = row A, even pins = row B.
+# Pin HEADER_KEY is pulled from the main board's male header and its hole is blocked in the power board's socket; it has
+# no net. Order (engineer 2026-11-21, hardware/tools/header_check.py): SYS on column 1, USB_VBUS on column 10, the key in
+# column 2 and every signal in columns 4-8 with a GND pair between signal pairs. Then a 180 degree rotation, a mirror
+# about either axis or a one-column offset puts a pin onto the blocked hole (cannot mate), and the remaining one-row
+# offsets of an unshrouded header put SYS/USB_VBUS only onto GND or each other, never onto a signal pin.
 HEADER_REF = "J10"
-HEADER_SYMBOL = "Connector_Generic:Conn_02x09_Odd_Even"
-HEADER_FOOTPRINT = "Connector_PinHeader_2.54mm:PinHeader_2x09_P2.54mm_Vertical"
+HEADER_COLS = 10
+HEADER_KEY = 3
+HEADER_SYMBOL = "Connector_Generic:Conn_02x10_Odd_Even"
+HEADER_FOOTPRINT = "Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical"
 HEADER_PINS = {
     "1": "SYS", "2": "SYS",
-    "3": "GND", "4": "GND",
-    "5": "USB_VBUS", "6": "USB_VBUS",
-    "7": "GND", "8": "GND",
-    "9": "USB_DP", "10": "USB_DN",
-    "11": "GND", "12": "GND",
-    "13": "CHG_SDA", "14": "CHG_SCL",
-    "15": "GND", "16": "GND",
-    "17": "CHG_INT", "18": "CHG_CE",
+    "4": "GND",                      # pin 3 = key (removed, hole blocked)
+    "5": "GND", "6": "GND",
+    "7": "USB_DP", "8": "USB_DN",
+    "9": "GND", "10": "GND",
+    "11": "CHG_SDA", "12": "CHG_SCL",
+    "13": "GND", "14": "GND",
+    "15": "CHG_INT", "16": "CHG_CE",
+    "17": "GND", "18": "GND",
+    "19": "USB_VBUS", "20": "USB_VBUS",
 }
 HEADER_NETS = sorted(set(HEADER_PINS.values()))
 
 
 def header_part(sheet: str, side: str) -> tuple:
     """PARTS entry of J10 on one board (side = 'power' or 'main'); same footprint on both so the holes line up."""
-    return (HEADER_SYMBOL, f"J_PWR 2x9 2.54 mm ({side} side, hand-solder)", HEADER_FOOTPRINT, None, sheet)
+    kind = "male pins, pin 3 pulled" if side == "main" else "socket, hole 3 blocked"
+    return (HEADER_SYMBOL, f"J_PWR 2x10 keyed 2.54 mm ({side} side: {kind}; hand-solder)", HEADER_FOOTPRINT, None, sheet)
 
 
 def add_header(nets: dict) -> dict:
@@ -46,12 +54,12 @@ def add_header(nets: dict) -> dict:
 
 # The pin table as a sheet note (both Header sheets), one line per entry: KiCad's font is proportional, so no columns.
 HEADER_NOTE = (
-    "J10 pin map (hardware/ARCHITECTURE.md):\n"
-    "pins 1, 2: SYS, power board -> main board: system rail (cell-referred, 1.5-5.5 V), at least 1 A\n"
-    "pins 3, 4, 7, 8, 11, 12, 15, 16: GND (a GND row beside every signal row)\n"
-    "pins 5, 6: USB_VBUS, main -> power: USB-C VBUS to ACFET1 drain and VAC1\n"
-    "pins 9, 10: USB_DP, USB_DN, main -> power: BC1.2 detection only (BQ25798 D+/D-)\n"
-    "pins 13, 14: CHG_SDA, CHG_SCL: charger I2C (address 0x6B), 10k pull-ups on the main board\n"
-    "pin 17: CHG_INT, power -> main: open drain, 10k pull-up on the main board\n"
-    "pin 18: CHG_CE, main -> power: active low, 100k pull-up on the main board = charge off\n"
-    "The power board has no 3.3 V. A bought charger module that supplies SYS and GND can replace it.")
+    "J10 pin map (hardware/ARCHITECTURE.md), keyed 2x10: pin 3 is the key (no pin, hole blocked)\n"
+    "pins 1, 2: SYS, power board -> main board: system rail (cell-referred, 1.8-5.5 V), at least 1 A\n"
+    "pins 4, 5, 6, 9, 10, 13, 14, 17, 18: GND (a GND pair between every signal pair)\n"
+    "pins 7, 8: USB_DP, USB_DN, main -> power: BC1.2 detection only (BQ25798 D+/D-)\n"
+    "pins 11, 12: CHG_SDA, CHG_SCL: charger I2C (address 0x6B), 10k pull-ups on the main board\n"
+    "pin 15: CHG_INT, power -> main: open drain, 10k pull-up on the main board\n"
+    "pin 16: CHG_CE, main -> power: active low, pulled high (charge off) until firmware drives it low\n"
+    "pins 19, 20: USB_VBUS, main -> power: USB-C VBUS to ACFET1 drain and VAC1\n"
+    "Rotated, mirrored or column-shifted plugs hit the key (tools/header_check.py). No 3.3 V on the power board.")

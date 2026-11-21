@@ -44,7 +44,7 @@ BLOCKS = {
              "M60": (42, 48, 270), "M61": (60, 48, 270, "m"), "#FLG13": (43.5, 21, 0)}),
     ],
     "Header": [
-        ("Board-to-board header J10 (J_PWR)", "2x9 2.54 mm, hand-soldered. SYS out (2 pins, >= 1 A), USB_VBUS in (2 pins), D+/D- in (BC1.2 detection), charger I2C/INT/CE to the main board. GND row beside every signal row. Pin map: hardware/ARCHITECTURE.md",
+        ("Board-to-board header J10 (J_PWR)", "Keyed 2x10 2.54 mm socket, hand-soldered, hole 3 blocked (key). SYS out (pins 1, 2, >= 1 A), USB_VBUS in (19, 20), D+/D- in (BC1.2 detection), charger I2C/INT/CE to the main board. A GND pair between signal pairs. Pin map: hardware/ARCHITECTURE.md",
          (4, 10, 96, 44), {
              "J10": (24, 30, 0), "#FLG20": (12, 46, 0)}),
     ],
@@ -90,7 +90,7 @@ TAGS_BELOW = {"C4"}
 TAG_POS = {**{m: ((0, 5.4, "center"), (0, 7.2, "center")) for m in ("M60", "M61")},
            **{m: ((-3.6, 3.4, "right"), (-3.6, 5.2, "right")) for m in ("M1", "M3")},
            **{m: ((3.6, 3.4, "left"), (3.6, 5.2, "left")) for m in ("M2", "M4")},
-           "J10": ((0, -14.5, "center"), (0, 14.5, "center"))}
+           "J10": ((0, -15.8, "center"), (0, 15.8, "center"))}
 
 SHEET_NOTES = {
     "Inputs": "USB_VBUS (from J10) and PV inputs into VBUS: back-to-back N-FET pairs (ACDRV1/2), PV surge TVS and common-mode choke",
@@ -115,5 +115,5 @@ SHEET_PURPOSE = {
     "Inputs": "Brings in USB_VBUS (from the main board over J10) and the solar panel (J5). Surge TVS and EMI choke on PV; two back-to-back FET pairs select the source into VBUS.",
     "Charger": "BQ25798 charger: turns VBUS (USB or solar) into battery charge current and SYS power. Programmed over I2C by the main board: 1S, 1.5 MHz, 3.65 V, 1.5 A. BC1.2 detection on D+/D-.",
     "Battery": "Cell connection and protection: fuse (PTC), cell NTC for the charger, HY2112-CB overcharge, overdischarge and overcurrent protection with its pack-negative FETs.",
-    "Header": "J10 (J_PWR), 2x9 2.54 mm: SYS to the main board, USB_VBUS and D+/D- from its USB-C, charger I2C, INT and CE.",
+    "Header": "J10 (J_PWR), keyed 2x10 2.54 mm socket (hole 3 blocked): SYS to the main board, USB_VBUS and D+/D- from its USB-C, charger I2C, INT and CE.",
 }

@@ -2,7 +2,7 @@ Comment,Designator,Footprint,Quantity,LCSC Part #,Class,Status,Function / notes
 USB-C,J1,Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12,1,C165948,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 USBLC6-2SC6,"U4,U5,U10,U11",Package_TO_SOT_SMD:SOT-23-6,4,C7519,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U4: USBLC6-2SC6 (USB); U5: USBLC6-2SC6 (I2C); U10: USBLC6-2SC6 (pulse); U11: USBLC6-2SC6 (vane)
 5.1k,"R9,R10",Resistor_SMD:R_0402_1005Metric,2,C25905,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
-J_PWR 2x9,J10,Connector_PinHeader_2.54mm:PinHeader_2x09_P2.54mm_Vertical,1,n/a,n/a,HAND-SOLDER,"J10: J_PWR 2x9 2.54 mm (main side, hand-solder)"
+J_PWR 2x10 key 3,J10,Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical,1,n/a,n/a,HAND-SOLDER,"J10: J_PWR 2x10 keyed 2.54 mm (main side: male pins, pin 3 pulled; hand-solder)"
 100k,"R20,R40,R42,R45",Resistor_SMD:R_0402_1005Metric,4,C25741,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R45: 100k (EN pull-down: boost off by default)
 10k,"R22,R30,R31,R47,R54,R55,R74",Resistor_SMD:R_0402_1005Metric,7,C25744,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 ESP32-S3-WROOM-1-N8,U1,RF_Module:ESP32-S3-WROOM-1,1,C2913198,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),

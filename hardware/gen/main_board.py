@@ -230,7 +230,7 @@ POWER_SYMBOLS = ("GND", "+3V3", "3V3_SW", "SYS", "USB_VBUS", "5V_SW")
 RAIL_LIB = {"GND": "power:GND", "+3V3": "power:+3V3"}  # others: power:VCC with the net as value
 
 SHEET_VALUE = {"U4": "USBLC6-2SC6", "U5": "USBLC6-2SC6", "L4": "0.47uH", "U2": "TPS63802", "Q40": "AO3401A",
-               "Q41": "2N7002", "U7": "TPS61023", "L5": "1uH", "J10": "J_PWR 2x9", "U9": "BMP580", "J4": "QWIIC 2",
+               "Q41": "2N7002", "U7": "TPS61023", "L5": "1uH", "J10": "J_PWR 2x10 key 3", "U9": "BMP580", "J4": "QWIIC 2",
                "J11": "I2C 2.54",
                "U10": "USBLC6-2SC6", "U11": "USBLC6-2SC6", "J12": "RAIN/WIND"}
 HAND_SOLDER = {"J2", "J7", "J8", "J10", "J11", "J12"}  # pin headers and JST PH: hand-soldered, not in the assembly BOM

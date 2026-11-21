@@ -153,7 +153,7 @@ NETS = add_header({
 POWER_SYMBOLS = ("GND", "SYS", "VBUS", "USB_VBUS", "PMID", "REGN", "BAT_PACK")
 RAIL_LIB = {"GND": "power:GND", "VBUS": "power:VBUS"}  # others: power:VCC with the net as value
 
-SHEET_VALUE = {"L3": "CMC 90R 3A", "F1": "PTC 3A", "TH1": "10k NTC", "U6": "HY2112-CB", "J10": "J_PWR 2x9",
+SHEET_VALUE = {"L3": "CMC 90R 3A", "F1": "PTC 3A", "TH1": "10k NTC", "U6": "HY2112-CB", "J10": "J_PWR 2x10 key 3",
                **{m: "AO3400A" for m in ("M1", "M2", "M3", "M4", "M60", "M61")}}
 HAND_SOLDER = {"J5", "J6", "J10"}  # JST PH and the 2.54 mm header: hand-soldered, not in the assembly BOM
 ROOT_TEXTS = [

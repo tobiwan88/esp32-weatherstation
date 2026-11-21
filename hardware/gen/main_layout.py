@@ -90,10 +90,10 @@ HAND_ROUTES = {
     },
     # charger host pull-ups: each signal leaves J10 sideways and turns up into its pull-up (rail on top)
     "Header": {
-        "CHG_SDA": [[("J10", "13"), (16, 32), ("R54", "1")]],
-        "CHG_INT": [[("J10", "17"), (10, 34), ("R22", "1")]],
-        "CHG_SCL": [[("J10", "14"), (46, 32), ("R55", "1")]],
-        "CHG_CE": [[("J10", "18"), (52, 34), ("R20", "2")]],
+        "CHG_SDA": [[("J10", "11"), (16, 31), ("R54", "1")]],
+        "CHG_INT": [[("J10", "15"), (10, 33), ("R22", "1")]],
+        "CHG_SCL": [[("J10", "12"), (46, 31), ("R55", "1")]],
+        "CHG_CE": [[("J10", "16"), (52, 33), ("R20", "2")]],
     },
     # second Qwiic port and the 2.54 mm header share one vertical line per signal (SDA x 82, SCL x 80)
     "Ports": {
@@ -120,12 +120,12 @@ HAND_ROUTES = {
 HAND_LABELS = {"Sensors": {"SEN_SDA": (26, 51, 270), "SEN_SCL": (24, 51, 270)},
                "Ports": {"SEN_SDA": (82, 44, 270), "SEN_SCL": (80, 44, 270),
                          "RAIN": (56, 68, 0), "WIND": (56, 78, 0), "VANE": (56, 90, 0)},
-               "Header": {"CHG_SDA": (16, 32, 180), "CHG_INT": (10, 34, 180), "CHG_SCL": (46, 32, 0), "CHG_CE": (52, 34, 0)}}
+               "Header": {"CHG_SDA": (16, 31, 180), "CHG_INT": (10, 33, 180), "CHG_SCL": (46, 31, 0), "CHG_CE": (52, 33, 0)}}
 SHEET_DX = 2  # every block 2 cells right of the sheet border
 SHEET_TEXTS = {"Header": [(8, 39, HEADER_NOTE)]}
 
 TAGS_BELOW: set = set()
-TAG_POS = {"J10": ((0, -14.5, "center"), (0, 14.5, "center"))}
+TAG_POS = {"J10": ((0, -15.8, "center"), (0, 15.8, "center"))}
 
 SHEET_NOTES = {
     "USB": "USB-C receptacle: CC pull-downs, ESD on D+/D-; USB_VBUS and D+/D- to the power board over J10",

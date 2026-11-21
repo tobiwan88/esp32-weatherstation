@@ -29,6 +29,8 @@ $PY hardware/calc/i2c_bus.py $D >/dev/null && echo "i2c_bus: OK" || { $PY hardwa
 done
 echo "== split"
 $PY -I hardware/tools/split_check.py | tail -1 || rc=1
+echo "== header"
+$PY -I hardware/tools/header_check.py --selftest >/dev/null && $PY -I hardware/tools/header_check.py | tail -2 || rc=1
 # routed = the board carries router copper; the generator's hand-drawn copper (charger power stage) is always locked
 routed() { python3 -c 'import re, sys
 blocks = re.findall(r"\(segment\b.*?\(uuid", open(sys.argv[1]).read(), re.S)

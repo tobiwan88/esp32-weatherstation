@@ -24,4 +24,4 @@ BATTERY,J6,Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical,1,n/a,n/a,HAND-SO
 10k NTC,TH1,Resistor_SMD:R_0603_1608Metric,1,C13564,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"TH1: 10k NTC NCP18XH103F03RB (TS, next to J6)"
 HY2112-CB,U6,Package_TO_SOT_SMD:SOT-23-6,1,C168764,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U6: HY2112-CB LiFePO4 protection
 2k,R61,Resistor_SMD:R_0402_1005Metric,1,C4109,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R61: 2k (HY2112 CS)
-J_PWR 2x9,J10,Connector_PinHeader_2.54mm:PinHeader_2x09_P2.54mm_Vertical,1,n/a,n/a,HAND-SOLDER,"J10: J_PWR 2x9 2.54 mm (power side, hand-solder)"
+J_PWR 2x10 key 3,J10,Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical,1,n/a,n/a,HAND-SOLDER,"J10: J_PWR 2x10 keyed 2.54 mm (power side: socket, hole 3 blocked; hand-solder)"
