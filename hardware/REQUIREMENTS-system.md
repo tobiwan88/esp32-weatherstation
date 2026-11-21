@@ -66,8 +66,15 @@ Main board alone (development): SYS from a bench supply on the header or a pad; 
     option once a cell with a readable datasheet is bought (buy 2-4 test cells; ask the vendor which charge limit they qualify).
 - No software MPPT (decided): the load is about 1 Wh/day, the panel is oversized, the BQ25798 has hardware MPPT (VOC-based). No extra MCU for charging.
 - Panel: **5 W 6 V class** (about EUR 14; Voc below 10 V cold for the TVS). About 2 Wh/day in the worst month against a target load of at most 1 Wh/day.
-- Cycle: measure and report every **15-30 min**; **7 days autonomy** from 80 % of the cell. Verify with `calc/power_budget.py` after the
-  PM window is lengthened (section 6); sleep current of the whole stack under 100 uA with 3V3_SW and 5V_SW off.
+- Cycle (engineer 2026-11-21): **30 min by default**; the firmware switches to **15 min only while USB or strong sun is present**
+  (a firmware feature, `FIRMWARE-RULES.md`). **7 days autonomy minimum** from 80 % of the cell, checked as a FAIL threshold
+  (`autonomy_days_min`) by `calc/power_budget.py hardware/power-board`. Result at 30 min with the 90 s PM window and hourly O3:
+  11.7 mA average, 0.90 Wh/day, **11.1 days** autonomy, worst-month solar margin **2.33x** (want 1.5x). The 15 min mode draws
+  22.1 mA (1.69 Wh/day, 5.9 days, margin 1.24x) and is only allowed with an external energy source.
+- Sleep current of the whole stack (3V3_SW and 5V_SW off, CE held low so solar keeps charging): target under 100 uA, checked
+  as a sum of named loads in `power-board/board.yaml` (`sleep.loads`): 68.2 uA typical, 78.6 uA with datasheet maxima
+  (ESP32 deep sleep with ULP 18 uA, BQ25798 17 uA, TPS63802 11 uA, closed reed contacts 6.6 uA worst case, CE pull-ups
+  1M on both boards 3.3 + 3.2 uA, HY2112 3 uA). The ESP32 ULP figure is the datasheet's "sensor-monitored pattern"; measure it.
 - USB-C charging is optional on every station; solar charging continues in deep sleep (charge policy as decided 2026-11-01).
 - Safety (self-built, personal use, not an approved product): fuse (PTC) at the cell, cell protection IC, NTC on the cell with charge inhibited
   below 0 C, panel TVS, reverse-polarity-safe keyed cell connector, no charging above 50 C, enclosure vented and the cell away from the heat corner.
@@ -140,7 +147,7 @@ would also be 0x46).
 | USB-C on the main board | programming and debug work without the power board |
 | No software MPPT, keep the BQ25798 on the power board | negligible gain at about 1 Wh/day, hardware MPPT exists |
 | LiFePO4 default, chemistry flexible (BOM + firmware) | easier to source and in hand; sodium-ion possible once a datasheet and protection IC are chosen |
-| 5 W 6 V panel, 15-30 min cycle, 7 days autonomy | budget, energy margin about 2x in the worst month |
+| 5 W 6 V panel, 30 min cycle (15 min with USB or sun), 7 days autonomy minimum | budget; at 30 min 11.1 days and 2.33x worst-month margin, 15 min alone would give 5.9 days (review A4, 2026-11-21) |
 | SHT40 instead of SHT45; pressure on main (BMP585, then BMP580 from 2026-11-21 for cost); VEML6030 and BMP585 add-on orders retired | fixed fees dominate, about USD 4.7 per station |
 | Ports: 2 x Qwiic, I2C 2.54 mm header, 5 V UART J2, rain/wind port | plug-in sensors without redesign |
 | SEN0460 on hand used as PM sensor (I2C), PMS7003 stays supported | free PM sensor, I2C needs no 5 V |

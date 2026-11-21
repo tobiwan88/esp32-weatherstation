@@ -72,15 +72,30 @@ design:
     vmp_v: {value: 5.71, source: "Voltaic P110 product page (10 W reference panel of weatherstation-v1); replace with the bought 5 W panel"}
     voc_v: {value: 6.94, source: "Voltaic P110 product page; cold estimate about 7.9 V at -20 C, below the SMBJ10A 10 V standoff"}
   cycle:                   # station load profile (main board), REQUIREMENTS-system.md sections 4 and 6
-    period_s: {value: 900, source: "REQUIREMENTS-system.md section 4: measure and report every 15-30 min; 15 min is the worst case"}
+    period_s: {value: 1800, source: "engineer 2026-11-21: default cycle 30 min (REQUIREMENTS-system.md section 4); 15 min only with USB or strong sun"}
+    fast_period_s: {value: 900, source: "engineer 2026-11-21: firmware switches to 15 min when USB or strong sun is present (reported, not judged)"}
+    autonomy_days_min: {value: 7, source: "REQUIREMENTS-system.md section 4: 7 days autonomy from 80 % of the cell"}
     esp_active_s: {value: 15, source: assumption}
     esp_active_ma: {value: 100, source: assumption}
     sensor_on_s: {value: 90, source: "REQUIREMENTS-system.md section 6: 30 s warm-up + 30-60 s window at 1 Hz, about 90 s per cycle"}
     sensor_ma: {value: 190, source: "PMS7003 manual V2.5: active <= 100 mA at 5 V; at the cell 5 V x 0.1 A / 0.85 (TPS61023, assumption) / 3.2 V = 184 mA, rounded up"}
-    sleep_ua: {value: 100, source: "REQUIREMENTS-system.md section 4: whole-stack sleep target under 100 uA (target, not measured)"}
+    sleep_ua: {value: 100, source: "REQUIREMENTS-system.md section 4: whole-stack sleep target under 100 uA (target; the sum below is checked against it)"}
     o3_on_s: {value: 240, source: "Winsen ZE25-O3 page: warm-up <= 3 min, response <= 90 s; 4 min window (firmware choice)"}
     o3_period_s: {value: 3600, source: "firmware choice: one O3 reading per hour"}
     o3_ma: {value: 20, source: "user 2026-11-04: ZE25-O3 10 mA at 5 V; at the cell 5 V x 10 mA / 0.85 / 3.2 V = 18 mA, rounded up"}
+  sleep:                   # loads left on in deep sleep (3V3_SW and 5V_SW off, CE held low so solar keeps charging)
+    vcell_v: {value: 3.2, source: "LFP nominal (CBAK 26700LT spec A/03)"}
+    buckboost_eff: {value: 0.85, source: "assumption: TPS63802 power-save conversion efficiency at tens of uA (its IQ is a separate load below); measure"}
+    loads:
+      esp32_deep_sleep_ulp: {ua: 18, rail: 3v3, source: "ESP32-S3-WROOM-1 v1.8 table 6-7: deep sleep, ULP sensor-monitored pattern 18 uA typ (ULP polls the pulse port and the charger)"}
+      r20_ce_pullup_main: {ua: 3.3, rail: 3v3, source: "R20 1M to +3V3 with CE held low by GPIO hold: 3.3 V / 1M"}
+      ce_pullup_power: {ua: 3.2, rail: cell, source: "power-board CE pull-up 1M to BAT_PACK with CE held low: 3.2 V / 1M"}
+      pulse_contacts: {ua: 6.6, rail: 3v3, source: "R70/R71 1M, both reed contacts resting closed (worst case): 2 x 3.3 uA (calc/i2c_bus.py)"}
+      usblc6_u10_u11: {ua: 0.02, ua_max: 0.3, rail: 3v3, source: "USBLC6-2 DS4260 rev 7: IRM 10 nA typ, 150 nA max each, VBUS pin on +3V3"}
+      tps63802_iq: {ua: 11, rail: cell, source: "TPS63802 SLVSEU9D 6.5: IQ into VIN 11 uA typ, not switching (max not stated)"}
+      tps61023_off: {ua: 0.1, ua_max: 0.2, rail: cell, source: "TPS61023 SLVSF14B 6.5: ISD 0.1 uA typ, 0.2 uA max (EN low)"}
+      bq25798_bat: {ua: 17, ua_max: 24, rail: cell, source: "BQ25798 SLUSDV2C 6.5: IQ_BAT_ON 17 uA typ, 24 max (battery only, BATFET on, ADC off; specified at VBAT 8 V)"}
+      hy2112: {ua: 3.0, ua_max: 6.0, rail: cell, source: "HY2112-CB DS V08 electrical table: IDD 3.0 uA typ, 6.0 max at VDD 3.2 V"}
   solar:
     panel_w: {value: 5, source: "REQUIREMENTS-system.md section 4: 5 W 6 V class panel (decided 2026-11-21)"}
     psh_worst_h: {value: 0.7, source: "design value for cloudy December, Germany (PVGIS-SARAH3 2005-2023, 45 deg; weatherstation-v1 profile)"}

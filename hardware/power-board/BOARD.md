@@ -41,6 +41,8 @@ Generator: `gen/power_board.py` (parts, nets), `gen/power_layout.py` (block draw
 header `gen/boards_common.py`.
 
 ## Calc results (2026-11-21)
-power_budget: all OK except WARN worst-month solar 2.10 vs 1.70 Wh/day (1.24x, want 1.5x; PARTS-REVIEW.md B4).
+power_budget (2026-11-21, 30 min cycle): sleep sum 68.2 uA typ / 78.6 uA max (target 100), average 11.7 mA, 0.90 Wh/day,
+autonomy 11.1 days (minimum 7, FAIL threshold), worst-month solar 2.10 vs 0.90 Wh/day = 2.33x. 15 min mode (USB or sun
+only): 22.1 mA, 5.9 days.
 track_width: Charge class 0.65 mm for 1.7 A OK. bom_check: OK, stock OK at qty 5. No MISSING rows. critical.py and
 buck.py: not applicable yet (no layout; no plain buck).
