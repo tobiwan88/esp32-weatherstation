@@ -1,7 +1,7 @@
 # Board profile: the facts the board-neutral hardware skills and hardware/calc/ scripts read (hw-base folder contract).
-# Status: schematic generated (split from weatherstation-v1, 2026-11-21); no layout yet.
+# Status: schematic generated (split from weatherstation-v1, 2026-11-21); placed and routed 2026-11-22 (BOARD.md Layout).
 name: power-board
-pcb: power-board.kicad_pcb        # placed, not routed (tools/build_board.sh power-board)
+pcb: power-board.kicad_pcb        # routed: tools/build_board.sh power-board, then tools/route_power.sh
 sch: power-board.kicad_sch
 bom: bom.csv
 generators: {schematic: ../gen/power_board.py, layout: ../gen/power_pcb.py}   # gen/power_layout.py is the schematic block layout; gen/pcbkit.py + gen/stack.py shared

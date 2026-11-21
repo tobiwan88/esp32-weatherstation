@@ -1,0 +1,27 @@
+# calc/emi_check.py settings for the power board (the `emi:` block of critical.yaml on the main board), read by
+# calc/power_route_check.py. Kept out of critical.yaml because calc/critical.py fails on an unknown `emi:` key.
+pair_main_layer: B.Cu
+pair_width_mm: 0.27
+pair_spacing_mm: 0.6        # other nets to the pair outside U3's pin field (3x the 0.15 gap plus margin; brief)
+fanout_area: bc12_fanout    # U3 0.4 mm pin field: pad pitch sets the spacing there
+edge_pitch_mm: 5.0          # REQUIREMENTS E2
+edge_band_mm: 1.6
+void_max_mm: 1.0
+loop_max_mm: 12.0
+sw_nets: [/Charger/SW1, /Charger/SW2]
+# SW1/SW2 tracks: F pin stub -> 2 vias -> B.Cu 0.65 mm lane under the cap row -> 2 vias -> L1 (v1 topology, items
+# 1-2: the 0402 PMID/SYS caps own the pin side, L1 sits beyond them; about 4.5 mm2 per lane) plus the bootstrap
+# branch to C3/C4 (0.4 mm). Figure 8-21 (L1 on the pins) would be about 2 mm2; the excess is on B.Cu between the
+# In2 plane and the board bottom (no copper below it), recorded as a residual in BOARD.md "Routing review".
+sw_area_max_mm2: 10.0
+parallel:
+  # gap 0.6 = brief: I2C/USB vs SW at >= 3x width and >= 0.6 mm
+  - {name: I2C/INT vs SW, victims: ["/Charger/CHG_S*", "/Charger/CHG_INT", "/Charger/CHG_CE"], aggressors: ["/Charger/SW*"], gap_mm: 0.6, max_mm: 0.5}
+  - {name: sense vs SW, victims: ["/Battery/TS", "/Charger/ILIM", "/Battery/HY_CS", "BAT_PACK"], aggressors: ["/Charger/SW*"], gap_mm: 0.6, max_mm: 0.5}
+  - {name: BC1.2 vs SW, victims: ["/Charger/USB_D*"], aggressors: ["/Charger/SW*"], gap_mm: 1.0, max_mm: 0.0}
+known:   # calc/power_route_check.py: FAIL -> WARN with the reason (critical.py `known:` pattern)
+  - row: usb_bc12 crossings of the main run
+    known: >-
+      TS (U3.16 to R18), CHG_INT (to J10.15) and REGN (C5 to R15/R17) start east of the pair and end west of it;
+      the pair runs from U3's west pins to J10.7/8 east of U3, so they cross it, on F.Cu over the B.Cu pair with
+      both solid GND planes (In1, In2) between; all three are DC or slow open-drain lines

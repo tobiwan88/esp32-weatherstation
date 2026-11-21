@@ -1,9 +1,11 @@
-"""power-board layout: outline, placement, GND planes, keepouts (run with $KICAD_PYTHON). Placement only, no routing.
+"""power-board layout: outline, placement, GND planes, keepouts, hand-drawn critical copper (run with $KICAD_PYTHON).
 
 Builds hardware/power-board/power-board.kicad_pcb from the schematic netlist through the shared engine gen/pcbkit.py
 (adapted from gen/pcb_v1.py). Positions in mm from the board's top-left corner, top view. Floorplan, stack geometry
 and sources: power-board/BOARD.md "Layout". The board sits UNDER the main board in the stack (same 50 x 50 outline,
 same holes, J10 at the same top-view position); tools/stack_check.py proves the alignment.
+After the shared engine has placed the parts, gen/power_copper.py draws the locked critical copper (BQ25798 power
+stage, charge trunks, BC1.2 pair, U3 south band, edge stitching); tools/route_power.sh autoroutes the rest.
 Usage: power_pcb.py design.net board.kicad_pcb classes.json   (tools/build_board.sh power-board)
 """
 
@@ -12,6 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import pcbkit  # noqa: E402
+import power_copper  # noqa: E402
 from stack import HOLES, J10_AT, W, H  # noqa: E402,F401  (shared stack geometry: holes and J10 on both boards)
 
 REGIONS = "charger=18,8,42,36 cell=0,0,22,36 header=12,30,46,46"
@@ -31,6 +34,11 @@ FIXED = {
     "F1": (7.55, 10.05, 0), "M60": (12.688, 10.55, 0), "C60": (11.438, 14.5, -90), "R60": (8.688, 16.25, 0),
     # PV input on the left edge below the cell corner
     "J5": (3.3, 27.0, 270, "B"),
+    # CE pull-up below J10.16 (routing 2026-11-22): at U3.13 it blocked the escape vias of the bottom-row pins
+    "R23": (24.22, 38.4, 0),
+    # QON test pad and STAT LED pinned at their placement positions (R19 0.15 mm lower, clear of C2) so the area
+    # under U3's bottom row stays free for the escape vias (routing 2026-11-22)
+    "TP3": (25.55, 26.15, 0), "R19": (27.8, 27.4, -90), "D2": (26.8, 29.51, 0),
 }
 # BQ25798 power stage and its ring of small parts, offsets from U3 (weatherstation-v1 CHARGER, SLUSDV2C 8.4.1 items 1-5,
 # Figure 8-21; routed and DRC clean on v1): 0402 PMID/SYS caps on top of the PMID-SW1-GND-SW2-SYS pin row sharing the
@@ -46,7 +54,8 @@ CHARGER = {
     "C4": (4.7, 2.15, 0), "R16": (4.6, 3.45, 0), "R15": (7.05, 3.7, 180), "R18": (4.9, 5.3, 0), "R17": (7.5, 5.3, 180),
     "C6": (-3.8, -1.15, 180), "C3": (-4.4, 0.1, 180), "C5": (-4.4, 2.0, 180),  # C5 0805 since review C (was 0603 at 1.75)
     "M2": (-1.4, -11.05, -90),
-    "C2": (-0.38, 6.7, 180),
+    # PV_IN (VAC2) cap at the pin, left of the bottom row (routing 2026-11-22: below U3 it sat in the south band)
+    "C2": (-2.55, 3.95, 270),
 }
 BLOCKS = [("U3", CHARGER)]
 # escape bands for U3's signal pins (weatherstation-v1): no part there, so every pin can fan out when it is routed;
@@ -61,9 +70,7 @@ NEAR = [
     # input FET pairs (BQ25798 figure 8-2): RBFET2 at the VBUS pin, ACFET2 beside it; ACFET1 beside RBFET1 M2
     ("M4", [("3", "U3", "2")]), ("M3", [("2", "M4", "2")]), ("M1", [("2", "M2", "2")]),
     ("R11", [("1", "M1", "1")]), ("R12", [("1", "M3", "1")]), ("C1", [("1", "M1", "3")]),
-    # CE pull-up and QON pad at their U3 pins, STAT LED from REGN
-    ("R23", [("1", "U3", "13")]), ("TP3", [("1", "U3", "12")]),
-    ("R19", [("1", "C5", "1")]), ("D2", [("2", "R19", "2")]),
+    # (CE pull-up R23, QON pad TP3 and the STAT LED R19/D2 are pinned in FIXED: the south band routing needs them there)
     # battery protection: NTC at the cell connector (senses the cell side), charge FET beside the discharge FET
     ("TH1", [("2", "J6", "2")]), ("M61", [("3", "M60", "3")]), ("R61", [("1", "U6", "2")]),
 ]
@@ -92,3 +99,4 @@ def KEEPOUTS(put, ctx):
 
 if __name__ == "__main__":
     pcbkit.build(sys.modules[__name__])
+    power_copper.draw(sys.argv[2], W, H)

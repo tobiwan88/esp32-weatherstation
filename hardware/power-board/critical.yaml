@@ -1,5 +1,5 @@
 # Critical blocks of the power board, declared by intent. hardware/calc/critical.py checks them on the .kicad_pcb
-# (placement-only board: `critical.py hardware/power-board --placement`, copper rows SKIP). Format as weatherstation-v1.
+# (routed board: `critical.py hardware/power-board`; `--placement` skips the copper rows). Format as weatherstation-v1.
 # Pins are REF.PAD from the generated netlist (gen/power_board.py); distances pad centre to pad centre (mm), thermal rows
 # footprint centre to footprint centre. Limits are design targets unless a source is named.
 
@@ -23,12 +23,27 @@ series_termination:   # series R at the pin it serves
   # routed there, outside the right-hand escape band of the signal pins
   - {source: U3.18, part: R13.2, max_mm: 6.0}
 
-diff_pair:       # BC1.2 detection stubs from J10 to U3 D+/D- (7.3.4.5); not a data path, impedance kept as on the main board
-  - {name: usb_bc12, p: /Charger/USB_DP, n: /Charger/USB_DN, net_class: USB, layer: F.Cu, z_diff: 90, tol_ohm: 10, max_skew_mm: 5.0, max_vias: 4}
+diff_pair:       # BC1.2 detection stubs from J10 to U3 D+/D- (7.3.4.5): a stub of the main board's USB bus, so kept to its
+  # 90 ohm geometry (calc/impedance.py: 0.27/0.15 mm on B.Cu over In2) and matched; hand copper (gen/power_copper.py
+  # bc12): one F.Cu pin stub + one via per line at U3, the coupled run on B.Cu, DP length-matched by two meander bumps
+  - name: usb_bc12
+    p: /Charger/USB_DP
+    n: /Charger/USB_DN
+    net_class: USB
+    layer: B.Cu
+    z_diff: 90
+    tol_ohm: 10
+    max_skew_mm: 0.5
+    max_vias: 2
+    legs:
+      J10: {p: [[/Charger/USB_DP, [J10.7, U3.6]]], n: [[/Charger/USB_DN, [J10.8, U3.7]]]}
+    stubs: {p: [J10.7, U3.6], n: [J10.8, U3.7], edge_ns: 4.0}   # USB FS rise time 4-20 ns (USB 2.0 7.1.2.1)
 
 thermal_distance:   # charger heat away from the cell NTC (REQUIREMENTS T1/T2): TH1 must read the cell, not U3/L1
   - {source: U3, sensor: TH1, min_mm: 15}
   - {source: L1, sensor: TH1, min_mm: 15}
 
+# EMI rows (calc/emi_check.py config) live in emi.yaml beside this file: critical.py rejects an `emi:` key.
 # Review only (no script): In1/In2 solid GND; L1 has no B.Cu keepout on purpose (its SW1/SW2 tracks and GND vias run
-# under it, item 2); BATP and TS tracks away from SW1/SW2 (item 6) at routing time.
+# under it, item 2). Routed-board numbers (loops, SW area, widths, spacing to SW, BATP/TS away from SW1/SW2 per
+# item 6): calc/power_route_check.py hardware/power-board.
