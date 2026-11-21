@@ -3,7 +3,9 @@
 Rows: OK, WARN, FAIL, MISSING (see hw-base). `--strict` (order time) turns MISSING into FAIL. `--stock` asks the
 fab's parts library (hardware/tools/jlcparts.py) for stock and Basic/Extended; needs network.
 Fee model: JLCPCB Economic PCBA charges a loading fee per unique Extended part (jlcpcb.com/help/article/pcb-assembly-price);
-the fee comes from board.yaml `fab.extended_fee_usd`, never hard-coded here.
+the fee comes from board.yaml `fab.extended_fee_usd`, never hard-coded here. With `--stock`, the parts cost is the fab's
+first (smallest) price tier x quantity x qty (no attrition parts), and the order row adds the Extended fees plus
+`fab.setup_fee_usd` and `fab.stencil_fee_usd`; FAIL above `fab.order_limit_usd` (bare PCB, SMT joints, shipping not included).
 Usage: uv run --package weatherstation-hardware python hardware/calc/bom_check.py hardware/<board> [--strict] [--stock] [--qty N]
 """
 
@@ -27,8 +29,10 @@ def load_rows(board: Path) -> list[dict]:
 
 
 def check(rows: list[dict], profile: dict, qty: int, stock: dict | None = None):
-    fee = (profile.get("fab") or {}).get("extended_fee_usd")
+    fab = profile.get("fab") or {}
+    fee = fab.get("extended_fee_usd")
     out, extended = [], set()
+    parts_usd, unpriced = 0.0, []
     for r in rows:
         ref, lcsc = r["Designator"], (r["LCSC Part #"] or "").strip()
         name = f"{ref} {r['Comment']}"
@@ -55,6 +59,10 @@ def check(rows: list[dict], profile: dict, qty: int, stock: dict | None = None):
                 status, note = "FAIL", note + f" stock {s['stock']} < need {need}"
             elif s["stock"] < 2 * need:
                 status, note = "WARN", note + f" LOW STOCK {s['stock']} (need {need})"
+            if s.get("price") is not None:
+                parts_usd += float(s["price"]) * need
+            else:
+                unpriced.append(lcsc)
             lib = s["library"] + (" (preferred)" if s.get("preferred") else "")
             note += f" [{lib}, stock {s['stock']}]"
             if s["library"] == "Extended" and not s.get("preferred"):
@@ -66,6 +74,15 @@ def check(rows: list[dict], profile: dict, qty: int, stock: dict | None = None):
         out.append(("MISSING", "extended-part fee", "board.yaml fab.extended_fee_usd is null"))
     else:
         out.append(("OK", "extended-part fee", f"{len(extended)} unique Extended parts x ${fee} = ${len(extended) * fee:.2f} (Economic PCBA)"))
+    if stock and fee is not None:
+        fixed = (fab.get("setup_fee_usd") or 0) + (fab.get("stencil_fee_usd") or 0)
+        fees = len(extended) * fee + fixed
+        total = parts_usd + fees
+        limit = fab.get("order_limit_usd")
+        st = "OK" if limit is None or total <= limit else "FAIL"
+        out.append((st, f"order at qty {qty}", f"parts ${parts_usd:.2f} (${parts_usd / qty:.2f} per board, first price tier"
+                    f"{', unpriced: ' + ' '.join(unpriced) if unpriced else ''}) + fees ${fees:.2f} ({len(extended)} Extended, "
+                    f"setup + stencil ${fixed:.2f}) = ${total:.2f} (limit ${limit}; bare PCB, joints and shipping not included)"))
     return out
 
 
