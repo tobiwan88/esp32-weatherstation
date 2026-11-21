@@ -1,0 +1,29 @@
+# Datasheet card: facts from the OFFICIAL datasheet only, each with its section.
+# value null = not read yet (scripts report MISSING); section: not stated = datasheet silent.
+# PDF: ../../weatherstation-v1/datasheets/ (shared with the single-board design).
+mpn: HY2112-CB
+role: 1-cell LiFePO4 protection (overcharge, overdischarge, over-current, short) driving two pack-negative N-FETs
+lcsc: C168764
+source:
+  url: https://www.hycontek.com/
+  revision: "DS-HY2112-V08_EN"
+  file: weatherstation-v1/datasheets/HY2112-CB.pdf
+values:
+  vcu_v: {value: "3.75 +/- 0.025", section: "6 table 1 (HY2112-CB)"}
+  vcr_v: {value: "3.60 +/- 0.05", section: "6 table 1"}
+  vdl_v: {value: "2.10 +/- 0.05", section: "6 table 1"}
+  vdr_v: {value: "2.30 +/- 0.05", section: "6 table 1"}
+  vdip_mv: {value: "200 +/- 15", section: "6 table 1 (discharge over-current)"}
+  vcip_mv: {value: "-200 +/- 30", section: "6 table 1 / 9.1 table 4"}
+  vsip_v: {value: "0.55-1.15 (typ 0.85)", section: "9.1 table 4 short circuit"}
+  idd_ua: {value: "3.0 typ, 6.0 max at 3.2 V", section: "9.1 table 4"}
+  abs_max_vdd_v: {value: 10, section: "8 table 3"}
+  zero_v_charge: {value: "available, starts at VOCH >= 1.2 V", section: "6 table 1 / 9.1"}
+  r1_vdd_ohm: {value: "100-470 (typ 100)", section: "10"}
+  r2_cs_ohm: {value: "300-2k (typ 2k)", section: "10"}
+  c1_vdd_uf: {value: "0.01-1.0 (typ 0.1)", section: "10"}
+checklist:
+  - "R60 100 ohm, C60 0.1 uF, R61 2k: inside the section 10 ranges"
+  - "M60 discharge / M61 charge common-drain in the pack negative as section 10 (fixed in weatherstation-v1 A1)"
+  - "FET threshold below VDL 2.10 V (section 10 note *4): AO3400A VGS(th) max 1.45 V (AO3400A card)"
+  - "FET gate-source rating above the charger voltage (note *5): AO3400A VGS +/-12 V, BAT_PACK at most VREG 3.65 V"

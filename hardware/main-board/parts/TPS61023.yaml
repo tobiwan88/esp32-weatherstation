@@ -1,0 +1,24 @@
+# Datasheet card: facts from the OFFICIAL datasheet only, each with its section.
+# value null = not read yet (scripts report MISSING); section: not stated = datasheet silent.
+# PDF: ../../weatherstation-v1/datasheets/ (shared with the single-board design).
+mpn: TPS61023DRLR
+role: synchronous boost, SYS to 5V_SW (PMS7003, ZE25-O3); true disconnect when EN low
+lcsc: C919459
+source:
+  url: https://www.ti.com/product/TPS61023
+  revision: "SLVSF14B, September 2019, revised August 2020"
+  file: weatherstation-v1/datasheets/TPS61023.pdf
+values:
+  abs_max_v: {value: 7, section: "6.1 (VIN, EN, FB, SW, VOUT)"}
+  vin_v: {value: "0.5-5.5", section: "6.3"}
+  vout_v: {value: "2.2-5.5", section: "6.3"}
+  uvlo_v: {value: "1.7 rising, 1.25 falling (typ)", section: "6.5"}
+  vref_mv: {value: "595 typ (PWM); PFM 601 max", section: "6.5 VREF"}
+  ilim_valley_a: {value: "2.7 min, 3.7 typ", section: "6.5 ILIM_SW"}
+  isd_ua: {value: "0.1 typ, 0.2 max", section: "6.5 ISD"}
+  vovp_v: {value: "5.5-6.0 (typ 5.7)", section: "6.5 VOVP"}
+  l_eff_uh: {value: "0.37-2.9 (nom 1.0)", section: "6.3"}
+  cout_eff_uf: {value: "4-1000 (nom 10)", section: "6.3"}
+checklist:
+  - "FB 510k/68k: 0.595 V x (1 + 510/68) = 5.06 V (8.2.2.1)"
+  - "EN pull-down R45: off by default (BOOST_EN low)"

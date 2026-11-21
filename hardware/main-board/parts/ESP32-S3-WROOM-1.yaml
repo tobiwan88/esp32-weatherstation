@@ -1,0 +1,25 @@
+# Datasheet card: facts from the OFFICIAL datasheet only, each with its section.
+# value null = not read yet (scripts report MISSING); section: not stated = datasheet silent.
+# PDF: ../../weatherstation-v1/datasheets/ (shared with the single-board design).
+mpn: ESP32-S3-WROOM-1-N8
+role: MCU + WiFi/BLE module, 8 MB flash, no PSRAM, PCB antenna
+lcsc: C2913198
+source:
+  url: https://www.espressif.com/
+  revision: "ESP32-S3-WROOM-1 & WROOM-1U datasheet v1.8"
+  file: weatherstation-v1/datasheets/ESP32-S3-WROOM-1.pdf
+values:
+  native_usb: {value: "GPIO19 D-, GPIO20 D+", section: "3.2 pin description"}
+  console_uart0: {value: "TXD0 (IO43) / RXD0 (IO44)", section: "3.2 pin description"}
+  abs_max_vdd33_v: {value: 3.6, section: "6.1 table 6-1"}
+  vdd33_v: {value: "3.0-3.6", section: "6.2 table 6-2"}
+  supply_current_min_a: {value: 0.5, section: "6.2 table 6-2 (current delivered by the external supply)"}
+  deep_sleep_ua: {value: "7 (RTC memory only), 8 (RTC peripherals on)", section: "6.4.2 table 6-7"}
+  deep_sleep_ulp_ua: {value: "18 (ULP sensor-monitored pattern)", section: "6.4.2 table 6-7"}
+  strapping_pins: {value: "GPIO0, GPIO3, GPIO45, GPIO46", section: "4 table 4-1 (default configuration of strapping pins)"}
+  decoupling: {value: null, section: not read, note: "C30 22 uF + C31 0.1 uF + C32 1 uF from weatherstation-v1 (Espressif hardware design guidelines)"}
+  antenna_keepout: {value: null, section: not read}
+checklist:
+  - "EN RC 10k + 1 uF (R30/C33) and IO0 10k pull-up (R31): hardware design guidelines, section to enter"
+  - "strapping pins not loaded by new circuits (pulse port, phase B): GPIO0/3/45/46 avoided"
+  - "TPS63802 output 3.32 V inside 3.0-3.6 V (6.2)"

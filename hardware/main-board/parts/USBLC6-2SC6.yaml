@@ -1,0 +1,17 @@
+# Datasheet card: facts from the OFFICIAL datasheet only, each with its section.
+# value null = not read yet (scripts report MISSING); section: not stated = datasheet silent.
+# PDF: ../../weatherstation-v1/datasheets/ (shared with the single-board design).
+mpn: USBLC6-2SC6
+role: 2-line ESD protection with VBUS reference. U4 USB D+/D- (VBUS = USB_VBUS), U5 outdoor I2C cable (VBUS = 3V3_SW)
+lcsc: C7519
+source:
+  url: https://www.st.com/en/protections-and-emi-filters/usblc6-2.html
+  revision: "DS4260 Rev 7, December 2021"
+  file: weatherstation-v1/datasheets/USBLC6-2.pdf
+values:
+  line_capacitance_pf: {value: "3.5 max", section: "features"}
+  irm_na: {value: "10 typ, 150 max at VRM 5.25 V", section: "electrical characteristics"}
+  vbr_min_v: {value: 6, section: "electrical characteristics (IR 1 mA)"}
+checklist:
+  - "U4 VBUS pin on USB_VBUS: 5 V USB only; HVDCP 9/12 V would exceed VBR (BQ25798 card)"
+  - "U5 leakage 150 nA max per line counts in the deep-sleep budget when 3V3_SW is on"

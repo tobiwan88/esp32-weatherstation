@@ -1,3 +1,5 @@
+> **Superseded by power-board + main-board for the schematic; layout/fab files here are the old single-board.** (2026-11-21, see `../ARCHITECTURE.md`)
+
 # weatherstation-v1: board notes
 
 Board-specific facts for the board-neutral skills (`hw-base`, `kicad-schematic`, `kicad-layout`, `hw-parts`).

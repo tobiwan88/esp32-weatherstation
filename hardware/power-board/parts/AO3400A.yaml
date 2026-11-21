@@ -1,0 +1,19 @@
+# Datasheet card: facts from the OFFICIAL datasheet only, each with its section.
+# value null = not read yet (scripts report MISSING); section: not stated = datasheet silent.
+# PDF: ../../weatherstation-v1/datasheets/ (shared with the single-board design).
+mpn: AO3400A
+role: 30 V N-FET, SOT-23. ACFET/RBFET pairs M1-M4 (BQ25798 figure 8-2) and HY2112 protection FETs M60/M61
+lcsc: C20917
+source:
+  url: https://www.aosmd.com/
+  revision: "Rev 3.1, July 2023"
+  file: weatherstation-v1/datasheets/AO3400A.pdf
+values:
+  vds_v: {value: 30, section: "absolute maximum ratings"}
+  vgs_v: {value: "+/-12", section: "absolute maximum ratings"}
+  vgs_th_v: {value: "0.65-1.45 (typ 1.05)", section: "electrical characteristics"}
+  rds_on_2v5_mohm: {value: "< 48", section: "product summary (VGS 2.5 V)"}
+  rds_on_4v5_mohm: {value: "< 32", section: "product summary (VGS 4.5 V)"}
+checklist:
+  - "VDS 30 V equals the BQ25798 VAC/VBUS abs max; the SMBJ10A D1 clamps below it (weatherstation-v1 A6 fix)"
+  - "ACDRV gate drive vs VGS +/-12 V: BQ25798 section 7.3.5.1 ACDRV level not yet entered here (open)"

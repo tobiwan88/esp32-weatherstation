@@ -1,0 +1,24 @@
+# Datasheet card: facts from the OFFICIAL datasheet only, each with its section.
+# value null = not read yet (scripts report MISSING); section: not stated = datasheet silent.
+# PDF: ../../weatherstation-v1/datasheets/ (shared with the single-board design).
+mpn: TPS63802DLAR
+role: 2 A buck-boost, SYS (cell voltage) to +3V3
+lcsc: C2845237
+source:
+  url: https://www.ti.com/product/TPS63802
+  revision: "SLVSEU9D, November 2018, revised January 2021"
+  file: weatherstation-v1/datasheets/TPS63802.pdf
+values:
+  abs_max_vin_v: {value: 6, section: "8.1 (VIN, L1, L2, EN, MODE, VOUT, FB, PG)"}
+  vin_v: {value: "1.3-5.5 (start above 1.8 V)", section: "8.3 note 1"}
+  vout_v: {value: "1.8-5.2", section: "8.3"}
+  cin_eff_min_uf: {value: 4, section: "8.3"}
+  cout_eff_min_uf: {value: "7 (VO > 2.3 V)", section: "8.3"}
+  l_eff_uh: {value: "0.37-0.57 (nom 0.47)", section: "8.3"}
+  vfb_mv: {value: "500 +/- 1 % (PWM)", section: "8.5"}
+  iq_ua: {value: 11, section: "8.5 IQ;VIN"}
+  isd_na: {value: "45 typ, 600 max", section: "8.5 ISD into VIN"}
+checklist:
+  - "FB 220k/39k: 0.5 V x (1 + 220/39) = 3.32 V (8.5 VFB)"
+  - "L4 0.47 uH inside 0.37-0.57 uH (8.3); C40 10 uF in, C41 22 uF out: effective values after DC bias still to check (10.2.2.3/10.2.2.4)"
+  - "SYS on the main-board pins must stay <= 5.5 V: bench supply limit in hardware/ARCHITECTURE.md"

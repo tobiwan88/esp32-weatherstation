@@ -1,0 +1,34 @@
+# Datasheet card: facts from the OFFICIAL datasheet only, each with its section.
+# value null = not read yet (scripts report MISSING); section: not stated = datasheet silent.
+# PDF: ../../weatherstation-v1/datasheets/ (shared with the single-board design).
+mpn: BQ25798RQMR
+role: I2C buck-boost charger, 1-4 cells, dual input (USB on VAC1, PV on VAC2) with ACFET/RBFET pairs, MPPT
+lcsc: C2876593
+source:
+  url: https://www.ti.com/product/BQ25798
+  revision: "SLUSDV2C, May 2020, revised June 2026"
+  file: weatherstation-v1/datasheets/BQ25798.pdf
+values:
+  abs_max_vac_vbus_v: {value: 30, section: "6.1 (VAC1, VAC2, VBUS converter not switching)"}
+  abs_max_logic_v: {value: 6, section: "6.1 (QON, D+, D-, CE, STAT, SCL, SDA, INT, ILIM_HIZ, PROG, TS, REGN)"}
+  vbus_operating_v: {value: "3.6-24", section: "6.3"}
+  ivbus_max_a: {value: 3.3, section: "6.3"}
+  cvbus_min_uf: {value: 2, section: "6.3 effective VBUS capacitance"}
+  cpmid_min_uf: {value: 4, section: "6.3 effective PMID capacitance"}
+  vih_ce_v: {value: 1.3, section: "6.5 VIH_CE"}
+  vil_ce_v: {value: 0.4, section: "6.5 VIL_CE"}
+  vih_sda_scl_v: {value: 1.3, section: "6.5 VIH_SDA/VIH_SCL (pull-up rail 1.8 V)"}
+  vreg_accuracy: {value: "-0.45 % to +0.95 %", section: "6.5 VREG_ACC (specified at 4.2 V)"}
+  i2c_address: {value: "0x6B (7-bit)", section: "7.3.14 / figure 7-19"}
+  ilim_equation: {value: "VILIM_HIZ = 1 V + 0.8 ohm x ILIM", section: "7.3.4.3 equation 1"}
+  ilim_set_a: {value: 1.59, section: "7.3.4.3 equation 1 with R15/R16 120k/100k from REGN (5 V): 2.27 V"}
+  bc12_results: {value: "SDP 0.5 A, CDP 1.5 A, DCP 3.25 A, HVDCP 1.5 A, unknown 3 A, non-standard 1-2.4 A", section: "7.3.4.5.1 table 7-4"}
+  bc12_scope: {value: "VAC1 only, only if AUTO_INDET_EN = 1 (default); disabled = IINDPM unchanged", section: "7.3.4.5"}
+  int_sink_ma: {value: 6, section: "6.1 output sink current INT, STAT"}
+checklist:
+  - "CE must not float (pull high or low): the pull-up is on the main board, power board alone floats CE (power-board/PARTS-REVIEW.md A1)"
+  - "INT pull-up to the host rail, not REGN: R22 to +3V3 on the main board (7.3.11.2)"
+  - "HVDCP stays disabled (EN_HVDCP = 0 default, 7.3.4.5.2): 9/12 V on USB_VBUS would exceed the USBLC6 VBR 6 V on the main board"
+  - "D+/D- reach the pins over J10 (USB_DP/USB_DN): BC1.2 decision in hardware/ARCHITECTURE.md"
+  - "external caps per table 5-1 (VBUS, PMID, SYS, BAT, BTST, REGN): carried over from weatherstation-v1, reviewed there"
+  - "watchdog expiry restores POR registers (VREG 4.2 V): firmware rule, weatherstation-v1/PARTS-REVIEW.md B3"
