@@ -42,3 +42,9 @@ decision for the engineer (topology unchanged in phase A).
 ### Incoming inspection and bring-up (review C, not changed in the design)
 - L3 (EMTEK CMC): the datasheet's pin numbering conflicts between drawing and schematic: ohmmeter check of the two windings (1-2 and 4-3) before assembly.
 - J10 socket: hole 3 must be blocked (plastic plug or a cut pin glued in) before the boards are first mated (`tools/header_check.py`).
+
+## Open decisions after the review (2026-11-21, for the engineer)
+| Review # | Decision | Numbers / options |
+|---|---|---|
+| B5 | ICHG vs the HY2112 charge-overcurrent trip: at a hot cell the trip can be about 1.48 A (AO3400A 48 mOhm x 1.2 per FET) | ICHG at most 1.2 A (FIRMWARE-RULES.md default, marked OPEN), or a lower-Rds dual FET, or measure. `calc/power_budget.py` still checks 1.5 A at 25 C (board.yaml) until you decide |
+| Cost | Order at qty 5: USD 55.03 before the bare PCB, joints and shipping: parts 23.83 (4.77 per board) + 7 Extended x 3.07 + setup 8.18 + stencil 1.53 (`calc/bom_check.py --stock --qty 5`) | no action needed |

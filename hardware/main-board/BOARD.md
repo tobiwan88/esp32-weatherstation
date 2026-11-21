@@ -3,8 +3,8 @@
 **State (2026-11-21):** schematic generated: phase A split from `../weatherstation-v1/` (same parts and nets), then phase B
 (pressure sensor U9, Qwiic J4, I2C header J11, rain/wind/vane port J12; sensor pull-ups 2.2k), then the review fixes of
 2026-11-21 and the 5-sheet partition. No layout, no fab files.
-Gate: nets OK, ERC 0 errors 0 warnings, review checks 0, `tools/split_check.py` OK. **Open: order cost above USD 100
-with the bare PCB (PARTS-REVIEW.md A1).**
+Gate: nets OK, ERC 0 errors 0 warnings, review checks 0, `tools/split_check.py` OK. Order at qty 5: USD 85.60 before the bare PCB,
+joints and shipping (`calc/bom_check.py --stock --qty 5`); open decisions: PARTS-REVIEW.md, last section.
 
 ## Purpose
 ESP32-S3, USB-C, 3.3 V and 5 V rails, sensor ports. Runs from SYS on J10 (power board, a bought charger module, or a
