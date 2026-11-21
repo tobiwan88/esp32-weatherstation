@@ -44,8 +44,12 @@ def render(geom, out: Path, region=None, scale=40, labels=True):
         d.line([P(a), P(b)], fill=(0, 0, 0), width=max(2, scale // 12))
     for fp in geom["footprints"]:
         if fp["box"]:
-            (a, b) = fp["box"]
-            d.rectangle([P(a), P(b)], outline=(190, 190, 255))
+            (a, b) = fp["box"]  # front courtyards blue, back-side bodies orange
+            d.rectangle([P(a), P(b)], outline=(190, 190, 255) if fp.get("side", "F") == "F" else (240, 170, 90),
+                        width=1 if fp.get("side", "F") == "F" else max(1, scale // 20))
+    for k in geom.get("keepouts", []):  # rule areas: magenta outlines (antenna, holes, under-inductor, sensor body)
+        if len(k["pts"]) > 2:
+            d.polygon([P(p) for p in k["pts"]], outline=(220, 0, 200))
     for q in geom.get("pours", []):  # outer pours as light fills of the layer colour, under the pads
         c = LAYER[q["layer"]]
         d.polygon([P(p) for p in q["pts"]], fill=tuple(255 - (255 - v) // 3 for v in c), outline=c)

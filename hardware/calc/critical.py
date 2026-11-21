@@ -1,7 +1,9 @@
 """Check a board's critical blocks (critical.yaml) on its routed .kicad_pcb.
 
 One function per constraint type; each returns (status, name, detail) rows. `known:` on an entry turns FAIL into WARN.
-Usage: uv run --package weatherstation-hardware python hardware/calc/critical.py hardware/<board> [--json]
+--placement: the board is placed but not routed. Placement rows (pad distances, footprint distances) are checked as
+usual; rows that need copper (FB trace length, diff-pair skew and vias) print SKIP "not routed" instead of failing.
+Usage: uv run --package weatherstation-hardware python hardware/calc/critical.py hardware/<board> [--placement] [--json]
 """
 
 import argparse
@@ -39,9 +41,19 @@ def switcher_loop(b: Board, e: dict):
     yield near(b, e, e["sw"], e["inductor"], e["sw_max_mm"], f"{e['name']}: inductor at SW")
 
 
+PLACEMENT = False  # set by --placement: copper-only rows report SKIP
+
+
+def not_routed(name: str, what: str):
+    return "SKIP", name, f"not routed ({what} needs copper; placement-only board)"
+
+
 def feedback(b: Board, e: dict):
     for r in e["divider"]:
         yield near(b, e, e["pin"], r, e["max_mm"], f"{e['name']}: divider at FB")
+    if PLACEMENT:
+        yield not_routed(f"{e['name']}: FB trace length", f"{e['net']} length")
+        return
     n = b.length.get(e["net"], 0.0)
     yield row(n <= e["max_len_mm"], f"{e['name']}: FB trace length", f"{n:.2f} mm (max {e['max_len_mm']})", e)
 
@@ -55,6 +67,9 @@ def series_termination(b: Board, e: dict):
 
 
 def diff_pair(b: Board, e: dict):
+    if PLACEMENT:
+        yield not_routed(f"{e['name']}: skew and vias", f"{e['p']}/{e['n']} skew and via count")
+        return
     lp, ln = b.length.get(e["p"], 0.0), b.length.get(e["n"], 0.0)
     if not lp or not ln:
         yield row(False, f"{e['name']}: routed", f"{e['p']} {lp:.1f} mm, {e['n']} {ln:.1f} mm (unrouted?)", e)
@@ -91,12 +106,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("board_dir", type=Path)
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--placement", action="store_true", help="placed, not routed: copper-only rows report SKIP")
     a = ap.parse_args()
+    global PLACEMENT
+    PLACEMENT = a.placement
     rows = run(a.board_dir)
     if a.json:
         json.dump([dict(zip(("status", "check", "detail"), r)) for r in rows], sys.stdout, indent=1)
         sys.exit(any(r[0] == "FAIL" for r in rows))
-    fails = report(rows, f"critical blocks: {a.board_dir}")
+    fails = report(rows, f"critical blocks: {a.board_dir}" + (" (placement only)" if a.placement else ""))
     print("critical:", "FAILED" if fails else "OK")
     sys.exit(1 if fails else 0)
 

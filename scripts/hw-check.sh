@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Hardware gate: weatherstation-v1 (single-board history) and the split power-board + main-board. Per board: profile
 # files parse, BOM check, power/charger check, track widths; split_check proves the split against v1 (no KiCad needed);
-# critical blocks once a routed board exists.
+# critical blocks once a routed board exists (split boards: placement mode); stack_check proves J10/holes line up.
 # Options are passed to the BOM check: --strict (order time: MISSING fails), --stock [--qty N] (live JLCPCB stock, needs network).
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -34,6 +34,15 @@ echo "== split"
 $PY -I hardware/tools/split_check.py | tail -1 || rc=1
 echo "== header"
 $PY -I hardware/tools/header_check.py --selftest >/dev/null && $PY -I hardware/tools/header_check.py | tail -2 || rc=1
+echo "== stack"
+$PY -I hardware/tools/stack_check.py --selftest >/dev/null && $PY -I hardware/tools/stack_check.py | tail -1 || rc=1
+# placed split boards: critical blocks in placement mode (copper-only rows SKIP until they are routed)
+for D in hardware/power-board hardware/main-board; do
+    n=$(basename $D)
+    if [ -f $D/$n.kicad_pcb ] && [ -f $D/critical.yaml ]; then
+        $PY hardware/calc/critical.py $D --placement | tail -1 | sed "s|^|$n |" ; [ "${PIPESTATUS[0]}" -eq 0 ] || rc=1
+    fi
+done
 # routed = the board carries router copper; the generator's hand-drawn copper (charger power stage) is always locked
 routed() { python3 -c 'import re, sys
 blocks = re.findall(r"\(segment\b.*?\(uuid", open(sys.argv[1]).read(), re.S)

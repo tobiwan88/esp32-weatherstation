@@ -18,7 +18,7 @@ def pt(p):
 
 
 geom = {"size": [mm(box.GetWidth()), mm(box.GetHeight())], "edges": [], "pads": [], "tracks": [], "vias": [], "footprints": [],
-        "pours": []}
+        "pours": [], "keepouts": []}
 for d in board.GetDrawings():
     if d.GetLayer() == pcbnew.Edge_Cuts and d.GetShape() == pcbnew.SHAPE_T_SEGMENT:
         geom["edges"].append([pt(d.GetStart()), pt(d.GetEnd())])
@@ -38,6 +38,11 @@ for t in board.GetTracks():
     else:
         geom["tracks"].append({"a": pt(t.GetStart()), "b": pt(t.GetEnd()), "w": mm(t.GetWidth()),
                                "layer": board.GetLayerName(t.GetLayer()), "net": t.GetNetname()})
+for z in board.Zones():  # rule areas (keepouts) as outlines
+    if z.GetIsRuleArea():
+        o = z.Outline().Outline(0)
+        geom["keepouts"].append({"name": z.GetZoneName(), "pts": [pt(o.CPoint(j)) for j in range(o.PointCount())],
+                                 "layers": [board.GetLayerName(l) for l in z.GetLayerSet().CuStack()]})
 for z in board.Zones():  # filled outer-layer pours (the inner GND planes would cover everything)
     if z.GetIsRuleArea():
         continue
