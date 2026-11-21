@@ -1,0 +1,87 @@
+# Board profile: the facts the board-neutral hardware skills and hardware/calc/ scripts read (hw-base folder contract).
+# Status: schematic generated (split from weatherstation-v1, 2026-11-21); no layout yet.
+name: power-board
+pcb: power-board.kicad_pcb        # not created yet
+sch: power-board.kicad_sch
+bom: bom.csv
+generators: {schematic: ../gen/power_board.py, layout: null}   # gen/power_layout.py is the schematic block layout
+notes: BOARD.md
+requirements: ../REQUIREMENTS-system.md
+architecture: ../ARCHITECTURE.md
+
+fab:
+  house: JLCPCB
+  assembly: "JLCPCB PCBA, Economic (one side, SMT only); J5, J6 and J10 hand-soldered"
+  rules: ../rules/jlc-4layer.json
+  extended_fee_usd: 3.07      # per unique Extended part, Economic PCBA (REQUIREMENTS-system.md section 2, JLC fee table 2026-10-22)
+  setup_fee_usd: 8.18         # Economic PCBA setup per order (same source)
+  stencil_fee_usd: 1.53       # per order (same source)
+  order_qty: 5                # REQUIREMENTS-system.md section 2: about 5 boards of each design
+  order_limit_usd: 100        # each PCBA order under USD 100 (REQUIREMENTS-system.md section 2)
+
+# 4 layers as the single-board design (REQUIREMENTS-system.md section 3); stackup numbers from the weatherstation-v1 profile.
+stackup:
+  name: JLC04161H-7628
+  copper_mm: 0.035
+  soldermask: {thickness_mm: 0.015, er: 3.8}
+  layers:
+    - {name: F.Cu, role: signal, ref: In1.Cu, dielectric_mm: 0.2104, er: 4.4}
+    - {name: In1.Cu, role: plane, net: GND}
+    - {name: In2.Cu, role: plane, net: GND}
+    - {name: B.Cu, role: signal, ref: In2.Cu, dielectric_mm: 0.2104, er: 4.4}
+
+net_classes:   # full KiCad names (/Sheet/NET; global rails have no sheet). Widths checked by calc/track_width.py
+  Default: {track_mm: 0.2, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3}
+  # Charge path: 1.7 A (PV Imp of the old 10 W reference panel 1.67 A; ILIM clamp 1.59 A; charge 1.5 A).
+  Charge: {track_mm: 0.65, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3, current_a: 1.7,
+           nets: [USB_VBUS, VBUS, PMID, SYS, BAT_PACK, /Battery/BAT_CON, /Battery/BAT_N, /Battery/PB_MID, /Charger/SW1,
+                  /Charger/SW2, /Inputs/PV_IN, /Inputs/PV_RAW, /Inputs/PV_N_RAW, /Inputs/ACF1_MID, /Inputs/ACF2_MID]}
+  USB: {track_mm: 0.27, gap_mm: 0.15, nets: [/USB_DP, /USB_DN]}   # BC1.2 stubs from J10 to U3 only
+
+layout:
+  stitch_pitch_mm: [2, 3]
+  thermal_relief: {spoke_mm: 0.3, gap_mm: 0.25, spokes: 4}
+  max_board_mm: [50, 50]      # REQUIREMENTS-system.md section 7
+  temp_rise_c: 10
+
+alternates: {}   # the v1 alternate for C3001973 has no part on this BOM (D1 is a different LCSC number)
+
+power: []   # no plain buck on this board (calc/buck.py); the charger is checked in design: below
+# Inputs of calc/power_budget.py. This board owns the charger, the cell, the protection and the energy budget of the
+# station; the main board's load profile enters as inputs here (cycle, load). value null = MISSING, no source = WARN.
+design:
+  charger:                 # BQ25798 (C2876593): register values written by the main board's firmware before CE goes low
+    vreg_v: {value: 3.65, source: "CBAK 26700LT spec A/03: standard end of charge 3.65 V (weatherstation-v1/charge-policy.md)"}
+    vreg_accuracy_mv: {value: 35, source: "BQ25798 SLUSDV2C section 6.5: VREG_ACC -0.45 % to +0.95 % (specified at 4.2 V; 0.95 % x 3.65 V = 35 mV)"}
+    ichg_a: {value: 1.5, source: "0.38C of 3.9 Ah; inside the HY2112 charge overcurrent (-170 mV minimum): 2 x 48 mOhm x 1.5 A = 144 mV"}
+  hy2112:                  # HY2112-CB protection (U6) and its pack-negative FETs M60/M61
+    fet_rds_ohm: {value: 0.048, source: "AO3400A (C20917) JLCPCB listing: 48 mOhm at 2.5 V gate; worst case used"}
+    oc_charge_v: {value: 0.170, source: "HY2112-CB table 1 / section 9: charge overcurrent -200 mV +/- 30 mV, minimum magnitude 170 mV"}
+    oc_discharge_v: {value: 0.185, source: "HY2112-CB section 9: discharge overcurrent 200 mV +/- 15 mV, minimum 185 mV"}
+  cell:                    # CBAK 26700LT spec A/03 (LFP), REQUIREMENTS-system.md section 4 default cell
+    vmax_v: {value: 3.75, source: "CBAK 26700LT spec A/03: limited charge voltage 3.75 V"}
+    cell_mah: {value: 3900, source: "CBAK 26700LT spec A/03: minimum capacity 3900 mAh"}
+    vcut_cell_v: {value: 2.0, source: "CBAK 26700LT spec A/03: standard discharge cut-off 2.0 V"}
+    hy2112_overdischarge_v: {value: 2.10, source: "HY2112-CB DS-HY2112 V08 table 1: overdischarge detection 2.10 V"}
+    vcutoff_firmware_v: {value: 2.4, source: "firmware policy: sensors off above the HY2112 detection (2.10 V)"}
+  load:
+    peak_a: {value: 0.6, source: "main board (main-board/board.yaml design.load.peak_a): ESP32 TX about 0.4 A + PMS7003 0.19 A at the cell (estimate)"}
+  panel:
+    # REQUIREMENTS-system.md section 4: 5 W 6 V class panel, not bought yet. Values below are the old 10 W reference
+    # (Voltaic P110) and only bound the TVS (Voc below the SMBJ10A 10 V standoff); no script reads them.
+    vmp_v: {value: 5.71, source: "Voltaic P110 product page (10 W reference panel of weatherstation-v1); replace with the bought 5 W panel"}
+    voc_v: {value: 6.94, source: "Voltaic P110 product page; cold estimate about 7.9 V at -20 C, below the SMBJ10A 10 V standoff"}
+  cycle:                   # station load profile (main board), REQUIREMENTS-system.md sections 4 and 6
+    period_s: {value: 900, source: "REQUIREMENTS-system.md section 4: measure and report every 15-30 min; 15 min is the worst case"}
+    esp_active_s: {value: 15, source: assumption}
+    esp_active_ma: {value: 100, source: assumption}
+    sensor_on_s: {value: 90, source: "REQUIREMENTS-system.md section 6: 30 s warm-up + 30-60 s window at 1 Hz, about 90 s per cycle"}
+    sensor_ma: {value: 190, source: "PMS7003 manual V2.5: active <= 100 mA at 5 V; at the cell 5 V x 0.1 A / 0.85 (TPS61023, assumption) / 3.2 V = 184 mA, rounded up"}
+    sleep_ua: {value: 100, source: "REQUIREMENTS-system.md section 4: whole-stack sleep target under 100 uA (target, not measured)"}
+    o3_on_s: {value: 240, source: "Winsen ZE25-O3 page: warm-up <= 3 min, response <= 90 s; 4 min window (firmware choice)"}
+    o3_period_s: {value: 3600, source: "firmware choice: one O3 reading per hour"}
+    o3_ma: {value: 20, source: "user 2026-11-04: ZE25-O3 10 mA at 5 V; at the cell 5 V x 10 mA / 0.85 / 3.2 V = 18 mA, rounded up"}
+  solar:
+    panel_w: {value: 5, source: "REQUIREMENTS-system.md section 4: 5 W 6 V class panel (decided 2026-11-21)"}
+    psh_worst_h: {value: 0.7, source: "design value for cloudy December, Germany (PVGIS-SARAH3 2005-2023, 45 deg; weatherstation-v1 profile)"}
+    system_eff: {value: 0.6, source: assumption}

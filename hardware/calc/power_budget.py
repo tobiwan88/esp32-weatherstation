@@ -3,6 +3,8 @@ buck-boost input at cut-off, protection ordering, energy budget.
 
 Rows: OK, WARN, FAIL, MISSING. An input with a null value is MISSING (fill it from its source, never guess); an input
 without `source` is WARN (unsourced). `source: assumption` is allowed and printed, so a reader sees what is still a guess.
+A check group runs only when its section is in the profile (charger, buckboost, hy2112, cycle): a split system (power
+board + main board) checks each group on the board that owns the part; a present section with a null value is MISSING.
 Formulas: C-rate = ICHG / capacity; cell voltage at the regulator input = cut-off - (path resistance x peak current);
 the TPS63802 minimum input is the datasheet recommended value (section 8.3).
 Usage: uv run --package weatherstation-hardware python hardware/calc/power_budget.py hardware/<board> [--selftest]
@@ -30,9 +32,12 @@ def run(design: dict) -> list:
     rows: list = []
     ch, ce, bb, ld, cy, so, pn, hy = (design.get(k, {}) for k in ("charger", "cell", "buckboost", "load", "cycle", "solar", "panel", "hy2112"))
 
+    has = set(design)
+    vreg = acc = ichg = vmax = cap = None
     # BQ25798 charger (USB + PV): register values that firmware writes before CE is released (usb-charger-bq25798.md)
-    vreg, acc, ichg = val(ch, "vreg_v", rows), val(ch, "vreg_accuracy_mv", rows), val(ch, "ichg_a", rows)
-    vmax, cap = val(ce, "vmax_v", rows), val(ce, "cell_mah", rows)
+    if "charger" in has:
+        vreg, acc, ichg = val(ch, "vreg_v", rows), val(ch, "vreg_accuracy_mv", rows), val(ch, "ichg_a", rows)
+        vmax, cap = val(ce, "vmax_v", rows), val(ce, "cell_mah", rows)
     if vreg is not None and vmax is not None:
         if acc is None:
             rows.append(("MISSING", "VREG vs cell maximum", f"VREG {vreg} V, cell maximum {vmax} V; accuracy of the BQ25798 VREG not in the profile"))
@@ -44,15 +49,21 @@ def run(design: dict) -> list:
         rows.append(("OK" if c_rate <= 0.5 else "FAIL", "charge current vs 0.5C", f"{ichg} A on {cap} mAh = {c_rate:.2f}C (limit 0.5C at 0-20 C, the coldest band that allows 0.5C)"))
 
     # TPS63802 buck-boost (3.3 V): input at the firmware cut-off must stay above the minimum input voltage
-    vco, path = val(ce, "vcutoff_firmware_v", rows), val(bb, "path_r_ohm", rows)
-    vin_min, pk = val(bb, "vin_min_v", rows), val(ld, "peak_a", rows)
+    vco = val(ce, "vcutoff_firmware_v", rows) if {"buckboost", "hy2112"} & has else None
+    pk = val(ld, "peak_a", rows) if {"buckboost", "hy2112"} & has else None
+    path = vin_min = None
+    if "buckboost" in has:
+        path, vin_min = val(bb, "path_r_ohm", rows), val(bb, "vin_min_v", rows)
     if None not in (vco, path, vin_min, pk):
         vin = vco - path * pk
         m = vin - vin_min
         rows.append(("OK" if m >= 0.2 else ("WARN" if m >= 0 else "FAIL"), "buck-boost input at cutoff",
                      f"cell {vco} V minus {path * pk * 1000:.0f} mV path drop at {pk} A = {vin:.2f} V, minimum {vin_min} V, margin {m * 1000:+.0f} mV"))
     # HY2112-CB current sense: two FETs in series across CS (drop = 2 x Rds x I) must stay inside the overcurrent thresholds
-    rds, occ, ocd = val(hy, "fet_rds_ohm", rows), val(hy, "oc_charge_v", rows), val(hy, "oc_discharge_v", rows)
+    rds = occ = ocd = vdl = vcell_min = None
+    if "hy2112" in has:
+        rds, occ, ocd = val(hy, "fet_rds_ohm", rows), val(hy, "oc_charge_v", rows), val(hy, "oc_discharge_v", rows)
+        vdl, vcell_min = val(ce, "hy2112_overdischarge_v", rows), val(ce, "vcut_cell_v", rows)
     if rds is not None and occ is not None and ichg is not None:
         drop = 2 * rds * ichg
         rows.append(("OK" if drop <= occ - 0.02 else ("WARN" if drop <= occ else "FAIL"), "HY2112 charge overcurrent margin",
@@ -62,12 +73,13 @@ def run(design: dict) -> list:
         rows.append(("OK" if drop <= ocd - 0.02 else ("WARN" if drop <= ocd else "FAIL"), "HY2112 discharge overcurrent margin",
                      f"peak load {pk} A gives {drop * 1000:.0f} mV, trip at {ocd * 1000:.0f} mV"))
     # Hardware protection (HY2112-CB) must act below the firmware cut-off, and above the cell's own cut-off
-    vdl, vcell_min = val(ce, "hy2112_overdischarge_v", rows), val(ce, "vcut_cell_v", rows)
     if None not in (vco, vdl, vcell_min):
         rows.append(("OK" if vcell_min <= vdl < vco else "FAIL", "cut-off ordering",
                      f"cell spec {vcell_min} V <= HY2112 detection {vdl} V < firmware cut-off {vco} V (sensors off first)"))
 
     # energy budget
+    if "cycle" not in has:
+        return rows
     need = ("period_s", "esp_active_s", "esp_active_ma", "sensor_on_s", "sensor_ma", "sleep_ua")
     cyv = {n: val(cy, n, rows, f"cycle.{n}") for n in need}
     if None not in cyv.values():

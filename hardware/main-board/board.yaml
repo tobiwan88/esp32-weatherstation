@@ -1,0 +1,61 @@
+# Board profile: the facts the board-neutral hardware skills and hardware/calc/ scripts read (hw-base folder contract).
+# Status: schematic generated (split from weatherstation-v1, 2026-11-21); no layout yet.
+name: main-board
+pcb: main-board.kicad_pcb         # not created yet
+sch: main-board.kicad_sch
+bom: bom.csv
+generators: {schematic: ../gen/main_board.py, layout: null}   # gen/main_layout.py is the schematic block layout
+notes: BOARD.md
+requirements: ../REQUIREMENTS-system.md
+architecture: ../ARCHITECTURE.md
+
+fab:
+  house: JLCPCB
+  assembly: "JLCPCB PCBA, Economic (one side, SMT only); J2, J7, J8 and J10 hand-soldered"
+  rules: ../rules/jlc-4layer.json
+  extended_fee_usd: 3.07      # REQUIREMENTS-system.md section 2 (JLC fee table 2026-10-22)
+  setup_fee_usd: 8.18
+  stencil_fee_usd: 1.53
+  order_qty: 5
+  order_limit_usd: 100
+
+stackup:                      # as weatherstation-v1 (REQUIREMENTS-system.md section 3: 4 layers, In1/In2 GND)
+  name: JLC04161H-7628
+  copper_mm: 0.035
+  soldermask: {thickness_mm: 0.015, er: 3.8}
+  layers:
+    - {name: F.Cu, role: signal, ref: In1.Cu, dielectric_mm: 0.2104, er: 4.4}
+    - {name: In1.Cu, role: plane, net: GND}
+    - {name: In2.Cu, role: plane, net: GND}
+    - {name: B.Cu, role: signal, ref: In2.Cu, dielectric_mm: 0.2104, er: 4.4}
+
+net_classes:
+  Default: {track_mm: 0.2, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3}
+  # SYS from J10 to U2/U7: peak load 0.6 A at the cell; USB_VBUS J1 -> J10 carries the USB charge input (ILIM 1.59 A)
+  Power: {track_mm: 0.65, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3, current_a: 1.7,
+          nets: [SYS, USB_VBUS, 5V_SW, /Rails/BUCK_L1, /Rails/BUCK_L2, /Rails/GAS_SW]}
+  USB: {track_mm: 0.27, gap_mm: 0.15, nets: [/USB_DP, /USB_DN]}   # 90 ohm diff (calc/impedance.py), full speed
+
+layout:
+  stitch_pitch_mm: [2, 3]
+  thermal_relief: {spoke_mm: 0.3, gap_mm: 0.25, spokes: 4}
+  max_board_mm: [50, 50]
+  temp_rise_c: 10
+
+alternates:
+  C2913198:
+    - {lcsc: C2913204, note: "ESP32-S3-WROOM-1-N8R2 (adds 2 MB PSRAM): check the module's reserved GPIOs before reusing the pin map"}
+
+power: []   # no plain buck (calc/buck.py); the TPS63802 is checked in design: below
+# Inputs of calc/power_budget.py for the parts on this board. Charger, cell protection and the energy budget are checked
+# on the power board (power-board/board.yaml), whose cycle: inputs describe this board's load.
+design:
+  buckboost:               # TPS63802 (U2), 3.3 V from SYS
+    vin_min_v: {value: 1.3, source: "TPS63802 datasheet table 8.3: input voltage 1.3 V minimum (1.8 V to start)"}
+    vout_v: 3.3
+    path_r_ohm: {value: 0.17, source: "assumption: v1 0.15 ohm (F1 PTC + M60/M61 + wiring) + J10 2 SYS pins and 2 GND pins in parallel (about 20 mOhm round trip)"}
+  cell:
+    vcutoff_firmware_v: {value: 2.4, source: "firmware policy (power-board/board.yaml): sensors off above the HY2112 detection 2.10 V"}
+  load:
+    peak_a: {value: 0.6, source: "estimate: ESP32 TX about 0.4 A + PMS7003 0.19 A at the cell (PMS7003 manual V2.5: active <= 100 mA at 5 V)"}
+    sensor_vmin_v: {value: 2.4, source: "SCD4x datasheet v1.7 table 4: VDD 2.4-5.5 V (SHT45 1.08-3.6 V); 3V3_SW is 3.32 V"}

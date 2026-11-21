@@ -1,24 +1,33 @@
 #!/usr/bin/env bash
-# Hardware gate for weatherstation-v1: profile files parse, BOM check, power/charger check, critical blocks once a routed board exists.
+# Hardware gate: weatherstation-v1 (single-board history) and the split power-board + main-board. Per board: profile
+# files parse, BOM check, power/charger check, track widths; split_check proves the split against v1 (no KiCad needed);
+# critical blocks once a routed board exists.
 # Options are passed to the BOM check: --strict (order time: MISSING fails), --stock [--qty N] (live JLCPCB stock, needs network).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 B=hardware/weatherstation-v1
+BOARDS="$B hardware/power-board hardware/main-board"
 PY=${PYTHON:-python3}
 rc=0
+for D in $BOARDS; do
+echo "== $D"
 $PY - <<PYEOF || rc=1
 import sys, yaml, pathlib
-b = pathlib.Path("$B")
-for f in ["board.yaml", "critical.yaml", *sorted(str(p.relative_to(b)) for p in (b / "parts").glob("*.yaml"))]:
+b = pathlib.Path("$D")
+for f in ["board.yaml", *(["critical.yaml"] if (b / "critical.yaml").exists() else []),
+          *sorted(str(p.relative_to(b)) for p in (b / "parts").glob("*.yaml"))]:
     try:
         yaml.safe_load((b / f).read_text())
     except Exception as e:
         print("FAIL profile file", f, e); sys.exit(1)
 print("profile files: OK")
 PYEOF
-$PY hardware/calc/bom_check.py $B "$@" || rc=1
-$PY hardware/calc/power_budget.py $B || rc=1
-$PY hardware/calc/track_width.py $B || rc=1
+$PY hardware/calc/bom_check.py $D "$@" || rc=1
+$PY hardware/calc/power_budget.py $D || rc=1
+$PY hardware/calc/track_width.py $D || rc=1
+done
+echo "== split"
+$PY -I hardware/tools/split_check.py | tail -1 || rc=1
 # routed = the board carries router copper; the generator's hand-drawn copper (charger power stage) is always locked
 routed() { python3 -c 'import re, sys
 blocks = re.findall(r"\(segment\b.*?\(uuid", open(sys.argv[1]).read(), re.S)
