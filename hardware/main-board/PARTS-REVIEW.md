@@ -4,7 +4,9 @@ Scope: the split (J10 contract, the board alone) and the phase B additions. Circ
 is reviewed in `../weatherstation-v1/PARTS-REVIEW.md`. Nothing below changes the topology silently: each fix is a decision.
 
 ## A: probably wrong
-None found in the split.
+| # | Where | Finding | Proposed fix | Source |
+|---|---|---|---|---|
+| A1 | Cost: PCBA order at qty 5 | After phase B the main-board order is about USD 96.95 before the bare 4-layer PCB, SMT joints and shipping: parts USD 11.92 per board (BMP585 alone USD 3.58) + setup 8.18 + stencil 1.53 + 9 Extended x 3.07. With the PCB it lands above the USD 100 limit. Phase A alone was USD 73.16. | Engineer decision, cheapest first: (1) BMP585 off the PCBA (DNP footprint, or keep it on the Qwiic add-on board): saves about USD 21 per order; (2) fewer boards per order is no help (fixed fees dominate); (3) check the cart quote first, the first-tier prices here are upper bounds. Keep the Ports layout either way. | `tools/jlcparts.py` prices 2026-11-21; fee table REQUIREMENTS-system.md 10.4 |
 
 ## B: works, margin or rule broken
 | # | Where | Finding | Proposed fix | Source |
@@ -15,8 +17,13 @@ None found in the split.
 | B5 (applied in phase B, confirm) | Sensors: R50/R51 | 10k sensor-bus pull-ups with the outdoor SHT cable (2 m assumed, 100 pF/m) and up to 7 devices: Cb about 276 pF, rise time 2.3 us, over the 1 us standard-mode limit. | Changed to 2.2k (C25879 Basic): 514 ns; with one bought 2.2k module in parallel the low level sinks 2.64 mA (limit 3 mA). Rule: at most one external 2.2k pull-up pair on the bus; measure the cable capacitance. | NXP UM10204 rev 7 table 10, section 7.1; `calc/i2c_bus.py hardware/main-board` |
 | B4 | USB: BC1.2 and enumeration | D+/D- stubs now run to the power board through J10; the BQ25798 drives D+/D- during detection (DCD, primary/secondary) while the ESP32 USB PHY is attached. Same coexistence as v1 B5, longer stubs. | Firmware: AUTO_INDET_EN = 0 after the first detection; keep the J10 to U3 stub short (stacked). | BQ25798 7.3.4.5.1 |
 
+| B6 | Ports: pulse port debounce | The brief asked for 100 nF + series R on the pulse inputs. With a leakage-safe 1M pull-up, 100 nF gives a 139 ms release edge (about 3.6 Hz max, the anemometer reaches 42 Hz at 100 km/h). Chosen: 1k + 4.7 nF (C1538 Basic): 6.5 ms, 77 Hz; contact bounce beyond that is filtered in the ULP/firmware (dead time per edge). The vane input keeps 100 nF (slow analog). | Confirm the anemometer type and its maximum rate; firmware debounce of about 2 ms. | `calc/i2c_bus.py` pulse rows; ESP32-S3-WROOM-1 v1.8 table 6-3 (VIH 0.75 VDD) |
+
 ## C: cleanup
 | # | Where | Finding | Proposed fix | Source |
 |---|---|---|---|---|
 | C1 | Header: bench supply | Main board alone needs SYS from a bench supply; above 5.5 V U2 and U7 leave their ratings (abs max 6 V / 7 V). | Bring-up note (ARCHITECTURE.md); a TVS on SYS is not needed with the power board. | TPS63802 8.1/8.3; TPS61023 6.1/6.3 |
 | C2 | Dev jumper USB_VBUS -> SYS | With USB only the main board stays dark. A DNP 0 ohm or solder jumper USB_VBUS -> SYS would power it from USB on the bench (5 V is inside U2/U7 ranges) but must never be closed with a power board plugged (USB_VBUS straight onto SYS bypasses the charger). | Engineer decision; default: no jumper, bench supply. | ARCHITECTURE.md bring-up |
+| C3 | Ports: U11 | The vane line uses one of the two USBLC6 lines; the second line (pins 3/4) is unused. Same part as U4/U5/U10, so no new Extended fee (about USD 0.16). | Alternative: a single-line ESD diode (new part, maybe Extended). Keep. | USBLC6-2 DS4260 Rev 7 |
+| C4 | Ports: vane excitation | R74 10k from 3V3_SW: with a SEN-15901 class vane (688 ohm to 120k) the divider draws up to 0.31 mA while 3V3_SW is on and nothing in deep sleep. The ADC reading needs a per-direction table in firmware. | None. | vane network values from the SparkFun SEN-15901 datasheet (not in datasheets/, unverified) |
+| C5 | Ports: GPIO choice | RAIN IO15 and WIND IO16 are RTC GPIOs (ULP counting, ext1 wake) and the 32 kHz crystal pins: no external 32 kHz crystal may be added later. VANE IO8 = ADC1_CH7 (ADC1 works with WiFi; ADC2 does not). Not strapping (0, 3, 45, 46), not USB (19, 20), free in v1. | Note in the firmware pin map. | ESP32-S3-WROOM-1 v1.8 3.2 pin description, 4 table 4-1 |

@@ -7,7 +7,7 @@ Checks (rows OK / WARN / FAIL, last line `split_check: OK|FAILED`, exit 1 on FAI
   2. every v1 net keeps its pins: the union over both boards of the net's pins (without J10 and ADDED parts) equals the
      v1 pins, and each pin sits on the board of its part
   3. a net present on both boards is a header net, and both boards carry J10 with boards_common.HEADER_PINS
-  4. no other new net name, unless it touches only ADDED parts (later additions)
+  4. a new net name touches only ADDED parts, or v1 pins that were unconnected in v1 (a free GPIO)
 Power flags (#FLG) and power symbols are not parts and are ignored.
 Runs without KiCad and without kicad-sch-api (a stub stands in for the drawing library: only PARTS/NETS are read), so
 the gate (scripts/hw-check.sh) can run it everywhere.
@@ -108,16 +108,18 @@ def check(old, new: dict, common) -> list[tuple[str, str, str]]:
     for net in common.HEADER_NETS:
         on = [b for b in new if net in new[b].NETS]
         rows.append(("OK" if len(on) == 2 else "FAIL", f"header net {net}", f"present on {on}"))
-    # 4. no stray new nets
+    # 4. no stray new nets: a new net may touch v1 parts only on pins that were unconnected in v1 (e.g. a free GPIO)
+    old_used = {p for pins in old.NETS.values() for p in real(pins)}
     for b, m in new.items():
         for net, pins in m.NETS.items():
             if net in old.NETS:
                 continue
-            parts = {p[0] for p in real(pins)}
-            if parts <= added[b] | {hdr}:
-                rows.append(("OK", f"new net {net} on {b}", f"only added parts {sorted(parts)}"))
+            v1_pins = {p for p in real(pins) if p[0] not in added[b] | {hdr}}
+            clash = sorted(v1_pins & old_used)
+            if clash:
+                rows.append(("FAIL", f"new net {net} on {b}", f"uses v1 pins that were on other nets {clash}"))
             else:
-                rows.append(("FAIL", f"new net {net} on {b}", f"touches v1 parts {sorted(parts - added[b])}"))
+                rows.append(("OK", f"new net {net} on {b}", "added parts" + (f" and free v1 pins {sorted(v1_pins)}" if v1_pins else "")))
     return rows
 
 

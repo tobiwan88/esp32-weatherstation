@@ -59,7 +59,7 @@ JLC_CLASS = {"C165948": "Extended", "C7519": "Extended", "C23186": "Basic", "C15
              "C307331": "Basic",
              "C25905": "Basic", "C25076": "Basic", "C25741": "Basic", "C25879": "Basic", "C25744": "Basic",
              "C4109": "Basic", "C25092": "Basic", "C11702": "Basic", "C1523": "Basic", "C52923": "Basic",
-             "C18184976": "Extended"}
+             "C18184976": "Extended", "C26083": "Basic", "C1538": "Basic"}
 
 
 def _on_seg(p, seg) -> bool:
@@ -111,6 +111,7 @@ class Generator:
         self.dx = getattr(b, "SHEET_DX", 0)  # cells: shifts every block, part and hand route right (frames clear of the border)
         self.UNWIRED: list[str] = []
         self.HAND_KEYS: set = set()
+        self.HAND_SEGS: dict = {}  # net -> hand-drawn segments of the sheet being drawn
         self._dedupe()
 
     # --- net bookkeeping -------------------------------------------------------------------------------------------
@@ -156,6 +157,7 @@ class Generator:
             hand_keys.update(k for k, its in items.items()
                              if k[0] == net and all(any(_on_seg(it["pos"], sg) for sg in hsegs) for it in its))
         wired.update(hand_keys)
+        self.HAND_SEGS = {net: list(hsegs) for net, hsegs in hand.items()}
         self.HAND_KEYS.clear()
         self.HAND_KEYS.update(hand_keys)
         for key, its in items.items():
@@ -201,6 +203,27 @@ class Generator:
                     return dict(its[0], exit=pt, deg=deg, above=hand)
         return its[0]
 
+    def _hand_groups(self, net: str, its: list) -> list[list]:
+        """Pin items of a hand-routed net grouped by connected wire (segments joined at end points or T-junctions)."""
+        hs = self.HAND_SEGS.get(net, [])
+        parent = list(range(len(hs)))
+
+        def find(i):
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+        for i, a in enumerate(hs):
+            for j in range(i):
+                b = hs[j]
+                if any(_on_seg(pt, b) for pt in a) or any(_on_seg(pt, a) for pt in b):
+                    parent[find(i)] = find(j)
+        groups: dict = {}
+        for it in its:
+            k = next((find(i) for i, sg in enumerate(hs) if _on_seg(it["pos"], sg)), None)
+            groups.setdefault(k, []).append(it)
+        return list(groups.values()) or [its]
+
     def _labels_for(self, items: dict, wired: set, segs: list | None = None) -> list:
         """(net, anchor item): a power symbol on every rail pin; one name label per wired cluster (on a pin where the
         text is clear of wires); a label on every pin of a cluster that could not be wired. Duplicate points are dropped."""
@@ -209,6 +232,10 @@ class Generator:
             net = key[0]
             if net in self.POWER_SYMBOLS and key in self.HAND_KEYS:  # hand-drawn rail: one symbol, on a pin that points up
                 anchors = [next((it for it in its if it["deg"] == 90), its[0])]
+            elif key in self.HAND_KEYS and net not in self.POWER_SYMBOLS:
+                # a hand-drawn net may be several wire groups (e.g. through an ESD part's flow-through pins):
+                # one name label per group, so KiCad joins them by name
+                anchors = [self._clear_item(net, grp, segs or [], True) for grp in self._hand_groups(net, its)]
             else:
                 anchors = (its if net in self.POWER_SYMBOLS or key not in wired
                            else [self._clear_item(net, its, segs or [], key in self.HAND_KEYS)])
@@ -431,6 +458,7 @@ class Generator:
                 x, y, w, h = boxes[sh]
                 dx, dy = cx - (x + w / 2), cy - (y + h / 2)
                 side = ("right" if dx > 0 else "left") if abs(dx) >= abs(dy) else ("bottom" if dy > 0 else "top")
+                side = getattr(b, "ROOT_SIDE", {}).get((n, sh), side)  # optional override per (net, sheet)
                 anchor[(n, sh)] = (side, 0.0)
         # Pins of each (sheet, side), ordered by the position of the other end so wires do not cross. Smaller groups are
         # placed first (centred on the edge); a pin whose partner pin on a facing edge is already placed takes the same

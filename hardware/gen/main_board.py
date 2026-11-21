@@ -18,7 +18,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import boardgen  # noqa: E402  (registers the project symbol library)
 from boards_common import C0402, C0603, C0805, JST_SH4, R0402, R0603, SOT23, TP, add_header, header_part  # noqa: E402
-from main_layout import (BLOCKS, HAND_LABELS, HAND_ROUTES, ROOT_BOX, SHEET_COLOR, SHEET_DX, SHEET_NOTES,  # noqa: E402,F401
+from main_layout import (BLOCKS, HAND_LABELS, HAND_ROUTES, ROOT_BOX, ROOT_SIDE, SHEET_COLOR, SHEET_DX, SHEET_NOTES,  # noqa: E402,F401
                          SHEET_PURPOSE, SHEET_TEXTS, TAG_POS, TAGS_BELOW)
 
 PROJECT, TITLE, SHEET_PREFIX = "main-board", "weatherstation main board", "main board"
@@ -120,6 +120,23 @@ PARTS = {
     "C91": ("Device:C", "100n", C0603, "C14663", "Ports"),
     "J4": ("Connector_Generic:Conn_01x04", "Qwiic 2", JST_SH4, "C160404", "Ports"),
     "J11": ("Connector_Generic:Conn_01x04", "I2C 2.54 (GND 3V3_SW SDA SCL)", "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", None, "Ports"),
+    # Rain/wind/vane port J12 (JST PH 4-pin, hand-soldered): reed contacts to GND on RAIN_IN/WIND_IN, wind-vane resistor
+    # network to GND on VANE_IN. Pins: IO15/IO16 = RTC GPIO (ULP counts in deep sleep), IO8 = ADC1_CH7 (usable with WiFi);
+    # not strapping (0, 3, 45, 46), not USB (19, 20), not used elsewhere. Pull-ups 1M to +3V3: 3.3 uA per closed contact;
+    # 1k + 4.7 nF at the pin: release edge 6.5 ms to VIH, 77 Hz max (calc/i2c_bus.py pulse rows).
+    "J12": ("Connector_Generic:Conn_01x04", "RAIN/WIND (1 GND 2 RAIN 3 WIND 4 VANE)", "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical", None, "Ports"),
+    "U10": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (pulse)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "Ports"),
+    "U11": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (vane)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "Ports"),
+    "R70": ("Device:R", "1M", R0402, "C26083", "Ports"),
+    "R71": ("Device:R", "1M", R0402, "C26083", "Ports"),
+    "R72": ("Device:R", "1k", R0402, "C11702", "Ports"),
+    "R73": ("Device:R", "1k", R0402, "C11702", "Ports"),
+    "C70": ("Device:C", "4.7n", C0402, "C1538", "Ports"),
+    "C71": ("Device:C", "4.7n", C0402, "C1538", "Ports"),
+    # vane divider top 10k from 3V3_SW (SparkFun SEN-15901 class vane, 688 ohm to 120k): no current in deep sleep
+    "R74": ("Device:R", "10k", R0402, "C25744", "Ports"),
+    "R75": ("Device:R", "1k", R0402, "C11702", "Ports"),
+    "C72": ("Device:C", "100n", C0402, "C307331", "Ports"),
 }
 
 # Parts that are not in weatherstation-v1 (tools/split_check.py) and v1 parts changed on purpose after the split.
@@ -128,6 +145,8 @@ ADDED = {
     "C90": "phase B: BMP585 VDD 100 nF", "C91": "phase B: BMP585 VDDIO 100 nF",
     "J4": "phase B: second Qwiic port (REQUIREMENTS-system.md 5 ports)",
     "J11": "phase B: 4-pin 2.54 mm I2C header (GND, 3V3_SW, SDA, SCL)",
+    **{r: "phase B: rain/wind/vane pulse port J12 (REQUIREMENTS-system.md 5 ports)" for r in
+       ("J12", "U10", "U11", "R70", "R71", "R72", "R73", "C70", "C71", "R74", "R75", "C72")},
 }
 CHANGED = {
     "R50": "phase B: 10k -> 2.2k, I2C rise time with 2 m cable (calc/i2c_bus.py, PARTS-REVIEW.md B5)",
@@ -169,10 +188,18 @@ NETS = add_header({
     "GAS_RXIN": [("R46", "2"), ("R47", "1"), ("J8", "5")],
     "GAS_RXD": [("U1", "11"), ("J8", "6")],
     "GAS_DAC": [("U1", "7"), ("J8", "2")],  # IO7 = ADC1: backup reading if the UART fails
+    # rain/wind/vane port (Ports sheet)
+    "RAIN_IN": [("J12", "2"), ("U10", "1"), ("U10", "6"), ("R70", "1"), ("R72", "1")],
+    "WIND_IN": [("J12", "3"), ("U10", "3"), ("U10", "4"), ("R71", "1"), ("R73", "1")],
+    "VANE_IN": [("J12", "4"), ("U11", "1"), ("U11", "6"), ("R74", "1"), ("R75", "1")],
+    "RAIN": [("R72", "2"), ("C70", "1"), ("U1", "8")],    # IO15 (RTC GPIO)
+    "WIND": [("R73", "2"), ("C71", "1"), ("U1", "9")],    # IO16 (RTC GPIO)
+    "VANE": [("R75", "2"), ("C72", "1"), ("U1", "12")],   # IO8 = ADC1_CH7
     # Rails
     "3V3_SW": [("Q40", "3"), ("C42", "1"), ("C43", "1"), ("U8", "7"), ("U8", "19"), ("C47", "1"), ("J3", "2"), ("U5", "5"),
                ("R50", "2"), ("R51", "2"), ("#FLG10", "1"),
-               ("U9", "8"), ("U9", "4"), ("U9", "7"), ("C90", "1"), ("C91", "1"), ("J4", "2"), ("J11", "2")],
+               ("U9", "8"), ("U9", "4"), ("U9", "7"), ("C90", "1"), ("C91", "1"), ("J4", "2"), ("J11", "2"),
+               ("R74", "2")],
     "SEN_G": [("Q40", "1"), ("R40", "2"), ("Q41", "3")],
     "SEN_EN_G": [("Q41", "1"), ("R41", "2"), ("R42", "1")],
     "GAS_SW": [("U7", "5"), ("L5", "2")],
@@ -185,7 +212,7 @@ NETS = add_header({
     "PM_SETIN": [("R49", "2"), ("J2", "10")],
     "+3V3": [("R20", "1"), ("U1", "2"), ("C30", "1"), ("C31", "1"), ("C32", "1"), ("R30", "1"), ("R31", "1"), ("J7", "1"),
              ("R22", "2"), ("R54", "2"), ("R55", "2"), ("TP1", "1"), ("U2", "6"), ("C41", "1"), ("Q40", "2"), ("R40", "1"),
-             ("R52", "1")],
+             ("R52", "1"), ("R70", "2"), ("R71", "2"), ("U10", "5"), ("U11", "5")],
     "BUCK_L1": [("U2", "9"), ("L4", "1")],
     "BUCK_L2": [("U2", "7"), ("L4", "2")],
     "FB": [("U2", "4"), ("R52", "2"), ("R53", "1")],
@@ -195,15 +222,17 @@ NETS = add_header({
             ("C40", "2"), ("C41", "2"), ("Q41", "2"), ("R42", "2"), ("C42", "2"), ("C43", "2"), ("U7", "4"), ("R44", "2"),
             ("R45", "2"), ("C44", "2"), ("C45", "2"), ("C46", "2"), ("J2", "3"), ("J2", "4"), ("U8", "6"), ("U8", "20"),
             ("U8", "21"), ("C47", "2"), ("J3", "1"), ("U5", "2"), ("J8", "3"), ("R47", "2"), ("#FLG12", "1"),
-            ("U9", "3"), ("U9", "6"), ("C90", "2"), ("C91", "2"), ("J4", "1"), ("J11", "1")],
+            ("U9", "3"), ("U9", "6"), ("C90", "2"), ("C91", "2"), ("J4", "1"), ("J11", "1"),
+            ("J12", "1"), ("U10", "2"), ("U11", "2"), ("C70", "2"), ("C71", "2"), ("C72", "2")],
 })
 POWER_SYMBOLS = ("GND", "+3V3", "3V3_SW", "SYS", "USB_VBUS", "5V_SW")
 RAIL_LIB = {"GND": "power:GND", "+3V3": "power:+3V3"}  # others: power:VCC with the net as value
 
 SHEET_VALUE = {"U4": "USBLC6-2SC6", "U5": "USBLC6-2SC6", "L4": "0.47uH", "U2": "TPS63802", "Q40": "AO3401A",
                "Q41": "2N7002", "U7": "TPS61023", "L5": "1uH", "J10": "J_PWR 2x9", "U9": "BMP585", "J4": "QWIIC 2",
-               "J11": "I2C 2.54"}
-HAND_SOLDER = {"J2", "J7", "J8", "J10", "J11"}  # pin headers and JST PH: hand-soldered, not in the assembly BOM
+               "J11": "I2C 2.54",
+               "U10": "USBLC6-2SC6", "U11": "USBLC6-2SC6", "J12": "RAIN/WIND"}
+HAND_SOLDER = {"J2", "J7", "J8", "J10", "J11", "J12"}  # pin headers and JST PH: hand-soldered, not in the assembly BOM
 TP_NOTE = "SYS/3V3 test pads"
 # D+/D- join three sheets (USB, MCU, Header), the sensor bus three (MCU, Sensors, Ports): no crossing-free route on the
 # root, so these keep labels there

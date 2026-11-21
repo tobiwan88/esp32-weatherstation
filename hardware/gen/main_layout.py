@@ -73,6 +73,12 @@ BLOCKS = {
         ("Qwiic port 2 and I2C header", "Same bus as J3, order GND, 3V3_SW, SDA, SCL. Module pull-ups: one 2.2k pair at most",
          (64, 10, 50, 40), {
              "J4": (90, 22, 0), "J11": (90, 34, 0)}),
+        ("Rain, wind and vane port J12", "Contacts to GND, 1M to +3V3 (3.3 uA closed); 1k + 4.7 nF at IO15/IO16. Vane: 10k from 3V3_SW to IO8",
+         (4, 54, 60, 44), {
+             "J12": (10, 74, 0, "m"), "U10": (24, 74, 0), "U11": (24, 90, 0),
+             "R70": (36, 66.5, 180), "R72": (44, 68, 90), "C70": (50, 69.5, 0),
+             "R71": (36, 76.5, 180), "R73": (44, 78, 90), "C71": (50, 79.5, 0),
+             "R74": (36, 88.5, 180), "R75": (44, 90, 90), "C72": (50, 91.5, 0)}),
     ],
 }
 
@@ -93,7 +99,18 @@ HAND_ROUTES = {
     "Ports": {
         "SEN_SDA": [[("J4", "3"), (82, 23)], [(82, 23), (82, 44)], [("J11", "3"), (82, 35)]],
         "SEN_SCL": [[("J4", "4"), (80, 24)], [(80, 24), (80, 44)], [("J11", "4"), (80, 36)]],
+        "RAIN_IN": [[("J12", "2"), ("U10", "1")], [("U10", "6"), (30, 74)], [(30, 74), (30, 68)], [(30, 68), (36, 68)],
+                    [(36, 68), ("R72", "1")]],
+        "WIND_IN": [[("J12", "3"), ("U10", "3")], [("U10", "4"), (28, 75)], [(28, 75), (28, 78)], [(28, 78), (36, 78)],
+                    [(36, 78), ("R73", "1")]],
+        "VANE_IN": [[("J12", "4"), (16, 76)], [(16, 76), (16, 90)], [(16, 90), ("U11", "1")], [("U11", "6"), (36, 90)],
+                    [(36, 90), ("R75", "1")]],
+        "RAIN": [[("R72", "2"), (50, 68)], [(50, 68), (56, 68)]],
+        "WIND": [[("R73", "2"), (50, 78)], [(50, 78), (56, 78)]],
+        "VANE": [[("R75", "2"), (50, 90)], [(50, 90), (56, 90)]],
     },
+    # pulse port: J12 straight through the USBLC6 lines (1 -> 6, 3 -> 4), then each signal on its own row:
+    # pull-up above the row, series R in the row, C below, label at the end (Ports sheet, rows y 68 / 78 / 90)
     # sensor I2C bus: one vertical line per signal left of the connectors (SDA x 26, SCL x 24; SCL crosses SDA, no dot)
     "Sensors": {
         "SEN_SDA": [[("J3", "3"), (26, 37)], [(26, 37), (26, 51)]],
@@ -101,7 +118,8 @@ HAND_ROUTES = {
     },
 }
 HAND_LABELS = {"Sensors": {"SEN_SDA": (26, 51, 270), "SEN_SCL": (24, 51, 270)},
-               "Ports": {"SEN_SDA": (82, 44, 270), "SEN_SCL": (80, 44, 270)},
+               "Ports": {"SEN_SDA": (82, 44, 270), "SEN_SCL": (80, 44, 270),
+                         "RAIN": (56, 68, 0), "WIND": (56, 78, 0), "VANE": (56, 90, 0)},
                "Header": {"CHG_SDA": (16, 32, 180), "CHG_INT": (10, 34, 180), "CHG_SCL": (46, 32, 0), "CHG_CE": (52, 34, 0)}}
 SHEET_DX = 2  # every block 2 cells right of the sheet border
 SHEET_TEXTS = {"Header": [(8, 39, HEADER_NOTE)]}
@@ -115,13 +133,16 @@ SHEET_NOTES = {
     "MCU": "ESP32-S3-WROOM-1-N8: decoupling, reset and boot, USB data series resistors, UART debug, status LEDs",
     "Rails": "SYS to 3.3 V (TPS63802), switched 3V3_SW sensor rail and the 5V_SW 5 V boost (TPS61023, enable from IO12)",
     "Sensors": "PMS7003 PM sensor, SHT45 cable, I2C ESD and pull-ups, optional SCD41 (DNP), ZE25-O3 gas connector",
-    "Ports": "BMP585 pressure sensor, second Qwiic port and 2.54 mm I2C header on the sensor bus",
+    "Ports": "BMP585 pressure sensor, second Qwiic port, 2.54 mm I2C header and the rain/wind/vane pulse port",
 }
 
 ROOT_BOX = {
     "USB": (6, 28, 34, 22), "Header": (6, 58, 34, 28), "MCU": (58, 18, 40, 68),
-    "Rails": (116, 18, 40, 18), "Sensors": (116, 40, 40, 32), "Ports": (116, 76, 40, 14),
+    "Rails": (116, 18, 40, 18), "Sensors": (116, 40, 40, 30), "Ports": (116, 74, 40, 18),
 }
+
+# labelled bus pins on the root: Ports takes the sensor bus on its left side (facing the MCU), not on top
+ROOT_SIDE = {("SEN_SDA", "Ports"): "left", ("SEN_SCL", "Ports"): "left"}
 
 SHEET_COLOR = {
     "USB": ((30, 90, 170), (190, 215, 250)),
@@ -138,5 +159,5 @@ SHEET_PURPOSE = {
     "MCU": "ESP32-S3 module: runs the firmware, USB data, reset and boot, debug UART, status LEDs. Controls the charger over I2C and switches the sensor rails.",
     "Rails": "SYS to 3.3 V buck-boost (TPS63802). Switched 3V3_SW for the sensor bus; TPS61023 5 V boost (5V_SW) for the PMS7003 and the O3 module, enabled by the ESP32.",
     "Sensors": "PMS7003 PM sensor (5 V, UART), the outdoor SHT45 board, optional SCD41 CO2 (not fitted) and the ZE25-O3 gas sensor; I2C pull-ups and ESD protection.",
-    "Ports": "BMP585 pressure sensor (0x46), second Qwiic port and a 2.54 mm I2C header, all on the switched sensor bus.",
+    "Ports": "BMP585 pressure (0x46), Qwiic port 2, I2C header, rain/wind/vane port.",
 }
