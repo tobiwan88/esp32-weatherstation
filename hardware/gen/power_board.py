@@ -23,8 +23,7 @@ from power_layout import (BLOCKS, HAND_LABELS, HAND_ROUTES, ROOT_BOX, SHEET_COLO
 
 DATE = "2026-11-21"  # title block: date of the last schematic change
 PROJECT, TITLE, SHEET_PREFIX = "power-board", "weatherstation power board", "power board"
-SHEET_FILES = {"Inputs": "inputs.kicad_sch", "Charger": "charger.kicad_sch", "Battery": "battery.kicad_sch",
-               "Header": "header.kicad_sch"}
+SHEET_FILES = {"Inputs": "inputs.kicad_sch", "Charger": "charger.kicad_sch", "Battery": "battery.kicad_sch"}
 
 # ref: (symbol, value, footprint, LCSC or None, sheet)
 PARTS = {
@@ -102,8 +101,8 @@ PARTS = {
     "C60": ("Device:C", "0.1u (HY2112 VDD)", C0402, "C307331", "Battery"),
     "R61": ("Device:R", "2k (HY2112 CS)", R0402, "C4109", "Battery"),
     # --- Header -------------------------------------------------------------------------------------------------------
-    "J10": header_part("Header", "power"),
-    "#FLG20": ("power:PWR_FLAG", "PWR_FLAG", None, None, "Header"),  # GND: on this board only passive pins drive it
+    "J10": header_part("Inputs", "power"),
+    "#FLG20": ("power:PWR_FLAG", "PWR_FLAG", None, None, "Inputs"),  # GND: on this board only passive pins drive it
 }
 
 # Parts that are not in weatherstation-v1 (tools/split_check.py)
@@ -177,9 +176,13 @@ HAND_SOLDER = {"J5", "J6", "J10"}  # JST PH and the 2.54 mm header: hand-soldere
 ROOT_TEXTS = [
     (6, 6, "#weatherstation power board: block diagram"),
     (6, 10, "Each box is a sheet. Wires join the sheet pins (hierarchical labels). Rails (GND, SYS, VBUS, USB_VBUS, PMID, REGN, BAT_PACK) are power symbols."),
-    (6, 92, "Power path: USB_VBUS (J10, from the main board's USB-C) or PV (J5) -> Inputs (ACFET/RBFET pairs) -> VBUS -> Charger (BQ25798) -> SYS -> J10 -> main board."),
-    (6, 94, "Cell: Battery (J6, PTC F1, HY2112-CB with M60/M61) <-> BAT_PACK <-> Charger. The board makes no 3.3 V: CE/INT/I2C pull-ups are on the main board."),
-    (6, 96, "Header J10 (J_PWR) pin map and the D+/D- decision: hardware/ARCHITECTURE.md. Open decisions: hardware/power-board/PARTS-REVIEW.md."),
+    (6, 66, "#Power flow (rails have no wires on this page)"),
+    (6, 70, "main board USB-C --USB_VBUS (J10)--> Inputs: ACFET1/RBFET1 --VBUS--> Charger"),
+    (6, 72, "solar panel J5 --PV_IN (TVS, choke)--> Inputs: ACFET2/RBFET2 --VBUS--> Charger"),
+    (6, 74, "Charger (BQ25798) --SYS--> Inputs: J10 --> main board (TPS63802, TPS61023)"),
+    (6, 76, "Charger <--BAT_PACK--> Battery: PTC F1, HY2112-CB with M60/M61, cell J6"),
+    (6, 78, "No 3.3 V on this board: CE/INT/I2C pull-ups are on the main board; R23 holds CE high (charge off) when it is absent."),
+    (6, 96, "Header J10 (J_PWR) pin map and the D+/D- decision: hardware/ARCHITECTURE.md. Firmware rules: hardware/FIRMWARE-RULES.md."),
 ]
 
 if __name__ == "__main__":

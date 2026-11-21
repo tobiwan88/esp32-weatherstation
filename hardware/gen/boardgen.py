@@ -397,6 +397,9 @@ class Generator:
                 self.UNWIRED.append(f"{name}:{key[0]}@{key[1]}")
         # 3. labels: one name per wired net (on its wire); power symbols; every other pin labelled
         cross_nets = {n for n, _b in items if len(self.sheets_of(n)) > 1}
+        # HAND_LABELS: one (x, y, deg[, "above"]) or a list of them (one per wire group of the net); each group takes
+        # the nearest unused spot, a group without a spot is labelled at its own pin
+        spots = {n: (list(v) if isinstance(v, list) else [v]) for n, v in b.HAND_LABELS.get(name, {}).items()}
         for net, it in self._labels_for(items, wired, s.segs):
             cx, cy = it["exit"][0] / 2.54, it["exit"][1] / 2.54
             if net in self.POWER_SYMBOLS:
@@ -407,8 +410,10 @@ class Generator:
                 else:
                     rot = (deg + 90) % 360 if net == "GND" else (deg - 90) % 360
                     s.power(net, cx, cy, lib=b.RAIL_LIB.get(net, "power:VCC"), rot=rot)
-            elif it.get("above") and net in b.HAND_LABELS.get(name, {}):
-                hx, hy, hdeg, *opt = b.HAND_LABELS[name][net]  # optional 4th item "above": text beside the wire
+            elif it.get("above") and spots.get(net):
+                spot = min(spots[net], key=lambda t: (t[0] + dx - cx) ** 2 + (t[1] - cy) ** 2)
+                spots[net].remove(spot)
+                hx, hy, hdeg, *opt = spot  # optional 4th item "above": text beside the wire
                 s.label(net, hx + dx, hy, hdeg, "hier" if net in cross_nets else "local", above="above" in opt,
                         shape=getattr(b, "LABEL_SHAPE", {}).get(name, {}).get(net, "bidirectional"))
             else:

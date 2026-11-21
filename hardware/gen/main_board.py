@@ -23,8 +23,8 @@ from main_layout import (BLOCKS, HAND_LABELS, HAND_ROUTES, ROOT_BOX, ROOT_SIDE, 
 
 DATE = "2026-11-21"  # title block: date of the last schematic change
 PROJECT, TITLE, SHEET_PREFIX = "main-board", "weatherstation main board", "main board"
-SHEET_FILES = {"USB": "usb.kicad_sch", "Header": "header.kicad_sch", "MCU": "mcu.kicad_sch",
-               "Rails": "rails.kicad_sch", "Sensors": "sensors.kicad_sch", "Ports": "ports.kicad_sch"}
+SHEET_FILES = {"USB": "usb.kicad_sch", "MCU": "mcu.kicad_sch", "Rails": "rails.kicad_sch", "I2C": "i2c.kicad_sch",
+               "Sensors": "sensors.kicad_sch"}
 
 # ref: (symbol, value, footprint, LCSC or None, sheet)
 PARTS = {
@@ -36,17 +36,17 @@ PARTS = {
     "#FLG12": ("power:PWR_FLAG", "PWR_FLAG", None, None, "USB"),
     "#FLG22": ("power:PWR_FLAG", "PWR_FLAG", None, None, "USB"),  # USB_VBUS: J1 and U4 pins are passive / power input
     # --- Header: J10 and the charger host pull-ups (moved from the old Charger sheet) ----------------------------------
-    "J10": header_part("Header", "main"),
+    "J10": header_part("USB", "main"),
     # CE pull-up to +3V3 (not REGN: CE is also an ESP32 GPIO, 3.3 V I/O; v1 PARTS-REVIEW A7): charge off until firmware
     # has written VREG 3.65 V and drives CE low. 1M since 2026-11-21 (review B1): CE is held low through deep sleep, 3.3 uA
     # instead of 33 uA; the power board has its own 1M to BAT_PACK, so CE never floats on either side.
-    "R20": ("Device:R", "1M", R0402, "C26083", "Header"),
-    "R22": ("Device:R", "10k", R0402, "C25744", "Header"),
+    "R20": ("Device:R", "1M", R0402, "C26083", "USB"),
+    "R22": ("Device:R", "10k", R0402, "C25744", "USB"),
     # Charger I2C bus (IO1 SDA / IO2 SCL: the RTC I2C pins of the ULP RISC-V driver): own 10k pull-ups to +3V3, readable
     # while the sensor rail is off (v1 PARTS-REVIEW A4).
-    "R54": ("Device:R", "10k", R0402, "C25744", "Header"),
-    "R55": ("Device:R", "10k", R0402, "C25744", "Header"),
-    "#FLG21": ("power:PWR_FLAG", "PWR_FLAG", None, None, "Header"),  # SYS arrives through J10 (passive pins)
+    "R54": ("Device:R", "10k", R0402, "C25744", "USB"),
+    "R55": ("Device:R", "10k", R0402, "C25744", "USB"),
+    "#FLG21": ("power:PWR_FLAG", "PWR_FLAG", None, None, "USB"),  # SYS arrives through J10 (passive pins)
     # --- MCU ---------------------------------------------------------------------------------------------------------
     "U1": ("RF_Module:ESP32-S3-WROOM-1", "ESP32-S3-WROOM-1-N8", "RF_Module:ESP32-S3-WROOM-1", "C2913198", "MCU"),
     "C30": ("Device:C", "22u", C0805, "C45783", "MCU"),
@@ -109,19 +109,19 @@ PARTS = {
     "R48": ("Device:R", "1k (PM RX series)", R0402, "C11702", "Sensors"),
     "R49": ("Device:R", "1k (PM SET series)", R0402, "C11702", "Sensors"),
     # optional CO2: Sensirion SCD41-D-R2 (LCSC C3659294), footprint only (DNP). VDD and VDDH tied at the sensor.
-    "U8": ("Sensor_Gas:SCD41-D-R2", "SCD41 DNP (C3659294)", "Sensor:Sensirion_SCD4x-1EP_10.1x10.1mm_P1.25mm_EP4.8x4.8mm", None, "Sensors"),
-    "C47": ("Device:C", "10u DNP (C19702; SCD41 VDD, fit with U8)", C0603, None, "Sensors"),
-    "J3": ("Connector_Generic:Conn_01x04", "SHT head cable (Qwiic)", JST_SH4, "C160404", "Sensors"),
+    "U8": ("Sensor_Gas:SCD41-D-R2", "SCD41 DNP (C3659294)", "Sensor:Sensirion_SCD4x-1EP_10.1x10.1mm_P1.25mm_EP4.8x4.8mm", None, "I2C"),
+    "C47": ("Device:C", "10u DNP (C19702; SCD41 VDD, fit with U8)", C0603, None, "I2C"),
+    "J3": ("Connector_Generic:Conn_01x04", "SHT head cable (Qwiic)", JST_SH4, "C160404", "I2C"),
     # Outdoor cable supply (review B11, 2026-11-21): no Basic resettable fuse exists at JLCPCB (all PTCs Extended, +3.07 per
     # order), so a 100 ohm 1206 series resistor feeds J3 pin 2: a cable short draws 33 mA (0.11 W of 0.25 W) and +3V3 stays
     # up; the SHT head draws at most 0.5 mA (SHT4x 4.5 table, heater off: 50 mV drop). Never use the SHT heater (FIRMWARE-RULES).
     # J4/J11 stay on 3V3_SW directly: a SEN0460 on Qwiic draws up to 100 mA (open: PARTS-REVIEW).
-    "R77": ("Device:R", "100 1206 (outdoor cable feed)", "Resistor_SMD:R_1206_3216Metric", "C17901", "Sensors"),
-    "U5": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (I2C)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "Sensors"),
+    "R77": ("Device:R", "100 1206 (outdoor cable feed)", "Resistor_SMD:R_1206_3216Metric", "C17901", "I2C"),
+    "U5": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (I2C)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "I2C"),
     # Sensor I2C bus (IO13/IO14): pull-ups and U5 VBUS on 3V3_SW, so nothing back-powers the sensors when the rail is off.
     # 2.2k since phase B: 2 m outdoor cable + up to 7 devices = about 280 pF; 10k gave 2.3 us rise (calc/i2c_bus.py)
-    "R50": ("Device:R", "2.2k", R0402, "C25879", "Sensors"),
-    "R51": ("Device:R", "2.2k", R0402, "C25879", "Sensors"),
+    "R50": ("Device:R", "2.2k", R0402, "C25879", "I2C"),
+    "R51": ("Device:R", "2.2k", R0402, "C25879", "I2C"),
     # ZE25-O3 7-pin (Winsen table 2): 1 reserved, 2 DAC, 3 GND, 4 Vin 3.7-5.5 V, 5 RXD (0-3.0 V in), 6 TXD, 7 reserved.
     "J8": ("Connector_Generic:Conn_01x07", "ZE25-O3 (cable pitch to confirm)", "Connector_JST:JST_PH_B7B-PH-K_1x07_P2.00mm_Vertical", None, "Sensors"),
     "R46": ("Device:R", "1k (GAS RXD level: 3.3 V x 10/11 = 3.0 V)", R0402, "C11702", "Sensors"),
@@ -130,28 +130,28 @@ PARTS = {
     # BMP580 (engineer 2026-11-21, was BMP585; cost). No public BMP580 datasheet: BMP581 BST-BMP581-DS004-13 (same LGA-10
     # 2x2 package and pins): CSB = VDDIO (6.2.3), SDO low = 0x46 (5.6), INT to GND, unused (6.2), 100 nF at VDD and
     # VDDIO (figure 26). Card: main-board/parts/BMP580.yaml.
-    "U9": ("weatherstation:BMP580", "BMP580 (0x46)", "weatherstation:Bosch_LGA-10_2x2mm", "C22391138", "Ports"),
-    "C90": ("Device:C", "100n", C0402, "C307331", "Ports"),
-    "C91": ("Device:C", "100n", C0402, "C307331", "Ports"),
-    "J4": ("Connector_Generic:Conn_01x04", "Qwiic 2", JST_SH4, "C160404", "Ports"),
-    "J11": ("Connector_Generic:Conn_01x04", "I2C 2.54 (GND 3V3_SW SDA SCL)", "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", None, "Ports"),
+    "U9": ("weatherstation:BMP580", "BMP580 (0x46)", "weatherstation:Bosch_LGA-10_2x2mm", "C22391138", "I2C"),
+    "C90": ("Device:C", "100n", C0402, "C307331", "I2C"),
+    "C91": ("Device:C", "100n", C0402, "C307331", "I2C"),
+    "J4": ("Connector_Generic:Conn_01x04", "Qwiic 2", JST_SH4, "C160404", "I2C"),
+    "J11": ("Connector_Generic:Conn_01x04", "I2C 2.54 (GND 3V3_SW SDA SCL)", "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", None, "I2C"),
     # Rain/wind/vane port J12 (JST PH 4-pin, hand-soldered): reed contacts to GND on RAIN_IN/WIND_IN, wind-vane resistor
     # network to GND on VANE_IN. Pins: IO15/IO16 = RTC GPIO (ULP counts in deep sleep), IO8 = ADC1_CH7 (usable with WiFi);
     # not strapping (0, 3, 45, 46), not USB (19, 20), not used elsewhere. Pull-ups 1M to +3V3: 3.3 uA per closed contact;
     # 1k + 4.7 nF at the pin: release edge 6.5 ms to VIH, 77 Hz max (calc/i2c_bus.py pulse rows).
-    "J12": ("Connector_Generic:Conn_01x04", "RAIN/WIND (1 GND 2 RAIN 3 WIND 4 VANE)", "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical", None, "Ports"),
-    "U10": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (pulse)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "Ports"),
-    "U11": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (vane)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "Ports"),
-    "R70": ("Device:R", "1M", R0402, "C26083", "Ports"),
-    "R71": ("Device:R", "1M", R0402, "C26083", "Ports"),
-    "R72": ("Device:R", "1k", R0402, "C11702", "Ports"),
-    "R73": ("Device:R", "1k", R0402, "C11702", "Ports"),
-    "C70": ("Device:C", "4.7n", C0402, "C1538", "Ports"),
-    "C71": ("Device:C", "4.7n", C0402, "C1538", "Ports"),
+    "J12": ("Connector_Generic:Conn_01x04", "RAIN/WIND (1 GND 2 RAIN 3 WIND 4 VANE)", "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical", None, "Sensors"),
+    "U10": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (pulse)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "Sensors"),
+    "U11": ("Power_Protection:USBLC6-2SC6", "USBLC6-2SC6 (vane)", "Package_TO_SOT_SMD:SOT-23-6", "C7519", "Sensors"),
+    "R70": ("Device:R", "1M", R0402, "C26083", "Sensors"),
+    "R71": ("Device:R", "1M", R0402, "C26083", "Sensors"),
+    "R72": ("Device:R", "1k", R0402, "C11702", "Sensors"),
+    "R73": ("Device:R", "1k", R0402, "C11702", "Sensors"),
+    "C70": ("Device:C", "4.7n", C0402, "C1538", "Sensors"),
+    "C71": ("Device:C", "4.7n", C0402, "C1538", "Sensors"),
     # vane divider top 10k from 3V3_SW (SparkFun SEN-15901 class vane, 688 ohm to 120k): no current in deep sleep
-    "R74": ("Device:R", "10k", R0402, "C25744", "Ports"),
-    "R75": ("Device:R", "1k", R0402, "C11702", "Ports"),
-    "C72": ("Device:C", "100n", C0402, "C307331", "Ports"),
+    "R74": ("Device:R", "10k", R0402, "C25744", "Sensors"),
+    "R75": ("Device:R", "1k", R0402, "C11702", "Sensors"),
+    "C72": ("Device:C", "100n", C0402, "C307331", "Sensors"),
 }
 
 # Parts that are not in weatherstation-v1 (tools/split_check.py) and v1 parts changed on purpose after the split.
@@ -219,7 +219,7 @@ NETS = add_header({
     "GAS_RXIN": [("R46", "2"), ("R47", "1"), ("J8", "5")],
     "GAS_RXD": [("U1", "11"), ("J8", "6")],
     "GAS_DAC": [("U1", "7"), ("J8", "2")],  # IO7 = ADC1: backup reading if the UART fails
-    # rain/wind/vane port (Ports sheet)
+    # rain/wind/vane port (Sensors sheet)
     "RAIN_IN": [("J12", "2"), ("U10", "1"), ("U10", "6"), ("R70", "1"), ("R72", "1")],
     "WIND_IN": [("J12", "3"), ("U10", "3"), ("U10", "4"), ("R71", "1"), ("R73", "1")],
     "VANE_IN": [("J12", "4"), ("U11", "1"), ("U11", "6"), ("R74", "1"), ("R75", "1")],
@@ -273,9 +273,13 @@ ROOT_LABELLED = ("USB_DP", "USB_DN", "SEN_SDA", "SEN_SCL")
 ROOT_TEXTS = [
     (6, 6, "#weatherstation main board: block diagram"),
     (6, 10, "Each box is a sheet. Wires join the sheet pins (hierarchical labels). Rails (GND, +3V3, 3V3_SW, SYS, USB_VBUS, 5V_SW) are power symbols."),
-    (6, 94, "Power path: SYS (J10, from the power board or a bench supply) -> Rails: TPS63802 -> +3V3 -> Q40 -> 3V3_SW; TPS61023 -> 5V_SW (EN = IO12)."),
-    (6, 96, "USB-C: data to the ESP32 (USB-JTAG), USB_VBUS and D+/D- to J10 (charger input and BC1.2 detection on the power board)."),
-    (6, 98, "Header J10 (J_PWR) pin map: hardware/ARCHITECTURE.md. Open decisions: hardware/main-board/PARTS-REVIEW.md."),
+    (6, 68, "#Power flow (rails have no wires on this page)"),
+    (6, 72, "power board --SYS (J10 on the USB sheet)--> Rails"),
+    (6, 74, "Rails --+3V3 (TPS63802)--> MCU, USB (charger pull-ups), Sensors (pulse pull-ups)"),
+    (6, 76, "Rails --3V3_SW (Q40, SENSOR_EN IO11)--> I2C sheet, Sensors (vane)"),
+    (6, 78, "Rails --5V_SW (TPS61023, BOOST_EN IO12)--> Sensors (PMS7003, ZE25-O3)"),
+    (6, 80, "USB-C --USB_VBUS and D+/D- (J10)--> power board (charger input, BC1.2)"),
+    (6, 100, "Header J10 (J_PWR) pin map: hardware/ARCHITECTURE.md. Firmware rules: hardware/FIRMWARE-RULES.md. Open decisions: PARTS-REVIEW.md."),
 ]
 
 if __name__ == "__main__":

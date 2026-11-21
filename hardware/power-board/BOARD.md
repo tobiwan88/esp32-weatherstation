@@ -1,20 +1,19 @@
 # power-board
 
 **State (2026-11-21):** schematic generated (phase A split from `../weatherstation-v1/`, same parts and nets); no layout,
-no fab files. Gate: nets OK, ERC 0 errors 0 warnings, review checks 0, `tools/split_check.py` OK. Open: CE pull-up on
-this board (PARTS-REVIEW.md A1), panel choice (5 W 6 V, not bought).
+no fab files; review fixes of 2026-11-21 and the 3-sheet partition. Gate: nets OK, ERC 0 errors 0 warnings, review checks 0,
+`tools/split_check.py` OK. Open: panel choice (5 W 6 V, not bought), ICHG (review B5, FIRMWARE-RULES.md).
 
 ## Purpose
 Charger, solar and USB input, cell and its protection. Supplies SYS to the main board over J10 (J_PWR) and takes
 USB_VBUS, D+/D-, and the charger I2C/INT/CE from it. Contract and pin table: `../ARCHITECTURE.md`.
 
-## Sheets (`power-board.kicad_sch` + 4 sheets)
+## Sheets (`power-board.kicad_sch` + 3 sheets)
 | Sheet | Content |
 |---|---|
-| Inputs | USB_VBUS from J10 into ACFET1/RBFET1 M1/M2 (C1, R11); PV: J5, SMBJ10A D1, CM choke L3, C2, ACFET2/RBFET2 M3/M4, R12 |
-| Charger | BQ25798 U3, L1, VBUS/PMID/SYS/BAT caps (table 5-1), PROG R14, ILIM R15/R16, TS R17/R18, STAT R19/D2 |
+| Inputs | J10 keyed 2x10 2.54 mm socket (hole 3 blocked, key) with the pin map note; USB_VBUS from J10 into ACFET1/RBFET1 M1/M2 (C1, R11); PV: J5, SMBJ10A D1, CM choke L3, C2, ACFET2/RBFET2 M3/M4, R12 |
+| Charger | BQ25798 U3, L1, VBUS/PMID/SYS/BAT caps (table 5-1), PROG R14, ILIM R15/R16, TS R17/R18, STAT R19/D2, CE pull-up R23, QON pad TP3 |
 | Battery | J6, F1 PTC, TH1 NTC, HY2112-CB U6 with R60/C60/R61, M60/M61 |
-| Header | J10 keyed 2x10 2.54 mm socket (hole 3 blocked, key) with the pin map note |
 
 ## Decisions
 - Everything inside the board is the reviewed weatherstation-v1 circuit (reference designators kept; charger decisions

@@ -1,7 +1,7 @@
 """Hand-placed block layout of the power-board sheets (units: 2.54 mm cells). Format as layout_v1.py.
 
-The charger and battery sheets keep the weatherstation-v1 drawing (layout_v1.py, reviewed 2026-11-01); the Inputs sheet
-keeps the PV chain and the USB FET pair of the old Input sheet (USB-C moved to the main board); Header is new.
+Three sheets since 2026-11-21 (review partition): Inputs (J10, the USB FET pair and the PV chain), Charger, Battery. The
+charger and battery sheets keep the weatherstation-v1 drawing (layout_v1.py, reviewed 2026-11-01).
 Every part sits inside exactly one block; boardgen asserts this. Part tuples are (x, y, rotation[, mirror]).
 """
 
@@ -18,6 +18,9 @@ BLOCKS = {
              "J5": (10, 68, 0, "m"), "D1": (18, 69.5, 270), "L3": (28, 69, 0), "C2": (36, 71.5, 0),
              "M3": (54, 62, 90), "M4": (62, 62, 90, "m"), "R12": (58, 72, 0),
              "#FLG2": (44, 61, 0)}),
+        ("Board-to-board header J10 (J_PWR)", "Keyed 2x10 2.54 mm socket, hand-soldered, hole 3 blocked (key). SYS out (pins 1, 2, >= 1 A), USB_VBUS in (19, 20), D+/D- in (BC1.2 detection), charger I2C/INT/CE to the main board. A GND pair between signal pairs. Pin map: hardware/ARCHITECTURE.md",
+         (82, 10, 74, 48), {
+             "J10": (96, 30, 0), "#FLG20": (86, 53, 0)}),
     ],
     "Charger": [
         ("BQ25798 charger", "Buck-boost charger, 1S (SLUSDV2C figure 8-1/8-2). Caps per table 5-1: VBUS 2x10u+0.1u, PMID 3x10u+0.1u, BTST 47n, REGN 4.7u. D+/D- from J10 for BC1.2 detection (7.3.4.5)",
@@ -42,11 +45,6 @@ BLOCKS = {
              "J6": (10, 30, 0, "m"), "F1": (18, 30, 90), "TH1": (26, 42, 0), "#FLG14": (24, 55, 0),
              "R60": (36, 19.5, 0), "C60": (50, 22.5, 0), "U6": (46, 30, 270, "m"), "R61": (52, 39, 90),
              "M60": (42, 48, 270), "M61": (60, 48, 270, "m"), "#FLG13": (43.5, 21, 0)}),
-    ],
-    "Header": [
-        ("Board-to-board header J10 (J_PWR)", "Keyed 2x10 2.54 mm socket, hand-soldered, hole 3 blocked (key). SYS out (pins 1, 2, >= 1 A), USB_VBUS in (19, 20), D+/D- in (BC1.2 detection), charger I2C/INT/CE to the main board. A GND pair between signal pairs. Pin map: hardware/ARCHITECTURE.md",
-         (4, 10, 96, 44), {
-             "J10": (24, 30, 0), "#FLG20": (12, 46, 0)}),
     ],
 }
 
@@ -84,11 +82,11 @@ HAND_LABELS: dict = {}
 SHEET_DX = 2  # every block 2 cells right of the sheet border
 
 # free text on a sheet (cells): the J10 pin table, so the header reads without opening ARCHITECTURE.md
-SHEET_TEXTS = {"Header": [(44, 18, HEADER_NOTE)]}
+SHEET_TEXTS = {"Inputs": [(84, 43, HEADER_NOTE)]}
 
 TAGS_BELOW = {"C4"}
 # hierarchical label shapes (signal direction seen from the sheet): J10 signals
-LABEL_SHAPE = {"Header": {"CHG_CE": "output", "CHG_SCL": "output", "CHG_INT": "input", "USB_DP": "output", "USB_DN": "output"},
+LABEL_SHAPE = {"Inputs": {"CHG_CE": "output", "CHG_SCL": "output", "CHG_INT": "input", "USB_DP": "output", "USB_DN": "output"},
                "Charger": {"CHG_CE": "input", "CHG_SCL": "input", "CHG_INT": "output", "USB_DP": "input", "USB_DN": "input"}}
 
 TAG_POS = {**{m: ((0, 5.4, "center"), (0, 7.2, "center")) for m in ("M60", "M61")},
@@ -99,27 +97,23 @@ TAG_POS = {**{m: ((0, 5.4, "center"), (0, 7.2, "center")) for m in ("M60", "M61"
            "D1": ((-1.8, -0.7, "right"), (-1.8, 0.7, "right"))}
 
 SHEET_NOTES = {
-    "Inputs": "USB_VBUS (from J10) and PV inputs into VBUS: back-to-back N-FET pairs (ACDRV1/2), PV surge TVS and common-mode choke",
+    "Inputs": "J10 to the main board, USB_VBUS and PV inputs into VBUS: back-to-back N-FET pairs (ACDRV1/2), PV surge TVS and choke",
     "Charger": "BQ25798RQMR: one charger for USB and PV. Power stage, SYS bulk, programming and status. Cell side on the Battery sheet",
     "Battery": "Cell connector, PTC, cell NTC, HY2112-CB overcharge/overdischarge/overcurrent protection and its pack-negative FETs",
-    "Header": "J10 (J_PWR) to the main board: SYS out, USB_VBUS and D+/D- in, charger I2C, INT and CE",
 }
 
 ROOT_BOX = {
-    "Inputs": (6, 18, 34, 30), "Charger": (56, 18, 40, 34), "Header": (112, 18, 40, 34),
-    "Battery": (56, 62, 40, 22),
+    "Inputs": (6, 18, 34, 40), "Charger": (56, 18, 40, 40), "Battery": (112, 18, 40, 26),
 }
 
 SHEET_COLOR = {
     "Inputs": ((30, 90, 170), (190, 215, 250)),
     "Charger": ((190, 90, 20), (255, 222, 180)),
     "Battery": ((150, 30, 60), (250, 200, 210)),
-    "Header": ((90, 90, 90), (225, 225, 225)),
 }
 
 SHEET_PURPOSE = {
-    "Inputs": "Brings in USB_VBUS (from the main board over J10) and the solar panel (J5). Surge TVS and EMI choke on PV; two back-to-back FET pairs select the source into VBUS.",
-    "Charger": "BQ25798 charger: turns VBUS (USB or solar) into battery charge current and SYS power. Programmed over I2C by the main board: 1S, 1.5 MHz, 3.65 V, 1.5 A. BC1.2 detection on D+/D-.",
+    "Inputs": "J10 (J_PWR, keyed 2x10 socket) to the main board: SYS out, USB_VBUS and D+/D- in, charger I2C, INT and CE. Solar panel J5 with surge TVS and EMI choke; two back-to-back FET pairs select the source into VBUS.",
+    "Charger": "BQ25798 charger: turns VBUS (USB or solar) into battery charge current and SYS power. Programmed over I2C by the main board: 1S, 1.5 MHz, 3.65 V, ICHG per FIRMWARE-RULES.md. BC1.2 detection on D+/D-.",
     "Battery": "Cell connection and protection: fuse (PTC), cell NTC for the charger, HY2112-CB overcharge, overdischarge and overcurrent protection with its pack-negative FETs.",
-    "Header": "J10 (J_PWR), keyed 2x10 2.54 mm socket (hole 3 blocked): SYS to the main board, USB_VBUS and D+/D- from its USB-C, charger I2C, INT and CE.",
 }

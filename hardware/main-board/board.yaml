@@ -61,7 +61,7 @@ design:
     sensor_vmin_v: {value: 2.4, source: "SCD4x datasheet v1.7 table 4: VDD 2.4-5.5 V (SHT45 1.08-3.6 V); 3V3_SW is 3.32 V"}
   i2c_bus:                 # sensor bus SEN_SDA/SEN_SCL (IO13/IO14), checked by calc/i2c_bus.py
     vdd_v: {value: 3.3, source: "3V3_SW from the TPS63802 (3.32 V)"}
-    pullup_ohm: {value: 2200, source: "R50/R51 (Sensors sheet), 2.2k since phase B (was 10k: rise time 2.3 us with 2 m of cable)"}
+    pullup_ohm: {value: 2200, source: "R50/R51 (I2C sheet), 2.2k since phase B (was 10k: rise time 2.3 us with 2 m of cable)"}
     freq_khz: {value: 100, source: "firmware choice: standard mode for the outdoor cable"}
     pcb_pf: {value: 20, source: "assumption: about 10 cm of trace on 4 layers plus 4 connector pads"}
     cable_pf_per_m: {value: 100, source: "assumption: unshielded 4-core cable or Qwiic flex, 50-100 pF/m class; measure the bought cable"}

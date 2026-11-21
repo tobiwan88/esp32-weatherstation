@@ -80,7 +80,7 @@ b. **USB D+/D- (BC1.2): carried over the header (pins 7/8). ENGINEER DECISION.**
    and the D+/D- stubs reach the power board (full speed 12 Mbit/s, stubs short when stacked). Firmware still sets
    AUTO_INDET_EN = 0 after the first detection so a later re-detection does not disturb enumeration (v1 B5) and must
    never enable HVDCP (9/12 V on USB_VBUS would exceed the USBLC6 U4 VBR of 6 V on the main board).
-c. **Pull-ups live on the main board** (Header sheet): R20 CE 1M (100k until 2026-11-21), R22 INT 10k, R54/R55 I2C 10k,
+c. **Pull-ups live on the main board** (USB sheet, beside J10): R20 CE 1M (100k until 2026-11-21), R22 INT 10k, R54/R55 I2C 10k,
    all to +3V3. Exception: the power board carries its own CE pull-up R23 1M to BAT_PACK (d). The
    power board has no 3.3 V rail; REGN (5 V) is above the ESP32's 3.6 V and is the wrong rail for INT (7.3.11.2).
    A bought charger module brings its own rail; its pull-ups then sit in parallel (10k || its value).

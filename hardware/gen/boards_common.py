@@ -52,7 +52,7 @@ def add_header(nets: dict) -> dict:
     return nets
 
 
-# The pin table as a sheet note (both Header sheets), one line per entry: KiCad's font is proportional, so no columns.
+# The pin table as a sheet note (beside J10 on both boards), one line per entry: KiCad's font is proportional, so no columns.
 HEADER_NOTE = (
     "J10 pin map (hardware/ARCHITECTURE.md), keyed 2x10: pin 3 is the key (no pin, hole blocked)\n"
     "pins 1, 2: SYS, power board -> main board: system rail (cell-referred, 1.8-5.5 V), at least 1 A\n"

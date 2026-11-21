@@ -1,7 +1,8 @@
 # main-board
 
 **State (2026-11-21):** schematic generated: phase A split from `../weatherstation-v1/` (same parts and nets), then phase B
-(Ports sheet: pressure sensor U9, Qwiic J4, I2C header J11, rain/wind/vane port J12; sensor pull-ups 2.2k). No layout, no fab files.
+(pressure sensor U9, Qwiic J4, I2C header J11, rain/wind/vane port J12; sensor pull-ups 2.2k), then the review fixes of
+2026-11-21 and the 5-sheet partition. No layout, no fab files.
 Gate: nets OK, ERC 0 errors 0 warnings, review checks 0, `tools/split_check.py` OK. **Open: order cost above USD 100
 with the bare PCB (PARTS-REVIEW.md A1).**
 
@@ -12,12 +13,11 @@ bench supply). Contract and pin table: `../ARCHITECTURE.md`.
 ## Sheets (`main-board.kicad_sch` + 5 sheets)
 | Sheet | Content |
 |---|---|
-| USB | J1 USB-C, CC pull-downs R9/R10, USBLC6 U4; USB_VBUS and D+/D- on to J10 |
-| Header | J10 keyed 2x10 2.54 mm male (pin 3 pulled), charger host pull-ups R20 (CE 1M), R22 (INT), R54/R55 (I2C) on +3V3, pin map note |
+| USB | J1 USB-C, CC pull-downs R9/R10, USBLC6 U4, C35 on USB_VBUS; J10 keyed 2x10 2.54 mm male (pin 3 pulled) with the charger host pull-ups R20 (CE 1M), R22 (INT), R54/R55 (I2C) on +3V3 and the pin map note |
 | MCU | ESP32-S3-WROOM-1-N8 U1, decoupling, EN/IO0 strapping, JP1/JP2, R32/R33, J7 debug UART, LEDs |
 | Rails | TPS63802 U2 (SYS -> +3V3), Q40/Q41 3V3_SW switch with the R76/C48 ramp, TPS61023 U7 (SYS -> 5V_SW), TP1/TP2 |
-| Sensors | J2 PMS7003, J3 Qwiic (SHT head, supply through R77 100 ohm), U8 SCD41 and C47 (DNP), I2C pull-ups R50/R51 (2.2k) and USBLC6 U5, J8 ZE25-O3 |
-| Ports | BMP580 U9 (0x46, was BMP585 until 2026-11-21) with C90/C91; Qwiic J4 and 2.54 mm header J11 (GND, 3V3_SW, SDA, SCL); J12 rain/wind/vane port with U10/U11, R70-R75, C70-C72 |
+| I2C | Sensor bus on 3V3_SW: J3 outdoor SHT cable (feed R77 100 ohm, USBLC6 U5 between J3 and the bus), pull-ups R50/R51 (2.2k), BMP580 U9 (0x46) with C90/C91, Qwiic J4 and 2.54 mm header J11 (GND, 3V3_SW, SDA, SCL), U8 SCD41 and C47 (DNP) |
+| Sensors | UART/analog/pulse: J2 PMS7003 (R48/R49), J8 ZE25-O3 (R46/R47), J12 rain/wind/vane port with U10/U11, R70-R75, C70-C72 |
 
 ## Decisions
 - Carried-over circuit and pin map are the reviewed weatherstation-v1 design (designators kept).
