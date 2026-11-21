@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "eeschema")
 	(generator_version "9.0")
-	(uuid "9aab42cd-ca27-4461-a531-078b6d27c41e")
+	(uuid "c42c5f0d-04d8-41b0-92af-e9fcc6114323")
 	(paper "A3")
 	(title_block
 		(title "weatherstation power board")
@@ -1072,7 +1072,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "73ea44bb-95e0-4c0d-aa68-68149a9bf427")
+		(uuid "7816776c-745b-4034-8b6a-be0b684aaf6d")
 		(property "Reference" "J10"
 			(at 66.04 60.4 0)
 			(effects
@@ -1099,64 +1099,64 @@
 			)
 		)
 		(pin "1"
-			(uuid "1208956d-6b86-484e-93ba-f07f532b46ee")
+			(uuid "3a3dc62a-ac51-4a4b-8dfc-925281758747")
 		)
 		(pin "2"
-			(uuid "51eb7d24-7fd7-4f8f-8fc4-7016324d292f")
+			(uuid "53502974-19d5-4a0f-9536-302f7c99a155")
 		)
 		(pin "3"
-			(uuid "a0e28033-3285-4176-989a-a79621f6e53c")
+			(uuid "fe676b2b-153a-485d-a6dc-b043eb7e2003")
 		)
 		(pin "4"
-			(uuid "74a38e8e-d08b-4d81-9bda-38579ab81745")
+			(uuid "0e889af7-6329-4289-882f-3447875a4f0a")
 		)
 		(pin "5"
-			(uuid "cfa2fef5-4ffa-41d5-a6af-d7c78df16e45")
+			(uuid "8571ae16-6be2-4c97-9edf-ef1c913e5ec2")
 		)
 		(pin "6"
-			(uuid "f86be59b-2aa1-449d-8d7c-7bb4341e6c02")
+			(uuid "3d16dfe0-b1a6-4bd3-9243-1d1934d102f0")
 		)
 		(pin "7"
-			(uuid "045135a2-ce68-4de6-8a23-aaf52a64fd1c")
+			(uuid "16e2b1fe-435a-4d04-b00c-acc77f8997ee")
 		)
 		(pin "8"
-			(uuid "6c582532-7525-4754-97eb-be0efb071925")
+			(uuid "2f22bb48-f0e1-4326-bbda-53c0a8acdbcd")
 		)
 		(pin "9"
-			(uuid "d090b05b-be7f-495c-99c0-9d1a3a59d5fa")
+			(uuid "a9cc7fdc-bbe1-4b23-869d-dd8c9c44d4a6")
 		)
 		(pin "10"
-			(uuid "a6c3630c-b52e-4ecc-acbe-de65e944db30")
+			(uuid "e96ea3a1-8f4f-41e2-a348-d8bd87d88d5e")
 		)
 		(pin "11"
-			(uuid "af8858e9-17c4-46ae-8329-0451e5abe8c6")
+			(uuid "d80b2fce-68f1-4723-9106-764dd59dbde9")
 		)
 		(pin "12"
-			(uuid "2fa6930e-572c-45b3-a35f-e873fde516ea")
+			(uuid "c6c0f018-c52c-4998-bc54-24ae31e2b2dd")
 		)
 		(pin "13"
-			(uuid "99a9ecef-581d-4332-8f08-2fd5dbe57907")
+			(uuid "8c64b499-90c1-441e-a051-969cad33c289")
 		)
 		(pin "14"
-			(uuid "288663cb-3a19-4367-adef-3f0878fd39e7")
+			(uuid "c88c8b39-2a90-4b45-b8f9-4076534cd359")
 		)
 		(pin "15"
-			(uuid "e550cde8-7baf-46e6-bdf5-23cc65e7bcab")
+			(uuid "92e4badb-1b24-4094-85db-499662c1e719")
 		)
 		(pin "16"
-			(uuid "af3f629d-e5eb-4f73-9f48-e016b54a8bbf")
+			(uuid "c983e95c-414e-4e72-bcb7-a29bec6a42dc")
 		)
 		(pin "17"
-			(uuid "49b851c9-d62b-407e-9b77-8700fc06d757")
+			(uuid "8ab5a856-e950-4fa2-a0d4-e2d66e004d59")
 		)
 		(pin "18"
-			(uuid "3ade9ebd-d0a2-4c33-a4ec-f181f96d3cca")
+			(uuid "7dee80c3-c306-4310-9bcc-9048fda5b182")
 		)
 		(pin "19"
-			(uuid "948c4158-346f-47ad-8c1b-6afe5d783f2f")
+			(uuid "23731e35-581d-4b46-a967-acf0e2e7419f")
 		)
 		(pin "20"
-			(uuid "581fa211-e510-41fe-bedb-3d02018b726d")
+			(uuid "2fa13999-a495-4ec8-b63d-13a7dd1266b9")
 		)
 		(instances
 			(project "power-board"
@@ -1176,7 +1176,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "8778b27d-e29a-4e25-b626-81a81969cdc9")
+		(uuid "d2aa202c-c056-4ab2-8d32-223b151adab1")
 		(property "Reference" "#FLG20"
 			(at 35.56 118.745 0.0000)
 			(effects
@@ -1196,7 +1196,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "4cfab486-e368-4fc6-b16b-e9d78b1ff8cc")
+			(uuid "692b1950-b29b-4059-802a-db01b697f988")
 		)
 		(instances
 			(project "power-board"
@@ -1216,7 +1216,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "fab98d8d-a4d0-4937-a0ee-e0e4d9e1eba3")
+		(uuid "f8474fce-6ba8-4321-b68f-bdf79e94b1d8")
 		(property "Reference" "#PWR61"
 			(at 59.69 88.9 90)
 			(effects
@@ -1236,7 +1236,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "8b4ed26b-b371-4468-9a82-9d7f3b2dc73b")
+			(uuid "16dfb9b6-c160-42cf-a9de-2eef472c9dd1")
 		)
 		(instances
 			(project "power-board"
@@ -1256,7 +1256,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "91302cf3-3239-414c-a6d2-84061544b15c")
+		(uuid "d3905155-9001-4e12-b7b2-ed04f0e9c76d")
 		(property "Reference" "#PWR62"
 			(at 74.93 88.9 270)
 			(effects
@@ -1276,7 +1276,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "ac3e65ee-8eea-4c74-bbb1-afeff7f9b9ac")
+			(uuid "844b4fa3-1294-4ec6-9ee2-8dcbd1ab910e")
 		)
 		(instances
 			(project "power-board"
@@ -1296,7 +1296,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "09d12127-7cfc-49a6-90b8-125620298036")
+		(uuid "03ed964e-1ebd-4da9-8c02-816784d27cdd")
 		(property "Reference" "#PWR63"
 			(at 59.69 66.04 90)
 			(effects
@@ -1316,7 +1316,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "dea6e14a-1900-4675-860d-b210cb1e904b")
+			(uuid "372d45c5-4e23-4933-a4ef-e2618dc21cbe")
 		)
 		(instances
 			(project "power-board"
@@ -1336,7 +1336,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "66e0b61b-34d8-41aa-9722-25847f8f0c60")
+		(uuid "15890a34-227c-44b4-8b04-2a4f754ad320")
 		(property "Reference" "#PWR64"
 			(at 74.93 66.04 270)
 			(effects
@@ -1356,7 +1356,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "bef56431-8654-45cc-83d6-4e8ea7fa10c9")
+			(uuid "29a09ed4-449b-4bb5-8067-75c322e86ddd")
 		)
 		(instances
 			(project "power-board"
@@ -1376,7 +1376,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "acbcf7a2-9b74-43ae-9fe3-397a87fd15d3")
+		(uuid "685c38bf-4fc0-4f1c-9358-ecef15c6463e")
 		(property "Reference" "#PWR65"
 			(at 35.56 115.57 0.0000)
 			(effects
@@ -1396,7 +1396,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "ef4f5ae9-6a14-48d3-a59a-55d8f8af721b")
+			(uuid "9c7dbccf-c724-4ad5-b2ff-15765d5360de")
 		)
 		(instances
 			(project "power-board"
@@ -1416,7 +1416,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "dcc7219c-65a7-4a0e-8930-fd74afc777f2")
+		(uuid "3dd404b2-a35a-43ea-bf1e-3d815c176502")
 		(property "Reference" "#PWR66"
 			(at 85.09 68.58 90)
 			(effects
@@ -1436,7 +1436,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "7624be75-1be7-4a8e-a6b2-ffbae045664b")
+			(uuid "f8c0a1b4-7a43-4ac9-8638-0e37d07d9352")
 		)
 		(instances
 			(project "power-board"
@@ -1456,7 +1456,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "a54fe013-7515-41cb-a8a5-0dac5ab3d41a")
+		(uuid "d6c6180d-1985-40e5-a0e7-f914417c64f1")
 		(property "Reference" "#PWR67"
 			(at 49.53 71.12 270)
 			(effects
@@ -1476,7 +1476,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "0505a22f-0f6a-4b32-ab7c-b94bb9b939fd")
+			(uuid "f11630fb-be7b-4caa-9513-6ae59a13b12a")
 		)
 		(instances
 			(project "power-board"
@@ -1496,7 +1496,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "52093796-8a49-4469-b0d5-703371110ccd")
+		(uuid "8253fb46-b7a5-445c-99b8-faa19f233b1a")
 		(property "Reference" "#PWR68"
 			(at 85.09 71.12 90)
 			(effects
@@ -1516,7 +1516,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "0aea3563-15bf-4f25-b6b5-fc2a73a2eaef")
+			(uuid "8f4b5ff7-e420-4caf-a767-e9dfa321d9f5")
 		)
 		(instances
 			(project "power-board"
@@ -1536,7 +1536,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "1d9480c2-9743-4023-8c1e-9cf0bb9e0466")
+		(uuid "30ec841c-b168-4e3a-a47a-413476b1aad0")
 		(property "Reference" "#PWR69"
 			(at 49.53 76.2 270)
 			(effects
@@ -1556,7 +1556,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "39342fef-5314-4403-a674-06504a500acb")
+			(uuid "f707fbc3-3858-4653-8470-dfb3910a9b7c")
 		)
 		(instances
 			(project "power-board"
@@ -1576,7 +1576,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "b4c466ba-5c8b-455d-9e45-5b480c6e7db4")
+		(uuid "d7644985-93b4-4b46-ab8b-07fd8404c858")
 		(property "Reference" "#PWR70"
 			(at 85.09 76.2 90)
 			(effects
@@ -1596,7 +1596,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "c15452dd-b269-456c-a43e-1b64eb400f7f")
+			(uuid "fe12285a-898e-4a39-90d6-13eacd0e0695")
 		)
 		(instances
 			(project "power-board"
@@ -1616,7 +1616,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "168d3ca0-efcd-4b65-af71-ab9bb283fa92")
+		(uuid "685ef571-6234-4b86-8041-98e5a89693dc")
 		(property "Reference" "#PWR71"
 			(at 49.53 81.28 270)
 			(effects
@@ -1636,7 +1636,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "9755d9c4-d02c-40dc-b413-1ee348f88111")
+			(uuid "3cc6f8d8-9145-443c-838b-688c625d94a5")
 		)
 		(instances
 			(project "power-board"
@@ -1656,7 +1656,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "c7e61057-a998-4330-91d2-f6026defc801")
+		(uuid "094f3df2-2c10-4b0d-b755-a0d34751d47f")
 		(property "Reference" "#PWR72"
 			(at 85.09 81.28 90)
 			(effects
@@ -1676,7 +1676,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "c668834b-4d91-4f31-91b7-5826a8404ced")
+			(uuid "9f276a41-8462-4b92-b2ee-fcbfa4e21f4c")
 		)
 		(instances
 			(project "power-board"
@@ -1696,7 +1696,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "05d0d555-2eea-4abe-9b15-ef3b9e3ac69e")
+		(uuid "248ec12c-32d5-45bf-8a77-dc6d466f9d24")
 		(property "Reference" "#PWR73"
 			(at 49.53 86.36 270)
 			(effects
@@ -1716,7 +1716,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "464eee7c-a931-4b3c-bf31-6e82a4728f3e")
+			(uuid "7c6248a4-591a-4dbc-80b1-fbf9d887b8e0")
 		)
 		(instances
 			(project "power-board"
@@ -1736,7 +1736,7 @@
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced no)
-		(uuid "8b378140-f6e0-4da1-be7e-e953e01c456d")
+		(uuid "ba7ba5b9-206b-46d6-95f6-707207f38386")
 		(property "Reference" "#PWR74"
 			(at 85.09 86.36 90)
 			(effects
@@ -1756,7 +1756,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "96368399-4fb6-4661-ab56-bdedd885b73a")
+			(uuid "e679b925-e8f3-47f2-9520-5301fd99e1d1")
 		)
 		(instances
 			(project "power-board"
@@ -1789,14 +1789,14 @@
 	(wire (pts (xy 73.66 86.36) (xy 78.74 86.36)) (stroke (width 0) (type default)) (uuid "80fe013e-9bae-5d5b-aa3f-4e6e819d413b"))
 	(rectangle (start 15.24 25.4) (end 259.08 137.16) (stroke (width 0.3) (type dash) (color 90 90 90 1)) (fill (type color) (color 225 225 225 0.35)) (uuid "feb56c7b-e173-5ff7-a7d3-05b05503f0e5"))
 	(text "Board-to-board header J10 (J_PWR)" (exclude_from_sim no) (at 16.51 26.42 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "fb01e483-e617-5313-9968-74e3f866a0aa"))
-	(text "Keyed 2x10 2.54 mm socket, hand-soldered, hole 3 blocked (key). SYS out (pins 1, 2, >= 1 A), USB_VBUS in (19, 20), D+/D- in (BC1.2 detection), charger I2C/INT/CE to the main board. A GND pair between signal pairs. Pin map: hardware/ARCHITECTURE.md" (exclude_from_sim no) (at 16.51 31.5 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "035b2587-d5f1-50e6-bd6a-a93d27eadcf8"))
+	(text "Keyed 2x10 2.54 mm socket, hand-soldered, hole 3 blocked (key). SYS out (pins 1, 2, >= 1 A), USB_VBUS in (19, 20), D+/D- in (BC1.2 detection), charger I2C/INT/CE to the main board. A GND pair between signal pairs. Pin map:\nhardware/ARCHITECTURE.md" (exclude_from_sim no) (at 16.51 31.5 0) (effects (font (size 1.1 1.1)) (justify left top)) (uuid "035b2587-d5f1-50e6-bd6a-a93d27eadcf8"))
 	(text "J10 pin map (hardware/ARCHITECTURE.md), keyed 2x10: pin 3 is the key (no pin, hole blocked)\npins 1, 2: SYS, power board -> main board: system rail (cell-referred, 1.8-5.5 V), at least 1 A\npins 4, 5, 6, 9, 10, 13, 14, 17, 18: GND (a GND pair between every signal pair)\npins 7, 8: USB_DP, USB_DN, main -> power: BC1.2 detection only (BQ25798 D+/D-)\npins 11, 12: CHG_SDA, CHG_SCL: charger I2C (address 0x6B), 10k pull-ups on the main board\npin 15: CHG_INT, power -> main: open drain, 10k pull-up on the main board\npin 16: CHG_CE, main -> power: active low, pulled high (charge off) until firmware drives it low\npins 19, 20: USB_VBUS, main -> power: USB-C VBUS to ACFET1 drain and VAC1\nRotated, mirrored or column-shifted plugs hit the key (tools/header_check.py). No 3.3 V on the power board." (exclude_from_sim no) (at 116.84 45.72 0) (effects (font (size 1.27 1.27)) (justify left top)) (uuid "06a05102-90e8-5ae9-a46a-7034dc51e643"))
-	(hierarchical_label "USB_DP" (shape bidirectional) (at 55.88 73.66 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "8449aae5-71ec-5e32-ab6d-24fe13f5fdbd"))
-	(hierarchical_label "USB_DN" (shape bidirectional) (at 78.74 73.66 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "19189ca5-8407-579e-ae84-7b8e605042dd"))
-	(hierarchical_label "CHG_CE" (shape bidirectional) (at 78.74 83.82 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "2a0eb40b-1b6e-52bc-a78a-af436a3795a2"))
-	(hierarchical_label "CHG_INT" (shape bidirectional) (at 55.88 83.82 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "f2acadc6-5b33-5cd4-9c4a-c5d3a9a4b66d"))
+	(hierarchical_label "USB_DP" (shape output) (at 55.88 73.66 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "8449aae5-71ec-5e32-ab6d-24fe13f5fdbd"))
+	(hierarchical_label "USB_DN" (shape output) (at 78.74 73.66 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "19189ca5-8407-579e-ae84-7b8e605042dd"))
+	(hierarchical_label "CHG_CE" (shape output) (at 78.74 83.82 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "2a0eb40b-1b6e-52bc-a78a-af436a3795a2"))
+	(hierarchical_label "CHG_INT" (shape input) (at 55.88 83.82 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "f2acadc6-5b33-5cd4-9c4a-c5d3a9a4b66d"))
 	(hierarchical_label "CHG_SDA" (shape bidirectional) (at 55.88 78.74 180) (effects (font (size 1.27 1.27)) (justify right)) (uuid "8dd2aff1-66cd-5576-a0c5-4b4a5ea42c68"))
-	(hierarchical_label "CHG_SCL" (shape bidirectional) (at 78.74 78.74 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "d243bb98-e1cd-5ceb-b071-9cf4733e9913"))
+	(hierarchical_label "CHG_SCL" (shape output) (at 78.74 78.74 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "d243bb98-e1cd-5ceb-b071-9cf4733e9913"))
 	(no_connect (at 60.96 68.58) (uuid "ffb024b1-2cdb-5d4a-a07d-3de2571fa64d"))
 	(text "power board: Header. J10 (J_PWR) to the main board: SYS out, USB_VBUS and D+/D- in, charger I2C, INT and CE" (exclude_from_sim no) (at 12.7 12.7 0) (effects (font (size 1.5 1.5) bold) (justify left top)) (uuid "7d762c93-1274-52f0-b7ae-8bc27a9fe032"))
 	(sheet_instances

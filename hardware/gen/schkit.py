@@ -203,7 +203,8 @@ class Sheet:
     def _just(rot: int) -> str:
         return "right" if rot in (180, 270) else "left"
 
-    def label(self, name: str, x: float, y: float, rot: int = 0, kind: str = "local", above: bool = False) -> None:
+    def label(self, name: str, x: float, y: float, rot: int = 0, kind: str = "local", above: bool = False,
+              shape: str = "bidirectional") -> None:
         """above: text beside the wire (justify bottom) instead of centred on it; for a name label in the middle of a wire."""
         px, py = mm(x), mm(y)
         eff = f'(effects (font (size 1.27 1.27)) (justify {self._just(rot)}{" bottom" if above else ""}))'
@@ -214,7 +215,7 @@ class Sheet:
                             f'(uuid "{uid()}") (property "Intersheetrefs" "${{INTERSHEET_REFS}}" (at {px} {py} 0) '
                             f'(effects (font (size 1.27 1.27)) hide)))')
         else:
-            self.raw.append(f'(hierarchical_label "{q(name)}" (shape bidirectional) (at {px} {py} {rot}) {eff} (uuid "{uid()}"))')
+            self.raw.append(f'(hierarchical_label "{q(name)}" (shape {shape}) (at {px} {py} {rot}) {eff} (uuid "{uid()}"))')
 
     def text(self, x: float, y: float, body: str, size: float = 1.27, bold: bool = False) -> None:
         b = " bold" if bold else ""
@@ -244,6 +245,9 @@ class Sheet:
 
     def _junctions(self) -> list[tuple[float, float]]:
         self.resolve()
+        r2 = lambda p: (round(p[0], 2), round(p[1], 2))  # noqa: E731  (pin positions carry float noise)
+        self.segs = [(r2(a), r2(b)) for a, b in self.segs]
+        self.pins = {r2(p) for p in self.pins}
         cands = {p for s in self.segs for p in s} | self.pins
         out = []
         for p in sorted(cands):
@@ -322,6 +326,7 @@ def root_sheet(directory: Path, name: str, sheets: list[dict], texts: list[tuple
              f'(fill (color {sh.get("fill", (255, 255, 200))[0]} {sh.get("fill", (255, 255, 200))[1]} {sh.get("fill", (255, 255, 200))[2]} 0.6))', f'\t\t(uuid "{sh["uuid"]}")',
              f'\t\t(property "Sheetname" "{sh["name"]}" (at {x} {y - 1.0} 0) (effects (font (size 2 2) bold) (justify left bottom)))',
              f'\t\t(property "Sheetfile" "{sh["file"]}" (at {x} {y + h + 1.0} 0) (effects (font (size 1.27 1.27)) (justify left top)))']
+        shapes = sh.get("shapes", {})
         for edge, pos_cell, pname in sh["pins"]:
             if edge in ("left", "right"):
                 px, py = (x if edge == "left" else round(x + w, 2)), mm(pos_cell)
@@ -329,7 +334,7 @@ def root_sheet(directory: Path, name: str, sheets: list[dict], texts: list[tuple
             else:
                 px, py = mm(pos_cell), (y if edge == "top" else round(y + h, 2))
                 rot, just = (90, "left") if edge == "top" else (270, "left")
-            s.append(f'\t\t(pin "{pname}" bidirectional (at {px} {py} {rot}) (uuid "{uid()}") '
+            s.append(f'\t\t(pin "{pname}" {shapes.get(pname, "bidirectional")} (at {px} {py} {rot}) (uuid "{uid()}") '
                      f'(effects (font (size 1.27 1.27)) (justify {just})))')
         s.append(f'\t\t(instances (project "{project}" (path "/{root}" (page "{sh["page"]}"))))')
         s.append("\t)")
@@ -540,6 +545,9 @@ def part_boxes(sheet: Sheet, refs: list[str], margin: float = 2.54) -> list[tupl
 
 def junction_points(segs, pins=()) -> list[tuple[float, float]]:
     """Points where 3 or more wire ends meet (a wire end on another wire counts 2, a pin counts 1)."""
+    r2 = lambda p: (round(p[0], 2), round(p[1], 2))  # noqa: E731  (pin positions carry float noise: 248.92000000000002)
+    segs = [(r2(a), r2(b)) for a, b in segs]
+    pins = [r2(p) for p in pins]
     ends: dict[tuple[float, float], int] = {}
     for a, b in segs:
         for p in (a, b):

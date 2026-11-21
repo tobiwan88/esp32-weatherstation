@@ -12,13 +12,13 @@ BLOCKS = {
     "USB": [
         ("USB-C receptacle", "USB-C sink (programming, USB-JTAG debug, charging): CC1/CC2 5.1k pull-downs (Rd); USBLC6 ESD on D+/D- with VBUS reference. USB_VBUS and D+/D- continue to J10 (power board)",
          (4, 10, 60, 40), {
-             "J1": (12, 30, 0), "U4": (34, 35, 0), "R9": (26, 42, 0), "R10": (22, 42, 0), "#FLG12": (16, 40, 0), "#FLG22": (44, 24, 0), "C35": (50, 30, 0)}),
+             "J1": (12, 30, 0), "U4": (34, 35, 0), "R9": (26, 42, 0), "R10": (22, 42, 0), "#FLG12": (16, 40, 0), "#FLG22": (44, 30, 180), "C35": (50, 30, 0)}),
     ],
     "Header": [
         ("Board-to-board header J10 (J_PWR) and charger host pull-ups", "J10 mating side (pin map: hardware/ARCHITECTURE.md). +3V3 lives here: CE pull-up R20 1M (charge off until firmware writes VREG; the power board has its own 1M), INT R22 10k, charger I2C R54/R55 10k (BQ25798 table 5-1)",
          (4, 10, 70, 46), {
              "J10": (30, 30, 0), "R54": (16, 26, 180), "R22": (10, 26, 180), "R55": (46, 26, 180), "R20": (52, 26, 0),
-             "#FLG21": (64, 40, 0)}),
+             "#FLG21": (64, 46, 180)}),
     ],
     "MCU": [
         ("ESP32-S3-WROOM-1-N8", "N8: 8 MB flash, no PSRAM. Strapping: IO0 (BOOT), EN (RESET). Native USB on IO19/IO20 with 22 ohm series resistors",
@@ -39,7 +39,7 @@ BLOCKS = {
         ("3.3 V buck-boost", "TPS63802DLA from SYS (VIN = EN = SYS, MODE = GND: power save). FB 220k / 39k: 0.5 V x (1 + 220/39) = 3.32 V. L4 0.47 uH; 22 uF in (C40 0805), 22 uF out",
          (4, 10, 90, 40), {
              "U2": (30, 26, 0), "L4": (42, 25, 0), "C40": (14, 26, 0), "R52": (50, 30, 0), "R53": (50, 38, 0), "C41": (58, 26, 0),
-             "TP1": (72, 34, 180), "TP2": (78, 34, 180), "#FLG10": (86, 16, 0)}),
+             "TP1": (72, 34, 180), "TP2": (78, 34, 180), "#FLG10": (86, 22, 180)}),
         ("3V3_SW sensor rail", "Q40 switches +3V3 to the sensors: R40 holds it off, Q41 (SENSOR_EN, IO11) pulls the gate via R76, C48 ramps 3V3_SW (0.3-0.4 ms, calc/rail_switch.py)",
          (4, 56, 62, 36), {
              "Q40": (30, 70, 180, "m"), "R40": (22, 65, 0), "R76": (22, 75, 0), "C48": (26, 76, 0),
@@ -137,7 +137,16 @@ SHEET_DX = 2  # every block 2 cells right of the sheet border
 SHEET_TEXTS = {"Header": [(8, 39, HEADER_NOTE)]}
 
 TAGS_BELOW: set = set()
-TAG_POS = {"J10": ((0, -15.8, "center"), (0, 15.8, "center")), "Q40": ((5.5, -1.0, "right"), (5.5, 1.0, "right"))}
+# hierarchical label shapes (signal direction seen from the sheet): J10 signals on the Header sheet and their sources
+LABEL_SHAPE = {"Header": {"CHG_CE": "input", "CHG_SCL": "input", "CHG_INT": "output", "CHG_SDA": "bidirectional"},
+               "MCU": {"CHG_CE": "output", "CHG_SCL": "output", "CHG_INT": "input", "SENSOR_EN": "output", "BOOST_EN": "output"},
+               "Rails": {"SENSOR_EN": "input", "BOOST_EN": "input"}}
+
+# reference/value spots that keep the texts off their symbol bodies (review_checks: "overlaps its symbol body")
+TAG_POS = {"J10": ((0, -15.8, "center"), (0, 15.8, "center")), "Q40": ((5.5, -1.0, "right"), (5.5, 1.0, "right")),
+           **{j: ((0, 8.0, "center"), (0, -5.3, "center")) for j in ("J3", "J4", "J7", "J11", "J12")},
+           **{u: ((3.2, 7.0, "left"), (3.2, 8.8, "left")) for u in ("U4", "U5", "U10", "U11")},
+           **{jp: ((2.2, -1.3, "left"), (2.2, 1.3, "left")) for jp in ("JP1", "JP2")}}
 
 SHEET_NOTES = {
     "USB": "USB-C receptacle: CC pull-downs, ESD on D+/D-; USB_VBUS and D+/D- to the power board over J10",

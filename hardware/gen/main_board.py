@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import boardgen  # noqa: E402  (registers the project symbol library)
 from boards_common import C0402, C0603, C0805, JST_SH4, R0402, R0603, SOT23, TP, add_header, header_part  # noqa: E402
 from main_layout import (BLOCKS, HAND_LABELS, HAND_ROUTES, ROOT_BOX, ROOT_SIDE, SHEET_COLOR, SHEET_DX, SHEET_NOTES,  # noqa: E402,F401
-                         SHEET_PURPOSE, SHEET_TEXTS, TAG_POS, TAGS_BELOW)
+                         LABEL_SHAPE, SHEET_PURPOSE, SHEET_TEXTS, TAG_POS, TAGS_BELOW)
 
 DATE = "2026-11-21"  # title block: date of the last schematic change
 PROJECT, TITLE, SHEET_PREFIX = "main-board", "weatherstation main board", "main board"
@@ -263,8 +263,8 @@ RAIL_LIB = {"GND": "power:GND", "+3V3": "power:+3V3"}  # others: power:VCC with 
 
 SHEET_VALUE = {"U4": "USBLC6-2SC6", "U5": "USBLC6-2SC6", "L4": "0.47uH", "U2": "TPS63802", "Q40": "AO3401A",
                "Q41": "2N7002", "U7": "TPS61023", "L5": "1uH", "J10": "J_PWR 2x10 key 3", "U9": "BMP580", "J4": "QWIIC 2",
-               "J11": "I2C 2.54", "J7": "DEBUG UART (pin 1 3V3 only)",
-               "U10": "USBLC6-2SC6", "U11": "USBLC6-2SC6", "J12": "RAIN/WIND"}
+               "J11": "I2C 2.54 (GND 3V3 SDA SCL)", "J7": "DEBUG UART (pin 1 3V3 only)",
+               "U10": "USBLC6-2SC6", "U11": "USBLC6-2SC6", "J12": "1 GND 2 RAIN 3 WIND 4 VANE"}
 HAND_SOLDER = {"J2", "J7", "J8", "J10", "J11", "J12"}  # pin headers and JST PH: hand-soldered, not in the assembly BOM
 TP_NOTE = "SYS/3V3 test pads"
 # D+/D- join three sheets (USB, MCU, Header), the sensor bus three (MCU, Sensors, Ports): no crossing-free route on the

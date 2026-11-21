@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import boardgen  # noqa: E402  (registers the project symbol library)
 from boards_common import C0402, C0603, C0805, JST_PH2, R0402, R0603, SOT23, TP, add_header, header_part  # noqa: E402
 from power_layout import (BLOCKS, HAND_LABELS, HAND_ROUTES, ROOT_BOX, SHEET_COLOR, SHEET_DX, SHEET_NOTES,  # noqa: E402,F401
-                          SHEET_PURPOSE, SHEET_TEXTS, TAG_POS, TAGS_BELOW)
+                          LABEL_SHAPE, SHEET_PURPOSE, SHEET_TEXTS, TAG_POS, TAGS_BELOW)
 
 DATE = "2026-11-21"  # title block: date of the last schematic change
 PROJECT, TITLE, SHEET_PREFIX = "power-board", "weatherstation power board", "power board"

@@ -312,8 +312,11 @@ class Generator:
         for title, note, (x, y, w, h), _parts in b.BLOCKS[name]:
             x += dx
             s.frame(x, y, x + w, y + h, title, edge, tint)
-            s.text(x + 0.5, y + 2.4, note, 1.1)
-            note_boxes.append((_text_box(x + 0.5, y + 2.4, note, 1.1), "*"))
+            # wrap the note inside its frame (rendered stroke font: about 0.9 x size per character, review_checks)
+            lines = textwrap.wrap(note, max(20, int((w * 2.54 - 3.0) / (1.1 * 0.9))))
+            s.text(x + 0.5, y + 2.4, "\n".join(lines), 1.1)
+            nx, ny = (x + 0.5) * 2.54, (y + 2.4) * 2.54
+            note_boxes.append(((nx, ny, nx + max(map(len, lines)) * 1.1 * 0.9, ny + len(lines) * 1.1 * 1.6), "*"))
             note_boxes.append((_text_box(x + 0.5, y + 0.4, title, 1.5), "*"))
         for x, y, body in getattr(b, "SHEET_TEXTS", {}).get(name, []):  # free notes (pin tables), one line per entry
             x += dx
@@ -406,9 +409,11 @@ class Generator:
                     s.power(net, cx, cy, lib=b.RAIL_LIB.get(net, "power:VCC"), rot=rot)
             elif it.get("above") and net in b.HAND_LABELS.get(name, {}):
                 hx, hy, hdeg, *opt = b.HAND_LABELS[name][net]  # optional 4th item "above": text beside the wire
-                s.label(net, hx + dx, hy, hdeg, "hier" if net in cross_nets else "local", above="above" in opt)
+                s.label(net, hx + dx, hy, hdeg, "hier" if net in cross_nets else "local", above="above" in opt,
+                        shape=getattr(b, "LABEL_SHAPE", {}).get(name, {}).get(net, "bidirectional"))
             else:
-                s.label(net, cx, cy, it["deg"], "hier" if net in cross_nets else "local", above=it.get("above", False))
+                s.label(net, cx, cy, it["deg"], "hier" if net in cross_nets else "local", above=it.get("above", False),
+                        shape=getattr(b, "LABEL_SHAPE", {}).get(name, {}).get(net, "bidirectional"))
         for ref in refs:
             if ref.startswith("#"):
                 continue
@@ -561,6 +566,7 @@ class Generator:
                 texts.append((bx + 1.5, by + 1.5 + 2.0 * k, line))
         for sh in sd:
             sh["pins"] = root_pins[sh["name"]]
+            sh["shapes"] = getattr(b, "LABEL_SHAPE", {}).get(sh["name"], {})
         path, root_uuid = root_sheet(out, "root", sd, texts, root_wires, root_labels, project=b.PROJECT, title=b.TITLE,
                                      date=getattr(b, "DATE", "2026-10-31"))
         for sh in sheets:

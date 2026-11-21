@@ -25,7 +25,7 @@ BLOCKS = {
              "U3": (46, 34, 0), "L1": (63, 29, 90), "C3": (60, 25, 90), "C4": (60, 33, 90), "C5": (70, 46, 0),
              "C6": (10, 22, 0), "C7": (15, 22, 0), "C8": (20, 22, 0),
              "C9": (36, 56, 0), "C10": (42, 56, 0), "C11": (48, 56, 0), "C12": (54, 56, 0), "TP3": (30, 44, 0),
-             "#FLG3": (88, 14, 0)}),
+             "#FLG3": (88, 20, 180)}),
         ("SYS and battery side", "SYS: 5x10u + 0.1u; BAT: 2x10u (table 5-1). BATP: battery sense through 100 ohm. SDRV: 1 nF (no ship FET)",
          (100, 10, 56, 52), {
              "C13": (106, 22, 0), "C14": (111, 22, 0), "C15": (116, 22, 0), "C16": (121, 22, 0),
@@ -87,10 +87,16 @@ SHEET_DX = 2  # every block 2 cells right of the sheet border
 SHEET_TEXTS = {"Header": [(44, 18, HEADER_NOTE)]}
 
 TAGS_BELOW = {"C4"}
+# hierarchical label shapes (signal direction seen from the sheet): J10 signals
+LABEL_SHAPE = {"Header": {"CHG_CE": "output", "CHG_SCL": "output", "CHG_INT": "input", "USB_DP": "output", "USB_DN": "output"},
+               "Charger": {"CHG_CE": "input", "CHG_SCL": "input", "CHG_INT": "output", "USB_DP": "input", "USB_DN": "input"}}
+
 TAG_POS = {**{m: ((0, 5.4, "center"), (0, 7.2, "center")) for m in ("M60", "M61")},
            **{m: ((-3.6, 3.4, "right"), (-3.6, 5.2, "right")) for m in ("M1", "M3")},
            **{m: ((3.6, 3.4, "left"), (3.6, 5.2, "left")) for m in ("M2", "M4")},
-           "J10": ((0, -15.8, "center"), (0, 15.8, "center"))}
+           "J10": ((0, -15.8, "center"), (0, 15.8, "center")),
+           **{j: ((0, 5.4, "center"), (0, -2.8, "center")) for j in ("J5", "J6")},
+           "D1": ((-1.8, -0.7, "right"), (-1.8, 0.7, "right"))}
 
 SHEET_NOTES = {
     "Inputs": "USB_VBUS (from J10) and PV inputs into VBUS: back-to-back N-FET pairs (ACDRV1/2), PV surge TVS and common-mode choke",
