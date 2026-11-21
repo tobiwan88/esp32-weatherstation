@@ -71,7 +71,7 @@ a. **Pin order.** SYS sits on column 1 (pins 1, 2), USB_VBUS on column 10 (pins 
    alone does not prevent a 180 degree rotation or a one-pin offset (the review of 2026-11-21 corrected that claim):
    the key and the asymmetric mounting holes do. Without the key, a rotated plug would put SYS onto CHG_INT/CHG_CE,
    which are 6 V tolerant on the BQ25798 (6.1) but not on the ESP32 (3.6 V).
-b. **USB D+/D- (BC1.2): carried over the header (pins 9/10). ENGINEER DECISION.** Reason (BQ25798 SLUSDV2C 7.3.4.5 and
+b. **USB D+/D- (BC1.2): carried over the header (pins 7/8). ENGINEER DECISION.** Reason (BQ25798 SLUSDV2C 7.3.4.5 and
    table 7-4): detection runs only on VAC1 with AUTO_INDET_EN = 1 (the POR default). Without D+/D- the result is not an
    SDP but an unknown or non-standard source: IINDPM 3 A, clamped by ILIM to 1.59 A, drawn from a PC port that may only
    supply 0.5 A. With D+/D- the SDP case gets 500 mA, DCP 3.25 A (clamped to 1.59 A). The weatherstation-v1 note says
