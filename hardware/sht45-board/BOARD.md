@@ -12,7 +12,7 @@ since 2026-11-04).
   (datasheet v7.3 section 6.1: IP68, 200 nm particle filtration, RH response time unchanged). Same DFN-4 1.5 x 1.5 mm package;
   footprint without central pad (datasheet 5.3: die pad not connected, soldering it not recommended). Address 0x44.
   Fallback without the membrane: SHT45-AD1B-R2 (C5221601, USD 5.73).
-- C1 100 nF on VDD (datasheet figure 1). The 10k I2C pull-ups are on the main board (R50/R51 on 3V3_SW), and the USBLC6 (U5)
+- C1 100 nF on VDD (datasheet figure 1). The 2.2k I2C pull-ups are on the main board (R50/R51 on 3V3_SW), and the USBLC6 (U5)
   there protects the cable lines.
 - J1 JST SH 4-pin SM04B-SRSS-TB (C160404, same part as main-board J3): 1 GND, 2 VDD, 3 SDA, 4 SCL (Qwiic order). Cable in.
 - J2 same part, wired 1:1 to J1: chain out. Same LCSC part, so no extra Extended fee.
@@ -24,8 +24,9 @@ since 2026-11-04).
   Adafruit, or our own) plugs into J2: pressure, light, a second T/RH point. Our own add-ons with the same base:
   `hardware/bmp585-board/` (pressure, 0x46) and `hardware/veml6030-board/` (light, 0x10). Rules for a chained board: 3.3 V I2C, an
   address free on the sensor bus (SHT45 0x44, SCD41 0x62 on the main board), its own pull-ups off or removed (the main
-  board has 10k on 3V3_SW; parallel pull-ups lower the total, keep it at or above about 2k), and a total cable length the
-  10k pull-ups can drive at 100 kHz (keep the whole chain short; a few hundred pF in total).
+  board has 2.2k on 3V3_SW since phase B; at most one more 2.2k pair in parallel, 2.64 mA of the 3 mA limit,
+  `calc/i2c_bus.py hardware/main-board`), and a total cable length the 2.2k pull-ups can drive at 100 kHz (2 m of cable
+  plus 7 devices gives 514 ns rise against 1 us; keep the whole chain short).
 - 3V3_SW is switched off between measurements, so chained sensors lose their state each cycle (fine for one-shot reads).
 - Flex: the sensor island on its neck is the part a flex version would replace (a flex tail with the SHT45 at the tip
   into the shield, the Qwiic base staying rigid). Rigid FR4 first: a flex PCB at JLCPCB costs several times the rigid

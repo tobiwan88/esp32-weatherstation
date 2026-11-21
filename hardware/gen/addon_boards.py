@@ -3,7 +3,7 @@
 Each board is one link of the outdoor I2C chain that starts at main-board J3 and runs through the SHT45 head: J1 = Qwiic
 in, J2 = Qwiic out (wired 1:1), one sensor with its decoupling, an M3 hole. Same connector part (C160404), same base
 layout and pin order as the SHT45 head (1 GND, 2 VDD, 3 SDA, 4 SCL), so the boards chain in any order. No pull-ups on the
-add-ons: the 10k pull-ups on 3V3_SW are on the main board (R50/R51). Supply 3V3_SW (3.32 V), off between measurements.
+add-ons: the 2.2k pull-ups on 3V3_SW are on the main board (R50/R51, 2.2k since phase B). Supply 3V3_SW (3.32 V), off between measurements.
 
 Boards:
 - bmp585: barometric pressure, Bosch BMP585 (BST-BMP585-DS003-02 rev 1.2). I2C mode: CSB to VDDIO (section 6.2.3),

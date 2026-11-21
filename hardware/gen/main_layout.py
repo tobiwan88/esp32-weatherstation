@@ -37,12 +37,12 @@ BLOCKS = {
         ("3.3 V buck-boost", "TPS63802DLA from SYS (VIN = EN = SYS, MODE = GND: power save). FB 220k / 39k: 0.5 V x (1 + 220/39) = 3.32 V. L4 0.47 uH; 22 uF in (C40 0805), 22 uF out",
          (4, 10, 90, 40), {
              "U2": (30, 26, 0), "L4": (42, 25, 0), "C40": (14, 26, 0), "R52": (50, 30, 0), "R53": (50, 38, 0), "C41": (58, 26, 0),
-             "TP1": (72, 34, 180), "TP2": (78, 34, 180), "#FLG10": (86, 22, 180)}),
-        ("3V3_SW sensor rail", "Q40 switches +3V3 to the sensors: R40 holds it off, Q41 (SENSOR_EN, IO11) pulls the gate via R76, C48 ramps 3V3_SW (0.3-0.4 ms, calc/rail_switch.py)",
+             "TP1": (72, 34, 180), "TP2": (78, 34, 180)}),
+        ("3V3_SW sensor rail", "Q40 switches +3V3 to the sensors: R40 holds it off, Q41 (SENSOR_EN, IO11) pulls the gate via R76; C48 ramps, R78 bleeds 3V3_SW (calc/rail_switch.py)",
          (4, 56, 62, 36), {
-             "Q40": (30, 70, 180, "m"), "R40": (22, 65, 0), "R76": (22, 75, 0), "C48": (26, 76, 0),
+             "Q40": (30, 70, 180, "m"), "R40": (22, 65, 0), "R76": (22, 73.5, 0), "C48": (26, 76, 0),
              "Q41": (21, 82, 0), "R41": (12, 82, 90), "R42": (16, 88, 0),
-             "C42": (44, 80, 0), "C43": (49, 80, 0)}),
+             "C42": (44, 80, 0), "C43": (49, 80, 0), "R78": (54, 80, 0), "#FLG10": (58, 78.5, 0)}),
         ("5V_SW 5 V boost", "TPS61023: SYS -> 5.06 V for the PMS7003 and the ZE25-O3. EN = BOOST_EN (IO12); R45 = off by default; off = output disconnected, 0.1 uA. FB 0.595 V x (1 + 510k/68k)",
          (72, 56, 56, 36), {
              "C44": (75, 76, 0), "L5": (92, 66, 90), "U7": (92, 74, 0), "R45": (80, 84, 0),
@@ -99,7 +99,7 @@ HAND_ROUTES = {
                   [("C48", "1"), (26, 70)]],
         "SEN_PULL": [[("R76", "2"), ("Q41", "3")]],
         "3V3_SW": [[("Q40", "3"), (31, 78.5)], [("C48", "2"), (26, 78.5), (31, 78.5)], [(31, 78.5), ("C42", "1")],
-                   [("C42", "1"), ("C43", "1")]],
+                   [("C42", "1"), ("C43", "1")], [("C43", "1"), ("R78", "1")], [("R78", "1"), (58, 78.5)]],
     },
     # outdoor cable: J3 -> USBLC6 U5 (6 -> 1, 4 -> 3) -> bus lines down to their labels; second Qwiic port and the 2.54 mm
     # header share one vertical line per signal (SDA x 106, SCL x 104)
@@ -125,9 +125,9 @@ HAND_ROUTES = {
     },
 }
 HAND_LABELS = {"I2C": {"SEN_SDA": [(44, 54, 270), (106, 44, 270), (56, 37, 0, "above")],
-                       "SEN_SCL": [(42, 54, 270), (104, 44, 270), (56, 38, 0, "above")], "3V3_CABLE": (61, 36, 0, "above")},
+                       "SEN_SCL": [(42, 54, 270), (104, 44, 270), (56, 38, 0, "above")], "3V3_CABLE": (60, 35.5, 90, "above")},
                "Sensors": {"RAIN": (56, 74, 0), "WIND": (56, 84, 0), "VANE": (56, 96, 0)},
-               "Rails": {"SEN_G": (22.5, 70, 0, "above"), "SEN_PULL": (22, 80, 90, "above")},
+               "Rails": {"SEN_G": (22.5, 70, 0, "above"), "SEN_PULL": (22, 79, 90, "above")},
                "USB": {"CHG_SDA": (82, 31, 180), "CHG_INT": (76, 33, 180), "CHG_SCL": (112, 31, 0), "CHG_CE": (118, 33, 0)}}
 SHEET_DX = 2  # every block 2 cells right of the sheet border
 SHEET_TEXTS = {"USB": [(74, 39, HEADER_NOTE)]}

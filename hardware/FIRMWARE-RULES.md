@@ -50,7 +50,15 @@ address and bit position against the datasheet when the driver is written: this 
 
 ## 4. Sensor rail 3V3_SW (SENSOR_EN IO11)
 - Turn-on ramp is 0.3-0.4 ms (R76/C48, `calc/rail_switch.py`); wait at least 1 ms before talking to the sensors.
-- Turn-off takes up to about 8 ms at light load: wait 10 ms after SENSOR_EN low before turning it on again.
+- **Turn-off is slow** (review follow-up B1, 2026-11-21; the earlier "wait 10 ms" rule was wrong): Q40 is off within about
+  4 ms, but the rail then only discharges through R78 22k (sensors asleep): tau 0.63-1.02 s, **5 tau = 3.1-5.1 s**
+  (`calc/rail_switch.py`, effective and nominal C_load). Either wait at least 5 s after SENSOR_EN low before turning it
+  on again, or soft-reset every sensor after each enable (BMP5xx soft reset command, SCD41 `reinit`, SHT4x soft reset):
+  a rail that has not fallen to near 0 V gives no clean power-on reset.
+- **Cold start:** while +3V3 ramps, C48 holds the Q40 gate near the discharged drain, so Q40 conducts weakly and 3V3_SW can
+  rise part-way before the firmware runs. At boot: SENSOR_EN low, wait 5 s (or soft-reset the sensors after the first
+  enable). **Scope 3V3_SW at the first power-up** of the first boards and record the result here.
+- R78 draws 151 uA from +3V3 while the rail is on (sensor window only; counted in `calc/power_budget.py`, not in sleep).
 - **Before SENSOR_EN goes low** (review B9): set IO13/IO14 (sensor I2C) to input without pull or drive them low. An I2C
   line held high with the sensor's VDDIO off back-powers 3V3_SW through the pull-ups' clamps and can damage the BMP5xx
   (Bosch handling note: interface pins high with VDDIO off). Same in deep sleep (hold them low or as inputs).
@@ -67,6 +75,7 @@ address and bit position against the datasheet when the driver is written: this 
   battery alone would give 5.9 days of autonomy against the 7-day minimum (`calc/power_budget.py`, review A4).
 
 ## 7. Bring-up checks on the first samples
+- 3V3_SW at first power-up and after SENSOR_EN low (scope): partial rise at cold start, decay time with R78 (section 4).
 - VREG and VAC_OVP read back and measured; POR value of VAC_OVP noted here.
 - BC1.2 result with a PC port, a DCP charger and PV connected first (B8).
 - First cell insertion: if SYS stays dead, connect USB or PV once (HY2112 may start with discharge off, B7).

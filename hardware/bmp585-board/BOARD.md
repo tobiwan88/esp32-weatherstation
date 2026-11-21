@@ -9,7 +9,7 @@ Status (2026-11-04): ERC 0, nets OK, 0 DRC violations (warnings included), 0 unc
 - U1 BMP585 (LCSC C18184976, Extended, 5153 in stock, USD 3.59). Pressure 30-125 kPa, on-chip temperature.
 - I2C mode: CSB tied to VDDIO (section 6.2.3). SDO low = address 0x46 (section 5.6: SDO must not float). INT unused.
 - C1 100 nF at VDD, C2 100 nF at VDDIO (figure 25), C14663 (Basic). VDD and VDDIO both on the chain's VDD (3V3_SW).
-- No pull-ups (main board R50/R51, 10k on 3V3_SW). The bus pull-ups and VDDIO switch off together, so no interface
+- No pull-ups (main board R50/R51, 2.2k on 3V3_SW). The bus pull-ups and VDDIO switch off together, so no interface
   pin is held high while VDDIO is off (section 4.2 warns that this can damage the part).
 - J1 IN / J2 OUT JST SH 4-pin (C160404), Qwiic order 1 GND, 2 VDD, 3 SDA, 4 SCL, wired 1:1. H1 M3 hole.
 - Firmware: the sensor settles in sleep mode after power-up (4.2, 4.3.9); set the mode and oversampling every cycle.

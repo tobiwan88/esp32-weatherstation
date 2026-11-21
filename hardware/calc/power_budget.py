@@ -10,6 +10,8 @@ the TPS63802 minimum input is the datasheet recommended value (section 8.3).
 Sleep current (section `sleep`): a sum of named loads, each at the cell or on +3V3; a +3V3 load reaches the cell as
 I x 3.3 V / (Vcell x eff) (power conservation through the buck-boost, light-load efficiency from the profile); the sum
 replaces the bare target in the average current and FAILs above the target `cycle.sleep_ua`.
+Rail-on loads (`cycle.rail_on_loads`, optional): loads that draw only while the sensor rail is on (a bleed resistor:
+I = v / ohm, or ua), converted to the cell like a +3V3 sleep load and added for `sensor_on_s` per cycle (not in sleep).
 Autonomy = 80 % of the capacity / (average current x 24 h); FAIL below `cycle.autonomy_days_min`.
 Usage: uv run --package weatherstation-hardware python hardware/calc/power_budget.py hardware/<board> [--selftest]
 """
@@ -117,8 +119,24 @@ def run(design: dict) -> list:
             rows.append(("OK", "slow sensor (O3) share", f"{o3['o3_on_s']} s at {o3['o3_ma']} mA every {o3['o3_period_s']} s = "
                          f"{o3_ma:.1f} mA average"))
 
+        rail_ma = 0.0
+        if cy.get("rail_on_loads"):
+            vcell = ((sl or {}).get("vcell_v") or {}).get("value") or 3.2
+            eff = ((sl or {}).get("buckboost_eff") or {}).get("value") or 0.85
+            parts = []
+            for name, ld in cy["rail_on_loads"].items():
+                if not ld.get("source"):
+                    rows.append(("WARN", f"rail-on load {name}", "no source"))
+                ua = ld["v"] / ld["ohm"] * 1e6 if "ohm" in ld else ld["ua"]
+                k = 1.0 if ld.get("rail", "cell") == "cell" else 3.3 / (vcell * eff)
+                rail_ma += ua * k / 1000
+                parts.append(f"{name} {ua:.0f} uA on {ld.get('rail', 'cell')} = {ua * k:.0f} uA at the cell")
+            rows.append(("OK", "rail-on loads (sensor window only)", ", ".join(parts) +
+                         f" for {cyv['sensor_on_s']} s per cycle (not in the sleep sum)"))
+
         def average(period):
-            return (cyv["esp_active_s"] * cyv["esp_active_ma"] + cyv["sensor_on_s"] * cyv["sensor_ma"]) / period + sleep_ma + o3_ma
+            return (cyv["esp_active_s"] * cyv["esp_active_ma"] + cyv["sensor_on_s"] * (cyv["sensor_ma"] + rail_ma)) / period \
+                + sleep_ma + o3_ma
         q = average(cyv["period_s"])
         wh = q * 3.2 * 24 / 1000  # LFP nominal 3.2 V (all currents are at the cell)
         rows.append(("OK", "average current", f"{q:.1f} mA at a {cyv['period_s']} s cycle, {wh:.2f} Wh/day "

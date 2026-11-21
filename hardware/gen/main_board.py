@@ -87,6 +87,10 @@ PARTS = {
     "Q41": ("Transistor_FET:2N7002", "2N7002 (sensor enable)", SOT23, "C8545", "Rails"),
     "R41": ("Device:R", "1k", R0402, "C11702", "Rails"),
     "R42": ("Device:R", "100k", R0402, "C25741", "Rails"),
+    # 3V3_SW bleed (review follow-up B1, 2026-11-21): without it the rail held about 3 V for about 30 s after Q40 turned
+    # off, so a quick re-enable gave the sensors no clean power-on reset. 22k: tau = 22k x C_load (0.6-1.0 s), 151 uA
+    # only while the rail is on (calc/rail_switch.py turn-off rows, calc/power_budget.py active loads).
+    "R78": ("Device:R", "22k (3V3_SW bleed)", R0402, "C25768", "Rails"),
     "C42": ("Device:C", "22u", C0805, "C45783", "Rails"),
     "C43": ("Device:C", "22u", C0805, "C45783", "Rails"),
     # 5V_SW boost (TI SLVSF14B): VIN 0.5-5.5 V (start 1.8 V), true disconnect, 0.1 uA off. EN = BOOST_EN (IO12), R45 pulls
@@ -163,6 +167,7 @@ ADDED = {
     "C35": "2026-11-21 review B14: local 100 nF on USB_VBUS",
     "R76": "2026-11-21 review A3: Q40 gate ramp resistor", "C48": "2026-11-21 review A3: Q40 gate-drain ramp capacitor",
     "R77": "2026-11-21 review B11: series resistor in the outdoor cable supply (J3 pin 2)",
+    "R78": "2026-11-21 review follow-up B1: 22k bleed on 3V3_SW (rail discharges in about 3-5 s after Q40 turns off)",
     **{r: "phase B: rain/wind/vane pulse port J12 (REQUIREMENTS-system.md 5 ports)" for r in
        ("J12", "U10", "U11", "R70", "R71", "R72", "R73", "C70", "C71", "R74", "R75", "C72")},
 }
@@ -230,7 +235,7 @@ NETS = add_header({
     "3V3_SW": [("Q40", "3"), ("C42", "1"), ("C43", "1"), ("U8", "7"), ("U8", "19"), ("C47", "1"), ("R77", "1"), ("U5", "5"),
                ("R50", "2"), ("R51", "2"), ("#FLG10", "1"),
                ("U9", "10"), ("U9", "1"), ("U9", "6"), ("C90", "1"), ("C91", "1"), ("J4", "2"), ("J11", "2"),
-               ("R74", "2"), ("C48", "2")],
+               ("R74", "2"), ("C48", "2"), ("R78", "1")],
     "3V3_CABLE": [("R77", "2"), ("J3", "2")],
     "SEN_G": [("Q40", "1"), ("R40", "2"), ("R76", "1"), ("C48", "1")],
     "SEN_PULL": [("R76", "2"), ("Q41", "3")],
@@ -256,7 +261,8 @@ NETS = add_header({
             ("R45", "2"), ("C44", "2"), ("C45", "2"), ("C46", "2"), ("J2", "3"), ("J2", "4"), ("U8", "6"), ("U8", "20"),
             ("U8", "21"), ("C47", "2"), ("J3", "1"), ("U5", "2"), ("J8", "3"), ("R47", "2"), ("#FLG12", "1"),
             ("U9", "3"), ("U9", "5"), ("U9", "7"), ("U9", "8"), ("U9", "9"), ("C90", "2"), ("C91", "2"), ("J4", "1"), ("J11", "1"),
-            ("J12", "1"), ("U10", "2"), ("U11", "2"), ("C70", "2"), ("C71", "2"), ("C72", "2"), ("C35", "2")],
+            ("J12", "1"), ("U10", "2"), ("U11", "2"), ("C70", "2"), ("C71", "2"), ("C72", "2"), ("C35", "2"),
+            ("R78", "2")],
 })
 POWER_SYMBOLS = ("GND", "+3V3", "3V3_SW", "SYS", "USB_VBUS", "5V_SW")
 RAIL_LIB = {"GND": "power:GND", "+3V3": "power:+3V3"}  # others: power:VCC with the net as value
@@ -265,6 +271,9 @@ SHEET_VALUE = {"U4": "USBLC6-2SC6", "U5": "USBLC6-2SC6", "L4": "0.47uH", "U2": "
                "Q41": "2N7002", "U7": "TPS61023", "L5": "1uH", "J10": "J_PWR 2x10 key 3", "U9": "BMP580", "J4": "QWIIC 2",
                "J11": "I2C 2.54 (GND 3V3 SDA SCL)", "J7": "DEBUG UART (pin 1 3V3 only)",
                "U10": "USBLC6-2SC6", "U11": "USBLC6-2SC6", "J12": "1 GND 2 RAIN 3 WIND 4 VANE"}
+# BOM status per designator where the generic "VERIFIED LCSC part" would overstate what was checked
+STATUS_NOTE = {"U9": "LCSC part VERIFIED (BMP580, C22391138); pin-out UNVERIFIED for the BMP580: no public BMP580 datasheet, "
+                     "land pattern and pins from the BMP581 datasheet BST-BMP581-DS004-13 (same LGA-10 2x2 package)"}
 HAND_SOLDER = {"J2", "J7", "J8", "J10", "J11", "J12"}  # pin headers and JST PH: hand-soldered, not in the assembly BOM
 TP_NOTE = "SYS/3V3 test pads"
 # D+/D- join three sheets (USB, MCU, Header), the sensor bus three (MCU, Sensors, Ports): no crossing-free route on the

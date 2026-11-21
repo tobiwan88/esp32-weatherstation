@@ -69,8 +69,11 @@ Direction is seen from the power board. Engineer decision 2026-11-21 (was an unk
 a. **Pin order.** SYS sits on column 1 (pins 1, 2), USB_VBUS on column 10 (pins 19, 20), the key on column 2, and the
    six signals on columns 4, 6 and 8 with a GND pair between every two signal pairs (columns 3, 5, 7, 9). Stacking
    alone does not prevent a 180 degree rotation or a one-pin offset (the review of 2026-11-21 corrected that claim):
-   the key and the asymmetric mounting holes do. Without the key, a rotated plug would put SYS onto CHG_INT/CHG_CE,
-   which are 6 V tolerant on the BQ25798 (6.1) but not on the ESP32 (3.6 V).
+   the key and the asymmetric mounting holes do. With this pin order no mating error puts a supply pin onto a signal
+   pin, so the key no longer guards against ESP32 GPIO overvoltage (that was the rationale of the old unkeyed 2 x 9
+   order). What the key prevents now is the SYS/USB_VBUS cross-short: without it a 180 degree rotation or a mirror puts
+   SYS onto USB_VBUS (and onto GND), a short that only the BQ25798 SYS short protection, the HY2112 short detection and the
+   USB source's current limit stop (`tools/header_check.py`; the one-row offsets that still mate are of that kind too).
 b. **USB D+/D- (BC1.2): carried over the header (pins 7/8). ENGINEER DECISION.** Reason (BQ25798 SLUSDV2C 7.3.4.5 and
    table 7-4): detection runs only on VAC1 with AUTO_INDET_EN = 1 (the POR default). Without D+/D- the result is not an
    SDP but an unknown or non-standard source: IINDPM 3 A, clamped by ILIM to 1.59 A, drawn from a PC port that may only
@@ -94,6 +97,15 @@ d. **CE default: high (charge off)** through R20 until the firmware has written 
    two 1M pull-ups sit in parallel (CE about 3.3-3.5 V when the GPIO floats, under the ESP32's 3.6 V abs max for an LFP
    cell; a 4.1 V sodium cell would give 3.7 V: then fit R23 to REGN through a divider instead). The ESP32 GPIO overrides
    both; holding CE low in deep sleep costs 3.3 + 3.2 uA (`calc/power_budget.py` sleep sum).
+   **Open case (review follow-up B2, 2026-11-21; engineer's call, values unchanged):** both boards mated with +3V3 dead
+   (TPS63802 not running, ESP32 unpowered) leave R20 (1M to about 0 V) and R23 (1M to BAT_PACK) as a divider:
+   CE = BAT/2. That is below VIH_CE 1.3 V (SLUSDV2C 6.5) for BAT under 2.6 V, and with the 1 uA maximum CE leakage
+   through 500k only above BAT 3.6 V is CE surely high: CE is undefined over most of the LFP range and the charger may
+   charge from its POR registers (VREG 4.2 V) until the firmware runs or the HY2112 stops it at 3.75 V. Options:
+   (1) R20 DNP whenever the power board is used (R23 alone holds CE at BAT; R20 is needed only with a bought charger
+   module without its own pull-up); (2) R23 330k: CE = 0.75 x BAT, high above 1.73 V (2.06 V with 1 uA leakage), sleep
+   with CE held low 9.7 uA instead of 3.2 uA (+6.5 uA); (3) accept: with an input present SYS rises to VSYSMIN, +3V3
+   starts and the firmware takes CE within a boot. Details: `power-board/PARTS-REVIEW.md` B5.
 e. **No back-feed with the main board unplugged:** USB_VBUS pins connect only to the ACFET1 drain and VAC1; RBFET1 M2
    blocks VBUS/PV from the USB_VBUS pins (figure 8-2). SYS pins stay live (cell voltage through the BQ25798 BATFET);
    exposed SYS pins on a loose power board are a short risk, not a back-feed.

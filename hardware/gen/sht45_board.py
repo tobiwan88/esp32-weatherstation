@@ -4,7 +4,7 @@ Extensible (2026-11-04): J1 = Qwiic in (cable from main-board J3), J2 = Qwiic ou
 board (pressure, light, a later flex sensor head) chains behind it on the same sensor bus (3V3_SW, pull-ups on the main
 board). Layout: hardware/gen/sht45_pcb.py.
 
-Circuit = Sensirion SHT4x datasheet v7.3 figure 1: 100 nF on VDD; the 10k I2C pull-ups sit on the main board (R50/R51 on
+Circuit = Sensirion SHT4x datasheet v7.3 figure 1: 100 nF on VDD; the 2.2k I2C pull-ups sit on the main board (R50/R51 on
 3V3_SW). Connector order = Qwiic / main board J3: 1 GND, 2 VDD, 3 SDA, 4 SCL. SHT4x pins (datasheet 5.4): 1 SDA, 2 SCL,
 3 VDD, 4 VSS; die pad not connected and not soldered (footprint without central pad).
 Run: source scripts/kicad-env.sh && uv run --package weatherstation-hardware python hardware/gen/sht45_board.py
@@ -47,7 +47,7 @@ def build(out: Path) -> Path:
     out.mkdir(parents=True, exist_ok=True)
     s = Sheet("SHT45", "sht45.kicad_sch", PARTS, "A4", "SHT45 sensor, 100 nF, cable connector", project=PROJECT, title=TITLE)
     s.frame(10, 18, 56, 40, "SHT45 outdoor sensor", (20, 120, 120), (195, 238, 238))
-    s.text(10.5, 20.4, "Sensirion SHT4x datasheet v7.3 figure 1: 100 nF on VDD; I2C pull-ups 10k on the main board (R50/R51). "
+    s.text(10.5, 20.4, "Sensirion SHT4x datasheet v7.3 figure 1: 100 nF on VDD; I2C pull-ups 2.2k on the main board (R50/R51). "
                        "J1 = Qwiic in (main-board J3), J2 = Qwiic out (chain more sensors). Address 0x44", 1.1)
     s.part("J1", 16, 31, 180)            # pins right: 4 SCL (y 29), 3 SDA (30), 2 VDD (31), 1 GND (32)
     s.tag("J1", reference=(-1.5, -6.4), value=(-1.5, 6.4), just="center")

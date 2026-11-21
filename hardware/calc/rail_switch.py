@@ -11,7 +11,15 @@ Formulas (Miller plateau model, as TI SLVA156 "Using MOSFETs as load switches" /
   delay before the ramp: the gate falls from V towards V x Rs / (Rs + Rpu) with tau = (Rs || Rpu) x (Cgd + Ciss)
   (Cgd sees the discharged load as ground) until it reaches V - |Vgs|
   final gate drive |Vgs| = V x Rpu / (Rs + Rpu): must reach the Rds(on) test voltage of the datasheet
-  turn-off: the gate rises through Rpu alone: plateau time = C_load-independent dV/dt = (|Vgs| / Rpu) / (Cgd + Crss)
+  turn-off (review follow-up B1, 2026-11-21): the gate rises through Rpu alone, tau_g = Rpu x (Cgd + Ciss), from the final
+  drive |Vgs| to Vth: t_gate = tau_g x ln(|Vgs final| / Vth). The drain is NOT pulled up by a Miller plateau: once the FET
+  is off, the rail only discharges through its loads and the bleed resistor (sensors asleep or off: bleed only),
+  tau_bleed = R_bleed x C_load, 5 tau to below 1 % (sensor power-on reset needs the rail near 0 V before re-enabling).
+  Without a bleed the rail decays only through leakage (tens of seconds): FAIL when r_bleed_ohm is missing.
+  The bleed draws V / R_bleed while the rail is on (reported; counted in calc/power_budget.py as an active load).
+  cold start: while +3V3 ramps, C48 holds the gate near the (discharged) drain and R40 charges it towards the source with
+  tau_g; a +3V3 ramp shorter than tau_g lets the FET conduct weakly and 3V3_SW rises part-way without SENSOR_EN (WARN:
+  firmware drains it before the first enable, scope it on the first board)
   rail dip with the slow ramp: the regulator's datasheet load-step dip scaled linearly to the inrush step (assumption:
   same output capacitance class as the datasheet test); FAIL when the rail falls below the MCU's minimum supply
   without the ramp (old circuit, switch closes in about a microsecond, the regulator cannot follow): charge sharing
@@ -87,10 +95,27 @@ def run(design: dict) -> list:
                          f"ramp {t_ramp * 1e3:.2f} ms ({dvdt / 1e3:.1f} V/ms), inrush {i:.3f} A into {cl * 1e6:.1f} uF "
                          f"(limit {x['inrush_max_a']} A), rail dip about {dip * 1e3:.0f} mV -> {v - dip:.2f} V "
                          f"(MCU minimum {x['v_min_mcu']} V)"))
-    vpl_off = x["vth_v"][1] + math.sqrt(0.01 / k)  # discharge by the sensor load, a few mA: plateau near Vth
-    t_off = v / ((vpl_off / rpu) / cgd)
-    rows.append(("OK", "turn-off (gate through Rpu)", f"at most {t_off * 1e3:.1f} ms for the drain to swing {v} V "
-                 f"(slower if the load is light; firmware waits before re-enabling)"))
+    tau_g = rpu * (cgd + x["ciss_f"])
+    t_gate = turn_off_gate(vg_final, x["vth_v"][0], tau_g)
+    rows.append(("OK", "turn-off: gate", f"tau_g = {rpu / 1e3:g}k x {(cgd + x['ciss_f']) * 1e9:.1f} nF = {tau_g * 1e3:.2f} ms; "
+                 f"FET off after at most {t_gate * 1e3:.1f} ms (|Vgs| {vg_final:.2f} V -> Vth min {x['vth_v'][0]} V)"))
+    rb = (rsw.get("r_bleed_ohm") or {}).get("value")
+    if rb is None:
+        rows.append(("FAIL", "turn-off: rail discharge", "no bleed resistor (r_bleed_ohm): the rail decays only through "
+                     "leakage (about 30 s), sensors get no clean power-on reset when re-enabled"))
+    else:
+        if not rsw["r_bleed_ohm"].get("source"):
+            rows.append(("WARN", "r_bleed_ohm", f"{rb} has no source"))
+        for cl_name, cl in (("C_load eff", x["c_load_eff_f"]), ("C_load nominal", x["c_load_nom_f"])):
+            tau, t5 = bleed(rb, cl)
+            rows.append(("OK", f"turn-off: rail discharge, {cl_name}",
+                         f"tau = {rb / 1e3:g}k x {cl * 1e6:.1f} uF = {tau:.2f} s, 5 tau = {t5:.1f} s to below 1 % "
+                         f"(firmware waits this long before re-enabling, or soft-resets the sensors)"))
+        rows.append(("OK", "bleed current while on", f"{v} V / {rb / 1e3:g}k = {v / rb * 1e6:.0f} uA on +3V3 "
+                     f"(only while the rail is on; none in deep sleep)"))
+    rows.append(("WARN", "cold start", f"while +3V3 ramps, C48 holds the gate near the discharged drain and R40 charges it "
+                 f"with tau_g {tau_g * 1e3:.2f} ms: a faster +3V3 ramp turns Q40 on weakly and 3V3_SW rises part-way "
+                 f"without SENSOR_EN (firmware: drain for 5 tau before the first enable; scope 3V3_SW at first power-up)"))
     e = x["c_load_nom_f"] * v * v / 2
     rows.append(("OK", "FET energy per turn-on", f"{e * 1e3:.2f} mJ (C_load nominal x V^2 / 2)"))
     v_after = v * x["c_rail_eff_f"] / (x["c_rail_eff_f"] + x["c_load_eff_f"])
@@ -112,11 +137,26 @@ def run(design: dict) -> list:
     return rows
 
 
+def turn_off_gate(vg_final: float, vth: float, tau_g: float) -> float:
+    """Time for |Vgs| to decay from the final drive to Vth through Rpu (s)."""
+    return tau_g * math.log(vg_final / vth)
+
+
+def bleed(r: float, c: float) -> tuple[float, float]:
+    """(tau, 5 tau) of the rail discharging through the bleed resistor alone (s)."""
+    return r * c, 5 * r * c
+
+
 def selftest() -> bool:
     # K = 17^2 / (4 x 4) = 18.06 A/V^2; Vth 0.9 V, 33 uF: plateau about 1.03 V, Ig = 2.29/10k - 1.03/100k = 219 uA,
     # dV/dt = 219 uA / 22.055 nF = 9.9 V/ms, inrush 0.33 A, ramp 0.34 ms
     vpl, ig, dvdt, i = ramp(3.32, 10e3, 100e3, 22.055e-9, 0.9, 17 ** 2 / 16, 33e-6)
-    return abs(i - 0.327) < 0.01 and abs(3.32 / dvdt - 0.335e-3) < 0.01e-3 and 1.0 < vpl < 1.06
+    ok_on = abs(i - 0.327) < 0.01 and abs(3.32 / dvdt - 0.335e-3) < 0.01e-3 and 1.0 < vpl < 1.06
+    # turn-off: 22k x 28.6 uF = 0.629 s, 5 tau = 3.15 s; gate 100k x 22.7 nF = 2.27 ms, ln(3.02 / 0.5) = 1.80 -> 4.08 ms
+    tau, t5 = bleed(22e3, 28.6e-6)
+    ok_off = abs(tau - 0.629) < 0.001 and abs(t5 - 3.146) < 0.005
+    ok_gate = abs(turn_off_gate(3.02, 0.5, 100e3 * 22.7e-9) - 4.08e-3) < 0.02e-3
+    return ok_on and ok_off and ok_gate
 
 
 def main() -> int:

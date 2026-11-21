@@ -80,6 +80,8 @@ design:
     sensor_on_s: {value: 90, source: "REQUIREMENTS-system.md section 6: 30 s warm-up + 30-60 s window at 1 Hz, about 90 s per cycle"}
     sensor_ma: {value: 190, source: "PMS7003 manual V2.5: active <= 100 mA at 5 V; at the cell 5 V x 0.1 A / 0.85 (TPS61023, assumption) / 3.2 V = 184 mA, rounded up"}
     sleep_ua: {value: 100, source: "REQUIREMENTS-system.md section 4: whole-stack sleep target under 100 uA (target; the sum below is checked against it)"}
+    rail_on_loads:         # draw only while 3V3_SW is on (sensor window), not in deep sleep
+      r78_bleed: {v: 3.32, ohm: 22000, rail: 3v3, source: "main board R78 22k bleed on 3V3_SW (review follow-up B1 2026-11-21), 3V3_SW 3.32 V"}
     o3_on_s: {value: 240, source: "Winsen ZE25-O3 page: warm-up <= 3 min, response <= 90 s; 4 min window (firmware choice)"}
     o3_period_s: {value: 3600, source: "firmware choice: one O3 reading per hour"}
     o3_ma: {value: 20, source: "user 2026-11-04: ZE25-O3 10 mA at 5 V; at the cell 5 V x 10 mA / 0.85 / 3.2 V = 18 mA, rounded up"}

@@ -57,7 +57,7 @@ JLC_CLASS = {"C165948": "Extended", "C7519": "Extended", "C23186": "Basic", "C15
              "C1622": "Basic", "C1588": "Basic", "C25808": "Basic", "C22984": "Basic", "C22975": "Basic",
              "C22961": "Basic", "C23153": "Basic", "C23192": "Basic",
              "C307331": "Basic",
-             "C25905": "Basic", "C25076": "Basic", "C25741": "Basic", "C25879": "Basic", "C25744": "Basic",
+             "C25905": "Basic", "C25076": "Basic", "C25741": "Basic", "C25879": "Basic", "C25744": "Basic", "C25768": "Basic",
              "C4109": "Basic", "C25092": "Basic", "C11702": "Basic", "C1523": "Basic", "C52923": "Basic",
              "C18184976": "Extended", "C26083": "Basic", "C1538": "Basic",
              "C22391138": "Extended", "C1532": "Basic", "C17901": "Basic", "C1779": "Basic"}
@@ -599,6 +599,9 @@ class Generator:
             else:
                 cls = "n/a"
                 status = "HAND-SOLDER" if all(r in self.b.HAND_SOLDER for r in refs) else "NOT ASSEMBLED"
+            notes_st = [getattr(self.b, "STATUS_NOTE", {}).get(r) for r in refs]
+            if any(notes_st):
+                status = "; ".join(n for n in notes_st if n)
             rows.append([value, ",".join(refs), fp, str(len(refs)), lcsc or "n/a", cls, status, notes])
         tp = [r for r in P if r.startswith("TP")]
         if tp:

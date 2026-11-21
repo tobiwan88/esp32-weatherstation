@@ -2,8 +2,9 @@
 
 Scope: the split itself (J10 contract, what changes when the power board is alone or paired with other boards). The
 circuit inside the board is unchanged from weatherstation-v1; its earlier findings and fixes are in
-`../weatherstation-v1/PARTS-REVIEW.md` (A1-A7 fixed, B1-B8 status there). Nothing below is applied yet: each fix is a
-decision for the engineer (topology unchanged in phase A).
+`../weatherstation-v1/PARTS-REVIEW.md` (A1-A7 fixed, B1-B8 status there). Status 2026-11-21: A1, B2 and B4 are done
+(marked in their rows) and A6 is done (section "Changes from the independent review"); B1, B3, B5 and the C items are open
+or firmware rules. Each open fix is a decision for the engineer.
 
 ## A: probably wrong
 | # | Where | Finding | Proposed fix | Source |
@@ -16,6 +17,7 @@ decision for the engineer (topology unchanged in phase A).
 | B1 | Header: SYS pins | With the main board unplugged SYS is live at cell voltage on two bare pins; a dropped power board can short SYS to GND (BQ25798 SYS short protection limits, the cell side is protected by HY2112 short detection 0.55-1.15 V across M60/M61, 200-400 us). | Socket (female) on the power board side if it is the board that is handled alone; document in the bring-up notes. | BQ25798 7.3.13.1.5; HY2112 DS-HY2112-V08 9.1/9.2 |
 | B2 | Header: misplug | A rotated cable (pin 1 to 18) puts SYS on CHG_CE/CHG_INT of the main board (ESP32 3.6 V abs max) and USB_VBUS on CHG_SDA/SCL. | **Done 2026-11-21 (engineer decision, review A2):** keyed 2x10, pin 3 removed and its socket hole blocked, asymmetric mounting holes; `tools/header_check.py` proves every rotation, mirror and column offset blocked and the row offsets power-safe. The earlier claim that stacking prevents rotation was wrong. | ESP32-S3-WROOM-1 v1.8 6.1; ARCHITECTURE.md J10 |
 | B3 | Charger: HVDCP | USB_VBUS now leaves this board to the main board's USBLC6 U4 (VBR 6 V minimum). An enabled HVDCP handshake would raise VBUS to 9/12 V. | Firmware rule: EN_HVDCP stays 0 (POR default). Note in the firmware design. | BQ25798 7.3.4.5.2; USBLC6-2 DS4260 Rev 7 |
+| B5 (**open, engineer's call; review follow-up B2 2026-11-21**) | Header: CHG_CE with both boards mated and +3V3 dead | R20 1M (main board, to +3V3) and R23 1M (here, to BAT_PACK) form a divider when +3V3 is dead (ESP32 unpowered): CE = BAT/2, below VIH_CE 1.3 V for BAT under 2.6 V; with the 1 uA maximum CE leakage through 500k CE is surely high only above BAT 3.6 V. CE is then undefined and the charger may charge from its POR registers (VREG 4.2 V) until the firmware runs or HY2112 stops at 3.75 V. | Options, values not changed: (1) R20 DNP whenever the power board is used (R23 alone holds CE at BAT; R20 only for a bought module without its own pull-up), no cost; (2) R23 330k (C25778, preferred Extended = no setup fee, `tools/jlcparts.py` 2026-11-21): CE = 0.75 x BAT, high above 1.73 V (2.06 V with 1 uA leakage), CE-low sleep current 9.7 uA instead of 3.2 uA (+6.5 uA); (3) accept: with an input present SYS rises to VSYSMIN, +3V3 starts and the firmware takes CE within a boot. | BQ25798 SLUSDV2C 6.5 (VIH_CE 1.3 V, CE leakage 1 uA max); numbers: divider arithmetic in this row |
 | B4 | Energy budget | With the system inputs (5 W panel, 15 min cycle, 90 s PM window) the worst-month yield is 2.10 Wh/day for 1.70 Wh/day: 1.24x, below the 1.5x target; REQUIREMENTS-system.md says about 2x (that holds at a 30 min cycle). | **Done 2026-11-21:** cycle 30 min (15 min only with USB or sun), `autonomy_days_min: 7` as a FAIL threshold and a sleep-current sum in power_budget.py: 11.1 days, 2.33x. | `calc/power_budget.py hardware/power-board` |
 
 ## C: cleanup

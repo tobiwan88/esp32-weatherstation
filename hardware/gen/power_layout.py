@@ -20,7 +20,7 @@ BLOCKS = {
              "#FLG2": (44, 61, 0)}),
         ("Board-to-board header J10 (J_PWR)", "Keyed 2x10 2.54 mm socket, hand-soldered, hole 3 blocked (key). SYS out (pins 1, 2, >= 1 A), USB_VBUS in (19, 20), D+/D- in (BC1.2 detection), charger I2C/INT/CE to the main board. A GND pair between signal pairs. Pin map: hardware/ARCHITECTURE.md",
          (82, 10, 74, 48), {
-             "J10": (96, 30, 0), "#FLG20": (86, 53, 0)}),
+             "J10": (96, 30, 0), "#FLG20": (89, 38, 0)}),
     ],
     "Charger": [
         ("BQ25798 charger", "Buck-boost charger, 1S (SLUSDV2C figure 8-1/8-2). Caps per table 5-1: VBUS 2x10u+0.1u, PMID 3x10u+0.1u, BTST 47n, REGN 4.7u. D+/D- from J10 for BC1.2 detection (7.3.4.5)",
@@ -94,7 +94,7 @@ TAG_POS = {**{m: ((0, 5.4, "center"), (0, 7.2, "center")) for m in ("M60", "M61"
            **{m: ((3.6, 3.4, "left"), (3.6, 5.2, "left")) for m in ("M2", "M4")},
            "J10": ((0, -15.8, "center"), (0, 15.8, "center")),
            **{j: ((0, 5.4, "center"), (0, -2.8, "center")) for j in ("J5", "J6")},
-           "D1": ((-1.8, -0.7, "right"), (-1.8, 0.7, "right"))}
+           "D1": ((0, -7.6, "center"), (0, -5.6, "center"))}
 
 SHEET_NOTES = {
     "Inputs": "J10 to the main board, USB_VBUS and PV inputs into VBUS: back-to-back N-FET pairs (ACDRV1/2), PV surge TVS and choke",

@@ -15,7 +15,7 @@ bench supply). Contract and pin table: `../ARCHITECTURE.md`.
 |---|---|
 | USB | J1 USB-C, CC pull-downs R9/R10, USBLC6 U4, C35 on USB_VBUS; J10 keyed 2x10 2.54 mm male (pin 3 pulled) with the charger host pull-ups R20 (CE 1M), R22 (INT), R54/R55 (I2C) on +3V3 and the pin map note |
 | MCU | ESP32-S3-WROOM-1-N8 U1, decoupling, EN/IO0 strapping, JP1/JP2, R32/R33, J7 debug UART, LEDs |
-| Rails | TPS63802 U2 (SYS -> +3V3), Q40/Q41 3V3_SW switch with the R76/C48 ramp, TPS61023 U7 (SYS -> 5V_SW), TP1/TP2 |
+| Rails | TPS63802 U2 (SYS -> +3V3), Q40/Q41 3V3_SW switch with the R76/C48 ramp and the R78 22k bleed, TPS61023 U7 (SYS -> 5V_SW), TP1/TP2 |
 | I2C | Sensor bus on 3V3_SW: J3 outdoor SHT cable (feed R77 100 ohm, USBLC6 U5 between J3 and the bus), pull-ups R50/R51 (2.2k), BMP580 U9 (0x46) with C90/C91, Qwiic J4 and 2.54 mm header J11 (GND, 3V3_SW, SDA, SCL), U8 SCD41 and C47 (DNP) |
 | Sensors | UART/analog/pulse: J2 PMS7003 (R48/R49), J8 ZE25-O3 (R46/R47), J12 rain/wind/vane port with U10/U11, R70-R75, C70-C72 |
 
@@ -33,13 +33,14 @@ bench supply). Contract and pin table: `../ARCHITECTURE.md`.
   sleep), VANE IO8 (ADC1_CH7). Not strapping (0, 3, 45, 46), not USB (19/20), free in v1. Pull-ups 1M to +3V3: 3.3 uA per
   closed contact, 6.6 uA worst case = 7 % of the 100 uA sleep budget; 1k + 4.7 nF debounce: 77 Hz max (PARTS-REVIEW B6).
   Vane divider top 10k from 3V3_SW (no sleep current). USBLC6 U10 (RAIN, WIND), U11 (VANE) on the cable lines.
-- Root diagram: `ROOT_SIDE` puts the Ports bus pins on the left; boardgen labels each separate hand-wire group of a net.
+- Root diagram (sheets USB, MCU, Rails, I2C, Sensors): `ROOT_SIDE` puts the I2C sheet's sensor-bus pins on its left side (facing the MCU); boardgen labels each separate hand-wire group of a net.
 
-## Cost (JLCPCB Economic PCBA, 2026-11-21 first-tier prices)
-Phase A: 60 parts, 8 Extended types; USD 7.78 per board, order at qty 5 USD 73.16 (without bare PCB, joints, shipping).
-Phase B: 77 parts on 39 BOM lines, 9 Extended types (USB-C, USBLC6, ESP32 module, TPS63802, L4, TPS61023, 1 uH, JST SH,
-BMP585). Parts USD 11.92 per board; qty 5: 59.61 + 8.18 + 1.53 + 9 x 3.07 = **USD 96.95** before the 4-layer bare PCB,
-SMT joints and shipping: over the USD 100 limit once the PCB is added. Decision in PARTS-REVIEW.md A1.
+## Cost (JLCPCB Economic PCBA, 2026-11-21 first-tier prices, `calc/bom_check.py --stock --qty 5`)
+Current (BMP580 U9, review fixes incl. R78): parts USD 48.26 at qty 5 (9.65 per board), 9 Extended types (USB-C, USBLC6,
+ESP32 module, TPS63802, L4, TPS61023, 1 uH, JST SH, BMP580); order at qty 5: 48.26 + setup 8.18 + stencil 1.53 + 9 x 3.07 =
+**USD 85.60** before the 4-layer bare PCB, SMT joints and shipping (manual cart quote). R78 (C25768) is a Basic 0402 at
+USD 0.001. Fallback if the real quote passes USD 100: hand-solder J3/J4 (engineer 2026-11-21, not applied).
+History: phase A USD 73.16; phase B with the BMP585 USD 96.95 (review A5, replaced by the BMP580).
 
 ## Commands
 ```

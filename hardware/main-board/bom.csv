@@ -23,6 +23,7 @@ AO3401A,Q40,Package_TO_SOT_SMD:SOT-23,1,C15127,Basic,VERIFIED LCSC part (class: 
 100k,"R40,R42,R45",Resistor_SMD:R_0402_1005Metric,3,C25741,Basic,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),R45: 100k (EN pull-down: boost off by default)
 22n,C48,Capacitor_SMD:C_0402_1005Metric,1,C1532,Basic,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),C48: 22n (Q40 gate-drain ramp)
 2N7002,Q41,Package_TO_SOT_SMD:SOT-23,1,C8545,Basic,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),Q41: 2N7002 (sensor enable)
+22k,R78,Resistor_SMD:R_0402_1005Metric,1,C25768,Basic,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),R78: 22k (3V3_SW bleed)
 TPS61023,U7,Package_TO_SOT_SMD:SOT-563,1,C919459,Extended,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),U7: TPS61023DRLR 5 V boost
 1uH,L5,weatherstation:L_TDK_VLS252010,1,C88211,Extended,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),"L5: 1uH (VLS252010HBX-1R0M-1, same as L1)"
 510k 1%,R43,Resistor_SMD:R_0603_1608Metric,1,C23192,Basic,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),R43: 510k 1% (boost FB top: 0.595 V x (1 + 510k/68k) = 5.06 V)
@@ -35,7 +36,7 @@ SHT head cable,"J3,J4",Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horiz
 100 1206,R77,Resistor_SMD:R_1206_3216Metric,1,C17901,Basic,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),R77: 100 1206 (outdoor cable feed)
 2.2k,"R50,R51",Resistor_SMD:R_0402_1005Metric,2,C25879,Basic,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),
 ZE25-O3,J8,Connector_JST:JST_PH_B7B-PH-K_1x07_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,J8: ZE25-O3 (cable pitch to confirm)
-BMP580,U9,weatherstation:Bosch_LGA-10_2x2mm,1,C22391138,Extended,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),U9: BMP580 (0x46)
+BMP580,U9,weatherstation:Bosch_LGA-10_2x2mm,1,C22391138,Extended,"LCSC part VERIFIED (BMP580, C22391138); pin-out UNVERIFIED for the BMP580: no public BMP580 datasheet, land pattern and pins from the BMP581 datasheet BST-BMP581-DS004-13 (same LGA-10 2x2 package)",U9: BMP580 (0x46)
 I2C 2.54 (GND 3V3 SDA SCL),J11,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,1,n/a,n/a,HAND-SOLDER,J11: I2C 2.54 (GND 3V3_SW SDA SCL)
 1 GND 2 RAIN 3 WIND 4 VANE,J12,Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,J12: RAIN/WIND (1 GND 2 RAIN 3 WIND 4 VANE)
 4.7n,"C70,C71",Capacitor_SMD:C_0402_1005Metric,2,C1538,Basic,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),

@@ -81,6 +81,7 @@ design:
     v_rail: {value: 3.32, source: "+3V3 from the TPS63802 divider 220k/39k (Rails sheet)"}
     rs_ohm: {value: 10000, source: "R76 10k (C25744), Q41 drain to the Q40 gate node; 2N7002 on-resistance (ohms) neglected"}
     rpu_ohm: {value: 100000, source: "R40 100k gate pull-up to +3V3"}
+    r_bleed_ohm: {value: 22000, source: "R78 22k (C25768 Basic) 3V3_SW to GND, review follow-up B1 2026-11-21"}
     cgd_ext_f: {value: 2.2e-8, source: "C48 22 nF X7R 50 V 0402 (C1532 Basic), gate to drain"}
     crss_f: {value: 5.5e-11, source: "AO3401A Rev 3.1 electrical table: Crss 55 pF typ"}
     ciss_f: {value: 6.45e-10, source: "AO3401A Rev 3.1 electrical table: Ciss 645 pF typ"}
