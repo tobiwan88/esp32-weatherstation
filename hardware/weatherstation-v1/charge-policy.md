@@ -22,6 +22,8 @@ Voltage: 3.65 V CV, cell maximum 3.75 V. Discharge: -40 to 60 C; cut-off 2.0 V.
   (cold soak and warm soak) and widen the margin if the offset is more than about 2 C.
 
 ## Chip register rules (BQ25798)
+> Values (ICHG, VSYSMIN, order of writes) now live in `hardware/FIRMWARE-RULES.md`; where this section differs, that file wins.
+
 1. **Boot and every wake:** write VREG = 3.65 V, ICHG = 1.5 A, VSYSMIN as in usb-charger-bq25798.md, before CE is released.
 2. **Default and sleep state:** CE low (charging on), TS_IGNORE = 0 (chip JEITA on). The chip then stops charging below its
    cold threshold (about 1.9 C at TH1 with R17/R18 5.1k/30k) and above its hot threshold, even when firmware is asleep. Do not

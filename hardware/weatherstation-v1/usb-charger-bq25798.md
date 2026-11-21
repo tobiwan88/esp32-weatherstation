@@ -64,6 +64,9 @@ in the figures are internal: no external power FETs. External parts are only the
 | 29 PMID | PMID | |
 
 ## Register plan (written by firmware at every boot before any charge). v1 is LFP only (sodium column dropped 2026-11-01).
+> **Superseded 2026-11-21:** the current register plan is `hardware/FIRMWARE-RULES.md` (ICHG 1.2 A open, VSYSMIN 3.0 V,
+> VAC_OVP 12 V, JEITA hot side, CELL before VREG). The table below is kept as background only.
+
 The chip powers up with 1S defaults: VREG = 4.2 V, ICHG = 1 A, VSYSMIN = 3.5 V, TS JEITA default (REG00-REG03 and REG17/18).
 The 4.2 V default would overcharge both cells. Firmware must write before enabling charge (or hold CE high until written).
 
