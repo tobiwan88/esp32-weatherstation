@@ -1,10 +1,10 @@
 # Board profile: the facts the board-neutral hardware skills and hardware/calc/ scripts read (hw-base folder contract).
 # Status: schematic generated (split from weatherstation-v1, 2026-11-21); no layout yet.
 name: power-board
-pcb: power-board.kicad_pcb        # not created yet
+pcb: power-board.kicad_pcb        # placed, not routed (tools/build_board.sh power-board)
 sch: power-board.kicad_sch
 bom: bom.csv
-generators: {schematic: ../gen/power_board.py, layout: null}   # gen/power_layout.py is the schematic block layout
+generators: {schematic: ../gen/power_board.py, layout: ../gen/power_pcb.py}   # gen/power_layout.py is the schematic block layout; gen/pcbkit.py + gen/stack.py shared
 notes: BOARD.md
 requirements: ../REQUIREMENTS-system.md
 architecture: ../ARCHITECTURE.md
@@ -35,8 +35,8 @@ net_classes:   # full KiCad names (/Sheet/NET; global rails have no sheet). Widt
   # Charge path: 1.7 A (ILIM clamp 1.59 A from USB, charge at most 1.5 A; a 5 W 6 V panel gives under 1 A).
   Charge: {track_mm: 0.65, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3, current_a: 1.7,
            nets: [USB_VBUS, VBUS, PMID, SYS, BAT_PACK, /Battery/BAT_CON, /Battery/BAT_N, /Battery/PB_MID, /Charger/SW1,
-                  /Charger/SW2, /Inputs/PV_IN, /Inputs/PV_RAW, /Inputs/PV_N_RAW, /Inputs/ACF1_MID, /Inputs/ACF2_MID]}
-  USB: {track_mm: 0.27, gap_mm: 0.15, nets: [/USB_DP, /USB_DN]}   # BC1.2 stubs from J10 to U3 only
+                  /Charger/SW2, /Charger/PV_IN, /Inputs/PV_RAW, /Inputs/PV_N_RAW, /Inputs/ACF1_MID, /Inputs/ACF2_MID]}
+  USB: {track_mm: 0.27, gap_mm: 0.15, nets: [/Charger/USB_DP, /Charger/USB_DN]}   # BC1.2 stubs from J10 to U3 only (net names from the generated netlist)
 
 layout:
   stitch_pitch_mm: [2, 3]

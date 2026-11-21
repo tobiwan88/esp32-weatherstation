@@ -1,0 +1,34 @@
+# Critical blocks of the power board, declared by intent. hardware/calc/critical.py checks them on the .kicad_pcb
+# (placement-only board: `critical.py hardware/power-board --placement`, copper rows SKIP). Format as weatherstation-v1.
+# Pins are REF.PAD from the generated netlist (gen/power_board.py); distances pad centre to pad centre (mm), thermal rows
+# footprint centre to footprint centre. Limits are design targets unless a source is named.
+
+switcher_loop:   # BQ25798 SLUSDV2C 8.4.1 items 1-2 and figure 8-21: 0402 PMID/SYS caps on top of the pin row; SW1/SW2
+  # through vias under the IC to the inductor beyond the caps, so the inductor limit is 4.5 mm (as v1, routed there)
+  - {name: charger_pmid, cin: C9, vin: U3.29, gnd: U3.27, max_mm: 3.0, sw: U3.28, inductor: L1.1, sw_max_mm: 4.5}
+  - {name: charger_sys, cin: C13, vin: U3.25, gnd: U3.27, max_mm: 3.0, sw: U3.26, inductor: L1.2, sw_max_mm: 4.5}
+
+feedback: []     # none on this board: the BQ25798 regulates through I2C registers, no FB divider
+
+decoupling:      # SLUSDV2C 8.4.1 items 3-5
+  - {pin: U3.2, cap: C6.1, max_mm: 3.0}     # VBUS 100 nF close to the pin (item 4)
+  - {pin: U3.5, cap: C5.1, max_mm: 3.0}     # REGN (item 3)
+  - {pin: U3.22, cap: C19.1, max_mm: 4.0}   # BAT (item 5)
+  - {pin: U3.4, cap: C3.1, max_mm: 3.0}     # BTST1
+  - {pin: U3.19, cap: C4.1, max_mm: 3.0}    # BTST2
+  - {pin: U6.5, cap: C60.1, max_mm: 3.0}    # HY2112 VDD (datasheet section 10)
+
+series_termination:   # series R at the pin it serves
+  # BATP sense resistor beside the BAT pins (item 6: sense track away from the switch node); 6 mm = the v1 position,
+  # routed there, outside the right-hand escape band of the signal pins
+  - {source: U3.18, part: R13.2, max_mm: 6.0}
+
+diff_pair:       # BC1.2 detection stubs from J10 to U3 D+/D- (7.3.4.5); not a data path, impedance kept as on the main board
+  - {name: usb_bc12, p: /Charger/USB_DP, n: /Charger/USB_DN, net_class: USB, layer: F.Cu, z_diff: 90, tol_ohm: 10, max_skew_mm: 5.0, max_vias: 4}
+
+thermal_distance:   # charger heat away from the cell NTC (REQUIREMENTS T1/T2): TH1 must read the cell, not U3/L1
+  - {source: U3, sensor: TH1, min_mm: 15}
+  - {source: L1, sensor: TH1, min_mm: 15}
+
+# Review only (no script): In1/In2 solid GND; L1 has no B.Cu keepout on purpose (its SW1/SW2 tracks and GND vias run
+# under it, item 2); BATP and TS tracks away from SW1/SW2 (item 6) at routing time.

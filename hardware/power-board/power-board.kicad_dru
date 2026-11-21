@@ -1,0 +1,27 @@
+(version 1)
+# Custom DRC rules for the power board (copied by hardware/gen/pcbkit.py next to the board). From weatherstation.kicad_dru (v1).
+# No vias in SMD pads: open vias wick solder (LGA/QFN opens, 0402 tombstones); JLC via-in-pad costs extra.
+(rule "no via in SMD pad"
+  (constraint physical_clearance (min 0.1mm))
+  (condition "A.Type == 'Via' && B.Type == 'Pad' && B.Pad_Type == 'SMD'"))
+# A via on the same net as an SMD pad keeps >= 0.15 mm copper to the pad (physical_clearance also sees same-net copper).
+(rule "via to same-net SMD pad"
+  (constraint physical_clearance (min 0.15mm))
+  (condition "A.Type == 'Via' && B.Type == 'Pad' && B.Pad_Type == 'SMD' && A.NetName == B.NetName"))
+# Vias keep 0.35 mm from the board edge (JLC copper-to-edge 0.2 mm; project copper 0.3 mm).
+(rule "via to board edge"
+  (constraint edge_clearance (min 0.35mm))
+  (condition "A.Type == 'Via'"))
+# Plated through-hole annular ring >= 0.15 mm (JLC minimum for PTH pads).
+(rule "THT pad annular ring"
+  (constraint annular_width (min 0.15mm))
+  (condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole'"))
+# Silkscreen text at least 0.8 mm high (JLC minimum).
+(rule "silk text height"
+  (constraint text_height (min 0.8mm))
+  (condition "A.Type == 'Text' && (A.Layer == 'F.Silkscreen' || A.Layer == 'B.Silkscreen')"))
+# Charge path: tracks at least 0.3 mm where they neck into the charger pins (class width 0.65 mm, calc/track_width.py).
+# USB_VBUS is exempt as on v1: its current path is a trunk drawn at routing time; the U3 VAC1 sense and C1 are taps.
+(rule "charge path neck"
+  (constraint track_width (min 0.3mm))
+  (condition "A.Type == 'Track' && A.hasNetclass('Charge') && A.NetName != 'USB_VBUS'"))
