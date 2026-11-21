@@ -1,0 +1,48 @@
+# Critical blocks of the main board, declared by intent. hardware/calc/critical.py checks them on the .kicad_pcb
+# (placement-only board: `critical.py hardware/main-board --placement`, copper rows SKIP). Format as weatherstation-v1.
+# Pins are REF.PAD from the generated netlist (gen/main_board.py); distances pad centre to pad centre (mm), thermal rows
+# footprint centre to footprint centre. Limits are design targets unless a source is named.
+
+switcher_loop:   # TPS63802 SLVSEU9D 12.1/12.2 figure 12-1; TPS61023 SLVSF14B 10.1/10.2 figure 10-1
+  - {name: buckboost_in, cin: C40, vin: U2.1, gnd: U2.2, max_mm: 3.0, sw: U2.9, inductor: L4.1, sw_max_mm: 3.0}
+  - {name: buckboost_out, cin: C41, vin: U2.6, gnd: U2.8, max_mm: 3.0, sw: U2.7, inductor: L4.2, sw_max_mm: 3.0}
+  # boost: the switched loop is the output cap at VOUT/GND (10.1: "output capacitor close to VOUT and GND")
+  - {name: boost_out, cin: C45, vin: U7.6, gnd: U7.4, max_mm: 3.0, sw: U7.5, inductor: L5.2, sw_max_mm: 3.0}
+
+feedback:        # divider at the FB pin, FB trace short and away from the switch node (TI 12.1 / 10.1)
+  - {name: buckboost_fb, pin: U2.4, divider: [R52.2, R53.1], max_mm: 3.0, net: /Rails/FB, max_len_mm: 5.0}
+  - {name: boost_fb, pin: U7.1, divider: [R43.2, R44.1], max_mm: 3.0, net: /Rails/BOOST_FB, max_len_mm: 5.0}
+
+decoupling:      # each cap at the supply pin it serves
+  - {pin: U1.2, cap: C31.1, max_mm: 3.0}    # module 3V3 100 nF (ESP32-S3 HW design guidelines 1.2.1)
+  - {pin: U1.2, cap: C32.1, max_mm: 4.0}    # module 3V3 1 uF
+  - {pin: U1.2, cap: C30.1, max_mm: 5.0}    # module 3V3 22 uF
+  - {pin: U1.3, cap: C33.1, max_mm: 3.0}    # EN RC (guidelines 1.3)
+  - {pin: U7.3, cap: C44.1, max_mm: 3.0}    # boost input (SLVSF14B 10.1)
+  - {pin: U4.5, cap: C35.1, max_mm: 3.0}    # USB ESD VBUS
+  - {pin: U9.10, cap: C90.1, max_mm: 3.0}   # BMP580 VDDIO (BST-BMP581-DS004-13 6.1)
+  - {pin: U9.6, cap: C91.1, max_mm: 3.0}    # BMP580 VDD
+
+series_termination:   # series R at the driving pin (Espressif S3 schematic checklist "USB"; v1 rule for the UARTs)
+  - {source: U1.14, part: R32.2, max_mm: 4.0}   # USB D+
+  - {source: U1.13, part: R33.2, max_mm: 4.0}   # USB D-
+  - {source: U1.4, part: R48.1, max_mm: 4.0}    # PMS7003 RX
+  - {source: U1.6, part: R49.1, max_mm: 4.0}    # PMS7003 SET
+  - {source: U1.10, part: R46.1, max_mm: 4.0}   # ZE25 RX divider
+
+diff_pair:       # 90 ohm (calc/impedance.py, JLC04161H-7628); BC1.2 stubs to J10 pins 7/8 count to the vias
+  - {name: usb, p: /USB_DP, n: /USB_DN, net_class: USB, layer: F.Cu, z_diff: 90, tol_ohm: 10, max_skew_mm: 5.0, max_vias: 6}
+
+thermal_distance:   # heat sources away from the BMP580 (BST-BMP5xy-HS000-00 7.1) and the SCD41; footprint centres
+  - {source: U1, sensor: U9, min_mm: 15}    # ESP32 module (Wi-Fi bursts)
+  - {source: U2, sensor: U9, min_mm: 15}
+  - {source: L4, sensor: U9, min_mm: 15}
+  - {source: U7, sensor: U9, min_mm: 15}
+  - {source: L5, sensor: U9, min_mm: 15}
+  - {source: J10, sensor: U9, min_mm: 15}   # SYS/USB_VBUS current and the power board beneath it
+  - {source: U2, sensor: U8, min_mm: 15}
+  - {source: U7, sensor: U8, min_mm: 15}
+
+# Review only (no script): antenna overhang and the antenna strip (rule area "antenna_strip"), no copper under the
+# BMP580 on the outer layers (rule area "bmp580_body"), no signal under L4/L5 on B.Cu, J1 shell; In1/In2 solid GND.
+# Cross-board heat (power-board U3/L1 under this board's U9) is checked by tools/stack_check.py.

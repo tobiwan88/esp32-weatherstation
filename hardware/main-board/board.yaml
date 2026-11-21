@@ -1,10 +1,10 @@
 # Board profile: the facts the board-neutral hardware skills and hardware/calc/ scripts read (hw-base folder contract).
 # Status: schematic generated (split from weatherstation-v1, 2026-11-21); no layout yet.
 name: main-board
-pcb: main-board.kicad_pcb         # not created yet
+pcb: main-board.kicad_pcb         # placed, not routed (tools/build_board.sh main-board)
 sch: main-board.kicad_sch
 bom: bom.csv
-generators: {schematic: ../gen/main_board.py, layout: null}   # gen/main_layout.py is the schematic block layout
+generators: {schematic: ../gen/main_board.py, layout: ../gen/main_pcb.py}   # gen/main_layout.py is the schematic block layout; gen/pcbkit.py + gen/stack.py shared
 notes: BOARD.md
 requirements: ../REQUIREMENTS-system.md
 architecture: ../ARCHITECTURE.md
