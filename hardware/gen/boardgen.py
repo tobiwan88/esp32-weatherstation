@@ -59,7 +59,8 @@ JLC_CLASS = {"C165948": "Extended", "C7519": "Extended", "C23186": "Basic", "C15
              "C307331": "Basic",
              "C25905": "Basic", "C25076": "Basic", "C25741": "Basic", "C25879": "Basic", "C25744": "Basic",
              "C4109": "Basic", "C25092": "Basic", "C11702": "Basic", "C1523": "Basic", "C52923": "Basic",
-             "C18184976": "Extended", "C26083": "Basic", "C1538": "Basic"}
+             "C18184976": "Extended", "C26083": "Basic", "C1538": "Basic",
+             "C22391138": "Extended"}
 
 
 def _on_seg(p, seg) -> bool:

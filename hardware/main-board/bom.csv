@@ -7,7 +7,7 @@ J_PWR 2x9,J10,Connector_PinHeader_2.54mm:PinHeader_2x09_P2.54mm_Vertical,1,n/a,n
 10k,"R22,R30,R31,R47,R54,R55,R74",Resistor_SMD:R_0402_1005Metric,7,C25744,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 ESP32-S3-WROOM-1-N8,U1,RF_Module:ESP32-S3-WROOM-1,1,C2913198,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 22u,"C30,C41,C42,C43,C45,C46",Capacitor_SMD:C_0805_2012Metric,6,C45783,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),C41: 22u (TPS63802 output: 22 uF per table 10-1); C45: 22u (boost output); C46: 22u (boost output)
-100n,"C31,C72",Capacitor_SMD:C_0402_1005Metric,2,C307331,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+100n,"C31,C72,C90,C91",Capacitor_SMD:C_0402_1005Metric,4,C307331,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 1u,"C32,C33",Capacitor_SMD:C_0402_1005Metric,2,C52923,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 RESET,JP1,Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm,1,n/a,n/a,NOT ASSEMBLED,
 BOOT,JP2,Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm,1,n/a,n/a,NOT ASSEMBLED,
@@ -31,8 +31,7 @@ SCD41 DNP,U8,Sensor:Sensirion_SCD4x-1EP_10.1x10.1mm_P1.25mm_EP4.8x4.8mm,1,n/a,n/
 SHT45 cable,"J3,J4",Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,2,C160404,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),J4: Qwiic 2
 2.2k,"R50,R51",Resistor_SMD:R_0402_1005Metric,2,C25879,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
 ZE25-O3,J8,Connector_JST:JST_PH_B7B-PH-K_1x07_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,J8: ZE25-O3 (cable pitch to confirm)
-BMP585,U9,weatherstation:BMP585_LGA-8_3.25x3.25mm,1,C18184976,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U9: BMP585 (0x46)
-100n,"C90,C91",Capacitor_SMD:C_0603_1608Metric,2,C14663,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+BMP580,U9,weatherstation:Bosch_LGA-10_2x2mm,1,C22391138,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U9: BMP580 (0x46)
 I2C 2.54,J11,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,1,n/a,n/a,HAND-SOLDER,J11: I2C 2.54 (GND 3V3_SW SDA SCL)
 RAIN/WIND,J12,Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,J12: RAIN/WIND (1 GND 2 RAIN 3 WIND 4 VANE)
 1M,"R70,R71",Resistor_SMD:R_0402_1005Metric,2,C26083,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),

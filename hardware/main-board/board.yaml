@@ -67,7 +67,7 @@ design:
     cable_pf_per_m: {value: 100, source: "assumption: unshielded 4-core cable or Qwiic flex, 50-100 pF/m class; measure the bought cable"}
     cable_m: {value: 2, source: "assumption: SHT head in its radiation shield up to 2 m from the enclosure (one Qwiic cable)"}
     devices_pf:
-      value: {U1: 2, U5: 3.5, U9_BMP585: 10, U8_SCD41: 10, SHT_head: 10, SEN0460: 10, qwiic_module: 10}
+      value: {U1: 2, U5: 3.5, U9_BMP580: 10, U8_SCD41: 10, SHT_head: 10, SEN0460: 10, qwiic_module: 10}
       source: "ESP32-S3-WROOM-1 v1.8 table 6-3 CIN 2 pF; USBLC6-2 DS4260 Rev 7 3.5 pF max; sensors not stated: NXP UM10204 table 10 Ci max 10 pF"
     module_pullups_ohm: {value: [2200], source: "one bought Qwiic module with its 2.2k pull-ups enabled (SparkFun boards ship 2.2k or 4.7k, community.sparkfun.com Qwiic pull-up threads)"}
   pulse_port:              # J12 rain gauge + anemometer reed contacts (IO15, IO16), checked by calc/i2c_bus.py

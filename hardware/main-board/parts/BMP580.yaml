@@ -1,0 +1,36 @@
+# Datasheet card: facts from the OFFICIAL datasheet only, each with its section.
+# value null = not read yet (scripts report MISSING); section: not stated = datasheet silent.
+# PDF: ../../weatherstation-v1/datasheets/ (shared with the single-board design; PDFs are git-ignored, SOURCES.md lists URLs).
+# BMP580 has no public datasheet (SOURCES.md). Values come from the public BMP581 datasheet BST-BMP581-DS004-13 (same
+# LGA-10 2.0 x 2.0 mm package and pin-out; the LCSC/EasyEDA footprint of C22391138 numbers the pads identically) and
+# the BMP5xy handling guide BST-BMP5xy-HS000-00, which names the BMP580. Treat BMP580-specific accuracy and current as
+# unverified until a BMP580 datasheet is in hand (tag UNVERIFIED-580).
+mpn: BMP580
+role: barometric pressure sensor (I2C 0x46 with SDO low), on the main-board sensor bus (U9), engineer decision 2026-11-21 (was BMP585)
+lcsc: C22391138
+source:
+  url: https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/bmp580/
+  revision: "BST-BMP581-DS004-13 rev 1.13 (April 2025) as family datasheet; BST-BMP5xy-HS000-00 rev 1.0"
+  file: weatherstation-v1/datasheets/BMP581.pdf
+values:
+  package: {value: "LGA-10, 2.0 x 2.0 x 0.8 mm max, metal lid with port hole", section: "BMP581 8.1 figures 29-31; LCSC C22391138 LGA-10(2x2)"}
+  pins: {value: "1 VDDIO, 2 SCK, 3 VSS, 4 SDI, 5 SDO, 6 CSB, 7 INT, 8 VSS, 9 VSS, 10 VDD", section: "BMP581 6.1 table 28; matches the C22391138 EasyEDA footprint"}
+  vdd_v: {value: "1.71-3.6 (LCSC listing for the BMP580: 1.73-3.6)", section: "BMP581 1 key features; LCSC C22391138 description"}
+  vddio_v: {value: "1.08-3.6", section: "BMP581 1 key features"}
+  abs_max_vdd_v: {value: 4.3, section: "BMP581 2 absolute maximum ratings"}
+  standby_ua: {value: "1.0 typ at 25 C, 1.8 V (BMP581)", section: "BMP581 2 electrical table; UNVERIFIED-580"}
+  deep_standby_ua: {value: "0.55 typ at 25 C (BMP581)", section: "BMP581 2 electrical table; UNVERIFIED-580"}
+  i2c_address: {value: "0x46 (SDO = 0), 0x47 (SDO = 1); SDO must not float in I2C mode", section: "BMP581 5.6 I2C protocol"}
+  i2c_mode: {value: "CSB hard-wired to VDDIO selects I2C/I3C at power-up", section: "BMP581 5 digital interface (protocol selection) and 6.2.3 figure 26"}
+  int_unused: {value: "connect to GND and keep INT_CONFIG.int_en = 0", section: "BMP581 6.2 and table 28 note a"}
+  decoupling: {value: "100 nF at VDD and 100 nF at VDDIO", section: "BMP581 6.2.3 figure 26"}
+  back_power: {value: "an interface pin held high with VDDIO off can permanently damage the device", section: "BMP581 4.2 power management (page 15)"}
+  land_pattern: {value: "pads + 25 um per side, >= 200 um between pads, no vias or traces under the sensor, no solder mask under it (20 um clearance)", section: "BMP581 8.2 figure 32; HS000 3.2"}
+  pin_capacitance_pf: {value: null, section: not stated}
+checklist:
+  - "100 nF at VDD (C90) and VDDIO (C91), figure 26: done"
+  - "CSB (6) to VDDIO = 3V3_SW (I2C), SDO (5) to GND = 0x46, INT (7) to GND (unused, int_en stays 0): done"
+  - "VSS 3, 8, 9 all to GND (6.2): done"
+  - "on 3V3_SW: unpowered in deep sleep; firmware puts IO13/IO14 low or input before SENSOR_EN goes low (4.2, FIRMWARE-RULES.md)"
+  - "address 0x46 free on the sensor bus (SHT4x 0x44, SCD41 0x62, SEN0460 0x19, VEML 0x10); clashes with the BMP585 add-on (also 0x46): never fit both"
+  - "footprint weatherstation:Bosch_LGA-10_2x2mm fitted against the C22391138 EasyEDA footprint: 0 deg, worst pad 0.018 mm (fab_package.fit, 2026-11-21); rerun the fit on the placed PCB at fab time"

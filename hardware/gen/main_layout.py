@@ -67,7 +67,7 @@ BLOCKS = {
              "J8": (100, 74, 0), "R46": (84, 72, 90), "R47": (88, 80, 0)}),
     ],
     "Ports": [
-        ("BMP585 pressure (BST-BMP585-DS003-02 rev 1.2)", "I2C: CSB = VDDIO (6.2.3), SDO low = 0x46 (5.6), 100 nF at VDD and VDDIO (figure 25)",
+        ("BMP580 pressure (BMP581 datasheet BST-BMP581-DS004-13, same package)", "I2C: CSB = VDDIO (6.2.3), SDO low = 0x46 (5.6), INT unused to GND (6.2), 100 nF at VDD and VDDIO (figure 26)",
          (4, 10, 56, 40), {
              "U9": (32, 30, 0), "C90": (12, 26, 0), "C91": (18, 26, 0)}),
         ("Qwiic port 2 and I2C header", "Same bus as J3, order GND, 3V3_SW, SDA, SCL. Module pull-ups: one 2.2k pair at most",
@@ -133,7 +133,7 @@ SHEET_NOTES = {
     "MCU": "ESP32-S3-WROOM-1-N8: decoupling, reset and boot, USB data series resistors, UART debug, status LEDs",
     "Rails": "SYS to 3.3 V (TPS63802), switched 3V3_SW sensor rail and the 5V_SW 5 V boost (TPS61023, enable from IO12)",
     "Sensors": "PMS7003 PM sensor, SHT45 cable, I2C ESD and pull-ups, optional SCD41 (DNP), ZE25-O3 gas connector",
-    "Ports": "BMP585 pressure sensor, second Qwiic port, 2.54 mm I2C header and the rain/wind/vane pulse port",
+    "Ports": "BMP580 pressure sensor, second Qwiic port, 2.54 mm I2C header and the rain/wind/vane pulse port",
 }
 
 ROOT_BOX = {
@@ -159,5 +159,5 @@ SHEET_PURPOSE = {
     "MCU": "ESP32-S3 module: runs the firmware, USB data, reset and boot, debug UART, status LEDs. Controls the charger over I2C and switches the sensor rails.",
     "Rails": "SYS to 3.3 V buck-boost (TPS63802). Switched 3V3_SW for the sensor bus; TPS61023 5 V boost (5V_SW) for the PMS7003 and the O3 module, enabled by the ESP32.",
     "Sensors": "PMS7003 PM sensor (5 V, UART), the outdoor SHT45 board, optional SCD41 CO2 (not fitted) and the ZE25-O3 gas sensor; I2C pull-ups and ESD protection.",
-    "Ports": "BMP585 pressure (0x46), Qwiic port 2, I2C header, rain/wind/vane port.",
+    "Ports": "BMP580 pressure (0x46), Qwiic port 2, I2C header, rain/wind/vane port.",
 }

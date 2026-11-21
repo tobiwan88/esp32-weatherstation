@@ -112,12 +112,13 @@ PARTS = {
     "J8": ("Connector_Generic:Conn_01x07", "ZE25-O3 (cable pitch to confirm)", "Connector_JST:JST_PH_B7B-PH-K_1x07_P2.00mm_Vertical", None, "Sensors"),
     "R46": ("Device:R", "1k (GAS RXD level: 3.3 V x 10/11 = 3.0 V)", R0402, "C11702", "Sensors"),
     "R47": ("Device:R", "10k", R0402, "C25744", "Sensors"),
-    # --- Ports (phase B): BMP585 on the sensor bus, second Qwiic port, 2.54 mm I2C header ---------------------------------
-    # BMP585 as hardware/gen/addon_boards.py bmp585 (Bosch BST-BMP585-DS003-02 rev 1.2): CSB = VDDIO (I2C, 6.2.3),
-    # SDO low = 0x46 (5.6), 100 nF at VDD and VDDIO (figure 25), INT open.
-    "U9": ("weatherstation:BMP585", "BMP585 (0x46)", "weatherstation:BMP585_LGA-8_3.25x3.25mm", "C18184976", "Ports"),
-    "C90": ("Device:C", "100n", C0603, "C14663", "Ports"),
-    "C91": ("Device:C", "100n", C0603, "C14663", "Ports"),
+    # --- Ports (phase B): BMP580 on the sensor bus, second Qwiic port, 2.54 mm I2C header ---------------------------------
+    # BMP580 (engineer 2026-11-21, was BMP585; cost). No public BMP580 datasheet: BMP581 BST-BMP581-DS004-13 (same LGA-10
+    # 2x2 package and pins): CSB = VDDIO (6.2.3), SDO low = 0x46 (5.6), INT to GND, unused (6.2), 100 nF at VDD and
+    # VDDIO (figure 26). Card: main-board/parts/BMP580.yaml.
+    "U9": ("weatherstation:BMP580", "BMP580 (0x46)", "weatherstation:Bosch_LGA-10_2x2mm", "C22391138", "Ports"),
+    "C90": ("Device:C", "100n", C0402, "C307331", "Ports"),
+    "C91": ("Device:C", "100n", C0402, "C307331", "Ports"),
     "J4": ("Connector_Generic:Conn_01x04", "Qwiic 2", JST_SH4, "C160404", "Ports"),
     "J11": ("Connector_Generic:Conn_01x04", "I2C 2.54 (GND 3V3_SW SDA SCL)", "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", None, "Ports"),
     # Rain/wind/vane port J12 (JST PH 4-pin, hand-soldered): reed contacts to GND on RAIN_IN/WIND_IN, wind-vane resistor
@@ -141,8 +142,8 @@ PARTS = {
 
 # Parts that are not in weatherstation-v1 (tools/split_check.py) and v1 parts changed on purpose after the split.
 ADDED = {
-    "U9": "phase B: BMP585 pressure on the sensor bus (REQUIREMENTS-system.md 9: BMP585 on main)",
-    "C90": "phase B: BMP585 VDD 100 nF", "C91": "phase B: BMP585 VDDIO 100 nF",
+    "U9": "phase B: BMP580 pressure on the sensor bus (engineer 2026-11-21: BMP580 instead of BMP585)",
+    "C90": "phase B: BMP580 VDD 100 nF", "C91": "phase B: BMP580 VDDIO 100 nF",
     "J4": "phase B: second Qwiic port (REQUIREMENTS-system.md 5 ports)",
     "J11": "phase B: 4-pin 2.54 mm I2C header (GND, 3V3_SW, SDA, SCL)",
     **{r: "phase B: rain/wind/vane pulse port J12 (REQUIREMENTS-system.md 5 ports)" for r in
@@ -168,9 +169,9 @@ NETS = add_header({
     "CHG_SDA": [("U1", "39"), ("R54", "1")],
     "CHG_SCL": [("U1", "38"), ("R55", "1")],
     "SEN_SDA": [("U1", "21"), ("U8", "10"), ("J3", "3"), ("R50", "1"), ("U5", "1"), ("U5", "6"),
-                ("U9", "2"), ("J4", "3"), ("J11", "3")],
+                ("U9", "4"), ("J4", "3"), ("J11", "3")],
     "SEN_SCL": [("U1", "22"), ("U8", "9"), ("J3", "4"), ("R51", "1"), ("U5", "3"), ("U5", "4"),
-                ("U9", "1"), ("J4", "4"), ("J11", "4")],
+                ("U9", "2"), ("J4", "4"), ("J11", "4")],
     # MCU
     "EN": [("U1", "3"), ("R30", "2"), ("C33", "1"), ("JP1", "1")],
     "IO0": [("U1", "27"), ("R31", "2"), ("JP2", "1")],
@@ -198,7 +199,7 @@ NETS = add_header({
     # Rails
     "3V3_SW": [("Q40", "3"), ("C42", "1"), ("C43", "1"), ("U8", "7"), ("U8", "19"), ("C47", "1"), ("J3", "2"), ("U5", "5"),
                ("R50", "2"), ("R51", "2"), ("#FLG10", "1"),
-               ("U9", "8"), ("U9", "4"), ("U9", "7"), ("C90", "1"), ("C91", "1"), ("J4", "2"), ("J11", "2"),
+               ("U9", "10"), ("U9", "1"), ("U9", "6"), ("C90", "1"), ("C91", "1"), ("J4", "2"), ("J11", "2"),
                ("R74", "2")],
     "SEN_G": [("Q40", "1"), ("R40", "2"), ("Q41", "3")],
     "SEN_EN_G": [("Q41", "1"), ("R41", "2"), ("R42", "1")],
@@ -222,14 +223,14 @@ NETS = add_header({
             ("C40", "2"), ("C41", "2"), ("Q41", "2"), ("R42", "2"), ("C42", "2"), ("C43", "2"), ("U7", "4"), ("R44", "2"),
             ("R45", "2"), ("C44", "2"), ("C45", "2"), ("C46", "2"), ("J2", "3"), ("J2", "4"), ("U8", "6"), ("U8", "20"),
             ("U8", "21"), ("C47", "2"), ("J3", "1"), ("U5", "2"), ("J8", "3"), ("R47", "2"), ("#FLG12", "1"),
-            ("U9", "3"), ("U9", "6"), ("C90", "2"), ("C91", "2"), ("J4", "1"), ("J11", "1"),
+            ("U9", "3"), ("U9", "5"), ("U9", "7"), ("U9", "8"), ("U9", "9"), ("C90", "2"), ("C91", "2"), ("J4", "1"), ("J11", "1"),
             ("J12", "1"), ("U10", "2"), ("U11", "2"), ("C70", "2"), ("C71", "2"), ("C72", "2")],
 })
 POWER_SYMBOLS = ("GND", "+3V3", "3V3_SW", "SYS", "USB_VBUS", "5V_SW")
 RAIL_LIB = {"GND": "power:GND", "+3V3": "power:+3V3"}  # others: power:VCC with the net as value
 
 SHEET_VALUE = {"U4": "USBLC6-2SC6", "U5": "USBLC6-2SC6", "L4": "0.47uH", "U2": "TPS63802", "Q40": "AO3401A",
-               "Q41": "2N7002", "U7": "TPS61023", "L5": "1uH", "J10": "J_PWR 2x9", "U9": "BMP585", "J4": "QWIIC 2",
+               "Q41": "2N7002", "U7": "TPS61023", "L5": "1uH", "J10": "J_PWR 2x9", "U9": "BMP580", "J4": "QWIIC 2",
                "J11": "I2C 2.54",
                "U10": "USBLC6-2SC6", "U11": "USBLC6-2SC6", "J12": "RAIN/WIND"}
 HAND_SOLDER = {"J2", "J7", "J8", "J10", "J11", "J12"}  # pin headers and JST PH: hand-soldered, not in the assembly BOM

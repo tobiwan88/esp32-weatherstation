@@ -13,6 +13,13 @@ Each footprint names its source in the descr. Courtyard = pads and body + 0.25 m
   pads + 25 um per side (0.55 x 0.8 -> 0.6 x 0.85), side pads at x +/-1.225, y 0 / +/-1.1, middle pads at y +/-1.225;
   pin 9 (laser-mark pad) gets no land. No solder mask under the sensor (9.3.3): one mask opening over the body
   + 20 um, so the footprint allows mask bridges. No traces or vias under it: rule area in the board generator.
+- Bosch_LGA-10_2x2mm (BMP580): Bosch BST-BMP581-DS004-13 section 8.1.2 figure 30 (bottom view) and 8.2 figure 32
+  (landing pattern), same package as the BMP580 (no public BMP580 datasheet; BMP5xy handling guide BST-BMP5xy-HS000-00
+  section 3.2 gives the same land rule for the BMP580). Package pads 0.25 x 0.275 at a 0.5 mm pitch, row centres
+  1.525 mm apart, 1.0 mm between the outer pads of a row; lands = pads + 25 um per side (0.30 x 0.325), gap >= 0.2 mm.
+  Top view = bottom view mirrored: pin 1 top left, counter-clockwise. No solder mask under the body (mask opening = body
+  + 20 um per side), no traces or vias under it (rule area in the board generator). The LCSC/EasyEDA footprint of
+  C22391138 has the same pad numbers at +/-0.78 / +/-0.25 / +/-0.5 (0.0175 mm off): fitted by fab_package.fit.
 - Vishay_VEML6030_2x2mm: Vishay 84366 rev 1.8 page 10 "Recommended Footprint": 6 pads 0.55 x 0.3, outer span 2.3 x 1.6
   (centres x +/-0.875, y 0 / +/-0.65). Top-view pinning: 1 GND bottom right, counter-clockwise to 6 VDD bottom left.
 """
@@ -97,6 +104,21 @@ def bmp585():
     return text.replace("  (attr smd)", "  (attr smd allow_soldermask_bridges)").replace("\n  (pad ", "\n" + mask + "\n  (pad ", 1)
 
 
+def bmp580():
+    c, r = 0.7625, 0.25  # row centre (1.525 / 2) and side-pad offset (0.5 / 2)
+    side = [("1", -c, -r), ("2", -c, r), ("6", c, r), ("7", c, -r)]
+    rows = [("3", -0.5, c), ("4", 0.0, c), ("5", 0.5, c), ("8", 0.5, -c), ("9", 0.0, -c), ("10", -0.5, -c)]
+    pads = [(n, x, y, 0.325, 0.30, "roundrect", 0.15) for n, x, y in side]
+    pads += [(n, x, y, 0.30, 0.325, "roundrect", 0.15) for n, x, y in rows]
+    silk = [((-0.6, -1.15), (0.6, -1.15)), ((-0.6, 1.15), (0.6, 1.15))]
+    text = footprint("Bosch_LGA-10_2x2mm",
+                     "Bosch BMP580/BMP581 LGA-10 2.0x2.0 mm, lands = pads + 25 um (BST-BMP581-DS004-13 sec. 8.1.2 fig. 30, "
+                     "sec. 8.2 fig. 32; BST-BMP5xy-HS000-00 sec. 3.2); no solder mask under the body (8.2); no traces or vias under it",
+                     "BMP580 BMP581 pressure LGA", pads, (1.0, 1.0), silk, pin1=(-1.3, -0.9))
+    mask = ('  (fp_rect (start -1.02 -1.02) (end 1.02 1.02) (stroke (width 0) (type default)) (fill solid) (layer "F.Mask"))')
+    return text.replace("  (attr smd)", "  (attr smd allow_soldermask_bridges)").replace("\n  (pad ", "\n" + mask + "\n  (pad ", 1)
+
+
 def veml6030():
     pos = [("1", 0.875, 0.65), ("2", 0.875, 0.0), ("3", 0.875, -0.65), ("4", -0.875, -0.65), ("5", -0.875, 0.0), ("6", -0.875, 0.65)]
     pads = [(n, x, y, 0.55, 0.3, "roundrect", 0.15) for n, x, y in pos]
@@ -118,6 +140,7 @@ FOOTPRINTS = {
                                "inductor TDK VLS252010", 0.95, 0.6, 2.0, (1.25, 1.0)),
     "CMF4532F_4P": cmf(),
     "BMP585_LGA-8_3.25x3.25mm": bmp585(),
+    "Bosch_LGA-10_2x2mm": bmp580(),
     "Vishay_VEML6030_2x2mm": veml6030(),
 }
 

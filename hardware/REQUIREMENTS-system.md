@@ -24,7 +24,7 @@ Station sites are mixed: some sheltered with USB nearby, some exposed on a roof/
 | **Main board** | ESP32-S3 module, USB-C (programming, debug, VBUS to the power board), 3V3 buck-boost, 3V3_SW switch, 5 V boost with 5V_SW, all sensor ports, status LEDs | **4** (decided 2026-11-21: solid GND planes make EMC easier) | PCBA order 2 |
 | **SHT head** | SHT40 (+ JST SH in/out) on its own small 2-layer board in the radiation shield | 2 | PCBA order 3 |
 Bought: solar panel, cell, PM sensor modules, rain gauge, anemometer, extra I2C modules, cables, enclosure.
-Light (VEML6030) and BMP585 add-on boards are retired as ordered designs (generators stay in the repo); pressure moves to the main board.
+Light (VEML6030) and BMP585 add-on boards are retired as ordered designs (generators stay in the repo); pressure moves to the main board (BMP580, engineer 2026-11-21).
 
 ### 3.1 Power-board header (board-to-board contract)
 One 2.54 mm header, hand-soldered (no JLC fee), about 10-12 pins, stacked or side by side; the ESP32 antenna keepout end of
@@ -75,7 +75,9 @@ Main board alone (development): SYS from a bench supply on the header or a pad; 
   not stated, measure on the bench) or Plantower PMS7003 (UART on J2, 5V_SW). Both may be fitted on one station as two channels for cross-checking.
 - **Temperature and humidity:** Sensirion **SHT40-AD1B-R3 (LCSC C2848306)** on the SHT head in the radiation shield (SHT45 is the upgrade, same footprint).
   Humidity is used to flag and correct PM above about 80-85 %RH.
-- **Pressure:** BMP585 (C18184976, I2C 0x46) on the main board.
+- **Pressure:** BMP580 (C22391138, Extended, LGA-10 2 x 2 mm, about USD 1.21; I2C 0x46 with SDO low) on the main board, U9. Engineer decision
+  2026-11-21: replaces the BMP585 (USD 3.58) for cost. No public BMP580 datasheet: circuit and footprint from the BMP581 datasheet
+  (same package and pins), `main-board/parts/BMP580.yaml`. The BMP585 add-on board (also 0x46) must never be fitted together with U9.
 - Not needed for aqicn: CO2 (SCD41 footprint stays DNP), light (VEML7700 or similar via a bought Qwiic module if wanted), NO2/SO2/CO (no economic accurate module).
 - O3: ZE25-O3 on J8 stays an optional, unproven add-on (0-10 ppm range against ambient 20-100 ppb: check resolution before relying on it).
 
@@ -91,7 +93,7 @@ uses PM2.5, PM10, NO2, O3 and SO2 (worst pollutant sets the index), so a PM-only
 | 5 | Noise (I2S MEMS mic) | cheap extra | relative level only without calibration |
 Skip: CO2 and VOC outdoors (low health value), pollen hardware (use the DWD pollen forecast in Home Assistant), HCHO, radon, soil.
 Lightning (AS3935): storm alerts only, not health. Wind and rain: context, kept on the pulse port.
-Decision for the build: PM + SHT40 + BMP585 core; ozone, UV and noise are optional Qwiic/header modules; NO2 only after a bench trial with one bought module.
+Decision for the build: PM + SHT40 + BMP580 core; ozone, UV and noise are optional Qwiic/header modules; NO2 only after a bench trial with one bought module.
 Official Bavarian LfU station data (Munich) can be used to check our PM, NO2 and O3 readings.
 **OPEN:** verify the current EAQI breakpoints (including PM2.5 and PM10, not found in the research) before they go into Home Assistant.
 
@@ -104,7 +106,8 @@ Official Bavarian LfU station data (Munich) can be used to check our PM, NO2 and
 | ZE25-O3 J8 | 7-pin JST PH, hand-soldered | 5V_SW | optional ozone module |
 | Pulse/analog port | JST PH hand-soldered (no fee) | 3V3 | rain gauge and anemometer pulse inputs on free RTC GPIOs, one ADC pin for a wind vane; ULP polls, so wake on the first tip then count |
 All sensor power sits behind the switched rails; bus pull-ups switch with the rail (no back-power into unpowered sensors).
-I2C addresses on the sensor bus: SHT4x 0x44, SEN0460 0x19, BMP585 0x46, VEML 0x10, SCD41 0x62 (no clashes).
+I2C addresses on the sensor bus: SHT4x 0x44, SEN0460 0x19, BMP580 0x46 (U9), VEML 0x10, SCD41 0x62 (no clashes; the retired BMP585 add-on
+would also be 0x46).
 
 ## 6. Firmware (later), local AQI and optional publishing
 - Wake, power the sensor rail, 30 s warm-up (SEN0460 value to be measured), then readings at 1 Hz for a 30-60 s window; compute value,
@@ -135,7 +138,7 @@ I2C addresses on the sensor bus: SHT4x 0x44, SEN0460 0x19, BMP585 0x46, VEML 0x1
 | No software MPPT, keep the BQ25798 on the power board | negligible gain at about 1 Wh/day, hardware MPPT exists |
 | LiFePO4 default, chemistry flexible (BOM + firmware) | easier to source and in hand; sodium-ion possible once a datasheet and protection IC are chosen |
 | 5 W 6 V panel, 15-30 min cycle, 7 days autonomy | budget, energy margin about 2x in the worst month |
-| SHT40 instead of SHT45; BMP585 on main; VEML6030 and BMP585 add-on orders retired | fixed fees dominate, about USD 4.7 per station |
+| SHT40 instead of SHT45; pressure on main (BMP585, then BMP580 from 2026-11-21 for cost); VEML6030 and BMP585 add-on orders retired | fixed fees dominate, about USD 4.7 per station |
 | Ports: 2 x Qwiic, I2C 2.54 mm header, 5 V UART J2, rain/wind port | plug-in sensors without redesign |
 | SEN0460 on hand used as PM sensor (I2C), PMS7003 stays supported | free PM sensor, I2C needs no 5 V |
 | Budget: each PCBA order under USD 100, total under USD 500 | user |

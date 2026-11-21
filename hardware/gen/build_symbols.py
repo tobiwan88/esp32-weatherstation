@@ -2,7 +2,8 @@
 
 Pin numbers and names come from the datasheets (TPS63802 DLA: TI SLVSEU9D table 7-1; HY2112-CB: HYCON DS-HY2112 V08 table 2;
 TPS61023 DRL: TI SLVSF14B section 5; BMP585: Bosch BST-BMP585-DS003-02 rev 1.2 table 26;
-VEML6030: Vishay 84366 rev 1.8 figure 1 and "Top View Pinning").
+VEML6030: Vishay 84366 rev 1.8 figure 1 and "Top View Pinning"; BMP580: Bosch BST-BMP581-DS004-13 table 28, the public
+datasheet of the same LGA-10 2x2 mm family, cross-checked against the LCSC/EasyEDA footprint of C22391138 named for the BMP580).
 Run: python3 hardware/gen/build_symbols.py
 """
 
@@ -72,6 +73,18 @@ BMP585 = symbol(  # Bosch BST-BMP585-DS003-02 table 26 (SDO typed input: I2C add
      "R": [("input", "SCX", "1"), ("bidirectional", "SDX", "2"), ("output", "INT", "5"), ("power_in", "VSS", "6")]},
     6.35)
 
+BMP580 = symbol(  # Bosch BST-BMP581-DS004-13 table 28 (BMP580 has no public datasheet; same LGA-10 package and pin-out,
+    # LCSC C22391138 footprint "LGA-10_L2.0-W2.0-P0.50-TL_BMP580" numbers the pads the same way). SDO selects the I2C
+    # address in I2C mode (typed input here); VSS on pins 3, 8 and 9 (all to GND, section 6.2). INT typed passive: the
+    # datasheet allows INT on GND while INT_CONFIG.int_en = 0 (table 28 note a, 6.2), so it is no driving output there.
+    "BMP580", "BMP580", "weatherstation:Bosch_LGA-10_2x2mm",
+    "https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/bmp580/",
+    {"L": [("power_in", "VDD", "10"), ("power_in", "VDDIO", "1"), ("input", "CSB", "6"), ("input", "SDO", "5"),
+           ("passive", "INT", "7")],
+     "R": [("input", "SCK", "2"), ("bidirectional", "SDI", "4"), ("power_in", "VSS", "3"), ("passive", "VSS", "8"),
+           ("passive", "VSS", "9")]},
+    7.62)
+
 VEML6030 = symbol(  # Vishay 84366 rev 1.8: 1 GND, 2 SDA, 3 INT (open drain), 4 ADDR, 5 SCL, 6 VDD
     "VEML6030", "VEML6030", "weatherstation:Vishay_VEML6030_2x2mm",
     "https://www.vishay.com/docs/84366/veml6030.pdf",
@@ -111,7 +124,7 @@ def cmc(name, value, footprint, datasheet):
 CMC = cmc("CMC_2line", "CMC", "weatherstation:CMF4532F_4P", "")
 
 LIB = ('(kicad_symbol_lib (version 20231120) (generator "weatherstation_build_symbols") (generator_version "1.0")\n'
-       + "\n".join([TPS63802, HY2112, TPS61023, CMC, BMP585, VEML6030]) + "\n)\n")
+       + "\n".join([TPS63802, HY2112, TPS61023, CMC, BMP585, BMP580, VEML6030]) + "\n)\n")
 
 if __name__ == "__main__":
     OUT.parent.mkdir(parents=True, exist_ok=True)

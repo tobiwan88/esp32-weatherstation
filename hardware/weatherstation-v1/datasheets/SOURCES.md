@@ -20,6 +20,9 @@ Downloaded for hardware/weatherstation-v1. Every file was checked to start with 
 | 2N7002.pdf | https://www.vishay.com/docs/70226/70226.pdf (Vishay, 8 pages). Alternative: onsemi 2n7002e-d.pdf returned HTTP 403 to curl. | not verified | 98640 | OK |
 | BMP585.pdf | https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp585-ds003.pdf | BST-BMP585-DS003-02 rev 1.2 (read from the PDF, 2026-11-04) | 71 pages | OK |
 | VEML6030.pdf | https://www.vishay.com/docs/84366/veml6030.pdf | doc. 84366 rev 1.8, 28-Nov-2024 (read from the PDF) | 14 pages | OK |
+| BMP581.pdf | https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp581-ds004.pdf | BST-BMP581-DS004-13 rev 1.13, April 2025 (read from the PDF, 2026-11-21) | 75 pages | OK; used for the main-board BMP580 U9 (same LGA-10 2x2 package and pin-out): table 28 pins, 6.2/6.2.3 figure 26 I2C circuit, 7.x I2C address 0x46/0x47 by SDO, 8.1.2/8.2 package and land pattern |
+| BMP5xy_HSMI.pdf | https://www.bosch-sensortec.com/media/boschsensortec/downloads/handling_soldering_mounting_instructions/bst-bmp5xy-hs000.pdf | BST-BMP5xy-HS000-00 rev 1.0, July 2021 (read from the PDF) | 21 pages | OK; names the BMP580: land pattern pads + 25 um, 200 um gap, no vias or traces under it (3.2) |
+| BMP580.pdf | not public: Bosch's product page offers no download (bst-bmp580-ds00x.pdf URLs return an HTML page, 2026-11-21); the only copy found is a third-party mirror of an NDA-marked document (BST-BMP580-DS004-02), not used and not stored | n/a | 0 | MISSING (BMP581 datasheet used, see above) |
 
 ## App notes (appnotes/)
 

@@ -18,7 +18,7 @@ generators; `tools/split_check.py` proves both boards use it and that the split 
 |  cell: F1 PTC, TH1 NTC, HY2112 U6 + M60/M61      |<> CHG_SDA/CHG_SCL (13,14) <-------->   |  USB-C J1 + USBLC6 U4 (data to the ESP32)     |
 |  no 3.3 V on this board                          |-> CHG_INT (17) -------------------->   |  charger pull-ups R20/R22/R54/R55 to +3V3     |
 |                                                  |<- CHG_CE (18) <--------------------   |  sensor ports J2, J3/J4 (Qwiic), J11, J8, U8  |
-|                                                  |                                         |  BMP585 U9, rain/wind/vane port J12           |
+|                                                  |                                         |  BMP580 U9, rain/wind/vane port J12           |
 +--------------------------------------------------+                                         +---------------------+-------------------------+
                                                                                                                    | J3 Qwiic cable (3V3_SW, I2C)
                                                                                                          +---------v---------+
