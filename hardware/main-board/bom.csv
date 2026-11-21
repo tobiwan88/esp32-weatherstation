@@ -1,0 +1,33 @@
+Comment,Designator,Footprint,Quantity,LCSC Part #,Class,Status,Function / notes
+USB-C,J1,Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12,1,C165948,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+USBLC6-2SC6,"U4,U5",Package_TO_SOT_SMD:SOT-23-6,2,C7519,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U4: USBLC6-2SC6 (USB); U5: USBLC6-2SC6 (I2C)
+5.1k,"R9,R10",Resistor_SMD:R_0402_1005Metric,2,C25905,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+J_PWR 2x9,J10,Connector_PinHeader_2.54mm:PinHeader_2x09_P2.54mm_Vertical,1,n/a,n/a,HAND-SOLDER,"J10: J_PWR 2x9 2.54 mm (main side, hand-solder)"
+100k,"R20,R40,R42,R45",Resistor_SMD:R_0402_1005Metric,4,C25741,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R45: 100k (EN pull-down: boost off by default)
+10k,"R22,R30,R31,R47,R50,R51,R54,R55",Resistor_SMD:R_0402_1005Metric,8,C25744,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+ESP32-S3-WROOM-1-N8,U1,RF_Module:ESP32-S3-WROOM-1,1,C2913198,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+22u,"C30,C41,C42,C43,C45,C46",Capacitor_SMD:C_0805_2012Metric,6,C45783,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),C41: 22u (TPS63802 output: 22 uF per table 10-1); C45: 22u (boost output); C46: 22u (boost output)
+100n,C31,Capacitor_SMD:C_0402_1005Metric,1,C307331,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+1u,"C32,C33",Capacitor_SMD:C_0402_1005Metric,2,C52923,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+RESET,JP1,Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm,1,n/a,n/a,NOT ASSEMBLED,
+BOOT,JP2,Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm,1,n/a,n/a,NOT ASSEMBLED,
+22,"R32,R33",Resistor_SMD:R_0402_1005Metric,2,C25092,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+1k,"R34,R35,R41,R46,R48,R49",Resistor_SMD:R_0402_1005Metric,6,C11702,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R46: 1k (GAS RXD level: 3.3 V x 10/11 = 3.0 V); R48: 1k (PM RX series); R49: 1k (PM SET series)
+LED1 red,"D10,D11",LED_SMD:LED_0603_1608Metric,2,C2286,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),D11: LED2 red
+DEBUG UART,J7,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,1,n/a,n/a,HAND-SOLDER,
+TPS63802,U2,weatherstation:TPS63802_DLA_VSON-HR-10_2x3mm,1,C2845237,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U2: TPS63802DLA 3.3 V buck-boost
+0.47uH,L4,weatherstation:L_Sunlord_WPN201610H,1,C97009,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"L4: 0.47uH (Sunlord WPN201610HR47MT: Isat 4.0 A max, Irms 2.7 A)"
+220k 1%,R52,Resistor_SMD:R_0603_1608Metric,1,C22961,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R52: 220k 1% (FB top: 0.5 V x (1 + 220k/39k) = 3.32 V)
+39k 1%,R53,Resistor_SMD:R_0603_1608Metric,1,C23153,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"R53: 39k 1% (FB bottom, datasheet max 100k)"
+10u,"C40,C44,C47",Capacitor_SMD:C_0603_1608Metric,3,C19702,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),C44: 10u (boost input); C47: 10u (SCD41 VDD)
+AO3401A,Q40,Package_TO_SOT_SMD:SOT-23,1,C15127,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),Q40: AO3401A 3V3_SW switch
+2N7002,Q41,Package_TO_SOT_SMD:SOT-23,1,C8545,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),Q41: 2N7002 (sensor enable)
+TPS61023,U7,Package_TO_SOT_SMD:SOT-563,1,C919459,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),U7: TPS61023DRLR 5 V boost
+1uH,L5,weatherstation:L_TDK_VLS252010,1,C88211,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),"L5: 1uH (VLS252010HBX-1R0M-1, same as L1)"
+510k 1%,R43,Resistor_SMD:R_0603_1608Metric,1,C23192,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R43: 510k 1% (boost FB top: 0.595 V x (1 + 510k/68k) = 5.06 V)
+68k 1%,R44,Resistor_SMD:R_0603_1608Metric,1,C23231,Basic,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),R44: 68k 1% (boost FB bottom)
+PMS7003,J2,Connector_PinHeader_1.27mm:PinHeader_2x05_P1.27mm_Vertical,1,n/a,n/a,HAND-SOLDER,J2: PMS7003 (2x5 1.27 mm)
+SCD41 DNP,U8,Sensor:Sensirion_SCD4x-1EP_10.1x10.1mm_P1.25mm_EP4.8x4.8mm,1,n/a,n/a,NOT ASSEMBLED,U8: SCD41 DNP (C3659294)
+SHT45 cable,J3,Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,1,C160404,Extended,VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open),
+ZE25-O3,J8,Connector_JST:JST_PH_B7B-PH-K_1x07_P2.00mm_Vertical,1,n/a,n/a,HAND-SOLDER,J8: ZE25-O3 (cable pitch to confirm)
+Test points,"TP1,TP2",TestPoint:TestPoint_Pad_D1.5mm,2,n/a,n/a,PCB pads only,SYS/3V3 test pads
