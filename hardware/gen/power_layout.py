@@ -13,7 +13,7 @@ BLOCKS = {
         ("USB VBUS input FETs", "USB_VBUS from header J10 (main-board USB-C). BQ25798 figure 8-2 port 1: ACFET1 M1 / RBFET1 M2 back-to-back, sources joined, gates on ACDRV1 through R11; VAC1 senses USB_VBUS (Charger sheet). C1 0.1u at the FET input",
          (4, 10, 74, 34), {
              "#FLG1": (37, 24, 0), "C1": (40, 25.5, 0), "M1": (50, 25, 90), "M2": (58, 25, 90, "m"), "R11": (54, 35, 0)}),
-        ("PV input", "6 V panel (Voc about 8 V cold, up to 1.7 A): JST PH J5; SMBJ10A D1 across the pair (clamp 17 V < 30 V abs max); CM choke L3 3 A; figure 8-2 port 2: ACFET2 M3 / RBFET2 M4 into VBUS (ACDRV2)",
+        ("PV input", "5 W 6 V class panel (Voc about 8 V cold, under 1 A): JST PH J5 (1 +, 2 -); SMBJ10A D1 across the pair (clamp 17 V < 30 V abs max); CM choke L3 3 A; figure 8-2 port 2: ACFET2 M3 / RBFET2 M4 into VBUS (ACDRV2)",
          (4, 50, 74, 40), {
              "J5": (10, 68, 0, "m"), "D1": (18, 69.5, 270), "L3": (28, 69, 0), "C2": (36, 71.5, 0),
              "M3": (54, 62, 90), "M4": (62, 62, 90, "m"), "R12": (58, 72, 0),
@@ -24,7 +24,7 @@ BLOCKS = {
          (4, 10, 94, 52), {
              "U3": (46, 34, 0), "L1": (63, 29, 90), "C3": (60, 25, 90), "C4": (60, 33, 90), "C5": (70, 46, 0),
              "C6": (10, 22, 0), "C7": (15, 22, 0), "C8": (20, 22, 0),
-             "C9": (36, 56, 0), "C10": (42, 56, 0), "C11": (48, 56, 0), "C12": (54, 56, 0),
+             "C9": (36, 56, 0), "C10": (42, 56, 0), "C11": (48, 56, 0), "C12": (54, 56, 0), "TP3": (30, 44, 0),
              "#FLG3": (88, 14, 0)}),
         ("SYS and battery side", "SYS: 5x10u + 0.1u; BAT: 2x10u (table 5-1). BATP: battery sense through 100 ohm. SDRV: 1 nF (no ship FET)",
          (100, 10, 56, 52), {

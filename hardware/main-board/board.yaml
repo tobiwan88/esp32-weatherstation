@@ -33,7 +33,7 @@ net_classes:
   Default: {track_mm: 0.2, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3}
   # SYS from J10 to U2/U7: peak load 0.6 A at the cell; USB_VBUS J1 -> J10 carries the USB charge input (ILIM 1.59 A)
   Power: {track_mm: 0.65, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3, current_a: 1.7,
-          nets: [SYS, USB_VBUS, 5V_SW, /Rails/BUCK_L1, /Rails/BUCK_L2, /Rails/GAS_SW]}
+          nets: [SYS, USB_VBUS, 5V_SW, /Rails/BUCK_L1, /Rails/BUCK_L2, /Rails/BOOST_SW]}
   USB: {track_mm: 0.27, gap_mm: 0.15, nets: [/USB_DP, /USB_DN]}   # 90 ohm diff (calc/impedance.py), full speed
 
 layout:

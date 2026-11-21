@@ -1,7 +1,7 @@
 (kicad_sch (version 20250114) (generator "eeschema") (generator_version "9.0")
 	(uuid "94453229-0d08-5774-bfaf-22c70fed0f5a")
 	(paper "A3")
-	(title_block (title "weatherstation power board") (date "2026-10-31") (rev "v1") (company "weatherstation") (comment 1 "Sheet: root (block diagram)"))
+	(title_block (title "weatherstation power board") (date "2026-11-21") (rev "v1") (company "weatherstation") (comment 1 "Sheet: root (block diagram)"))
 	(lib_symbols)
 	(wire (pts (xy 139.7 78.74) (xy 104.14 78.74)) (stroke (width 0) (type default)) (uuid "6beeebd3-190f-5454-befa-271273c54a32"))
 	(wire (pts (xy 101.6 78.74) (xy 104.14 78.74)) (stroke (width 0) (type default)) (uuid "a21cfe76-a7bb-55c3-98f9-6c9c008e5138"))

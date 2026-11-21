@@ -22,6 +22,8 @@ USB_VBUS, D+/D-, and the charger I2C/INT/CE from it. Contract and pin table: `..
 - No 3.3 V rail here: the charger host pull-ups (CE, INT, I2C) are on the main board (ARCHITECTURE.md c).
 - D+/D- come over J10 for BC1.2 detection (ARCHITECTURE.md b, engineer decision).
 - 4 layers, In1/In2 GND, at most 50 x 50 mm (REQUIREMENTS-system.md 3, 7). J5, J6 and J10 hand-soldered.
+- Silkscreen polarity next to the connectors (review B19/B20): J5 "PV 1+ 2-", J6 "CELL 1+ 2-" (JST PH leads are sold with both colour orders: check with a meter before plugging).
+- TP3 = QON (pull low to leave ship mode or reset the system; BQ25798 datasheet QON section).
 
 ## Cost (JLCPCB Economic PCBA, 2026-11-21 first-tier prices from `tools/jlcparts.py`)
 50 parts on 26 BOM lines, 7 Extended types (BQ25798, SMBJ10A, CM choke, L1 1 uH, PTC, NTC, HY2112).

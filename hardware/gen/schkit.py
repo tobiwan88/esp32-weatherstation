@@ -69,12 +69,12 @@ class Sheet:
     pwr_count = 0  # power-symbol references are unique over all sheets
 
     def __init__(self, name: str, filename: str, parts: dict, paper: str = "A3", note: str = "",
-                 project: str = "weatherstation-v1", title: str = "weatherstation v1"):
+                 project: str = "weatherstation-v1", title: str = "weatherstation v1", date: str = "2026-10-31"):
         self.name, self.filename, self.parts = name, filename, parts
         self.paper, self.note = paper, note
         self.sch = ksa.Schematic.create(project)
         self.sch.set_paper_size(paper)
-        self.sch.set_title_block(title=title, date="2026-10-31", rev="v1", company="weatherstation",
+        self.sch.set_title_block(title=title, date=date, rev="v1", company="weatherstation",
                                  comments={1: f"Sheet: {name}", 2: note.split(":")[0][:60]})
         self.uuid = str(uuid.uuid5(uuid.NAMESPACE_URL, "sheet/" + name))
         self.raw: list[str] = []
@@ -299,11 +299,11 @@ class Sheet:
 
 
 def root_sheet(directory: Path, name: str, sheets: list[dict], texts: list[tuple[float, float, str]], wires, labels,
-               project: str = "weatherstation-v1", title: str = "weatherstation v1") -> tuple[Path, str]:
+               project: str = "weatherstation-v1", title: str = "weatherstation v1", date: str = "2026-10-31") -> tuple[Path, str]:
     """Root page: block diagram of sheet symbols. Each entry of sheets: name, file, x, y, w, h, page, pins=[(edge, y_cell, name)]."""
     root = str(uuid.uuid5(uuid.NAMESPACE_URL, "root" if project == "weatherstation-v1" else "root/" + project))
     out = ['(kicad_sch (version 20250114) (generator "eeschema") (generator_version "9.0")', f'\t(uuid "{root}")', '\t(paper "A3")',
-           f'\t(title_block (title "{title}") (date "2026-10-31") (rev "v1") (company "weatherstation") '
+           f'\t(title_block (title "{title}") (date "{date}") (rev "v1") (company "weatherstation") '
            '(comment 1 "Sheet: root (block diagram)"))', "\t(lib_symbols)"]
     segs_mm = [((mm(a[0]), mm(a[1])), (mm(b[0]), mm(b[1]))) for a, b in wires]
     for jx, jy in junction_points(segs_mm):

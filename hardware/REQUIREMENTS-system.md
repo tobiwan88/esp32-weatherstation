@@ -110,7 +110,7 @@ Official Bavarian LfU station data (Munich) can be used to check our PM, NO2 and
 ### 5.2 Ports on the main board
 | Port | Connector | Power | Use |
 |---|---|---|---|
-| 2 x Qwiic | JST SH 4-pin SMD (C160404, same Extended part as the SHT head connectors: no new fee) | 3V3_SW | SHT head chain, SEN0460, bought modules; I2C pull-ups 10 k on 3V3_SW, ESD (USBLC6) on the cable bus |
+| 2 x Qwiic | JST SH 4-pin SMD (C160404, same Extended part as the SHT head connectors: no new fee) | 3V3_SW | SHT head chain, SEN0460, bought modules; I2C pull-ups 2.2 k on 3V3_SW (2 m cable, `calc/i2c_bus.py`), ESD (USBLC6) on the cable bus; J3 (outdoor) fed through R77 100 ohm, J4/J11 straight from 3V3_SW |
 | I2C header | 4-pin 2.54 mm, hand-soldered, pinout GND, 3V3_SW, SDA, SCL | 3V3_SW | AliExpress GY-style modules and Gravity/Dupont cables |
 | UART/5 V port J2 | 2x5 1.27 mm (PMS7003) | 5V_SW | PMS7003, SPS30 (cable), other 5 V UART sensors |
 | ZE25-O3 J8 | 7-pin JST PH, hand-soldered | 5V_SW | optional ozone module |

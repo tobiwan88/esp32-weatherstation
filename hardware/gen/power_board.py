@@ -17,10 +17,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import boardgen  # noqa: E402  (registers the project symbol library)
-from boards_common import C0402, C0603, C0805, JST_PH2, R0402, R0603, SOT23, add_header, header_part  # noqa: E402
+from boards_common import C0402, C0603, C0805, JST_PH2, R0402, R0603, SOT23, TP, add_header, header_part  # noqa: E402
 from power_layout import (BLOCKS, HAND_LABELS, HAND_ROUTES, ROOT_BOX, SHEET_COLOR, SHEET_DX, SHEET_NOTES,  # noqa: E402,F401
                           SHEET_PURPOSE, SHEET_TEXTS, TAG_POS, TAGS_BELOW)
 
+DATE = "2026-11-21"  # title block: date of the last schematic change
 PROJECT, TITLE, SHEET_PREFIX = "power-board", "weatherstation power board", "power board"
 SHEET_FILES = {"Inputs": "inputs.kicad_sch", "Charger": "charger.kicad_sch", "Battery": "battery.kicad_sch",
                "Header": "header.kicad_sch"}
@@ -38,11 +39,12 @@ PARTS = {
     "C2": ("Device:C", "0.1u", C0402, "C307331", "Inputs"),
     # 6 V class PV panel (Voc about 8 V cold): SMBJ10A standoff 10 V, clamp 17 V, below the 30 V abs max of VAC2/AO3400A
     # (v1 PARTS-REVIEW A6, decided 2026-11-01). Littelfuse part.
-    "D1": ("Device:D_TVS", "SMBJ10A (PV surge, standoff 10 V, clamp 17 V)", "Diode_SMD:D_SMB", "C151250", "Inputs"),
+    # unidirectional TVS (review A6): Zener-shape symbol, pin 1 = K on PV_RAW, pin 2 = A on PV_N_RAW
+    "D1": ("Device:D_Zener", "SMBJ10A (PV surge, standoff 10 V, clamp 17 V)", "Diode_SMD:D_SMB", "C151250", "Inputs"),
     # 2-line common-mode choke on the PV pair: winding A = 1 -> 2, winding B = 4 -> 3 (EMTEK T-0602-102D equivalent circuit;
     # LCSC maker HongyeX). 3 A, 70 mohm DCR, 90 ohm at 100 MHz. Footprint weatherstation:CMF4532F_4P (fixed 2026-11-05).
     "L3": ("weatherstation:CMC_2line", "CM choke 90 ohm 3 A (CMF4532F-900-2P-T; datasheet page to confirm)", "weatherstation:CMF4532F_4P", "C963746", "Inputs"),
-    "J5": ("Connector_Generic:Conn_01x02", "PV IN", JST_PH2, None, "Inputs"),
+    "J5": ("Connector_Generic:Conn_01x02", "PV IN (1 +, 2 -)", JST_PH2, None, "Inputs"),
     "#FLG1": ("power:PWR_FLAG", "PWR_FLAG", None, None, "Inputs"),
     "#FLG2": ("power:PWR_FLAG", "PWR_FLAG", None, None, "Inputs"),
     # --- Charger ------------------------------------------------------------------------------------------------------
@@ -50,7 +52,9 @@ PARTS = {
     "L1": ("Device:L", "1uH (TDK VLS252010HBX-1R0M-1: Isat 3.22 A, Itemp 2.55 A, 65 mohm max)", "weatherstation:L_TDK_VLS252010", "C88211", "Charger"),
     "C3": ("Device:C", "47n", C0603, "C1622", "Charger"),
     "C4": ("Device:C", "47n", C0603, "C1622", "Charger"),
-    "C5": ("Device:C", "4.7u", C0603, "C19666", "Charger"),
+    # REGN 4.7 uF (table 5-1) in 0805 25 V (review C): a 0603 10 V part keeps only about 2.5 uF at 5 V
+    "C5": ("Device:C", "4.7u 25V", C0805, "C1779", "Charger"),
+    "TP3": ("Connector:TestPoint", "QON", TP, None, "Charger"),
     "C6": ("Device:C", "0.1u", C0402, "C307331", "Charger"),
     "C7": ("Device:C", "10u", C0805, "C15850", "Charger"),
     "C8": ("Device:C", "10u", C0805, "C15850", "Charger"),
@@ -84,7 +88,7 @@ PARTS = {
     # Cell overcurrent backup: PTC hold 3 A, trip 5 A, 8 V. Backup to the HY2112 overcurrent cut.
     "F1": ("Device:Fuse", "PTC 3 A hold (SMD1812P300TF)", "Fuse:Fuse_1812_4532Metric", "C21004", "Battery"),
     # Cell connector (hand-soldered): 1 BAT+, 2 BAT-. TH1 on the board next to J6; bottom on GND like R18 (figure 8-1).
-    "J6": ("Connector_Generic:Conn_01x02", "BATTERY", JST_PH2, None, "Battery"),
+    "J6": ("Connector_Generic:Conn_01x02", "CELL (1 +, 2 -)", JST_PH2, None, "Battery"),
     "TH1": ("Device:Thermistor_NTC", "10k NTC NCP18XH103F03RB (TS, next to J6)", R0603, "C13564", "Battery"),
     "#FLG13": ("power:PWR_FLAG", "PWR_FLAG", None, None, "Battery"),
     "#FLG14": ("power:PWR_FLAG", "PWR_FLAG", None, None, "Battery"),
@@ -103,7 +107,13 @@ PARTS = {
 }
 
 # Parts that are not in weatherstation-v1 (tools/split_check.py)
-ADDED = {"R23": "2026-11-21 review A1: CE pull-up 1M to BAT_PACK on the power board"}
+ADDED = {"R23": "2026-11-21 review A1: CE pull-up 1M to BAT_PACK on the power board",
+         "TP3": "2026-11-21 review C: QON test pad (ship-mode exit / system reset at bring-up)"}
+CHANGED = {
+    "D1": "2026-11-21 review A6: unidirectional symbol (D_Zener) for the SMBJ10A, same pins",
+    "J5": "2026-11-21 review B19: polarity in the value", "J6": "2026-11-21 review B20: polarity in the value",
+    "C5": "2026-11-21 review C: REGN cap 0603 10 V -> 0805 25 V (C1779 Basic)",
+}
 
 NETS = add_header({
     # Inputs: USB VBUS (from J10) -> ACFET1/RBFET1 -> VBUS; PV J5 -> TVS -> CM choke -> ACFET2/RBFET2 -> VBUS
@@ -139,6 +149,7 @@ NETS = add_header({
     # QON (pin 12) left open: internal pull-up (v1 PARTS-REVIEW C, R21 removed 2026-11-01); no-connect marker.
     # Host pins: pull-ups R20 (CE), R22 (INT), R54/R55 (I2C) to +3V3 are on the main board (no 3.3 V here).
     "CHG_CE": [("U3", "13"), ("R23", "1")],
+    "QON": [("U3", "12"), ("TP3", "1")],
     "CHG_INT": [("U3", "21")],
     "CHG_SDA": [("U3", "15")],
     "CHG_SCL": [("U3", "14")],
@@ -160,7 +171,7 @@ NETS = add_header({
 POWER_SYMBOLS = ("GND", "SYS", "VBUS", "USB_VBUS", "PMID", "REGN", "BAT_PACK")
 RAIL_LIB = {"GND": "power:GND", "VBUS": "power:VBUS"}  # others: power:VCC with the net as value
 
-SHEET_VALUE = {"L3": "CMC 90R 3A", "F1": "PTC 3A", "TH1": "10k NTC", "U6": "HY2112-CB", "J10": "J_PWR 2x10 key 3",
+SHEET_VALUE = {"J5": "PV IN 1+ 2-", "J6": "CELL 1+ 2-", "L3": "CMC 90R 3A", "F1": "PTC 3A", "TH1": "10k NTC", "U6": "HY2112-CB", "J10": "J_PWR 2x10 key 3",
                **{m: "AO3400A" for m in ("M1", "M2", "M3", "M4", "M60", "M61")}}
 HAND_SOLDER = {"J5", "J6", "J10"}  # JST PH and the 2.54 mm header: hand-soldered, not in the assembly BOM
 ROOT_TEXTS = [

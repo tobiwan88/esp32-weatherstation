@@ -12,7 +12,7 @@ BLOCKS = {
     "USB": [
         ("USB-C receptacle", "USB-C sink (programming, USB-JTAG debug, charging): CC1/CC2 5.1k pull-downs (Rd); USBLC6 ESD on D+/D- with VBUS reference. USB_VBUS and D+/D- continue to J10 (power board)",
          (4, 10, 60, 40), {
-             "J1": (12, 30, 0), "U4": (34, 35, 0), "R9": (26, 42, 0), "R10": (22, 42, 0), "#FLG12": (16, 40, 0), "#FLG22": (44, 24, 0)}),
+             "J1": (12, 30, 0), "U4": (34, 35, 0), "R9": (26, 42, 0), "R10": (22, 42, 0), "#FLG12": (16, 40, 0), "#FLG22": (44, 24, 0), "C35": (50, 30, 0)}),
     ],
     "Header": [
         ("Board-to-board header J10 (J_PWR) and charger host pull-ups", "J10 mating side (pin map: hardware/ARCHITECTURE.md). +3V3 lives here: CE pull-up R20 1M (charge off until firmware writes VREG; the power board has its own 1M), INT R22 10k, charger I2C R54/R55 10k (BQ25798 table 5-1)",
@@ -36,11 +36,11 @@ BLOCKS = {
              "R34": (16, 82, 0), "D10": (16, 92, 90), "R35": (36, 82, 0), "D11": (36, 92, 90)}),
     ],
     "Rails": [
-        ("3.3 V buck-boost", "TPS63802DLA from SYS (VIN = EN = SYS, MODE = GND: power save). FB 220k / 39k: 0.5 V x (1 + 220/39) = 3.32 V. L4 0.47 uH; 10 uF in, 22 uF out",
+        ("3.3 V buck-boost", "TPS63802DLA from SYS (VIN = EN = SYS, MODE = GND: power save). FB 220k / 39k: 0.5 V x (1 + 220/39) = 3.32 V. L4 0.47 uH; 22 uF in (C40 0805), 22 uF out",
          (4, 10, 90, 40), {
              "U2": (30, 26, 0), "L4": (42, 25, 0), "C40": (14, 26, 0), "R52": (50, 30, 0), "R53": (50, 38, 0), "C41": (58, 26, 0),
-             "TP1": (72, 30, 0), "TP2": (78, 30, 0), "#FLG10": (86, 16, 0)}),
-        ("3V3_SW sensor rail", "Q40 P-FET switches +3V3 to the sensors. R40 holds it off; Q41 pulls the gate low through R76 when SENSOR_EN (IO11) is high; C48 (gate-drain) ramps 3V3_SW in about 0.35 ms (calc/rail_switch.py); R42 keeps Q41 off during reset",
+             "TP1": (72, 34, 180), "TP2": (78, 34, 180), "#FLG10": (86, 16, 0)}),
+        ("3V3_SW sensor rail", "Q40 switches +3V3 to the sensors: R40 holds it off, Q41 (SENSOR_EN, IO11) pulls the gate via R76, C48 ramps 3V3_SW (0.3-0.4 ms, calc/rail_switch.py)",
          (4, 56, 62, 36), {
              "Q40": (30, 70, 180, "m"), "R40": (22, 65, 0), "R76": (22, 75, 0), "C48": (26, 76, 0),
              "Q41": (21, 82, 0), "R41": (12, 82, 90), "R42": (16, 88, 0),
@@ -60,7 +60,7 @@ BLOCKS = {
         ("CO2 SCD41 (DNP)", "Footprint only; VDD = VDDH at the sensor, 3V3_SW",
          (126, 60, 32, 30), {
              "U8": (146, 76, 0), "C47": (134, 76, 0)}),
-        ("I2C pull-ups and cable ESD", "Sensor I2C bus (IO13/IO14): pull-ups 10k to 3V3_SW; USBLC6 (U5, VBUS on 3V3_SW) on the outdoor cable lines. Charger bus is separate (Header sheet)",
+        ("I2C pull-ups and cable ESD", "Sensor I2C bus (IO13/IO14): pull-ups 2.2k to 3V3_SW (2 m cable, calc/i2c_bus.py); USBLC6 (U5, VBUS on 3V3_SW) on the outdoor cable lines. Charger bus is separate (Header sheet)",
          (4, 60, 62, 30), {
              "R50": (12, 72, 180), "R51": (17, 72, 180), "U5": (38, 72, 0)}),
         ("ZE25-O3 gas connector", "J8 (hand-solder, 1:1 to the module): 2 DAC -> IO7, 3 GND, 4 5V_SW, 5 RXD (3.0 V via R46/R47), 6 TXD -> IO18; 1, 7 reserved",
@@ -144,7 +144,7 @@ SHEET_NOTES = {
     "Header": "J10 (J_PWR) from the power board: SYS in, USB_VBUS and D+/D- out, charger I2C/INT/CE with their pull-ups",
     "MCU": "ESP32-S3-WROOM-1-N8: decoupling, reset and boot, USB data series resistors, UART debug, status LEDs",
     "Rails": "SYS to 3.3 V (TPS63802), switched 3V3_SW sensor rail and the 5V_SW 5 V boost (TPS61023, enable from IO12)",
-    "Sensors": "PMS7003 PM sensor, SHT45 cable, I2C ESD and pull-ups, optional SCD41 (DNP), ZE25-O3 gas connector",
+    "Sensors": "PMS7003 PM sensor, SHT head cable J3 (R77 feed), I2C ESD and pull-ups, optional SCD41 (DNP), ZE25-O3 gas connector",
     "Ports": "BMP580 pressure sensor, second Qwiic port, 2.54 mm I2C header and the rain/wind/vane pulse port",
 }
 

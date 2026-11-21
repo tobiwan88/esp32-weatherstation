@@ -32,7 +32,7 @@ stackup:
 
 net_classes:   # full KiCad names (/Sheet/NET; global rails have no sheet). Widths checked by calc/track_width.py
   Default: {track_mm: 0.2, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3}
-  # Charge path: 1.7 A (PV Imp of the old 10 W reference panel 1.67 A; ILIM clamp 1.59 A; charge 1.5 A).
+  # Charge path: 1.7 A (ILIM clamp 1.59 A from USB, charge at most 1.5 A; a 5 W 6 V panel gives under 1 A).
   Charge: {track_mm: 0.65, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3, current_a: 1.7,
            nets: [USB_VBUS, VBUS, PMID, SYS, BAT_PACK, /Battery/BAT_CON, /Battery/BAT_N, /Battery/PB_MID, /Charger/SW1,
                   /Charger/SW2, /Inputs/PV_IN, /Inputs/PV_RAW, /Inputs/PV_N_RAW, /Inputs/ACF1_MID, /Inputs/ACF2_MID]}
@@ -67,10 +67,10 @@ design:
   load:
     peak_a: {value: 0.6, source: "main board (main-board/board.yaml design.load.peak_a): ESP32 TX about 0.4 A + PMS7003 0.19 A at the cell (estimate)"}
   panel:
-    # REQUIREMENTS-system.md section 4: 5 W 6 V class panel, not bought yet. Values below are the old 10 W reference
-    # (Voltaic P110) and only bound the TVS (Voc below the SMBJ10A 10 V standoff); no script reads them.
-    vmp_v: {value: 5.71, source: "Voltaic P110 product page (10 W reference panel of weatherstation-v1); replace with the bought 5 W panel"}
-    voc_v: {value: 6.94, source: "Voltaic P110 product page; cold estimate about 7.9 V at -20 C, below the SMBJ10A 10 V standoff"}
+    # REQUIREMENTS-system.md section 4: 5 W 6 V class panel, not bought yet. The values only bound the TVS (Voc below the
+    # SMBJ10A 10 V standoff); no script reads them. Replace with the bought panel's label.
+    vmp_v: {value: 6.0, source: "assumption: typical 5 W 6 V class panel label (Vmp 6 V, Imp about 0.83 A); replace with the bought panel"}
+    voc_v: {value: 7.2, source: "assumption: typical 5 W 6 V class label; cold estimate about 8.2 V at -20 C (+0.3 %/K), below the SMBJ10A 10 V standoff"}
   cycle:                   # station load profile (main board), REQUIREMENTS-system.md sections 4 and 6
     period_s: {value: 1800, source: "engineer 2026-11-21: default cycle 30 min (REQUIREMENTS-system.md section 4); 15 min only with USB or strong sun"}
     fast_period_s: {value: 900, source: "engineer 2026-11-21: firmware switches to 15 min when USB or strong sun is present (reported, not judged)"}

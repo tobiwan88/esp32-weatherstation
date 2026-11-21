@@ -60,7 +60,7 @@ JLC_CLASS = {"C165948": "Extended", "C7519": "Extended", "C23186": "Basic", "C15
              "C25905": "Basic", "C25076": "Basic", "C25741": "Basic", "C25879": "Basic", "C25744": "Basic",
              "C4109": "Basic", "C25092": "Basic", "C11702": "Basic", "C1523": "Basic", "C52923": "Basic",
              "C18184976": "Extended", "C26083": "Basic", "C1538": "Basic",
-             "C22391138": "Extended", "C1532": "Basic", "C17901": "Basic"}
+             "C22391138": "Extended", "C1532": "Basic", "C17901": "Basic", "C1779": "Basic"}
 
 
 def _on_seg(p, seg) -> bool:
@@ -303,7 +303,8 @@ class Generator:
     # --- one sheet ------------------------------------------------------------------------------------------------
     def draw(self, name: str, pos: dict, used: set[tuple[str, str]]) -> Sheet:
         b, P = self.b, self.PARTS
-        s = Sheet(name, b.SHEET_FILES[name], P, "A3", b.SHEET_NOTES[name], project=b.PROJECT, title=b.TITLE)
+        s = Sheet(name, b.SHEET_FILES[name], P, "A3", b.SHEET_NOTES[name], project=b.PROJECT, title=b.TITLE,
+                  date=getattr(b, "DATE", "2026-10-31"))
         refs = [r for r, v in P.items() if v[4] == name]
         edge, tint = b.SHEET_COLOR[name]
         dx = self.dx
@@ -560,7 +561,8 @@ class Generator:
                 texts.append((bx + 1.5, by + 1.5 + 2.0 * k, line))
         for sh in sd:
             sh["pins"] = root_pins[sh["name"]]
-        path, root_uuid = root_sheet(out, "root", sd, texts, root_wires, root_labels, project=b.PROJECT, title=b.TITLE)
+        path, root_uuid = root_sheet(out, "root", sd, texts, root_wires, root_labels, project=b.PROJECT, title=b.TITLE,
+                                     date=getattr(b, "DATE", "2026-10-31"))
         for sh in sheets:
             sh.save(out, root_uuid, str(uuid.uuid5(uuid.NAMESPACE_URL, "sheet/" + sh.name)))
         return path
@@ -582,7 +584,7 @@ class Generator:
             value = self.short_value(refs[0])  # clean part value; design notes per designator go to the notes column
             notes = "; ".join(f"{r}: {P[r][1]}" for r in refs if P[r][1] != value)
             if lcsc:
-                cls, status = JLC_CLASS[lcsc], "VERIFIED LCSC part (class and stock 2026-10-31; datasheet values open)"
+                cls, status = JLC_CLASS[lcsc], "VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open)"
             else:
                 cls = "n/a"
                 status = "HAND-SOLDER" if all(r in self.b.HAND_SOLDER for r in refs) else "NOT ASSEMBLED"

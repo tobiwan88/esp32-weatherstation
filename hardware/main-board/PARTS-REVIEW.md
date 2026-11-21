@@ -34,4 +34,14 @@ is reviewed in `../weatherstation-v1/PARTS-REVIEW.md`. Nothing below changes the
 | A3 | Q40 slowed: R76 10k (C25744) from the Q41 drain to the gate node, C48 22 nF X7R 0402 (C1532, Basic) gate to drain; Q40 drawn source up | `calc/rail_switch.py hardware/main-board`: ramp 0.28-0.42 ms, inrush 0.23-0.54 A (Vth and C spread), +3V3 dip about 27-64 mV (scaled from TPS63802 figure 10-22), final gate drive 3.02 V (Rds(on) specified at 2.5 V); old circuit: charge sharing pulled +3V3 to about 1.65 V |
 | B1 | R20 100k -> 1M (C26083, already on the BOM): 3.3 uA with CE held low in deep sleep | `calc/power_budget.py hardware/power-board` sleep sum |
 | B11 | R77 100 ohm 1206 (C17901, Basic) in the J3 supply (outdoor cable). **No Basic resettable fuse exists at JLCPCB** (searched 2026-11-21: SMD0805P020TF C20976, SMD0603P020TF C20785, ASMD0805-020 C135327, JK-SMD0805-020-30V C516070 and all others are Extended: +USD 3.07 per order plus about 0.03-0.12 per part). A PTC on J4/J11 (or on 3V3_SW as a whole) stays **OPEN** for the engineer: it would cost one more Extended type; a series resistor there would break a SEN0460 (up to 100 mA) on Qwiic | `calc/rail_switch.py` cable rows: short 33 mA, 110 mW of 250 mW; drop 200 mV at 2 mA |
-| C | C47 not fitted (fit with U8); J3 value text "SHT head cable (Qwiic)" | |
+| A7 | Sensor I2C note says 2.2k; GAS_SW/GAS_FB renamed BOOST_SW/BOOST_FB (the boost feeds the PMS7003 too; board.yaml net class updated, v1 keeps the old names); Q40 and TP1/TP2 drawn with the rails pointing up | |
+| B12 | C40 TPS63802 input 10 uF 0603 -> 22 uF 0805 (C45783, Basic, already on the BOM) | |
+| B14 | C35 100 nF (C307331) on USB_VBUS at J1 | |
+| B16 | U9 INT to GND (done with the BMP580 change, eae8360) | |
+| C | C47 not fitted (fit with U8); J3 value text "SHT head cable (Qwiic)"; J7 value "pin 1 3V3 only"; C90/C91 0402 C307331 (eae8360) | |
+
+### Inspection and bring-up (review C, not changed in the design)
+- J8 (ZE25-O3) pinout and pitch are not verified against a datasheet (none in the repo): check against the bought module before soldering J8.
+- J2 (PMS7003) row orientation: check against the real cable before soldering.
+- U9 pad 9 is a laser-mark pad without copper function on Bosch parts (BMP581 land pattern); it is tied to GND here, which is harmless.
+- U9 (0x46) and the BMP585 add-on board (0x46) share an address: never fit both on one bus.

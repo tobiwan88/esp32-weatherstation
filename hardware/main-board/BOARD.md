@@ -25,6 +25,7 @@ bench supply). Contract and pin table: `../ARCHITECTURE.md`.
   keep labels because three sheets share them and no crossing-free wire exists (`ROOT_LABELLED` in main_board.py).
 - #FLG22 marks USB_VBUS as driven (J1 and U4 pins are passive), #FLG21 marks SYS from J10.
 - 4 layers, In1/In2 GND, at most 50 x 50 mm. J2, J7, J8, J10, J11, J12 hand-soldered; JP1/JP2/TP pads only.
+- Silkscreen: J7 pin 1 "3V3 only" (do not feed an adapter's VCC into it); J3 "SHT", J12 "GND RAIN WIND VANE".
 - Sensor bus pull-ups 2.2k (was 10k): 2 m cable + 7 devices = 276 pF, rise 514 ns < 1 us at 100 kHz; one bought 2.2k
   module pair in parallel is still inside 3 mA (`calc/i2c_bus.py`). More module pull-ups: cut their jumpers.
 - Bus addresses: SHT45 0x44, BMP580 0x46, SCD41 0x62, VEML6030 0x10 (add-on; the BMP585 add-on is also 0x46: never both). Check each bought module's address.

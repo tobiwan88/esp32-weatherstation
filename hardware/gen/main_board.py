@@ -21,6 +21,7 @@ from boards_common import C0402, C0603, C0805, JST_SH4, R0402, R0603, SOT23, TP,
 from main_layout import (BLOCKS, HAND_LABELS, HAND_ROUTES, ROOT_BOX, ROOT_SIDE, SHEET_COLOR, SHEET_DX, SHEET_NOTES,  # noqa: E402,F401
                          SHEET_PURPOSE, SHEET_TEXTS, TAG_POS, TAGS_BELOW)
 
+DATE = "2026-11-21"  # title block: date of the last schematic change
 PROJECT, TITLE, SHEET_PREFIX = "main-board", "weatherstation main board", "main board"
 SHEET_FILES = {"USB": "usb.kicad_sch", "Header": "header.kicad_sch", "MCU": "mcu.kicad_sch",
                "Rails": "rails.kicad_sch", "Sensors": "sensors.kicad_sch", "Ports": "ports.kicad_sch"}
@@ -65,14 +66,16 @@ PARTS = {
     "D10": ("Device:LED", "LED1 red", "LED_SMD:LED_0603_1608Metric", "C2286", "MCU"),
     "R35": ("Device:R", "1k", R0402, "C11702", "MCU"),
     "D11": ("Device:LED", "LED2 red", "LED_SMD:LED_0603_1608Metric", "C2286", "MCU"),
-    "J7": ("Connector_Generic:Conn_01x04", "DEBUG UART", "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", None, "MCU"),
+    "J7": ("Connector_Generic:Conn_01x04", "DEBUG UART (1 = 3.3 V only)", "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", None, "MCU"),
     # --- Rails -------------------------------------------------------------------------------------------------------
     # 3.3 V buck-boost from SYS (TI SLVSEU9D). Symbol from table 7-1, footprint from the DLA0010A example board layout.
     "U2": ("weatherstation:TPS63802DLA", "TPS63802DLA 3.3 V buck-boost", "weatherstation:TPS63802_DLA_VSON-HR-10_2x3mm", "C2845237", "Rails"),
     "L4": ("Device:L", "0.47uH (Sunlord WPN201610HR47MT: Isat 4.0 A max, Irms 2.7 A)", "weatherstation:L_Sunlord_WPN201610H", "C97009", "Rails"),
     "R52": ("Device:R", "220k 1% (FB top: 0.5 V x (1 + 220k/39k) = 3.32 V)", R0603, "C22961", "Rails"),
     "R53": ("Device:R", "39k 1% (FB bottom, datasheet max 100k)", R0603, "C23153", "Rails"),
-    "C40": ("Device:C", "10u", C0603, "C19702", "Rails"),
+    # TPS63802 input (review B12): 22 uF 0805 25 V; the old 10 uF 0603 kept about 4-5.5 uF at 3.3-3.6 V (datasheet minimum 4 uF)
+    "C40": ("Device:C", "22u", C0805, "C45783", "Rails"),
+    "C35": ("Device:C", "100n (USB_VBUS at J1)", C0402, "C307331", "USB"),
     "C41": ("Device:C", "22u (TPS63802 output: 22 uF per table 10-1)", C0805, "C45783", "Rails"),
     "Q40": ("Transistor_FET:AO3401A", "AO3401A 3V3_SW switch", SOT23, "C15127", "Rails"),
     "R40": ("Device:R", "100k", R0402, "C25741", "Rails"),
@@ -157,6 +160,7 @@ ADDED = {
     "C90": "phase B: BMP580 VDD 100 nF", "C91": "phase B: BMP580 VDDIO 100 nF",
     "J4": "phase B: second Qwiic port (REQUIREMENTS-system.md 5 ports)",
     "J11": "phase B: 4-pin 2.54 mm I2C header (GND, 3V3_SW, SDA, SCL)",
+    "C35": "2026-11-21 review B14: local 100 nF on USB_VBUS",
     "R76": "2026-11-21 review A3: Q40 gate ramp resistor", "C48": "2026-11-21 review A3: Q40 gate-drain ramp capacitor",
     "R77": "2026-11-21 review B11: series resistor in the outdoor cable supply (J3 pin 2)",
     **{r: "phase B: rain/wind/vane pulse port J12 (REQUIREMENTS-system.md 5 ports)" for r in
@@ -165,10 +169,15 @@ ADDED = {
 CHANGED = {
     "R20": "2026-11-21 review B1: 100k -> 1M (sleep current with CE held low), power board adds its own 1M",
     "C47": "2026-11-21 review C: not fitted while U8 (SCD41) is not fitted",
+    "C40": "2026-11-21 review B12: 10 uF 0603 -> 22 uF 0805 (C45783)",
+    "J7": "2026-11-21 review C: value text marks pin 1 as 3.3 V only",
     "J3": "2026-11-21 review C: value text 'SHT45 cable' -> 'SHT head cable (Qwiic)' (no part change)",
     "R50": "phase B: 10k -> 2.2k, I2C rise time with 2 m cable (calc/i2c_bus.py, PARTS-REVIEW.md B5)",
     "R51": "phase B: 10k -> 2.2k, as R50",
 }
+
+# the TPS61023 feeds the PMS7003 too, not only the gas module (review A7)
+RENAMED = {"GAS_SW": "BOOST_SW", "GAS_FB": "BOOST_FB"}
 
 REWIRED = {
     ("Q41", "3"): "2026-11-21 review A3: Q41 drain now reaches the Q40 gate through R76 (net SEN_PULL)",
@@ -177,7 +186,7 @@ REWIRED = {
 
 NETS = add_header({
     # USB-C
-    "USB_VBUS": [("J1", "A4"), ("J1", "A9"), ("J1", "B4"), ("J1", "B9"), ("U4", "5"), ("#FLG22", "1")],
+    "USB_VBUS": [("J1", "A4"), ("J1", "A9"), ("J1", "B4"), ("J1", "B9"), ("U4", "5"), ("#FLG22", "1"), ("C35", "1")],
     "CC1": [("J1", "A5"), ("R9", "1")],
     "CC2": [("J1", "B5"), ("R10", "1")],
     "USB_DP": [("J1", "A6"), ("J1", "B6"), ("U4", "1"), ("U4", "6"), ("R32", "1")],
@@ -226,8 +235,8 @@ NETS = add_header({
     "SEN_G": [("Q40", "1"), ("R40", "2"), ("R76", "1"), ("C48", "1")],
     "SEN_PULL": [("R76", "2"), ("Q41", "3")],
     "SEN_EN_G": [("Q41", "1"), ("R41", "2"), ("R42", "1")],
-    "GAS_SW": [("U7", "5"), ("L5", "2")],
-    "GAS_FB": [("U7", "1"), ("R43", "2"), ("R44", "1")],
+    "BOOST_SW": [("U7", "5"), ("L5", "2")],
+    "BOOST_FB": [("U7", "1"), ("R43", "2"), ("R44", "1")],
     "5V_SW": [("U7", "6"), ("R43", "1"), ("C45", "1"), ("C46", "1"), ("J8", "4"), ("J2", "1"), ("J2", "2")],
     "PM_TXD": [("U1", "4"), ("R48", "1")],     # IO4 = UART2 TX
     "PM_RXIN": [("R48", "2"), ("J2", "7")],
@@ -247,14 +256,14 @@ NETS = add_header({
             ("R45", "2"), ("C44", "2"), ("C45", "2"), ("C46", "2"), ("J2", "3"), ("J2", "4"), ("U8", "6"), ("U8", "20"),
             ("U8", "21"), ("C47", "2"), ("J3", "1"), ("U5", "2"), ("J8", "3"), ("R47", "2"), ("#FLG12", "1"),
             ("U9", "3"), ("U9", "5"), ("U9", "7"), ("U9", "8"), ("U9", "9"), ("C90", "2"), ("C91", "2"), ("J4", "1"), ("J11", "1"),
-            ("J12", "1"), ("U10", "2"), ("U11", "2"), ("C70", "2"), ("C71", "2"), ("C72", "2")],
+            ("J12", "1"), ("U10", "2"), ("U11", "2"), ("C70", "2"), ("C71", "2"), ("C72", "2"), ("C35", "2")],
 })
 POWER_SYMBOLS = ("GND", "+3V3", "3V3_SW", "SYS", "USB_VBUS", "5V_SW")
 RAIL_LIB = {"GND": "power:GND", "+3V3": "power:+3V3"}  # others: power:VCC with the net as value
 
 SHEET_VALUE = {"U4": "USBLC6-2SC6", "U5": "USBLC6-2SC6", "L4": "0.47uH", "U2": "TPS63802", "Q40": "AO3401A",
                "Q41": "2N7002", "U7": "TPS61023", "L5": "1uH", "J10": "J_PWR 2x10 key 3", "U9": "BMP580", "J4": "QWIIC 2",
-               "J11": "I2C 2.54",
+               "J11": "I2C 2.54", "J7": "DEBUG UART (pin 1 3V3 only)",
                "U10": "USBLC6-2SC6", "U11": "USBLC6-2SC6", "J12": "RAIN/WIND"}
 HAND_SOLDER = {"J2", "J7", "J8", "J10", "J11", "J12"}  # pin headers and JST PH: hand-soldered, not in the assembly BOM
 TP_NOTE = "SYS/3V3 test pads"

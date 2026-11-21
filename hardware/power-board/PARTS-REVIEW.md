@@ -29,3 +29,16 @@ decision for the engineer (topology unchanged in phase A).
 - USB_VBUS has its 0.1 uF C1 at the ACFET1 drain on this board; VBUS 2x10 uF + 0.1 uF unchanged (table 5-1, 6.3 CVBUS 2 uF).
 - D+/D- reach the BQ25798 over J10 (ARCHITECTURE.md b); abs max 6 V on D+/D-, the lines carry 3.3 V USB signalling.
 - HY2112 R60/C60/R61 inside the section 10 ranges; AO3400A VGS(th) 1.45 V max below VDL 2.10 V (section 10 note *4).
+
+## Changes from the independent review (2026-11-21, `../REVIEW-2026-11-21.md`)
+| Review # | Change |
+|---|---|
+| A1 | R23 1M CE pull-up to BAT_PACK (C26083 Basic) |
+| A6 | D1 drawn with a unidirectional symbol (Device:D_Zener: pin 1 K on PV_RAW, pin 2 A); netlist unchanged |
+| B7 | Bring-up note: HY2112 may start with discharge off when the cell is first inserted (HY2112 datasheet 11.1 as cited by the review; not re-read here, UNVERIFIED). If SYS stays dead with a good cell, connect USB or PV once: the charger voltage releases the protection. No test pads added (CS/VSS are reachable on U6) |
+| B19/B20 | Polarity in the connector values ("PV IN 1+ 2-", "CELL 1+ 2-") and on the silkscreen (BOARD.md layout rules) |
+| C | C5 REGN 4.7 uF 0603 10 V (C19666) -> 0805 25 V (C1779 Basic); TP3 on QON; 5 W panel values in board.yaml (assumption until the panel is bought); title-block date per board |
+
+### Incoming inspection and bring-up (review C, not changed in the design)
+- L3 (EMTEK CMC): the datasheet's pin numbering conflicts between drawing and schematic: ohmmeter check of the two windings (1-2 and 4-3) before assembly.
+- J10 socket: hole 3 must be blocked (plastic plug or a cut pin glued in) before the boards are first mated (`tools/header_check.py`).
