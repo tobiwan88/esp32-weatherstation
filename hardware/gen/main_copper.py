@@ -625,25 +625,26 @@ def pm_pocket(c):
 
 
 def gas_pair(c):
-    """Gas module UART lines from the pocket (U1 pin 11, R46.2) to the B.Cu crossing window: vias beside the pads,
-    B.Cu north-west parallel to the pair's diagonal (outside its stitch vias), west, and south through the window in
-    two lanes; the router takes both on from just south of the pair to J8/R47."""
+    """Pocket-to-window bundle: the gas module UART lines (U1 pin 11, R46.2) and PM_SETIN (R49.2), vias beside the
+    pads, B.Cu north-west parallel to the pair's diagonal (outside its stitch vias), west, and south through the
+    window in three lanes; the router takes all three on from just south of the pair (to J8/R47 and J2)."""
     P = c.P
-    p11, r46 = P("U1", "11"), P("R46", "2")
-    assert r46[1] < p11[1]
+    p11, r46, r49 = P("U1", "11"), P("R46", "2"), P("R49", "2")
+    assert r49[1] < r46[1] < p11[1]
     w = 0.15
     vd, vi = (round(p11[0] - 1.25, 2), round(p11[1], 2)), (round(r46[0] - 0.74, 2), round(r46[1], 2))
+    vs = (round(r49[0] - 1.34, 2), 11.9)                 # PM_SETIN: F.Cu 45 degrees down-left, then straight down
     c.t("/MCU/GAS_RXD", "F", w, [p11, vd])
     c.t("/Sensors/GAS_RXIN", "F", w, [r46, vi])
-    xd, xi = 20.96, 20.63                                # window lanes (stitch via at x 20.08, PM_SETIN at 21.3)
-    kd, ki = 12.4, 12.9                                  # x - y of the two diagonals (stitch vias at 11.63)
-    yd, yi, ys = 11.2, 10.85, 14.6                       # west runs north of the window; stub ends south of it
-    c.t("/MCU/GAS_RXD", "B", w, [vd, (round(vd[1] + kd, 2), vd[1]), (round(yd + kd, 2), yd), (round(xd + 0.4, 2), yd),
-                                 (xd, round(yd + 0.4, 2)), (xd, ys)])
-    c.t("/Sensors/GAS_RXIN", "B", w, [vi, (round(vi[1] + ki, 2), vi[1]), (round(yi + ki, 2), yi),
-                                      (round(xi + 0.4, 2), yi), (xi, round(yi + 0.4, 2)), (xi, ys)])
-    c.v("/MCU/GAS_RXD", *vd)
-    c.v("/Sensors/GAS_RXIN", *vi)
+    c.t("/Sensors/PM_SETIN", "F", w, [r49, (vs[0], round(r49[1] + (r49[0] - vs[0]), 2)), vs])
+    ys = 14.6                                            # stub ends south of the pair
+    # (net, via, x - y of the diagonal, west run y, window lane): GAS_RXD inner ... PM_SETIN outer; stitch vias at
+    # x - y = 11.63, stitch via at x 20.08 west of the lanes, window up to x 21.54
+    for net, v, k, yr, xl in (("/MCU/GAS_RXD", vd, 12.4, 11.2, 21.29), ("/Sensors/GAS_RXIN", vi, 12.9, 10.85, 20.96),
+                              ("/Sensors/PM_SETIN", vs, 13.4, 10.5, 20.63)):
+        c.t(net, "B", w, [v, (round(v[1] + k, 2), v[1]), (round(yr + k, 2), yr), (round(xl + 0.4, 2), yr),
+                          (xl, round(yr + 0.4, 2)), (xl, ys)])
+        c.v(net, *v)
 
 
 def build(P):
