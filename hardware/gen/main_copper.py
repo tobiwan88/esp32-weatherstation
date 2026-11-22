@@ -140,10 +140,13 @@ def usb(c):
     c.t(DP, "F", USB_W, [u1, (xs, u1[1])] + dp_run + [(x_end, r32[1]), r32])
     # GND stitching vias beside the pair (0.6 mm via, >= 0.6 mm copper to the pair), about every 4-5 mm, both sides
     d = HALF + USB_W / 2 + 0.6 + 0.3 + 0.05
-    # the B.Cu crossing window (main_pcb.py) spans the straight run between the via pairs; the north via sits further
-    # east, clear of the VANE via
-    for xn, xs_ in ((0.5, 0.5), (5.1, 4.2)):
-        c.v("GND", centre[0][0] + xn, yc - d, PVIA)
+    # the B.Cu crossing window (main_pcb.py) spans the straight run; south side two vias (x +0.5, +4.2), north side
+    # one at +0.5: the second north via (it sat at +5.1) gave way to the gas UART pair turning into the window
+    # (gas_pair), and between RAIN, VANE and that pair no legal spot is left; the next north via is on the diagonal
+    # (8.6 mm on; the pair references the solid In1 plane all along, BOARD.md "Routing review")
+    for xn, xs_ in ((0.5, 0.5), (None, 4.2)):
+        if xn is not None:
+            c.v("GND", centre[0][0] + xn, yc - d, PVIA)
         c.v("GND", centre[0][0] + xs_, yc + d, PVIA)
     (dx0, dy0), (dx1, dy1) = centre[1], centre[2]
     for f in (0.42, 0.86):
@@ -621,6 +624,28 @@ def pm_pocket(c):
     c.v("GND", *g)
 
 
+def gas_pair(c):
+    """Gas module UART lines from the pocket (U1 pin 11, R46.2) to the B.Cu crossing window: vias beside the pads,
+    B.Cu north-west parallel to the pair's diagonal (outside its stitch vias), west, and south through the window in
+    two lanes; the router takes both on from just south of the pair to J8/R47."""
+    P = c.P
+    p11, r46 = P("U1", "11"), P("R46", "2")
+    assert r46[1] < p11[1]
+    w = 0.15
+    vd, vi = (round(p11[0] - 1.25, 2), round(p11[1], 2)), (round(r46[0] - 0.74, 2), round(r46[1], 2))
+    c.t("/MCU/GAS_RXD", "F", w, [p11, vd])
+    c.t("/Sensors/GAS_RXIN", "F", w, [r46, vi])
+    xd, xi = 20.96, 20.63                                # window lanes (stitch via at x 20.08, PM_SETIN at 21.3)
+    kd, ki = 12.4, 12.9                                  # x - y of the two diagonals (stitch vias at 11.63)
+    yd, yi, ys = 11.2, 10.85, 14.6                       # west runs north of the window; stub ends south of it
+    c.t("/MCU/GAS_RXD", "B", w, [vd, (round(vd[1] + kd, 2), vd[1]), (round(yd + kd, 2), yd), (round(xd + 0.4, 2), yd),
+                                 (xd, round(yd + 0.4, 2)), (xd, ys)])
+    c.t("/Sensors/GAS_RXIN", "B", w, [vi, (round(vi[1] + ki, 2), vi[1]), (round(yi + ki, 2), yi),
+                                      (round(xi + 0.4, 2), yi), (xi, round(yi + 0.4, 2)), (xi, ys)])
+    c.v("/MCU/GAS_RXD", *vd)
+    c.v("/Sensors/GAS_RXIN", *vi)
+
+
 def build(P):
     c = Copper(P)
     info = usb(c)
@@ -638,6 +663,7 @@ def build(P):
     boost_en(c)
     gas_dac(c)
     pm_pocket(c)
+    gas_pair(c)
     frozen(c)
     return c.items, info
 
