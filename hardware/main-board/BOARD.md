@@ -2,7 +2,8 @@
 
 **State (2026-11-21):** schematic generated: phase A split from `../weatherstation-v1/` (same parts and nets), then phase B
 (pressure sensor U9, Qwiic J4, I2C header J11, rain/wind/vane port J12; sensor pull-ups 2.2k), then the review fixes of
-2026-11-21 and the 5-sheet partition. Placement done (2026-11-21, section Layout): not routed, no fab files.
+2026-11-21 and the 5-sheet partition. Placement done (2026-11-21, section Layout); routed 2026-11-22 (sections Routing,
+Routing review): DRC clean, no fab files yet.
 Gate: nets OK, ERC 0 errors 0 warnings, review checks 0, `tools/split_check.py` OK. Order at qty 5: USD 85.60 before the bare PCB,
 joints and shipping (`calc/bom_check.py --stock --qty 5`); open decisions: PARTS-REVIEW.md, last section.
 
@@ -42,7 +43,7 @@ ESP32 module, TPS63802, L4, TPS61023, 1 uH, JST SH, BMP580); order at qty 5: 48.
 USD 0.001. Fallback if the real quote passes USD 100: hand-solder J3/J4 (engineer 2026-11-21, not applied).
 History: phase A USD 73.16; phase B with the BMP585 USD 96.95 (review A5, replaced by the BMP580).
 
-## Layout (placement only, 2026-11-21; not routed)
+## Layout (placement 2026-11-21, routed 2026-11-22)
 Generator `gen/main_pcb.py` on the shared engine `gen/pcbkit.py` (adapted from `gen/pcb_v1.py`), stack geometry in
 `gen/stack.py` (shared with the power board), build `tools/build_board.sh main-board`, renders in
 `hardware/out/review/pcb-main-board/` (git-ignored). 4 layers F.Cu / In1 GND / In2 GND / B.Cu, 1.6 mm, JLC04161H-7628,
@@ -80,23 +81,98 @@ socket side needs a male-ended cable; choose it only if the housing is flat.
 symmetry (stack_check). Courtyards: big parts by hand (FIXED), small parts by `place_near` next to their pins (courtyards
 never overlap, 0.35 mm halo except the decoupling and termination parts).
 
-**Checks (2026-11-21):** `calc/critical.py hardware/main-board --placement`: all placement rows OK (switcher loops, FB
+**Checks at placement (2026-11-21, superseded by section Routing):** `calc/critical.py hardware/main-board --placement`: all placement rows OK (switcher loops, FB
 dividers, decoupling, series R, thermal); FB trace length and USB skew/vias SKIP (not routed). KiCad DRC (all
 severities, schematic parity, project rules): 0 errors, 4 warnings `silk_edge_clearance` (J1 and U1 silkscreen cross
 the edge: both overhang on purpose; JLC clips silk at the edge), 205 unconnected items (52 nets, no routing yet; not
 waived). `tools/stack_check.py`: OK.
 
-**For the reviewer, first:** the stack direction (connectors on the front here, back on the power board); U9 position
+Placement changes made during routing (2026-11-22, all in `gen/main_pcb.py`): U4 turned 180 degrees (pair fan-out
+without a crossing on F.Cu), R9/R10/C35/C48/C42/C43/R32/R33/R40/R76/C90/C91/Q41/D10/D11 pinned by hand (FIXED), the
+anemometer filter block (R70-R75, C70-C72) re-placed in columns, J8 1.5 mm further right, B.Cu crossing window under the
+pair's straight run widened to about 4.7 mm (to the bend).
+
+**For the reviewer, first (placement):** the stack direction (connectors on the front here, back on the power board); U9 position
 against the "near an edge" wish; J3 14 mm from the antenna end; the module's right pad column 0.5 mm from the right
 edge (pins 28-40 must leave by vias under the module); BC1.2 stubs from the pair down to J10 pins 7/8 (about 16 mm).
+
+## Routing (2026-11-22)
+Two-step and reproducible from the repo (deterministic: KRT seed pinned, frozen copper stored as data):
+1. `tools/build_board.sh main-board` draws the placed board plus **locked copper** from `gen/main_copper.py`:
+   - hand copper (`usb`, `vbus`, `sys_`, `buckboost`, `boost`, `mcu`, `bmp`, `gate`, `anemometer`, `cluster`,
+     `sen_trunk`, `chg_trunk`, `boost_en`, `gas_dac`, `pm_pocket`, `gas_pair`): USB pair and BC1.2 stubs, both
+     switchers' power loops and decoupling, BMP580, the 3V3_SW gate network, ESD order at J3/J12, the anemometer
+     bundle, sensor and charger I2C trunks, BOOST_EN, GAS_DAC, the PM/gas UART pocket bundle through the window;
+   - frozen router copper (`main-board/frozen-routes.json`, written by `tools/main_freeze.py` from chosen router runs,
+     minus the hand copper): every other net. The router alone plateaus at 2-6 open nets on this board (the order it
+     meets the nets in decides); freezing a good run and hand-leading the last nets through the bottlenecks fixed that.
+2. `tools/route_main.sh` (KiCadRoutingTools): GND planes on In1/In2 (solid), the router finds every net connected
+   and adds nothing, `tools/finish_v1.py`, `tools/main_stitch.py` (edge fence and grid GND vias, outer GND pours),
+   `tools/silk_fix.py`, kicad-cli DRC. Writes the board in place.
+
+Numbers (final board): 1312 track segments (F.Cu 1040 mm, B.Cu 1172 mm), 250 vias (184 x 0.6/0.3 stitch and router
+vias, 45 x 0.45/0.25 hand vias, 19 x 0.45/0.2 router, 2 x 0.54/0.29). Widths: signals 0.15/0.2 mm, router neck-downs
+0.127/0.142 mm at congested pads (fab floor in `rules/krt-fab.txt` = board minimum in the .kicad_pro: track 0.127,
+via 0.45/0.2, clearance 0.15), Rail 0.3 mm, Power 0.65 mm, USB 0.27 mm.
+
+**Checks (2026-11-22):** KiCad DRC (refill, schematic parity, all severities): 0 errors, 0 unconnected, 0 parity, 3
+warnings waived in `drc-waivers.csv` (`lib_footprint_mismatch` U1/J1/U4: silk_fix clipped or moved silk only).
+`calc/critical.py`: OK (USB copper skew 0.21 mm, 4 vias; FB traces 2.92/2.84 mm). `calc/emi_check.py`: OK, 2 WARN
+(below). `calc/track_width.py`: OK. `scripts/hw-check.sh`: OK.
+
+## Routing review (2026-11-22)
+- **USB pair** (F.Cu 0.27/0.15 mm over In1, 90 ohm, hand-drawn): path A (plug side A) P 26.57 / N 26.46 mm copper,
+  skew 0.11 mm; path B 25.57 / 25.57 mm; net copper P 52.17 / N 52.38 mm (critical.py metric, 0.21 mm). 4 vias: 2 in
+  the J1 pad interleave on DN, 2 BC1.2 tap vias. With via barrels path A reads 2.95 mm skew (emi_check WARN): about
+  18 ps, far below the USB 2.0 HS budget. Spacing to other nets outside the fan-out min 0.64 mm (rule 0.6 mm), 0
+  crossings of the main run in plan view. BC1.2 stubs on B.Cu to J10 pins 7/8: stub skew 0.23 mm, round trip 318 ps
+  = 7.9 % of the 4 ns edge (lumped). Nets crossing the stubs on F.Cu (screened by In1/In2): +3V3, BOOST_EN, CHG_CE,
+  ESP_DN, IO0, LED2_A, GND, SYS.
+- **B.Cu crossing window:** the pair and J1 wall off the top-left pocket on F.Cu. Under the pair's straight run (about
+  4.7 mm up to the bend) B.Cu is open, two solid GND planes away from the pair; everything else under the pair is B.Cu
+  keepout. Lanes west to east: PM_RXIN, +3V3, WIND/RAIN/VANE (0.3 mm pitch, 0.15 mm tracks), PM_SETIN, GAS_RXIN,
+  GAS_RXD. Stitch vias beside the pair: south side at +0.5 and +4.2 mm, north side only at +0.5 mm (the second north
+  via gave way to the pocket bundle; next north via is on the diagonal, 8.6 mm on; the pair references In1 all along).
+- **Switcher loops** (emi_check, cap -> VIN -> GND pin -> cap): TPS63802 input 6.2 mm (copper), output 12.5 mm (WARN,
+  target 12, fail 15: the return runs through a via and In1), TPS61023 output 11.6 mm. Switch-node copper outside the
+  pads: BUCK_L1 0.67 mm2, BUCK_L2 0.67 mm2, BOOST_SW 1.12 mm2 (max 3). No I2C or FB run parallel to a switch node
+  (0.00 mm within 1.0/0.5 mm).
+- **GAS_DAC** (ZE25 analog output to the ADC): B.Cu 1.7 mm east of the DN stub (was 1.0 mm: emi_check flagged 9.2 mm of
+  parallel run within 1.0 mm of USB copper), then F.Cu between J10 columns 3/5 and B.Cu into J8.
+- **Planes and stitching:** In1 and In2 solid GND (only antipads); longest signal run over a plane void 0.10 mm.
+  Edge fence 40 vias (main_stitch pitch 3.5 mm, 0.85-1.65 mm inside the edge), 25 grid vias, outer GND pours on
+  F.Cu/B.Cu. Largest unexempted edge gap at most 5.0 mm. Exempt (emi.yaml): J1 overhang, the module's right pad column
+  (0.5 mm from the edge), the antenna strip, the M3 hole keepouts and the H3/H4 corners (5.2 mm between the vias either
+  side of the hole; a corner via would float, the planes cannot fill the sliver).
+- **Long routes (router results, accepted):** PM_RXD (about 70 mm, 0.127 mm neck-down, 8 vias) and PM_RXIN, PM_SETIN,
+  CHG_INT, TXD0/RXD0 take long detours round the board's middle: the module's left column, the pair and the stubs
+  leave few exits. All are slow UART/GPIO lines (9600 baud, interrupt, strap). An earlier PM_RXD run hugged the board
+  edge and blocked the fence; it was re-routed with a temporary 1.45 mm edge keepout.
+- **Hand fixes in the pocket:** PM_SET as one F.Cu diagonal pin 6 -> R49.1 (freed R48.2, which was boxed in), PM_RXIN
+  under JP1 at y 8.2, JP1's GND on its own via (replaces a GND track that crossed the channel).
+
+**Residual risks / not verified:** the 0.127 mm neck-downs and 0.45/0.2 vias sit at the fab floor of `rules/krt-fab.txt`
+(not re-checked against JLC's current capability page); loop buckboost_out 0.5 mm over target; the long UART
+detours have not been checked for crosstalk beyond emi_check's parallel rules; USB eye and BC1.2 detection need a
+board on the bench.
+
+**For the reviewer, first (routing):** `out/review/pcb-main-board/annot_usb.png` (pair, window, stitch vias),
+`annot_pocket.png` (pocket bundle), `annot_switchers.png` (U2/U7 loops, GAS_DAC beside the stubs), `annot_bottom.png`
+(J10/J8/J12 escapes), then `kicad_top.png`/`kicad_bottom.png`.
 
 ## Commands
 ```
 python3 hardware/gen/main_board.py
 scripts/schematic-review.sh main-board
 python3 hardware/gen/pins.py --board main_board MCU U1      # pin/net listing of a part
-hardware/tools/build_board.sh main-board                    # schematic, netlist, placed board, renders (no routing)
-python3 hardware/calc/critical.py hardware/main-board --placement
+hardware/tools/build_board.sh main-board                    # schematic, netlist, placed board + locked copper, renders
+hardware/tools/route_main.sh                                # planes, (router), stitch, pours, silk, DRC -> board in place
+$KICAD_PYTHON hardware/tools/main_freeze.py ROUTED.kicad_pcb NET... --minus HAND.kicad_pcb   # store router copper
+python3 hardware/calc/emi_check.py hardware/main-board      # USB, edge fence, loops, parallel runs (emi.yaml)
+python3 -I -c "import sys; sys.path.insert(0,'hardware/tools'); from pathlib import Path; import fab_package as f; f.drc_gate(Path('hardware/main-board/main-board.kicad_pcb'), Path('/tmp'))"   # DRC gate with drc-waivers.csv
+# renders: $KICAD_PYTHON hardware/tools/board_geom.py hardware/main-board/main-board.kicad_pcb hardware/out/review/pcb-main-board/geom.json
+#          uv run --package weatherstation-hardware python hardware/tools/render_review.py hardware/out/review/pcb-main-board/geom.json hardware/out/review/pcb-main-board usb=0,6,36,22 switchers=26,19,46,34 pocket=14,3,34,24 bottom=0,36,50,50
+python3 hardware/calc/critical.py hardware/main-board          # routed checks (add --placement for placement only)
 python3 -I hardware/tools/stack_check.py                    # J10, holes and outline line up with the power board
 python3 hardware/calc/power_budget.py hardware/main-board
 python3 hardware/calc/bom_check.py hardware/main-board [--stock --qty 5]
