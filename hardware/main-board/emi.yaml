@@ -7,9 +7,16 @@ pair_spacing_mm: 0.6        # other nets to the pair outside the fan-out (3x the
 fanout_area: usb_fanout     # J1 pad field and U4 pins: pad pitch sets the spacing there
 antenna_area: antenna_strip
 edge_pitch_mm: 5.0          # REQUIREMENTS E2
-edge_band_mm: 1.6
+edge_band_mm: 1.7           # tools/main_stitch.py sets fence vias 0.85, 1.25 or 1.65 mm inside the edge
 edge_exempt:                # board mm boxes where the edge has no copper to fence: J1 overhang (shell pads, no via room)
   - {name: J1 shell, box: [0, 6, 4, 18]}
+  # module pins 28-40: pad column 48.0-49.5, 0.5 mm from the right edge, no via room (BOARD.md floorplan); the
+  # module's own GND pins and shield sit there
+  - {name: U1 right pad column, box: [47.5, 0, 50, 20.8]}
+  # H3/H4 corners: the M3 keepout (r 3.2 mm) leaves only a sliver to the corner that the GND planes cannot fill, so a
+  # corner via would float; the vias either side of the keepout are 5.2 mm apart along the edge (limit 5.0)
+  - {name: H3 corner, box: [0, 43, 7, 50]}
+  - {name: H4 corner, box: [43, 43, 50, 50]}
 void_max_mm: 1.0
 loop_max_mm: 12.0           # cap -> pin -> GND pin -> cap path (through In1 between GND vias), target; WARN above
 loop_fail_mm: 15.0

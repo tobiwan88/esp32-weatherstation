@@ -537,9 +537,10 @@ def boost_en(c):
 def gas_dac(c):
     """GAS_DAC (module pin 7, left column) cannot go south on the west side: the pair (F.Cu) and the stubs (B.Cu)
     interleave there. It drops to B.Cu next to the pin, runs under the module north of the BOOST_EN row, leaves the
-    pad band between the BOOST_EN via and the SEN_SDA via, jogs west under the bottom pad row and runs south 1.0 mm
-    east of the DN stub (0.6 mm USB clearance kept), so B.Cu under the LED/IO0 corner (R34, D10, R31) stays free for
-    the router's crossings; then F.Cu between J10 columns 3/5 over the charger I2C trunk, B.Cu above J7 into J8."""
+    pad band between the BOOST_EN via and the SEN_SDA via, jogs west under the bottom pad row and runs south 1.7 mm
+    east of the DN stub (outside emi.yaml's 1.0 mm parallel-run gap to USB copper), between the U2/C40 GND vias and
+    RXD0, so B.Cu under the LED/IO0 corner (R34, D10, R31) stays free for the router's crossings; then F.Cu between
+    J10 columns 3/5 over the charger I2C trunk, B.Cu above J7 into J8."""
     P = c.P
     p7, p20, p21 = P("U1", "7"), P("U1", "20"), P("U1", "21")
     net = "/MCU/GAS_DAC"
@@ -553,9 +554,10 @@ def gas_dac(c):
     yt = round(j3[1] - 1.05, 2)                            # via between the SYS run and J10's top row
     yb = round(j7_1[1] - 1.7, 2)                           # B.Cu run above J7
     xw = round(j7_1[0] - 1.3, 2)
-    xd = round(P("J10", "8")[0] + 0.42 + 1.0, 2)           # DN stub runs at J10.8 x + 0.42; 1.0 mm east of it
-    yr = round(yt - 0.26 - (xj - xd), 2)                     # 45-degree leg ends on the via column
-    rest = [(round(xs - 0.4, 2), 19.6), (round(xd + 0.4, 2), 19.6), (xd, 20.0), (xd, yr), (xj, round(yr + xj - xd, 2)),
+    xd = round(P("J10", "8")[0] + 1.27 + 1.7, 2)           # DN stub's last leg at J10.8 x + 1.27; 1.7 mm east of it
+    xg = round(xd - 0.1, 2)                                # 0.1 mm west past the GND via at (37.85, 30.8)
+    yg = round(yt - (xj - xg), 2)                           # 45-degree leg into the via
+    rest = [(round(xs - 0.4, 2), 19.6), (round(xd + 0.4, 2), 19.6), (xd, 20.0), (xd, 29.5), (xg, 29.6), (xg, yg),
             (xj, yt)]
     c.t(net, "F", W2, [p7, v])
     c.v(net, *v)
