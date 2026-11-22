@@ -17,7 +17,9 @@ placed pad centres (never hard-coded board coordinates; the orientations relied 
 Item formats: ("T", net, layer "F"/"B", width, [(x, y), ...]), ("V", net, x, y, diameter, drill).
 """
 
+import json
 import math
+from pathlib import Path
 
 VIA = (0.45, 0.25)       # signal via (v1 hand copper)
 PVIA = (0.6, 0.3)        # power / GND via
@@ -534,10 +536,23 @@ def gas_dac(c):
     v = (round(p7[0] + 1.35, 2), p7[1])
     xs = round((p20[0] + p21[0]) / 2, 2)                  # between the band vias of pins 20 and 21
     ye = round(P("U1", "13")[1] - 0.65 - 0.6, 2)          # 0.6 north of the BOOST_EN row
+    # south on B.Cu west of L4's keepout, via south of the SYS run, F.Cu between J10 columns 3/5 over the charger
+    # I2C trunk, B.Cu above J7 and west of J8 pin 3 into pin 2
+    j3, j5, j7_1, j8 = P("J10", "3"), P("J10", "5"), P("J7", "1"), P("J8", "2")
+    xj = round((j3[0] + j5[0]) / 2, 2)
+    xv = round(xs - 0.4, 2)
+    yt = round(j3[1] - 1.05, 2)                            # via between the SYS run and J10's top row
+    yb = round(j7_1[1] - 1.7, 2)                           # B.Cu run above J7
+    xw = round(j7_1[0] - 1.3, 2)
+    rest = [(xv, round(yt - 1.55 - (xv - xj), 2)), (xj, round(yt - 1.55, 2)), (xj, yt)]
     c.t(net, "F", W2, [p7, v])
     c.v(net, *v)
+    c.v(net, xj, yt)
+    c.t(net, "F", W2, [(xj, yt), (xj, yb)])
+    c.v(net, xj, yb)
+    c.t(net, "B", W2, [(xj, yb), (xw + 0.4, yb), (xw, yb + 0.4), (xw, round(j8[1] - (xw - j8[0]), 2)), j8])
     c.t(net, "B", W2, [v, (v[0], round(ye - 3.1, 2)), (round(v[0] + 3.1, 2), ye), (round(xs - 1.4, 2), ye),
-                       (xs, round(ye + 1.4, 2)), (xs, 19.5), (round(xs - 0.4, 2), 19.9), (round(xs - 0.4, 2), 21.6)])
+                       (xs, round(ye + 1.4, 2)), (xs, 19.5), (round(xs - 0.4, 2), 19.9)] + rest)
 
 
 def chg_trunk(c):
@@ -591,4 +606,19 @@ def build(P):
     chg_trunk(c)
     boost_en(c)
     gas_dac(c)
+    frozen(c)
     return c.items, info
+
+
+FROZEN = Path(__file__).resolve().parents[1] / "main-board" / "frozen-routes.json"
+
+
+def frozen(c):
+    """Router copper frozen by tools/main_freeze.py (nets that only some router orders solve), drawn as locked copper."""
+    if not FROZEN.exists():
+        return
+    for net, d in json.loads(FROZEN.read_text())["nets"].items():
+        for lay, w, pts in d["tracks"]:
+            c.t(net, lay, w, [tuple(p) for p in pts])
+        for x, y, size, drill in d["vias"]:
+            c.v(net, x, y, (size, drill))
