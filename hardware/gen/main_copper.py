@@ -600,7 +600,7 @@ def chg_trunk(c):
 def pm_pocket(c):
     """PM sensor series resistors beside the module's left column: R48 (PM_TXD -> PM_RXIN) stands vertical, R49
     (PM_SET -> PM_SETIN) horizontal below it. PM_SET runs as one F.Cu diagonal from pin 6 between R48.2 and pin 7
-    into R49.1, which leaves R48.2's west side free for its escape via (the router takes PM_RXIN on from there)."""
+    into R49.1, which leaves R48.2's west side free for PM_RXIN."""
     P = c.P
     p6, p7, r49, r48 = P("U1", "6"), P("U1", "7"), P("R49", "1"), P("R48", "2")
     assert p6[1] < p7[1] and abs(r48[0] - r49[0]) < 0.05 and r48[1] < r49[1]
@@ -608,9 +608,17 @@ def pm_pocket(c):
     b = (round(r49[0] + 0.09, 2), round(r49[1] - 0.19, 2))          # inside R49.1's pad, 45 degrees from a
     assert abs((a[0] - b[0]) - (b[1] - a[1])) < 1e-6
     c.t("/MCU/PM_SET", "F", 0.15, [p6, a, b, r49])
-    v = (round(r48[0] - 1.3, 2), r48[1])
-    c.t("/Sensors/PM_RXIN", "F", 0.15, [r48, v])
-    c.v("/Sensors/PM_RXIN", *v)
+    # PM_RXIN west at y 8.2 under JP1 (between its pads and PM_SETIN) to a via outside CHG_INT's B.Cu diagonal; JP1
+    # takes GND from its own via south-west of pad 2, so no F.Cu GND crosses this channel
+    j1, j2 = P("JP1", "1"), P("JP1", "2")
+    yc = 8.2
+    assert j2[0] < j1[0] < r48[0] and yc - 0.075 - 0.15 > j1[1] + 0.75
+    vr = (round(j2[0] + 0.3, 2), yc)
+    c.t("/Sensors/PM_RXIN", "F", 0.15, [r48, (round(r48[0] - (yc - r48[1]), 2), yc), vr])
+    c.v("/Sensors/PM_RXIN", *vr)
+    g = (round(j2[0] - 0.75, 2), round(yc - 0.3, 2))
+    c.t("GND", "F", 0.3, [j2, (round(j2[0] - 0.25, 2), round(j2[1] + 0.5, 2)), g])
+    c.v("GND", *g)
 
 
 def build(P):
