@@ -1,7 +1,7 @@
 # Board profile: the facts the board-neutral hardware skills and hardware/calc/ scripts read (hw-base folder contract).
-# Status: schematic generated (split from weatherstation-v1, 2026-11-21); no layout yet.
+# Status: schematic generated (split from weatherstation-v1, 2026-11-21); placed and routed (2026-11-22, BOARD.md).
 name: main-board
-pcb: main-board.kicad_pcb         # placed, not routed (tools/build_board.sh main-board)
+pcb: main-board.kicad_pcb         # routed: tools/route_main.sh (placement + hand copper: tools/build_board.sh main-board)
 sch: main-board.kicad_sch
 bom: bom.csv
 generators: {schematic: ../gen/main_board.py, layout: ../gen/main_pcb.py}   # gen/main_layout.py is the schematic block layout; gen/pcbkit.py + gen/stack.py shared
@@ -34,7 +34,11 @@ net_classes:
   # SYS from J10 to U2/U7: peak load 0.6 A at the cell; USB_VBUS J1 -> J10 carries the USB charge input (ILIM 1.59 A)
   Power: {track_mm: 0.65, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3, current_a: 1.7,
           nets: [SYS, USB_VBUS, 5V_SW, /Rails/BUCK_L1, /Rails/BUCK_L2, /Rails/BOOST_SW]}
-  USB: {track_mm: 0.27, gap_mm: 0.15, nets: [/USB_DP, /USB_DN]}   # 90 ohm diff (calc/impedance.py), full speed
+  # +3V3 (ESP32 TX bursts about 0.4 A plus sensors) and 3V3_SW (sensors, 5 mA typical; inrush limited by the R76/C48 ramp)
+  Rail: {track_mm: 0.3, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3, current_a: 0.6, nets: [+3V3, 3V3_SW]}
+  # 90.6 ohm diff with mask (calc/impedance.py), full speed. clearance 0.6 mm = the spacing to every other net's tracks
+  # and vias (> 2 x the width); the pair's own gap and pads (connector pitch) are custom rules in rules/main-board.kicad_dru
+  USB: {track_mm: 0.27, gap_mm: 0.15, clearance_mm: 0.6, nets: [/USB_DP, /USB_DN]}
 
 layout:
   stitch_pitch_mm: [2, 3]

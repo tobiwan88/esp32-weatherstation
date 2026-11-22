@@ -30,8 +30,22 @@ series_termination:   # series R at the driving pin (Espressif S3 schematic chec
   - {source: U1.6, part: R49.1, max_mm: 4.0}    # PMS7003 SET
   - {source: U1.10, part: R46.1, max_mm: 4.0}   # ZE25 RX divider
 
-diff_pair:       # 90 ohm (calc/impedance.py, JLC04161H-7628); BC1.2 stubs to J10 pins 7/8 count to the vias
-  - {name: usb, p: /USB_DP, n: /USB_DN, net_class: USB, layer: F.Cu, z_diff: 90, tol_ohm: 10, max_skew_mm: 5.0, max_vias: 6}
+diff_pair:       # 90 ohm (calc/impedance.py: 0.27/0.15 mm on F.Cu over In1, 90.6 ohm with mask); routed by hand (gen/main_copper.py)
+  # max_vias 4 = 2 through-path vias (J1 pad interleave, plug orientation A) + 2 BC1.2 tap vias to the B.Cu stubs.
+  # Skew: critical.py compares net copper totals; calc/emi_check.py the per-orientation paths and the stubs.
+  - name: usb
+    p: /USB_DP
+    n: /USB_DN
+    net_class: USB
+    layer: F.Cu
+    z_diff: 90
+    tol_ohm: 10
+    max_skew_mm: 0.5
+    max_vias: 4
+    legs:            # pad-to-pad paths per plug orientation (series resistors count equally, left out)
+      A: {p: [[/USB_DP, [J1.A6, R32.1]], [/MCU/ESP_DP, [R32.2, U1.14]]], n: [[/USB_DN, [J1.A7, R33.1]], [/MCU/ESP_DN, [R33.2, U1.13]]]}
+      B: {p: [[/USB_DP, [J1.B6, R32.1]], [/MCU/ESP_DP, [R32.2, U1.14]]], n: [[/USB_DN, [J1.B7, R33.1]], [/MCU/ESP_DN, [R33.2, U1.13]]]}
+    stubs: {p: [R32.1, J10.7], n: [R33.1, J10.8], edge_ns: 4.0}   # BC1.2 taps to the power board (charger D+/D-)
 
 thermal_distance:   # heat sources away from the BMP580 (BST-BMP5xy-HS000-00 7.1) and the SCD41; footprint centres
   - {source: U1, sensor: U9, min_mm: 15}    # ESP32 module (Wi-Fi bursts)

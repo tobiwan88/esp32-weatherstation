@@ -1,0 +1,21 @@
+# calc/emi_check.py settings for the main board (kept out of critical.yaml: calc/critical.py rejects unknown keys;
+# same pattern as power-board/emi.yaml). Diff pair limits and legs/stubs stay in critical.yaml diff_pair.
+pair_main_layer: F.Cu
+stub_layer: B.Cu           # BC1.2 taps to J10 7/8, under In2
+pair_width_mm: 0.27
+pair_spacing_mm: 0.6        # other nets to the pair outside the fan-out (3x the 0.15 gap plus margin; brief)
+fanout_area: usb_fanout     # J1 pad field and U4 pins: pad pitch sets the spacing there
+antenna_area: antenna_strip
+edge_pitch_mm: 5.0          # REQUIREMENTS E2
+edge_band_mm: 1.6
+edge_exempt:                # board mm boxes where the edge has no copper to fence: J1 overhang (shell pads, no via room)
+  - {name: J1 shell, box: [0, 6, 4, 18]}
+void_max_mm: 1.0
+loop_max_mm: 12.0           # cap -> pin -> GND pin -> cap path (through In1 between GND vias), target; WARN above
+loop_fail_mm: 15.0
+sw_nets: [/Rails/BUCK_L1, /Rails/BUCK_L2, /Rails/BOOST_SW]
+sw_area_max_mm2: 3.0
+parallel:
+  - {name: I2C vs SW, victims: ["/SEN_S*", "/MCU/CHG_S*", "/I2C/*"], aggressors: ["/Rails/BUCK_L*", "/Rails/BOOST_SW"], gap_mm: 1.0, max_mm: 0.5}
+  - {name: FB vs SW, victims: ["/Rails/FB", "/Rails/BOOST_FB"], aggressors: ["/Rails/BUCK_L*", "/Rails/BOOST_SW"], gap_mm: 0.5, max_mm: 0.5}
+  - {name: GAS_DAC vs SW, victims: ["/MCU/GAS_DAC"], aggressors: ["/Rails/BUCK_L*", "/Rails/BOOST_SW", "/USB_D*"], gap_mm: 1.0, max_mm: 1.0}
