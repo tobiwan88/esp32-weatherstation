@@ -501,6 +501,45 @@ def sen_trunk(c):
 W2 = 0.2
 
 
+def boost_en(c):
+    """BOOST_EN (module pin 20) to the via beside U7: the stubs (B.Cu) and the pair (F.Cu) close off U7's side, so the
+    net drops into the pad band (via like the sensor I2C), runs west on B.Cu under the module, comes up north of the
+    stubs and leaves on F.Cu through the corner gap between pins 14 and 15 (pin 15 is unused), then B.Cu again west
+    of the stubs. Pins 17-19 keep their own escapes straight down and in the band."""
+    P = c.P
+    p20, p13, p14, p15 = P("U1", "20"), P("U1", "13"), P("U1", "14"), P("U1", "15")
+    net = "/MCU/BOOST_EN"
+    xg = round((p14[0] + 0.75 + p15[0] - 0.45) / 2, 2)   # middle of the corner gap
+    yb = round(p13[1] - 0.65, 2)                          # B.Cu row under the module, north of pin 13
+    v1 = (p20[0], round(p20[1] - 1.4, 2))
+    v2 = (round(xg + 0.7, 2), yb)
+    v3 = (round(xg - 0.7, 2), 20.6)
+    ve = (28.03, 26.03)                                   # existing via beside U7.2
+    c.t(net, "F", W2, [p20, v1])
+    c.v(net, *v1)
+    c.t(net, "B", W2, [v1, (round(v1[0] - (v1[1] - yb), 2), yb), v2])
+    c.v(net, *v2)
+    c.t(net, "F", W2, [v2, (xg, round(yb + 0.7, 2)), (xg, 18.6), (v3[0], 19.3), v3])
+    c.v(net, *v3)
+    c.t(net, "B", W2, [v3, (v3[0], round(ve[1] - (v3[0] - ve[0]), 2)), ve])
+
+
+def gas_dac(c):
+    """GAS_DAC (module pin 7, left column) cannot go south on the west side: the pair (F.Cu) and the stubs (B.Cu)
+    interleave there. It drops to B.Cu next to the pin, runs under the module north of the BOOST_EN row, leaves the
+    pad band between the BOOST_EN via and the SEN_SDA via and ends south of the pad row; the router takes it on to J8."""
+    P = c.P
+    p7, p20, p21 = P("U1", "7"), P("U1", "20"), P("U1", "21")
+    net = "/MCU/GAS_DAC"
+    v = (round(p7[0] + 1.35, 2), p7[1])
+    xs = round((p20[0] + p21[0]) / 2, 2)                  # between the band vias of pins 20 and 21
+    ye = round(P("U1", "13")[1] - 0.65 - 0.6, 2)          # 0.6 north of the BOOST_EN row
+    c.t(net, "F", W2, [p7, v])
+    c.v(net, *v)
+    c.t(net, "B", W2, [v, (v[0], round(ye - 3.1, 2)), (round(v[0] + 3.1, 2), ye), (round(xs - 1.4, 2), ye),
+                       (xs, round(ye + 1.4, 2)), (xs, 19.5), (round(xs - 0.4, 2), 19.9), (round(xs - 0.4, 2), 21.6)])
+
+
 def chg_trunk(c):
     """Charger I2C (module pins 39/38, right column) to J10 pins 11/12: vias in the band inside the pad column, B.Cu
     south under the pads, west under the bottom pad row (pins 23-26 are unused), south through the gap between L4's
@@ -550,4 +589,6 @@ def build(P):
     cluster(c, info)
     sen_trunk(c)
     chg_trunk(c)
+    boost_en(c)
+    gas_dac(c)
     return c.items, info
