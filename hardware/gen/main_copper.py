@@ -501,6 +501,41 @@ def sen_trunk(c):
 W2 = 0.2
 
 
+def chg_trunk(c):
+    """Charger I2C (module pins 39/38, right column) to J10 pins 11/12: vias in the band inside the pad column, B.Cu
+    south under the pads, west under the bottom pad row (pins 23-26 are unused), south through the gap between L4's
+    keepout and H2, east of J10 pins 1/2, west under J10's bottom row into pins 12 (from below) and 11 (between the
+    columns). IO0 (pin 27) leaves on F.Cu under the bottom row to R31."""
+    P = c.P
+    sda, scl, io0 = P("U1", "39"), P("U1", "38"), P("U1", "27")
+    j11, j12, j1 = P("J10", "11"), P("J10", "12"), P("J10", "1")
+    r31 = P("R31", "2")
+    assert sda[1] < scl[1] < io0[1] and abs(j11[0] - j12[0]) < 1e-3 and j11[1] < j12[1] and j1[0] > j11[0]
+    xb = sda[0] - 1.4                                    # via column in the band
+    va, vb = (xb, sda[1]), (xb, scl[1])
+    for net, pin, v in (("/MCU/CHG_SDA", sda, va), ("/MCU/CHG_SCL", scl, vb)):
+        c.t(net, "F", W2, [pin, v])
+        c.v(net, *v)
+    xe_d, xe_c = sda[0] + 0.15, sda[0] - 0.35            # SDA outer (east), SCL inner, under the pad column
+    yb_c, yb_d = 19.4, 19.9                              # under the bottom pad row
+    xc_c = 42.6                                          # between the L4 keepout and H2
+    xk_c = j1[0] + 1.3                                   # east of J10 pins 1/2
+    yj = 29.0
+    yr_c = j12[1] + 1.6                                 # under J10's bottom row (0.6 mm from the USB pin 8 pad)
+    xm = j11[0] - 1.27                                   # between J10 columns 11/12 and 13/14
+    # SCL is the reference path of the bundle south of the bottom row; SDA its mitred offset 0.5 mm east
+    mid = [(xc_c, yb_c + 0.4), (xc_c, yj), (xk_c, yj + xk_c - xc_c), (xk_c, yr_c - 0.4), (xk_c - 0.4, yr_c)]
+    mo = offset(mid, 0.5)        # left of southward travel = east
+    c.t("/MCU/CHG_SCL", "B", W2, [vb, (xe_c, vb[1]), (xe_c, yb_c - 0.4), (xe_c - 0.4, yb_c), (xc_c + 0.4, yb_c)]
+        + mid + [(j12[0] + 0.4, yr_c), (j12[0], yr_c - 0.4), j12])
+    c.t("/MCU/CHG_SDA", "B", W2, [va, (xe_d, va[1]), (xe_d, yb_d - 0.4), (xe_d - 0.4, yb_d), (mo[0][0] + 0.4, yb_d),
+                                   (mo[0][0], yb_d + 0.4)] + mo[1:] + [(xm + 0.4, mo[-1][1]), (xm, mo[-1][1] - 0.4),
+                                                                     (xm, j11[1] + 1.27), j11])
+    c.t("/MCU/IO0", "F", W2, [io0, (io0[0], 20.4), (r31[0] + 0.85, 20.4), r31])
+
+
+
+
 def build(P):
     c = Copper(P)
     info = usb(c)
@@ -514,4 +549,5 @@ def build(P):
     anemometer(c)
     cluster(c, info)
     sen_trunk(c)
+    chg_trunk(c)
     return c.items, info
