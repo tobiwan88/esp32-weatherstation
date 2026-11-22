@@ -148,15 +148,15 @@ def KEEPOUTS(put, ctx):
     # no tracks or vias on B.Cu under the inductors (REQUIREMENTS E3, as on v1)
     for ref in ("L4", "L5"):
         put("under_" + ref, [pcbnew.B_Cu], rect(box(ref)), tracks=True, vias=True, pours=False)
-    # USB: nothing on B.Cu under the main run of the pair (In1 is its reference, In2 screens B.Cu), except one 3.4 mm
-    # window on the straight run between the two GND stitch-via pairs: the pair and J1 wall off the top-left pocket
-    # (J3, U5, the module's left pins) on F.Cu, so the pocket's slow signals (sensor I2C, anemometer inputs) cross
-    # there on B.Cu, two solid GND planes away from the pair (BOARD.md "Routing review"). Plus the named fan-out area
-    # where the custom DRC rule allows connector-pitch clearances.
+    # USB: nothing on B.Cu under the pair's diagonal and its first 0.95 mm (In1 is its reference, In2 screens B.Cu);
+    # the rest of the straight run is a B.Cu crossing window (about 4.9 mm, up to the bend): the pair and J1 wall off
+    # the top-left pocket (J3, U5, R46-R51, the module's left pins) on F.Cu, so the pocket's slow signals (anemometer
+    # inputs, the PM/gas UARTs, sensor rail) cross there on B.Cu, two solid GND planes away from the pair (BOARD.md
+    # "Routing review"). Plus the named fan-out area where the custom DRC rule allows connector-pitch clearances.
     info = main_copper.build(ctx["pad"])[1]
     c0, c1 = info["centre"][0], info["centre"][1]
     assert abs(c0[1] - c1[1]) < 1e-6 and c1[0] - c0[0] > 5.6, "straight run of at least 5.6 mm before the bend"
-    wx0, wx1 = c0[0] + 0.95, c0[0] + 4.35
+    wx0, wx1 = c0[0] + 0.95, c1[0] - 0.05
     for name, line in (("usb_under", [c0, (wx0, c0[1])]), ("usb_under2", [(wx1, c0[1])] + info["centre"][1:])):
         poly = main_copper.offset(line, 0.62) + main_copper.offset(line, -0.62)[::-1]
         put(name, [pcbnew.B_Cu], poly, tracks=True, vias=True, pours=False)

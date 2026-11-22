@@ -22,8 +22,9 @@ cd "$work"
 common="--fab-overrides $F --no-fix-drc-settings --same-net-pad-clearance 0.15"
 $PY "$K/py_router/route_planes.py" placed.kicad_pcb planes.kicad_pcb --nets GND GND \
     --plane-layers In1.Cu In2.Cu --clearance 0.15 $common > planes.log 2>&1
-# widths = board.yaml net classes (calc/track_width.py): Power 0.65 mm (SYS to TP2, 5V_SW to J2/J8), Rail 0.3 mm (min 0.15)
-pw="--power-nets SYS 5V_SW +3V3 3V3_SW GND --power-nets-widths 0.65 0.65 0.3 0.3 0.3 --track-width 0.2 --clearance 0.15"
+# widths = board.yaml net classes (calc/track_width.py): Power 0.65 mm (SYS to TP2, 5V_SW to J2/J8), Rail 0.3 mm (min 0.15);
+# signals 0.2 mm, or KRT_TW (0.15 mm doubles the lanes between J10's 2.54 mm pads)
+pw="--power-nets SYS 5V_SW +3V3 3V3_SW GND --power-nets-widths 0.65 0.65 0.3 0.3 0.3 --track-width ${KRT_TW:-0.2} --clearance 0.15"
 lock() { "$KICAD_PYTHON" -c 'import pcbnew, sys
 b = pcbnew.LoadBoard(sys.argv[1])
 for t in b.GetTracks():

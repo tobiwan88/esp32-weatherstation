@@ -140,7 +140,8 @@ def usb(c):
     c.t(DP, "F", USB_W, [u1, (xs, u1[1])] + dp_run + [(x_end, r32[1]), r32])
     # GND stitching vias beside the pair (0.6 mm via, >= 0.6 mm copper to the pair), about every 4-5 mm, both sides
     d = HALF + USB_W / 2 + 0.6 + 0.3 + 0.05
-    # the B.Cu crossing window (main_pcb.py) lies between; the north via sits further east, clear of the VANE via
+    # the B.Cu crossing window (main_pcb.py) spans the straight run between the via pairs; the north via sits further
+    # east, clear of the VANE via
     for xn, xs_ in ((0.5, 0.5), (5.1, 4.2)):
         c.v("GND", centre[0][0] + xn, yc - d, PVIA)
         c.v("GND", centre[0][0] + xs_, yc + d, PVIA)
@@ -186,7 +187,9 @@ def usb(c):
         lo, hi = (mid, hi) if length(dp_path(mid)) < target else (lo, mid)
     c.t(DP, "B", USB_W, dp_path(lo))
     c.t(DN, "B", USB_W, dn)
-    for dx, dy in ((1.05, 1.5), (1.5, 9.6)):   # GND stitching east of the stub pair
+    # GND stitching east of the stub pair, east of GAS_DAC (which runs 1.0 mm east of DN, see gas_dac); the second
+    # via sits between C41 and the SYS run, clear of GAS_DAC's 45-degree leg
+    for dx, dy in ((1.75, 1.5), (3.05, 10.15)):
         c.v("GND", xvn + dx, dn_y + dy, PVIA)
 
     # --- CC pull-downs, U4 supply, ESD ground ---
@@ -448,21 +451,23 @@ def cluster(c, info):
     c.t("/MCU/VANE", "F", W, [(c72[0], vv[1]), vv])
     for p in (vr, vw, vv):
         c.v(p == vr and "/MCU/RAIN" or p == vw and "/MCU/WIND" or "/MCU/VANE", *p)
-    # bundle: RAIN is the centre line; WIND 0.5 mm west, VANE 0.5 mm east (mitred offsets keep the pitch in the jog)
+    # bundle: RAIN is the centre line; WIND 0.3 mm west, VANE 0.3 mm east (mitred offsets keep the pitch in the jog),
+    # 0.15 mm tracks: the tight pitch leaves three more lanes in the window for the pocket's UART lines
     c0 = info["centre"][0]
-    xr0, xr1 = vr[0], c0[0] + 3.12                        # corridor west of J10 pin 20, window in the pair keepout
+    pb, wb = 0.3, 0.15
+    xr0, xr1 = vr[0], c0[0] + 3.32                        # corridor west of J10 pin 20, window in the pair keepout
     jog = [(xr0, 30.0), (xr0, 26.0), (xr1, 26.0 - (xr1 - xr0)), (xr1, 12.5)]
-    wm, vm = offset(jog, 0.5), offset(jog, -0.5)
+    wm, vm = offset(jog, pb), offset(jog, -pb)
     yr, yw2 = 9.9, 9.4                                    # pocket runs: RAIN south, WIND north (RAIN turns first)
     u8, u9, u12 = P("U1", "8"), P("U1", "9"), P("U1", "12")
     pr = (u8[0] - 2.05, u8[1])                            # RAIN via, then F.Cu to pin 8 over WIND's B.Cu
     pw = (u9[0] - 1.3, u9[1])
     assert pw[0] - pr[0] > 0.7
-    c.t("/MCU/RAIN", "B", W, [vr] + jog + [(xr1, yr + 0.4), (xr1 + 0.4, yr), (pr[0] - (pr[1] - yr), yr), pr])
-    c.t("/MCU/WIND", "B", W, [vw, (wm[0][0], vw[1] - 0.15)] + wm + [(wm[-1][0], yw2 + 0.4), (wm[-1][0] + 0.4, yw2),
+    c.t("/MCU/RAIN", "B", wb, [vr] + jog + [(xr1, yr + 0.4), (xr1 + 0.4, yr), (pr[0] - (pr[1] - yr), yr), pr])
+    c.t("/MCU/WIND", "B", wb, [vw, (wm[0][0], vw[1] - 0.15)] + wm + [(wm[-1][0], yw2 + 0.4), (wm[-1][0] + 0.4, yw2),
                               (pw[0] - 0.4, yw2), (pw[0], yw2 + 0.4), pw])
     yv = vw[1] - 0.4                                      # VANE runs west under the J10 pad row
-    c.t("/MCU/VANE", "B", W, [vv, (vv[0], yv + 0.45), (vv[0] - 0.45, yv), (vm[0][0] + 0.3, yv), (vm[0][0], yv - 0.3)]
+    c.t("/MCU/VANE", "B", wb, [vv, (vv[0], yv + 0.45), (vv[0] - 0.45, yv), (vm[0][0] + 0.3, yv), (vm[0][0], yv - 0.3)]
         + vm + [(vm[-1][0], 11.0), (vm[-1][0] + 0.45, 10.55)])
     vt = (vm[-1][0] + 0.45, 10.55)
     c.v("/MCU/VANE", *vt)
@@ -529,7 +534,9 @@ def boost_en(c):
 def gas_dac(c):
     """GAS_DAC (module pin 7, left column) cannot go south on the west side: the pair (F.Cu) and the stubs (B.Cu)
     interleave there. It drops to B.Cu next to the pin, runs under the module north of the BOOST_EN row, leaves the
-    pad band between the BOOST_EN via and the SEN_SDA via and ends south of the pad row; the router takes it on to J8."""
+    pad band between the BOOST_EN via and the SEN_SDA via, jogs west under the bottom pad row and runs south 1.0 mm
+    east of the DN stub (0.6 mm USB clearance kept), so B.Cu under the LED/IO0 corner (R34, D10, R31) stays free for
+    the router's crossings; then F.Cu between J10 columns 3/5 over the charger I2C trunk, B.Cu above J7 into J8."""
     P = c.P
     p7, p20, p21 = P("U1", "7"), P("U1", "20"), P("U1", "21")
     net = "/MCU/GAS_DAC"
@@ -540,11 +547,13 @@ def gas_dac(c):
     # I2C trunk, B.Cu above J7 and west of J8 pin 3 into pin 2
     j3, j5, j7_1, j8 = P("J10", "3"), P("J10", "5"), P("J7", "1"), P("J8", "2")
     xj = round((j3[0] + j5[0]) / 2, 2)
-    xv = round(xs - 0.4, 2)
     yt = round(j3[1] - 1.05, 2)                            # via between the SYS run and J10's top row
     yb = round(j7_1[1] - 1.7, 2)                           # B.Cu run above J7
     xw = round(j7_1[0] - 1.3, 2)
-    rest = [(xv, round(yt - 1.55 - (xv - xj), 2)), (xj, round(yt - 1.55, 2)), (xj, yt)]
+    xd = round(P("J10", "8")[0] + 0.42 + 1.0, 2)           # DN stub runs at J10.8 x + 0.42; 1.0 mm east of it
+    yr = round(yt - 0.26 - (xj - xd), 2)                     # 45-degree leg ends on the via column
+    rest = [(round(xs - 0.4, 2), 19.6), (round(xd + 0.4, 2), 19.6), (xd, 20.0), (xd, yr), (xj, round(yr + xj - xd, 2)),
+            (xj, yt)]
     c.t(net, "F", W2, [p7, v])
     c.v(net, *v)
     c.v(net, xj, yt)
@@ -552,7 +561,7 @@ def gas_dac(c):
     c.v(net, xj, yb)
     c.t(net, "B", W2, [(xj, yb), (xw + 0.4, yb), (xw, yb + 0.4), (xw, round(j8[1] - (xw - j8[0]), 2)), j8])
     c.t(net, "B", W2, [v, (v[0], round(ye - 3.1, 2)), (round(v[0] + 3.1, 2), ye), (round(xs - 1.4, 2), ye),
-                       (xs, round(ye + 1.4, 2)), (xs, 19.5), (round(xs - 0.4, 2), 19.9)] + rest)
+                       (xs, round(ye + 1.4, 2)), (xs, 19.2)] + rest)
 
 
 def chg_trunk(c):
@@ -588,6 +597,20 @@ def chg_trunk(c):
     c.t("/MCU/IO0", "F", W2, [io0, (io0[0], 20.4), (r31[0] + 0.85, 20.4), r31])
 
 
+def pm_pocket(c):
+    """PM sensor series resistors beside the module's left column: R48 (PM_TXD -> PM_RXIN) stands vertical, R49
+    (PM_SET -> PM_SETIN) horizontal below it. PM_SET runs as one F.Cu diagonal from pin 6 between R48.2 and pin 7
+    into R49.1, which leaves R48.2's west side free for its escape via (the router takes PM_RXIN on from there)."""
+    P = c.P
+    p6, p7, r49, r48 = P("U1", "6"), P("U1", "7"), P("R49", "1"), P("R48", "2")
+    assert p6[1] < p7[1] and abs(r48[0] - r49[0]) < 0.05 and r48[1] < r49[1]
+    a = (round(p6[0] - 0.55, 2), round(r48[1] - 0.01, 2))          # inside pin 6's pad
+    b = (round(r49[0] + 0.09, 2), round(r49[1] - 0.19, 2))          # inside R49.1's pad, 45 degrees from a
+    assert abs((a[0] - b[0]) - (b[1] - a[1])) < 1e-6
+    c.t("/MCU/PM_SET", "F", 0.15, [p6, a, b, r49])
+    v = (round(r48[0] - 1.3, 2), r48[1])
+    c.t("/Sensors/PM_RXIN", "F", 0.15, [r48, v])
+    c.v("/Sensors/PM_RXIN", *v)
 
 
 def build(P):
@@ -606,6 +629,7 @@ def build(P):
     chg_trunk(c)
     boost_en(c)
     gas_dac(c)
+    pm_pocket(c)
     frozen(c)
     return c.items, info
 
