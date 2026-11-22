@@ -11,7 +11,8 @@ Base created from desk_notifier (board-neutral hardware skills, calc scripts, to
   `hardware/gen/sht45_board.py` + `sht45_pcb.py`, build `hardware/tools/build_sht45.sh`). Qwiic add-ons on the same
   base: `hardware/bmp585-board/` (pressure) and `hardware/veml6030-board/` (light), generators `addon_boards.py` +
   `addon_pcb.py`, build `hardware/tools/build_addons.sh`. Requirements: `hardware/weatherstation-v1/REQUIREMENTS.md`. Plan: `hardware/PLAN.md`.
-- Skills (board-neutral, in `.claude/skills/`): `hw-base`, `kicad-schematic`, `kicad-layout`, `hw-parts`.
+- Skills (board-neutral, in `.claude/skills/`): `hw-base`, `hw-requirements`, `hw-parts`, `kicad-schematic`, `kicad-layout`, `hw-fab-order`, `hw-review`;
+  helper/reviewer/builder agents `hw-*` in `.claude/agents/`. Reuse in a new project: `scripts/hw-kit-install.sh` (`hw-base/references/bootstrap.md`).
 - Numbers come from scripts in `hardware/calc/` (rule in `hw-base`): `bom_check.py`, `power_budget.py`, `critical.py`, `buck.py`, `impedance.py`.
 
 ## Tooling

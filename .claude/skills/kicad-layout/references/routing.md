@@ -29,8 +29,23 @@
 ## Freerouting, fallback
 - Use a wrapper that turns automatic neckdown off (tracks thinner than the net class near fine pads).
 - Mark inner plane layers as `power` in the DSN, or it routes signals on them. As a finisher on a KRT board it counted
-  the plane nets as unrouted and did worse (weatherstation 2026-11-03).
-- The native CLI has hung in the past; run the JAR.
+  the plane nets as unrouted and did worse (first project, 2026-11).
+- The native CLI has hung or crashed in its router thread; run the JAR (its analytics are on by default: the wrapper turns them off).
+- KiCad 10's CLI has no DSN export (pcbnew SWIG has).
+
+## Stuck protocol (when nets stay open; do not stop at "N open")
+1. Sweep router settings (`--max-ripup`, `--ripup-blocker-select`, ordering) and read which nets fail in ALL runs: those
+   need hand copper. Nets that move between runs are congestion, not a blocker.
+2. Name the bottleneck from a render (a window under a pair, a pad column, a 0.4 mm pin row) and hand-lead the failing
+   nets through it in the generator as locked copper, in lanes with room for the nets that follow; check the lanes do not
+   fence in remaining pins.
+3. Let the router finish the rest around the locked copper.
+4. Freeze every good router result (`tools/main_freeze.py`-style: copper to `frozen-routes.json`, replayed as locked copper
+   by the generator, minus the hand copper). Router order alone could not finish the last nets; the frozen result makes the
+   routing reproducible. Re-freeze only on purpose.
+5. Still stuck after a few tries: research how others do it (a web research agent: autorouters, escape fanout, tools that
+   use KiCad's own DRC as the oracle) and try the second tool; timebox, then bring the blocker and the options to the engineer.
+6. A long detour of a slow net is accepted only after the parallel-run and return-path checks pass; list it in the routing review.
 
 ## After routing
 - Remove dangling stubs and vias one at a time, DRC-driven, reverting any removal that opens a connection.

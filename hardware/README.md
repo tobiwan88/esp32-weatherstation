@@ -13,7 +13,7 @@ Board profile: **`weatherstation-v1/`** (requirements, BOM, datasheet cards, ord
 | Board-neutral checks | `calc/` (`bom_check.py`, `power_budget.py`, `critical.py`, `buck.py`, `impedance.py`, `pcb.py`) |
 | Stock lookup, DRC summary | `tools/` (`jlcparts.py`, `drc_summary.py`) |
 | Fab design floors | `rules/` |
-| Helper-agent prompts | `agents/` |
+| Helper and reviewer agents | `../.claude/agents/` (`hw-*`) |
 | Working KiCad pipeline to copy from (desk_notifier) | `reference/desk_notifier/` |
 
-Agent skills (board-neutral): `hw-base` (read first), `kicad-schematic`, `kicad-layout`, `hw-parts` in `.claude/skills/`.
+Agent skills (board-neutral): `hw-base` (read first), `hw-requirements`, `hw-parts`, `kicad-schematic`, `kicad-layout`, `hw-fab-order`, `hw-review` in `.claude/skills/`; reuse in a new project: `scripts/hw-kit-install.sh`.

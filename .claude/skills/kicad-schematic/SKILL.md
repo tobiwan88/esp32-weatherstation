@@ -5,8 +5,8 @@ description: Use when creating or changing a KiCad schematic, editing a schemati
 
 # KiCad schematic
 
-Read `hw-base`, then the board's `BOARD.md` and `board.yaml`. Gates: requirements, then BOM acceptance, then schematic
-(`hardware/GATES.md`). `BOARD.md` names the generator files and commands.
+Read `hw-base`, then the board's `BOARD.md` and `board.yaml`. This is gate 3 (after requirements and BOM acceptance;
+`hardware/GATES.md`). `BOARD.md` names the generator files and commands.
 
 ## Source of truth
 - Edit the generator, never the `.kicad_sch`: GUI edits are overwritten.
@@ -18,7 +18,8 @@ Read `hw-base`, then the board's `BOARD.md` and `board.yaml`. Gates: requirement
 ## The goal: a schematic an engineer can review
 The reader must see what each block does, which part serves which pin, and where power flows, without tracing labels.
 - Before drawing: a parts and circuit review (`<board>/PARTS-REVIEW.md`): every IC pin against its datasheet table, every
-  value against its section, findings ranked A (wrong) / B (margin) / C (cleanup), each with a proposed fix.
+  value against its section, findings ranked A (wrong) / B (margin) / C (cleanup), each with a proposed fix. After
+  drawing: independent reviewers (`hw-review`: `hw-datasheet-reviewer`, `hw-render-reviewer`).
 - Draw each circuit like the datasheet's application figure. Netlist changes from the review only after the engineer
   decides; never change topology silently. Each round ends with the open decisions listed in the reply.
 
@@ -52,7 +53,23 @@ The reader must see what each block does, which part serves which pin, and where
 - Unused pins get a no-connect marker; the reason in the block note when not obvious. A not-fitted part has no fab
   number and says DNP and its fab number in the value.
 - Net names: descriptive, uppercase, active-low ends `_N`, diff pairs end in the polarity suffix. A rail feeding several
-  loads is named for the rail, not for one load.
+  loads is named for the rail, not for one load (a boost feeding two sensors was named after one of them).
+- The symbol must match the part: polarity (unidirectional vs bidirectional TVS, diode, LED), pin names, FET orientation,
+  the arrow of a rail. A netlist can be right while the drawing makes the engineer order the wrong part.
+- Notes and comments are generated from the values (or checked against them): a note saying 10k above a 2.2k resistor is a
+  finding. Connector sheets show pin numbers and polarity (PV, cell, header pin 1).
+- Title block: date and revision come from the generator run, never hard-coded. Reference designators sit beside their
+  symbol, not on it. No stray power-flag symbols that read as orphaned parts. Block notes stay inside their frame.
+- Sheet partition: one function per sheet, but merge sparse sheets; a bus that touches more than two sheets is a sign the
+  partition is wrong. Root page: boxes in signal-flow order AND the power path between them. Header/board-edge sheets show
+  signal direction (label shapes).
+
+## Splitting a design into boards
+- Phase A: a faithful split, no circuit change except the interface header; one commit. Phase B: each addition its own commit.
+- A script proves the split against the old design: every part and net on exactly one side or on the header, no net split,
+  values changed only where listed (`split_check.py` pattern). Net names stay the same across the split.
+- The header's pin table exists once (architecture doc), both generators read the same constants; mating errors are
+  tested by script (`hw-requirements`, `hw-review` checklist).
 
 ## Review loop (every sheet, before the gate)
 1. The board's review script: regenerate, ERC (must be 0), `review_checks.py`, one PNG per sheet in `hardware/out/review/`.
@@ -60,6 +77,8 @@ The reader must see what each block does, which part serves which pin, and where
    outside the sheet frame; the root shows how blocks connect.
 3. Findings to `hardware/out/review/review-notes.md`; fix the layout or generator; repeat.
 4. Leftovers (`UNWIRED`, root labels) go to `BOARD.md` with the reason.
+5. Independent pass: `hw-render-reviewer` (mode schematic) reads every PNG; small `hw-visual-check` questions for single
+   doubts. The engineer reviews the PNGs last; they are the main quality gate.
 
 ## Verification
 1. Net-intent check OK. 2. ERC zero errors and warnings (never waive an unconnected pin; a pin conflict only with a
@@ -73,6 +92,10 @@ datasheet reason). 3. Review loop. 4. Every IC against its datasheet card (hw-pa
   stub ends, dots where 3+ wire ends meet.
 - An ERC-clean sheet can still be wrong or unreadable: the net check and the PNG review catch what ERC cannot (a parts
   review found FETs in the wrong configuration, a sense resistor the IC does not need, caps on the wrong pin).
+- "No engineer draws it like that" (labels on every pin, free-standing passives, nets going nowhere) was the engineer's
+  first verdict on generated sheets: research drawing practice, then fix the generator, not the sheets. Sourced rules
+  (KiCad manual): wire ends exactly on pins, pin ends on the 1.27 mm grid, junction dots, no-connect markers, power-flag
+  ERC; switch the four-way-junction ERC on. Left-to-right flow and power-up/ground-down are conventions: warn, do not fail.
 
 ## Net names and the rest of the chain
 - Full net names include the sheet path; layout scripts and `critical.yaml` use them: rename everywhere together, then the gate.
@@ -81,7 +104,7 @@ datasheet reason). 3. Review loop. 4. Every IC against its datasheet card (hw-pa
 ## Pitfalls
 | Symptom | Cause | Fix |
 |---|---|---|
-| Diode or LED reversed, ERC clean | rotation/mirror pin math | net-intent check; `pins.py` |
+| Diode or LED reversed, ERC clean | rotation/mirror pin math (kicad-sch-api 0.5.x rotates pins the wrong way at 90/270 degrees and left-justifies every label; `schkit` corrects both) | net-intent check; `pins.py` |
 | Net-intent check fails after an edit | NETS do not match the pins | fix NETS; the netlist is the truth |
 | `unexpected net Net-(...)` after a hand route | a pass-through part split the net | keep the net labelled (rule above) |
 | A rail symbol on every pin of a hand-drawn rail | power nets get a symbol per pin | hand-drawn rail: one symbol (generator handles it) |
@@ -93,3 +116,6 @@ datasheet reason). 3. Review loop. 4. Every IC against its datasheet card (hw-pa
 | Huge diff after regenerating | element ids are numbered in drawing order | commit only real changes |
 | Home path in a commit | the exported `.net` netlist | git-ignore `<board>/*.net` for every board |
 | Block sticks out of the sheet | block width beyond the frame | check the PNG; A3 frame is about 160 cells wide |
+| Generator edited, `.kicad_sch` not regenerated | notes/values differ from the committed sheet | regenerate, commit both; the net-intent check runs on the sheet |
+| Drawing shows the wrong part (TVS direction) | generic symbol reused | project symbol or the right library symbol; polarity in the PNG review |
+| Rail named after one load | net named where it was first drawn | rename everywhere together (generators, `critical.yaml`, notes), then the gate |

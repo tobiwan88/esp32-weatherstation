@@ -1,0 +1,45 @@
+# Board profile: the facts the board-neutral hardware skills and hardware/calc/ scripts read (skill hw-base, folder contract).
+# value null = MISSING (script fails at order time); a value without source = WARN.
+name: <board>
+pcb: <board>.kicad_pcb
+sch: <board>.kicad_sch
+bom: bom.csv
+generators: {schematic: ../gen/<board>.py, layout: ../gen/<board>_pcb.py}
+notes: BOARD.md
+requirements: ../REQUIREMENTS.md
+
+fab:
+  house: JLCPCB
+  assembly: "<economic | standard>, <side>, <hand-soldered parts>"
+  rules: ../rules/jlc-4layer.json      # fab floors; router_rules must agree
+  custom_drc: ../rules/<board>.kicad_dru
+  extended_fee_usd: null               # per unique Extended part, fee table <date>
+  setup_fee_usd: null
+  stencil_fee_usd: null
+  order_qty: null
+  order_limit_usd: null                # BOM check FAILs above it (bare PCB, joints, shipping not included)
+
+stackup:                               # part of the order; calc/impedance.py reads it
+  name: JLC04161H-7628
+  copper_mm: 0.035
+  soldermask: {thickness_mm: 0.015, er: 3.8}
+  layers:
+    - {name: F.Cu,  role: signal, ref: In1.Cu, dielectric_mm: 0.2104, er: 4.4}
+    - {name: In1.Cu, role: plane, net: GND}
+    - {name: In2.Cu, role: plane, net: GND}
+    - {name: B.Cu,  role: signal, ref: In2.Cu, dielectric_mm: 0.2104, er: 4.4}
+
+net_classes:                           # full KiCad net names; widths checked by calc/track_width.py
+  Default: {track_mm: 0.2, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3}
+  # Power: {track_mm: 0.5, clearance_mm: 0.15, via_mm: 0.6, drill_mm: 0.3, current_a: 1.0, nets: [...]}
+  # USB:   {track_mm: 0.27, gap_mm: 0.15, nets: [USB_DP, USB_DN]}    # from calc/impedance.py
+
+layout:
+  stitch_pitch_mm: [2, 3]
+  thermal_relief: {spoke_mm: 0.3, gap_mm: 0.25, spokes: 4}
+  max_board_mm: [50, 50]
+  temp_rise_c: 10
+
+alternates: {}                          # LCSC: {lcsc: C..., note: "what else must change"}
+power: []                               # regulators for calc/buck.py
+design: {}                              # inputs of calc/power_budget.py and calc/rail_switch.py: each {value, source}
