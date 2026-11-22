@@ -42,7 +42,7 @@ FIXED = {
     "U8": (11.0, 37.0, 0),                         # SCD41 (DNP option)
     "U2": (38.5, 26.5, 0), "U7": (29.5, 26.5, 0),
     "J2": (45.5, 29.5, 0),                         # PMS7003 2x5 1.27 mm, right edge
-    "J12": (9.2, 46.5, 0), "J8": (26.0, 46.5, 0),  # JST PH vertical on the bottom edge (courtyard 0.37 mm inside)
+    "J12": (9.2, 46.5, 0), "J8": (27.5, 46.5, 0),  # JST PH vertical on the bottom edge (courtyard 0.37 mm inside)
     "J7": (32.5, 40.6, 90),                        # debug UART, pins along x under J10
     "Q40": (21.5, 16.0, 0),                        # 3V3_SW P-FET between the rail and the sensor side (left)
     # USB fan-out (routing 2026-11-22, BOARD.md "Routing"): U4 turned so both lines flow straight through it
@@ -60,9 +60,11 @@ FIXED = {
     # (J12.4) straight right into U11, WIND (J12.3) and RAIN (J12.2) one level higher each into U10; pull-ups and RC
     # filters in rows above U10 (routing 2026-11-22: the NEAR placement crossed the three lines and left 5 of them open)
     "U11": (20.6, 47.6, 0), "U10": (20.6, 43.9, 0),
-    "R72": (18.8, 38.45, 0), "R73": (21.9, 38.45, 0), "C70": (18.8, 39.5, 0), "C71": (21.9, 39.5, 0),
-    "R75": (18.8, 40.55, 0), "C72": (21.9, 40.55, 0), "R70": (18.8, 41.6, 0), "R71": (21.9, 41.6, 0),
-    "R74": (17.05, 41.3, 90),
+    # RAIN column (x 18.8) and WIND column (x 21.9): cap on top (MCU side, reached from the north), series R, pull-up;
+    # VANE column x 24 (cap, series R, pull-up) fed up the right side of U10. J8 moved 1.5 mm right for this column.
+    "C70": (18.8, 38.45, 0), "C71": (21.9, 38.45, 0), "R72": (18.8, 39.5, 180), "R73": (21.9, 39.5, 180),
+    "R70": (18.8, 40.55, 180), "R71": (21.9, 40.55, 180),
+    "C72": (24.0, 39.0, 90), "R75": (24.0, 41.0, 90), "R74": (24.0, 43.0, 270),
 }
 # TPS63802 (SLVSEU9D 12.1/12.2, figure 12-1) and TPS61023 (SLVSF14B 10.1/10.2, figure 10-1) blocks, offsets from the IC
 # centre as on weatherstation-v1 (routed, DRC clean): input cap across VIN/GND, inductor at the switch pins, output cap at
@@ -146,15 +148,15 @@ def KEEPOUTS(put, ctx):
     # no tracks or vias on B.Cu under the inductors (REQUIREMENTS E3, as on v1)
     for ref in ("L4", "L5"):
         put("under_" + ref, [pcbnew.B_Cu], rect(box(ref)), tracks=True, vias=True, pours=False)
-    # USB: nothing on B.Cu under the main run of the pair (In1 is its reference, In2 screens B.Cu), except one 2.5 mm
+    # USB: nothing on B.Cu under the main run of the pair (In1 is its reference, In2 screens B.Cu), except one 3.4 mm
     # window on the straight run between the two GND stitch-via pairs: the pair and J1 wall off the top-left pocket
     # (J3, U5, the module's left pins) on F.Cu, so the pocket's slow signals (sensor I2C, anemometer inputs) cross
     # there on B.Cu, two solid GND planes away from the pair (BOARD.md "Routing review"). Plus the named fan-out area
     # where the custom DRC rule allows connector-pitch clearances.
     info = main_copper.build(ctx["pad"])[1]
     c0, c1 = info["centre"][0], info["centre"][1]
-    assert abs(c0[1] - c1[1]) < 1e-6 and c1[0] - c0[0] > 4.5, "straight run of at least 4.5 mm before the bend"
-    wx0, wx1 = c0[0] + 0.95, c0[0] + 3.45
+    assert abs(c0[1] - c1[1]) < 1e-6 and c1[0] - c0[0] > 5.6, "straight run of at least 5.6 mm before the bend"
+    wx0, wx1 = c0[0] + 0.95, c0[0] + 4.35
     for name, line in (("usb_under", [c0, (wx0, c0[1])]), ("usb_under2", [(wx1, c0[1])] + info["centre"][1:])):
         poly = main_copper.offset(line, 0.62) + main_copper.offset(line, -0.62)[::-1]
         put(name, [pcbnew.B_Cu], poly, tracks=True, vias=True, pours=False)

@@ -138,9 +138,10 @@ def usb(c):
     c.t(DP, "F", USB_W, [u1, (xs, u1[1])] + dp_run + [(x_end, r32[1]), r32])
     # GND stitching vias beside the pair (0.6 mm via, >= 0.6 mm copper to the pair), about every 4-5 mm, both sides
     d = HALF + USB_W / 2 + 0.6 + 0.3 + 0.05
-    for x in (centre[0][0] + 0.5, centre[0][0] + 4.2):
-        c.v("GND", x, yc - d, PVIA)
-        c.v("GND", x, yc + d, PVIA)
+    # the B.Cu crossing window (main_pcb.py) lies between; the north via sits further east, clear of the VANE via
+    for xn, xs_ in ((0.5, 0.5), (5.1, 4.2)):
+        c.v("GND", centre[0][0] + xn, yc - d, PVIA)
+        c.v("GND", centre[0][0] + xs_, yc + d, PVIA)
     (dx0, dy0), (dx1, dy1) = centre[1], centre[2]
     for f in (0.42, 0.86):
         px, py = dx0 + f * (dx1 - dx0), dy0 + f * (dy1 - dy0)
@@ -210,7 +211,7 @@ def usb(c):
     a4 = P("J1", "A4")
     c.t("USB_VBUS", "F", 0.4, [a4, (vc[0] - 1.7, a4[1]), (c35v[0] - 0.5, c35v[1]), c35v])
     c.t("USB_VBUS", "B", 0.4, [vc, vb])
-    return {"dn_run": dn_run, "dp_run": dp_run, "centre": centre, "xs": xs}
+    return {"dn_run": dn_run, "dp_run": dp_run, "centre": centre, "xs": xs, "d": d}
 
 
 def vbus(c):
@@ -411,6 +412,95 @@ def anemometer(c):
         c.v("GND", *g)
 
 
+def cluster(c, info):
+    """Wind/rain/vane filter block and the three MCU lines to the module's left pins (locked, the autorouter left
+    them open). Block: RAIN column (C70 / R72 / R70) and WIND column (C71 / R73 / R71) above U10, VANE column
+    (C72 / R75 / R74) right of it. MCU lines: B.Cu bundle (0.5 mm pitch) west of J10, north through the window in
+    the pair's B.Cu keepout (two GND planes between), RAIN and WIND on B.Cu into the pocket to vias at pins 8/9,
+    VANE up to F.Cu right after the window and along the pair's north side (2 mm from its centre) to pin 12."""
+    P = c.P
+    W = 0.2
+    a = {n: P("U10", str(n)) for n in range(1, 7)}
+    b6 = P("U11", "6")
+    c70, c71, c72 = P("C70", "1"), P("C71", "1"), P("C72", "1")
+    r72 = (P("R72", "1"), P("R72", "2"))
+    r73 = (P("R73", "1"), P("R73", "2"))
+    r70, r71 = P("R70", "1"), P("R71", "1")
+    r75, r74 = (P("R75", "1"), P("R75", "2")), P("R74", "1")
+    assert abs(r72[1][0] - c70[0]) < 0.05 and abs(r72[0][0] - r70[0]) < 0.05, "RAIN column pads aligned"
+    assert abs(r73[1][0] - c71[0]) < 0.05 and abs(r73[0][0] - r71[0]) < 0.05, "WIND column pads aligned"
+    assert c72[1] < r75[1][1] < r75[0][1] < r74[1] and abs(c72[0] - r74[0]) < 0.05, "VANE column C72 / R75 / R74"
+    # inputs: ESD pins to the series R and the pull-up
+    c.t("/Sensors/RAIN_IN", "F", 0.25, [a[1], (r70[0], a[1][1] - 0.6), r70, r72[0]])
+    c.t("/Sensors/WIND_IN", "F", 0.25, [a[4], (r71[0] + 0.54, a[4][1]), (r71[0] + 0.54, r71[1] + 0.54), r71, r73[0]])
+    xv = r74[0] - 0.6
+    c.t("/Sensors/VANE_IN", "F", 0.25, [b6, (xv, b6[1]), (xv, r74[1]), r74, r75[0]])
+    # MCU-side nodes and their bundle vias
+    vr = (r72[1][0] - 0.84, c70[1])                       # RAIN via left of C70
+    c.t("/MCU/RAIN", "F", W, [r72[1], c70, vr])
+    yw = c71[1] - 0.85                                    # WIND runs west above the cap row
+    vw = (16.8, yw)
+    c.t("/MCU/WIND", "F", W, [r73[1], c71, (c71[0], yw + 0.35), (c71[0] - 0.35, yw), vw])
+    vv = (c72[0] - 0.8, (c72[1] + r75[1][1]) / 2)          # VANE via left of its column
+    c.t("/MCU/VANE", "F", W, [r75[1], c72])
+    c.t("/MCU/VANE", "F", W, [(c72[0], vv[1]), vv])
+    for p in (vr, vw, vv):
+        c.v(p == vr and "/MCU/RAIN" or p == vw and "/MCU/WIND" or "/MCU/VANE", *p)
+    # bundle: RAIN is the centre line; WIND 0.5 mm west, VANE 0.5 mm east (mitred offsets keep the pitch in the jog)
+    c0 = info["centre"][0]
+    xr0, xr1 = vr[0], c0[0] + 3.12                        # corridor west of J10 pin 20, window in the pair keepout
+    jog = [(xr0, 30.0), (xr0, 26.0), (xr1, 26.0 - (xr1 - xr0)), (xr1, 12.5)]
+    wm, vm = offset(jog, 0.5), offset(jog, -0.5)
+    yr, yw2 = 9.9, 9.4                                    # pocket runs: RAIN south, WIND north (RAIN turns first)
+    u8, u9, u12 = P("U1", "8"), P("U1", "9"), P("U1", "12")
+    pr = (u8[0] - 2.05, u8[1])                            # RAIN via, then F.Cu to pin 8 over WIND's B.Cu
+    pw = (u9[0] - 1.3, u9[1])
+    assert pw[0] - pr[0] > 0.7
+    c.t("/MCU/RAIN", "B", W, [vr] + jog + [(xr1, yr + 0.4), (xr1 + 0.4, yr), (pr[0] - (pr[1] - yr), yr), pr])
+    c.t("/MCU/WIND", "B", W, [vw, (wm[0][0], vw[1] - 0.15)] + wm + [(wm[-1][0], yw2 + 0.4), (wm[-1][0] + 0.4, yw2),
+                              (pw[0] - 0.4, yw2), (pw[0], yw2 + 0.4), pw])
+    yv = vw[1] - 0.4                                      # VANE runs west under the J10 pad row
+    c.t("/MCU/VANE", "B", W, [vv, (vv[0], yv + 0.45), (vv[0] - 0.45, yv), (vm[0][0] + 0.3, yv), (vm[0][0], yv - 0.3)]
+        + vm + [(vm[-1][0], 11.0), (vm[-1][0] + 0.45, 10.55)])
+    vt = (vm[-1][0] + 0.45, 10.55)
+    c.v("/MCU/VANE", *vt)
+    for p, u, net in ((pr, u8, "/MCU/RAIN"), (pw, u9, "/MCU/WIND")):
+        c.v(net, *p)
+        c.t(net, "F", W, [p, u])
+    # VANE on F.Cu: parallel to the pair's diagonal, 2.0 mm from its centre on the north side, then into pin 12
+    o = offset(info["centre"][1:3], 2.0)
+    assert abs((o[1][0] - o[0][0]) - (o[1][1] - o[0][1])) < 1e-6, "45-degree descent"
+    yf, ye = 10.1, u12[1] - 0.56
+    xs_, xe_ = o[0][0] + (yf - o[0][1]), o[0][0] + (ye - o[0][1])
+    c.t("/MCU/VANE", "F", W, [vt, (vt[0] + 0.45, yf), (xs_, yf), (xe_, ye), (u12[0] - 1.3, ye),
+                              (u12[0] - 0.75, u12[1]), u12])
+
+
+def sen_trunk(c):
+    """Sensor I2C from module pins 21/22 to U5 (and R51): vias in the band inside the bottom pad row, B.Cu north
+    under the module (east of the EPAD vias) and west at y 4.9/4.1; SCL hops to F.Cu so the pair swaps order at U5."""
+    P = c.P
+    sda, scl = P("U1", "21"), P("U1", "22")
+    u6, u4, r51 = P("U5", "6"), P("U5", "4"), P("R51", "1")
+    assert sda[0] < scl[0] and u6[1] < u4[1] < r51[1]
+    ya = sda[1] - 1.4
+    vd, vc = (u6[0] + 1.16, 4.9), (u6[0] + 2.56, 4.1)
+    c.t("/SEN_SDA", "F", W2, [sda, (sda[0], ya)])
+    c.t("/SEN_SCL", "F", W2, [scl, (scl[0], ya)])
+    c.v("/SEN_SDA", sda[0], ya)
+    c.v("/SEN_SCL", scl[0], ya)
+    c.t("/SEN_SDA", "B", W2, [(sda[0], ya), (sda[0], vd[1] + 0.4), (sda[0] - 0.4, vd[1]), vd])
+    c.t("/SEN_SCL", "B", W2, [(scl[0], ya), (scl[0], vc[1] + 0.4), (scl[0] - 0.4, vc[1]), vc])
+    c.v("/SEN_SDA", *vd)
+    c.v("/SEN_SCL", *vc)
+    c.t("/SEN_SDA", "F", W2, [vd, (vd[0] - 0.45, u6[1]), u6])
+    c.t("/SEN_SCL", "F", W2, [vc, (vc[0], u4[1] - 0.5), (vc[0] - 0.5, u4[1]), u4])
+    c.t("/SEN_SCL", "F", W2, [(r51[0], u4[1]), r51])
+
+
+W2 = 0.2
+
+
 def build(P):
     c = Copper(P)
     info = usb(c)
@@ -422,4 +512,6 @@ def build(P):
     bmp(c)
     gate(c)
     anemometer(c)
+    cluster(c, info)
+    sen_trunk(c)
     return c.items, info
