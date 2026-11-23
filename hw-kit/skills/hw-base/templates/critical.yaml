@@ -1,0 +1,21 @@
+# Critical blocks, declared by intent; checked by calc/critical.py (--placement before routing). Pins are REF.PAD from the
+# generated netlist; distances in mm. Limits are design targets unless a source is named. `known:` on an entry turns a
+# FAIL into a WARN with the reason. EMI settings live in emi.yaml (critical.py rejects an unknown top-level key).
+switcher_loop:   # datasheet layout example, section <n>
+  - {name: reg_in, cin: "C1", vin: "U1.1", gnd: "U1.2", max_mm: 3.0, sw: "U1.3", inductor: "L1.1", sw_max_mm: 4.0}   # example refs: replace
+feedback: []     # entries as in calc/critical.py (divider, pin, max_mm)
+decoupling:      # one entry per supply pin, datasheet section
+  - {pin: "U1.4", cap: "C2.1", max_mm: 3.0}   # example refs: replace
+series_termination: []   # {source: "U1.5", part: "R1.2", max_mm: 3.0}
+diff_pair:
+  - name: usb
+    p: /Sheet/USB_DP
+    n: /Sheet/USB_DN
+    net_class: USB
+    layer: F.Cu
+    z_diff: 90
+    tol_ohm: 10
+    max_skew_mm: 0.5
+    max_vias: 2
+thermal_distance:   # heat source away from sensor / thermistor
+  - {source: "U1", sensor: "U2", min_mm: 15}

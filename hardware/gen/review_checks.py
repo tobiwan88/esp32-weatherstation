@@ -13,7 +13,7 @@ Text boxes are estimates: width = characters x size x 0.62, height = size x 1.6 
 These checks find the layout problems a reviewer would hit. The rendered PNGs are still read by a person
 (or an agent) before a sheet passes; see .claude/skills/kicad-schematic/SKILL.md, section Review loop.
 
-Run: python3 -I hardware/gen/review_checks.py hardware/weatherstation-v1 [--strict]
+Run: python3 -I hardware/gen/review_checks.py hardware/<board> [--strict]
 Exit code 1 when any issue is found (with --strict) so the gate can use it.
 """
 
@@ -250,4 +250,7 @@ def main(board: Path) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(Path(sys.argv[1]) if len(sys.argv) > 1 and not sys.argv[1].startswith("--") else Path("hardware/weatherstation-v1")))
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    if not args:
+        sys.exit("usage: review_checks.py hardware/<board> [--strict]")
+    sys.exit(main(Path(args[0])))

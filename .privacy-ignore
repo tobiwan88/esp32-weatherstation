@@ -1,0 +1,10 @@
+# Paths the privacy scan skips (git pathspecs). Keep this list short and give a reason per line.
+# CAD files and exports of the first board (checked for metadata separately)
+hardware/weatherstation-v1/*.kicad_*
+hardware/weatherstation-v1/*.step
+# earlier project kept as reference, generators and tools that contain regexes and path handling
+hardware/reference
+hardware/gen
+hardware/tools
+# vendored firmware
+firmware/components/*/third_party

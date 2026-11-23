@@ -1,0 +1,16 @@
+# Datasheet card: facts from the OFFICIAL datasheet only, each with its section.
+# value null = not read yet (scripts report MISSING); section: not stated = datasheet silent; unverified: <source> = substitute document.
+mpn: <MPN>
+role: <what it does on this board>
+lcsc: C<number>
+source:
+  url: https://<maker site>/
+  revision: "<revision, date>"
+  file: <datasheets/MPN.pdf>
+values:
+  vin_max_v: {value: null, section: null}
+  # name: {value: <number>, section: "<table or section>"}
+checklist:
+  - "decoupling per supply pin: count, value, placement (section)"
+  - "enable/reset, pull-ups, strapping pins and their levels; power-on register defaults (section)"
+  - "layout notes -> critical.yaml entries (section)"

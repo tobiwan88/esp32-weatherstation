@@ -1,19 +1,23 @@
 # Hardware: where to look
 
-Board profile: **`weatherstation-v1/`** (requirements, BOM, datasheet cards, order checklist). Pre-layout: no KiCad project yet.
+Boards (one folder each, profile in `board.yaml`, notes in `BOARD.md`). Gate output: `scripts/hw-check.sh`.
+
+| Board | Role | State (details in its `BOARD.md`) |
+|---|---|---|
+| `power-board/` | charger, protection, solar and USB inputs, header to the main board | routed 2026-11-22, DRC 0 at all severities; no fab files yet |
+| `main-board/` | MCU, 3.3 V and 5 V rails, USB-C, sensor ports | routed 2026-11-22, DRC clean (waived silk warnings listed there), EMI check OK; no fab files yet |
+| `sht45-board/` | outdoor temperature and humidity head, Qwiic chain-out | layout done 2026-11-04: ERC 0, DRC 0 incl. warnings, parity clean |
+| `bmp585-board/`, `veml6030-board/` | pressure and light add-ons on the same base | DRC clean, parity clean (2026-11-04) |
+| `weatherstation-v1/` | first single-board design, kept as history, fab files and parts cards | superseded by the split |
 
 | What | Where |
 |---|---|
-| Requirements (function, electrical, thermal, EMC, USB, manufacturing, cost) | `weatherstation-v1/REQUIREMENTS.md` |
-| BOM with LCSC numbers and verification status | `weatherstation-v1/bom.csv` |
-| Board notes, decisions, open items, commands | `weatherstation-v1/BOARD.md` |
-| Facts the scripts read | `weatherstation-v1/board.yaml`, `critical.yaml`, `parts/` |
-| Order checklist, bring-up | `weatherstation-v1/ORDER.md` |
-| Plan and next steps | `PLAN.md` |
-| Board-neutral checks | `calc/` (`bom_check.py`, `power_budget.py`, `critical.py`, `buck.py`, `impedance.py`, `pcb.py`) |
-| Stock lookup, DRC summary | `tools/` (`jlcparts.py`, `drc_summary.py`) |
-| Fab design floors | `rules/` |
-| Helper and reviewer agents | `../.claude/agents/` (`hw-*`) |
-| Working KiCad pipeline to copy from (desk_notifier) | `reference/desk_notifier/` |
+| System requirements, architecture, decisions that must not be lost | `REQUIREMENTS-system.md`, `ARCHITECTURE.md`, `DECISIONS.md` |
+| Plan, review rounds, order notes | `PLAN.md`, `REVIEW-*.md`, `ORDER-sensor-boards.md`, `<board>/ORDER.md` |
+| Board profile files read by the scripts | `<board>/board.yaml`, `critical.yaml`, `emi.yaml`, `parts/` |
+| Board-neutral checks, tools, fab rules | `calc/`, `tools/`, `rules/` (installed from `../hw-kit/tooling`) |
+| Generators and project build scripts | `gen/`, `tools/build_*.sh`, `tools/route_*.sh` |
+| Skills and agents | `../.claude/` (installed from `../hw-kit`; read `hw-base` first) |
+| Earlier project's pipeline to copy from | `reference/desk_notifier/` |
 
-Agent skills (board-neutral): `hw-base` (read first), `hw-requirements`, `hw-parts`, `kicad-schematic`, `kicad-layout`, `hw-fab-order`, `hw-review` in `.claude/skills/`; reuse in a new project: `scripts/hw-kit-install.sh`.
+New board: `scripts/new-board.sh <name>`. The kit and how to reuse it in another project: `../hw-kit/README.md`.

@@ -140,7 +140,7 @@ def easyeda_pads(lcsc: str, offline: bool) -> tuple[str, list[tuple[str, float, 
     if not f.exists():
         if offline:
             sys.exit(f"{lcsc}: no cached EasyEDA footprint and --offline given")
-        req = urllib.request.Request(EASYEDA.format(lcsc), headers={"User-Agent": "weatherstation-hardware"})
+        req = urllib.request.Request(EASYEDA.format(lcsc), headers={"User-Agent": "hw-kit"})
         for wait in (60, 180, 0):  # polite: one request every few seconds, back off when the server says no
             time.sleep(3)
             try:

@@ -45,10 +45,19 @@ def pin_away(sch: ksa.Schematic, ref: str, number: str, mirror: str | None = Non
 CELL = 2.54  # drawing grid: sheet coordinates are given in cells of 2.54 mm (fractions of 0.5 are on the 1.27 grid)
 _uid = [0]
 
+# Project-level defaults (title block text, uuid seed). A project overrides them with an optional module
+# `schkit_defaults.py` next to this file that defines DEFAULTS = {...}. Keep it stable: the seed decides every uuid.
+DEFAULTS = {"project": "board", "title": "board", "company": "", "date": "", "rev": "v1", "uid_seed": "board"}
+try:
+    from schkit_defaults import DEFAULTS as _PROJECT_DEFAULTS
+    DEFAULTS.update(_PROJECT_DEFAULTS)
+except ImportError:
+    pass
+
 
 def uid() -> str:
     _uid[0] += 1
-    return str(uuid.uuid5(uuid.NAMESPACE_URL, f"weatherstation-v1/{_uid[0]}"))
+    return str(uuid.uuid5(uuid.NAMESPACE_URL, f"{DEFAULTS['uid_seed']}/{_uid[0]}"))
 
 
 def mm(cell: float) -> float:
@@ -69,12 +78,13 @@ class Sheet:
     pwr_count = 0  # power-symbol references are unique over all sheets
 
     def __init__(self, name: str, filename: str, parts: dict, paper: str = "A3", note: str = "",
-                 project: str = "weatherstation-v1", title: str = "weatherstation v1", date: str = "2026-10-31"):
+                 project: str | None = None, title: str | None = None, date: str | None = None):
+        project, title, date = project or DEFAULTS["project"], title or DEFAULTS["title"], date or DEFAULTS["date"]
         self.name, self.filename, self.parts = name, filename, parts
         self.paper, self.note = paper, note
         self.sch = ksa.Schematic.create(project)
         self.sch.set_paper_size(paper)
-        self.sch.set_title_block(title=title, date=date, rev="v1", company="weatherstation",
+        self.sch.set_title_block(title=title, date=date, rev=DEFAULTS["rev"], company=DEFAULTS["company"],
                                  comments={1: f"Sheet: {name}", 2: note.split(":")[0][:60]})
         self.uuid = str(uuid.uuid5(uuid.NAMESPACE_URL, "sheet/" + name))
         self.raw: list[str] = []
@@ -303,11 +313,12 @@ class Sheet:
 
 
 def root_sheet(directory: Path, name: str, sheets: list[dict], texts: list[tuple[float, float, str]], wires, labels,
-               project: str = "weatherstation-v1", title: str = "weatherstation v1", date: str = "2026-10-31") -> tuple[Path, str]:
+               project: str | None = None, title: str | None = None, date: str | None = None) -> tuple[Path, str]:
     """Root page: block diagram of sheet symbols. Each entry of sheets: name, file, x, y, w, h, page, pins=[(edge, y_cell, name)]."""
-    root = str(uuid.uuid5(uuid.NAMESPACE_URL, "root" if project == "weatherstation-v1" else "root/" + project))
+    project, title, date = project or DEFAULTS["project"], title or DEFAULTS["title"], date or DEFAULTS["date"]
+    root = str(uuid.uuid5(uuid.NAMESPACE_URL, "root" if project == DEFAULTS["project"] else "root/" + project))
     out = ['(kicad_sch (version 20250114) (generator "eeschema") (generator_version "9.0")', f'\t(uuid "{root}")', '\t(paper "A3")',
-           f'\t(title_block (title "{title}") (date "{date}") (rev "v1") (company "weatherstation") '
+           f'\t(title_block (title "{title}") (date "{date}") (rev "{DEFAULTS["rev"]}") (company "{DEFAULTS["company"]}") '
            '(comment 1 "Sheet: root (block diagram)"))', "\t(lib_symbols)"]
     segs_mm = [((mm(a[0]), mm(a[1])), (mm(b[0]), mm(b[1]))) for a, b in wires]
     for jx, jy in junction_points(segs_mm):

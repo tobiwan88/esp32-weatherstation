@@ -15,9 +15,9 @@ Estimated cost: about EUR 240-300 for the first batch (5 boards) plus one comple
 (see `hardware/weatherstation-v1/REQUIREMENTS.md`, section 5a).
 
 ## Where to look
-- `hardware/weatherstation-v1/`: `REQUIREMENTS.md`, `BOARD.md`, `bom.csv`, `ORDER.md`, `board.yaml`, `parts/`
-- `hardware/PLAN.md`: done and next steps. `hardware/README.md`: map of the hardware tree.
-- `.claude/skills/`: hardware agent skills (`hw-base`, `kicad-schematic`, `kicad-layout`, `hw-parts`); `CLAUDE.md`: agent notes.
+- `hardware/README.md`: boards, status and the map of the hardware tree. `hardware/PLAN.md`: plan and next steps.
+- `hardware/DECISIONS.md`, `hardware/REQUIREMENTS-system.md`, `hardware/ARCHITECTURE.md`: decisions, requirements, how the boards fit.
+- `hw-kit/`: reusable hardware kit (skills, agents, check scripts, templates); `CLAUDE.md`: agent notes.
 - `scripts/check.sh`: gate (hardware checks, tests, privacy scan).
 
 Base derived from [desk_notifier](https://github.com/tobiwan88/desk_notifier) (hardware skills, calc scripts, tools). MIT license.

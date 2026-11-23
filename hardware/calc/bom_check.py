@@ -6,7 +6,7 @@ Fee model: JLCPCB Economic PCBA charges a loading fee per unique Extended part (
 the fee comes from board.yaml `fab.extended_fee_usd`, never hard-coded here. With `--stock`, the parts cost is the fab's
 first (smallest) price tier x quantity x qty (no attrition parts), and the order row adds the Extended fees plus
 `fab.setup_fee_usd` and `fab.stencil_fee_usd`; FAIL above `fab.order_limit_usd` (bare PCB, SMT joints, shipping not included).
-Usage: uv run --package weatherstation-hardware python hardware/calc/bom_check.py hardware/<board> [--strict] [--stock] [--qty N]
+Usage: python3 hardware/calc/bom_check.py hardware/<board> [--strict] [--stock] [--qty N]
 """
 
 import argparse

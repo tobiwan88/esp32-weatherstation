@@ -1,0 +1,14 @@
+# Settings of calc/emi_check.py (diff pair, edge fence, antenna, planes, loops, parallel runs). Each limit names its source.
+pair_main_layer: F.Cu
+pair_width_mm: 0.27
+pair_spacing_mm: 0.6        # other nets to the pair: 3x the gap plus margin
+edge_pitch_mm: 5.0          # GND via fence along the board edge
+edge_band_mm: 1.6
+void_max_mm: 1.0            # longest signal run over a plane void
+loop_max_mm: 12.0
+sw_nets: []                 # switch-node nets
+sw_area_max_mm2: 3.0
+parallel:
+  - {name: sense vs SW, victims: ["NET*"], aggressors: ["SW*"], gap_mm: 0.6, max_mm: 0.5}
+edge_exempt: []             # rectangles with a reason: antenna, holes, overhangs, module pad columns, corners
+known: []                   # row + reason + the fix for next time

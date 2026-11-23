@@ -16,7 +16,7 @@ LIB = {"base": "Basic", "expand": "Extended"}
 
 def query(keyword: str, size: int = 10) -> list[dict]:
     body = json.dumps({"keyword": keyword, "currentPage": 1, "pageSize": size}).encode()
-    req = urllib.request.Request(URL, body, {"Content-Type": "application/json", "User-Agent": "weatherstation-hardware"})
+    req = urllib.request.Request(URL, body, {"Content-Type": "application/json", "User-Agent": "hw-kit"})
     with urllib.request.urlopen(req, timeout=20) as r:
         data = json.load(r)["data"]["componentPageInfo"]
     return [

@@ -7,7 +7,7 @@ generator-driven KiCad pipeline as desk_notifier (schematic, placement, routing,
 - Research (sensors, ready-made options, power budget, cost) and decisions: `weatherstation-v1/BOARD.md`, `REQUIREMENTS.md`.
 - BOM with verified LCSC numbers for the main parts; six numbers still TBD.
 - Board profile (`board.yaml`, `critical.yaml`, datasheet cards), gate (`scripts/hw-check.sh`) with BOM and power checks.
-- Skills and tools copied from desk_notifier (`.claude/skills`, `hardware/calc`, `hardware/tools`, `hardware/rules`, agent prompts; the prompts became subagent definitions in `.claude/agents/` on 2026-11-22).
+- Skills and tools copied from desk_notifier (`.claude/skills`, `hardware/calc`, `hardware/tools`, `hardware/rules`, agent prompts; the prompts became subagent definitions on 2026-11-22 and the whole kit moved into `hw-kit/` on 2026-11-23).
 
 ## Next
 1. Close the open items in `BOARD.md` (TBD numbers, panel Vmp, datasheet sections, Basic/Extended classes).

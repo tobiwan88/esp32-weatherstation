@@ -13,7 +13,7 @@ replaces the bare target in the average current and FAILs above the target `cycl
 Rail-on loads (`cycle.rail_on_loads`, optional): loads that draw only while the sensor rail is on (a bleed resistor:
 I = v / ohm, or ua), converted to the cell like a +3V3 sleep load and added for `sensor_on_s` per cycle (not in sleep).
 Autonomy = 80 % of the capacity / (average current x 24 h); FAIL below `cycle.autonomy_days_min`.
-Usage: uv run --package weatherstation-hardware python hardware/calc/power_budget.py hardware/<board> [--selftest]
+Usage: python3 hardware/calc/power_budget.py hardware/<board> [--selftest]
 """
 
 import sys

@@ -3,7 +3,7 @@
 Inputs: `power:` in board.yaml, component values from the .kicad_pcb, limits from the datasheet cards (parts/).
 A value the card does not have yet prints MISSING (fill in the card from the datasheet); --strict makes it a FAIL.
 A value without a datasheet `section` (or a profile input without `source`) turns an OK row into WARN (unsourced).
-Usage: uv run --package weatherstation-hardware python hardware/calc/buck.py hardware/<board> [--strict]
+Usage: python3 hardware/calc/buck.py hardware/<board> [--strict]
 Formulas (standard buck relations, as in TI SLVA477 "Basic calculation of a buck converter's power stage"):
   Vout = Vref * (1 + Rtop/Rbot); dI = Vout * (1 - Vout/Vin_max) / (L * fsw); Ipeak = Iout + dI/2.
 """

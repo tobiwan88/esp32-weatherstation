@@ -3,7 +3,7 @@
 One function per constraint type; each returns (status, name, detail) rows. `known:` on an entry turns FAIL into WARN.
 --placement: the board is placed but not routed. Placement rows (pad distances, footprint distances) are checked as
 usual; rows that need copper (FB trace length, diff-pair skew and vias) print SKIP "not routed" instead of failing.
-Usage: uv run --package weatherstation-hardware python hardware/calc/critical.py hardware/<board> [--placement] [--json]
+Usage: python3 hardware/calc/critical.py hardware/<board> [--placement] [--json]
 """
 
 import argparse

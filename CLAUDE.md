@@ -1,46 +1,37 @@
 # esp32-weatherstation: agent notes
 
-Solar + USB powered ESP32-S3 air-quality weather station: PMS7003 PM sensor plus an outdoor SHT45 (own small board), optional
-SCD41 CO2 (DNP) and ZE25-O3, deep-sleep
-duty cycle, WiFi to Home Assistant/MQTT. Custom 4-layer PCB (two GND planes), JLCPCB-assembled. Status: hardware pre-layout, firmware not started.
-Base created from desk_notifier (board-neutral hardware skills, calc scripts, tools and a working KiCad pipeline kept as reference).
+Solar + USB powered ESP32-S3 air-quality weather station (particulate sensor, outdoor temperature and humidity, optional CO2
+and O3 modules), deep-sleep duty cycle, WiFi to Home Assistant/MQTT. Custom 4-layer PCBs, JLCPCB-assembled. Hardware is in
+layout and routing, firmware not started; the board list and each board's status are in `hardware/README.md`.
 
-## Start here
-- Hardware: read `.claude/skills/hw-base` first, then `hardware/weatherstation-v1/BOARD.md` and `board.yaml`.
-  Second board: `hardware/sht45-board/` (outdoor SHT45 sensor head with a Qwiic chain-out, generators
-  `hardware/gen/sht45_board.py` + `sht45_pcb.py`, build `hardware/tools/build_sht45.sh`). Qwiic add-ons on the same
-  base: `hardware/bmp585-board/` (pressure) and `hardware/veml6030-board/` (light), generators `addon_boards.py` +
-  `addon_pcb.py`, build `hardware/tools/build_addons.sh`. Requirements: `hardware/weatherstation-v1/REQUIREMENTS.md`. Plan: `hardware/PLAN.md`.
-- Skills (board-neutral, in `.claude/skills/`): `hw-base`, `hw-requirements`, `hw-parts`, `kicad-schematic`, `kicad-layout`, `hw-fab-order`, `hw-review`;
-  helper/reviewer/builder agents `hw-*` in `.claude/agents/`. Reuse in a new project: `scripts/hw-kit-install.sh` (`hw-base/references/bootstrap.md`).
-- Numbers come from scripts in `hardware/calc/` (rule in `hw-base`): `bom_check.py`, `power_budget.py`, `critical.py`, `buck.py`, `impedance.py`.
+<!-- hw-kit:begin (managed by hw-kit; edit the kit, then `hw-kit/install.sh . --force`) -->
+## Hardware (hw-kit)
+- Start here: `.claude/skills/hw-base`, then `hardware/README.md` (boards and their status) and the `BOARD.md` of the board you work on.
+- Skills by task: `hw-requirements` (gate 1), `hw-parts` (part check, BOM), `kicad-schematic`, `kicad-layout` (placement, routing),
+  `hw-review` (independent reviews), `hw-fab-order` (fab files, order). Agents `hw-*` in `.claude/agents/`: helpers (researcher,
+  datasheet extractor, part lookup, DRC triage, one-image check), reviewers (datasheet, consistency, render), `hw-builder`.
+- Gate: `scripts/hw-check.sh [--strict] [--stock --qty N]` runs every board in `hardware/*/board.yaml` and must print
+  `hardware checks: OK`; MISSING rows are open inputs. `scripts/check.sh` = gate + tests + privacy scan + kit drift check.
+- New board: `scripts/new-board.sh <name>`. Numbers come from `hardware/calc/*.py`, never from memory (rule in `hw-base`).
+- KiCad: `source scripts/kicad-env.sh`. Stock and price: `python3 hardware/tools/jlcparts.py C123456` or `-s "keyword"`.
+  Production files: `python3 -I hardware/tools/fab_package.py --require-clean hardware/<board>/<board>.kicad_pcb` -> `hardware/out/fab/`.
+- Working rules: the engineer decides topology, part, value, outline and cost; agents find, build and report. Gates in order,
+  evidence in the repo. Commit and push after each finished step once the gate and the privacy check pass. Update this file,
+  `hardware/README.md` and the board's `BOARD.md` in the same step as a decision; agents propose wording, they do not edit them.
+- Never hand-edit generated files (`*.kicad_sch`, `*.kicad_pcb`); change the generator and rebuild.
+- Private data (public repo): never commit Wi-Fi names or passwords, tokens, MAC addresses, host names, LAN IPs, serial ports,
+  home paths, order or account data, photos of people or the home, CAD files with user metadata. Personal notes go in
+  `CLAUDE.local.md` (gitignored). Run `scripts/privacy-check.sh` before every push; fix findings, do not suppress them.
+<!-- hw-kit:end -->
 
-## Tooling
-- Gate: `scripts/hw-check.sh [--strict] [--stock --qty N]` (must print `hardware checks: OK`; MISSING rows are open inputs). `scripts/check.sh` = gate + pytest + privacy scan.
-- Tests: `python3 -m pytest -q` (or `uv run pytest`). Python 3.13, `uv`. Hardware tools: `uv run --package weatherstation-hardware ...` or plain `python3` for the calc scripts.
-- KiCad: `source scripts/kicad-env.sh` (kicad-cli, `$KICAD_PYTHON`, symbol/footprint dirs). On Linux install KiCad 7+ from apt for kicad-cli/pcbnew.
-- ESP-IDF v6.1 (firmware, later): `source scripts/idf-env.sh`.
-- Stock and price: `python3 hardware/tools/jlcparts.py C123456` or `-s "keyword"`.
-- JLCPCB production files (gerbers, drill, BOM, CPL fitted to JLC's own footprints): `python3 -I hardware/tools/fab_package.py
-  [--require-clean] hardware/<board>/<board>.kicad_pcb ...` -> `hardware/out/fab/`. Order notes: `hardware/weatherstation-v1/ORDER.md`,
-  `hardware/ORDER-sensor-boards.md`.
-
-## Hardware decisions that must not be lost
-- 4 layers, In1 and In2 both solid GND; outline at most 50 x 50 mm (cheapest JLCPCB tier).
-- USB-C = programming, debug (native USB-JTAG) and charging. One charger for USB and solar: BQ25798 (two inputs via ACFET/RBFET pairs), 1S LiFePO4 cell with HY2112-CB protection (commit 7db8d9c). CE pulled high = charge off until the firmware has written VREG 3.65 V (POR default is 4.2 V); firmware handles cold charging. Open circuit findings: `hardware/weatherstation-v1/PARTS-REVIEW.md`.
-- Sensor rail 3V3_SW switched by a P-FET; SHT45 off-board in a radiation shield; PMS7003 on J2 (5V_SW, UART IO4/IO5);
-  SEN66 dropped for cost (sensor option A, `hardware/weatherstation-v1/sensors.md`); no VOC/NOx; NO2 not on v1.
-- Two I2C buses: charger on IO1/IO2 (RTC I2C, so the ULP core can manage charging in deep sleep; pull-ups to +3V3), sensors on
-  IO13/IO14 (pull-ups on 3V3_SW). ZE25-O3 gas module (J8, 7-pin 1:1, UART IO17/IO18 with RXD divided to 3.0 V, DAC to IO7) on
-  a TPS61023 5 V boost from SYS, EN = IO12 (BOOST_EN), off by default (pull-down, true disconnect).
-- Solar charging stays on during deep sleep (user, 2026-11-01): CE held low by GPIO hold, chip JEITA active (`charge-policy.md`).
-- 3.3 V from a TPS63802 buck-boost on SYS (the LDO and its 3.5 V cutoff are gone); HY2112 overdischarge 2.10 V is the hardware floor.
-- Thermal: heat corner away from the NTC and sensor connectors. EMC: solid planes, antenna keepout on all layers, ESD on USB and the outdoor I2C cable, TVS on solar input.
-
-## Reference material (not active)
-`hardware/reference/desk_notifier/`: generators (`gen/`), pipeline, routing and fab-package scripts (`tools/`), a full board profile and PLAN with lessons. Copy and adapt; rename `notifier-v1` and the net names together. Source commit: desk_notifier `fedb410`.
-
-## Private data (this repo is public)
-Never commit: Wi-Fi names/passwords, tokens, MAC addresses, host names, LAN IPs, serial ports, home paths, order/account data, photos of people or the home, KiCad/CAD files with user metadata. Kconfig defaults for personal values stay 0 / "". Device notes go in `CLAUDE.local.md` (gitignored).
-- Before every commit that will be pushed, and before a push: `scripts/privacy-check.sh`. Fix findings, do not suppress them.
-- New binary/CAD exports (gerbers, STEP, images): check embedded metadata for names and paths first.
+## Project specifics
+- Map of the hardware tree and board status: `hardware/README.md`. System requirements: `hardware/REQUIREMENTS-system.md`.
+  Architecture and the header between boards: `hardware/ARCHITECTURE.md`. Decisions that must not be lost: `hardware/DECISIONS.md`.
+  Plan: `hardware/PLAN.md`. Order notes: `hardware/ORDER-*.md` and the `ORDER.md` in a board folder.
+- Checks between boards (split proof, header, stack fit) run from `scripts/hw-check.d/`.
+- The kit is the folder `hw-kit/` (source of truth for `.claude/skills`, `.claude/agents`, the board-neutral scripts under
+  `hardware/calc`, `hardware/tools`, `hardware/rules` and `scripts/`): edit there, then `hw-kit/install.sh . --force`.
+- Tests: `python3 -m pytest -q` (or `uv run pytest`). Python 3.13, `uv`. ESP-IDF v6.1 (firmware, later): `source scripts/idf-env.sh`.
+- `hardware/reference/`: pipeline of an earlier project, copy-and-adapt material, not active.
+- Firmware: Kconfig defaults for personal values stay 0 / "". New binary or CAD exports (gerbers, STEP, images): check embedded
+  metadata for names and paths first.
