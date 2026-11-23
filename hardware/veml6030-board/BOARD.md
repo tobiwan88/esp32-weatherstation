@@ -1,3 +1,5 @@
+> **Retired as an ordered design (2026-11-21):** light is a bought Qwiic module if wanted (`../REQUIREMENTS-system.md` section 5.1). Generator and board kept for reference.
+
 # veml6030-board: ambient light add-on (Qwiic)
 
 One link of the outdoor sensor chain (main-board J3 -> SHT45 head -> add-ons, any order). Generators:

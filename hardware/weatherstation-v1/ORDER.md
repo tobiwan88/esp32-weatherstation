@@ -1,3 +1,6 @@
+> **Superseded 2026-11-21:** the single-board design is replaced by the power board and the main board (`../GATES.md`, `../PLAN.md`).
+> This checklist is kept as the pattern for the new order notes; its board names, parts and costs are the old design's.
+
 # weatherstation-v1: JLCPCB order
 
 Sensor-chain boards (SHT45, BMP585, VEML6030): `hardware/ORDER-sensor-boards.md`.

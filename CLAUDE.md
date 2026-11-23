@@ -1,8 +1,9 @@
 # esp32-weatherstation: agent notes
 
 Solar + USB powered ESP32-S3 air-quality weather station (particulate sensor, outdoor temperature and humidity, optional CO2
-and O3 modules), deep-sleep duty cycle, WiFi to Home Assistant/MQTT. Custom 4-layer PCBs, JLCPCB-assembled. Hardware is in
-layout and routing, firmware not started; the board list and each board's status are in `hardware/README.md`.
+and O3 modules), deep-sleep duty cycle, WiFi to Home Assistant/MQTT. Custom PCBs (4-layer power and main boards, 2-layer sensor head), JLCPCB-assembled. The boards are
+routed and DRC clean, with no fab files or orders yet; firmware not started. The board list and each board's status are in
+`hardware/README.md`, the gate status in `hardware/GATES.md`.
 
 <!-- hw-kit:begin (managed by hw-kit; edit the kit, then `hw-kit/install.sh . --force`) -->
 ## Hardware (hw-kit)

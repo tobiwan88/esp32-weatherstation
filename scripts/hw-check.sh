@@ -4,7 +4,7 @@
 # Per board: profile files parse; BOM check; power budget; track widths; I2C bus; rail switch; critical blocks (placement mode
 # until the board carries router copper, full check after); footprint fit against the fab's own footprints (needs KiCad's pcbnew).
 # Checks between boards (split proof, stack/header fit) are project specific: put them in scripts/hw-check.d/*.sh. Each hook is
-# run from the repo root with the same options, PYTHON exported, and must exit non-zero on failure.
+# run from the repo root with the same options, PYTHON exported and pipefail set, and must exit non-zero on failure.
 # Options are passed to the BOM check: --strict (order time: MISSING fails), --stock [--qty N] (live fab stock, needs network).
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -56,7 +56,7 @@ if [ -d scripts/hw-check.d ]; then
     for h in scripts/hw-check.d/*.sh; do
         [ -f "$h" ] || continue
         echo "== hook $(basename "$h")"
-        bash "$h" "$@" || rc=1
+        bash -o pipefail "$h" "$@" || rc=1
     done
 fi
 

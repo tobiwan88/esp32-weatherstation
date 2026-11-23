@@ -1,7 +1,14 @@
-# Sensor-chain boards: JLCPCB order (SHT45 head, BMP585 pressure, VEML6030 light)
+# Sensor-chain boards: JLCPCB order (SHT head; BMP585 pressure and VEML6030 light retired)
+
+**State 2026-11-23:** only the sensor head (`hardware/sht45-board/`) is an ordered design. The BMP585 and VEML6030 add-ons are
+retired as ordered designs since 2026-11-21 (pressure is on the main board, light is a bought Qwiic module if wanted; their
+generators and boards stay in the repo, and the BMP585 add-on must never be fitted together with the main board's BMP580, both
+are address 0x46). The head still carries the SHT45 (C5360602); the switch to the SHT40-AD1B-R3 (C2848306) decided in
+`REQUIREMENTS-system.md` is not done, so check the part and the fee estimate again after it. The sections below were written for
+three designs; read them for the head only. The power board and the main board have no order notes yet (`GATES.md`, gate 6).
 
 Three separate designs (`hardware/sht45-board/`, `hardware/bmp585-board/`, `hardware/veml6030-board/`), same base:
-J1 IN / J2 OUT JST SH (C160404), one M3 hole, sensor and 100 nF. Main board: `weatherstation-v1/ORDER.md`.
+J1 IN / J2 OUT JST SH (C160404), one M3 hole, sensor and 100 nF.
 
 ## Build the files (on a clean, committed tree)
 ```sh

@@ -7,8 +7,8 @@ Boards (one folder each, profile in `board.yaml`, notes in `BOARD.md`). Gate out
 | `power-board/` | charger, protection, solar and USB inputs, header to the main board | routed 2026-11-22, DRC 0 at all severities; no fab files yet |
 | `main-board/` | MCU, 3.3 V and 5 V rails, USB-C, sensor ports | routed 2026-11-22, DRC clean (waived silk warnings listed there), EMI check OK; no fab files yet |
 | `sht45-board/` | outdoor temperature and humidity head, Qwiic chain-out | layout done 2026-11-04: ERC 0, DRC 0 incl. warnings, parity clean |
-| `bmp585-board/`, `veml6030-board/` | pressure and light add-ons on the same base | DRC clean, parity clean (2026-11-04) |
-| `weatherstation-v1/` | first single-board design, kept as history, fab files and parts cards | superseded by the split |
+| `bmp585-board/`, `veml6030-board/` | pressure and light add-ons on the same base | retired as ordered designs 2026-11-21; DRC clean, parity clean (2026-11-04) |
+| `weatherstation-v1/` | first single-board design, kept as history: parts cards and datasheets (its fab files are local and gitignored) | superseded by the split |
 
 | What | Where |
 |---|---|

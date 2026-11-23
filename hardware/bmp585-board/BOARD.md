@@ -1,3 +1,5 @@
+> **Retired as an ordered design (2026-11-21):** pressure moved to the main board or to a bought Qwiic module (`../REQUIREMENTS-system.md`). Generator and board kept for reference.
+
 # bmp585-board: barometric pressure add-on (Qwiic)
 
 One link of the outdoor sensor chain (main-board J3 -> SHT45 head -> add-ons, any order). Generators:

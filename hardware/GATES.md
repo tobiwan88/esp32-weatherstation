@@ -1,48 +1,64 @@
-# Design gates (weatherstation-v1)
+# Design gates
 
-A stage starts only when the previous gate is passed. A gate is passed when every exit check is true and the evidence is in the repo (or named here). Open items are listed, never waived silently.
+A stage starts only when the previous gate is passed. A gate is passed when every exit check is true and the evidence is in the
+repo (or named here). Open items are listed, never waived silently. Status as of 2026-11-23; update the line when a check changes.
+Boards: power board (`power-board/`), main board (`main-board/`), sensor head (`sht45-board/`); the first single-board design
+`weatherstation-v1/` is history: not gated, though its profile still runs in `hw-check.sh` as a regression check. Gate definitions: skill `hw-base`, templates in `hw-kit/skills/hw-base/templates/GATES.md`.
+
+| Gate | System | Power board | Main board | Sensor head |
+|---|---|---|---|---|
+| 1 requirements | agreed in the interview 2026-11-21 | | | |
+| 2 BOM accepted | | strict check OK | strict check OK | no profile, not covered by the scripts |
+| 3 schematic | | ERC 0, nets OK, review round done | ERC 0, nets OK, review round done | ERC 0, nets OK (2026-11-04) |
+| 4 placement | | done | done | done |
+| 5 routing | | routed, DRC 0, checks OK; review pending | routed, DRC clean, checks OK; review pending | DRC 0 (2026-11-04) |
+| 6 fab and order | | not started | not started | files built 2026-11-05 for the SHT45 design; not ordered |
 
 ## Gate 1: requirements
-Source: `weatherstation-v1/REQUIREMENTS.md`.
-Exit checks:
-- [ ] every requirement has a number, a source or a stated assumption, and a test or check that proves it
-- [ ] power, temperature range, sensor set, enclosure, outdoor use and the fab limits (4 layers, at most 50 x 50 mm) are written down
-- [ ] the user has accepted the list
-Status: rewritten as v0.4 on 2026-11-01 for the BQ25798 / LFP / TPS63802 design. Not yet accepted. Decision for the user:
-accept REQUIREMENTS.md v0.4 (open item: CE state in deep sleep, `charge-policy.md`).
+Source: `REQUIREMENTS-system.md` (supersedes `weatherstation-v1/REQUIREMENTS.md`).
+- [x] power cycle, autonomy, budget, sensor set, ports, environment and fab limits written down (sections 2 to 8)
+- [x] the engineer's decisions recorded with dates (section 9)
+- [ ] every requirement numbered with a check column: the document is prose plus a decision log; autonomy, sleep current and cost
+  are checked by `calc/power_budget.py` and `calc/bom_check.py`, the rest are reviewed by reading
+Status: agreed in the interview of 2026-11-21. Open items: section 10 (SEN0460 bench numbers, sodium-ion cell, per-order quote,
+stack against side-by-side mounting, optional sensors) and the EAQI breakpoints in section 5.1a.
 
 ## Gate 2: BOM research and acceptance
-Source: `weatherstation-v1/bom.csv` (generated from `hardware/gen/weatherstation_v1.py`), `bom_check.py`, `hardware/tools/jlcparts.py`, datasheets in `weatherstation-v1/datasheets/` (PDFs git-ignored, sources in `datasheets/SOURCES.md`).
-Exit checks, for every BOM line:
-- [ ] LCSC number present, class (Basic/Extended) and stock checked, unit price noted
-- [ ] a datasheet is on file, and the values the design uses are read from it (section cited)
-- [ ] footprint checked against the datasheet land pattern
-- [ ] `hw-check.sh --strict` prints OK
-Status: open. Parts and circuit review done 2026-11-01: `weatherstation-v1/PARTS-REVIEW.md`. All seven A findings
-decided and applied 2026-11-01: A1-A3, A6 (SMBJ10A, 6 V 10 W panel, 3 A choke), A7 (CE pull-up to +3V3), A4 (two I2C buses:
-charger IO4/IO5, since moved to IO1/IO2 for the ULP; sensors IO13/IO14) and A5 (TPS61023 5 V boost on GAS_VCC, EN from IO12). B items still open.
-Datasheets: not found for Littelfuse SMBJ10A (C151250; LCSC link in jlcparts), CMF4532F-900 page, ST USBLC6-2SC6, CBAK 26700LT, TDK VLS252010HBX-1R0M-1 (exact suffix).
-Not the maker's own file: Murata NCP18XH103F03RB, Hroparts TYPE-C-31-M-12. L4 is a Sunlord part (note fixed in the review).
+Source: `<board>/bom.csv` (generated), `calc/bom_check.py`, `tools/jlcparts.py`, datasheet cards in `<board>/parts/`.
+- [x] `scripts/hw-check.sh --strict` prints OK for both boards (no MISSING rows), 2026-11-23
+- [x] fab number, class, stock and price at the order quantity: `bom_check.py --stock --qty 5` OK for both boards, 2026-11-23
+  (power board USD 55.00, main board USD 85.57 before bare PCB, joints and shipping; limit USD 100)
+- [ ] a datasheet on file for every IC with the section cited. Known gaps: BMP580 has no public datasheet (circuit and footprint
+  from the BMP581 datasheet, marked in `main-board/parts/BMP580.yaml`); the power-board choke L3 (CMF4532F-900) has a text
+  specification only; the ZE25-O3 pinout on J8 and the SEN0460 are not verified (`main-board/PARTS-REVIEW.md`); sodium-ion
+  parts are not chosen (`weatherstation-v1/datasheets/SOURCES.md` lists the files that are on hand)
+- [ ] the real JLCPCB quote per order (bare PCB, joints, shipping): manual, not scriptable
+Status: BOM checks pass; the datasheet gaps and the quote are open.
 
 ## Gate 3: schematic
-Source: `hardware/gen/` (generator, layout, review checks), `hardware/out/review/` (PNG review output, git-ignored).
-Exit checks:
-- [ ] ERC: zero errors and zero warnings (`scripts/schematic-review.sh`)
-- [ ] net-intent check OK (netlist equals NETS)
-- [ ] geometry review (`hardware/gen/review_checks.py`): no issue
-- [ ] image review: every PNG read, findings in `hardware/out/review/review-notes.md`, all fixed or listed as open
-- [ ] root overview: every sheet box connected by wires to the boxes it shares nets with
-- [ ] no net on `UNWIRED` without a reason in `BOARD.md`
-Status: in progress (2026-11-01, drawing rework).
-- ERC 0; net-intent OK; `scripts/check.sh` OK.
-- Geometry review: 0 issues. Root page: pins of two-sheet nets aligned across facing boxes (straight wires); only USB_DP/DN
-  (three sheets) keep labels, placed outside the boxes.
-- Rails are power symbols; wires inside blocks, labels between blocks. Unwired clusters 63 -> 8 (listed in BOARD.md).
-- Image review: findings in `hardware/out/review/review-notes.md`.
-- All A and B findings decided and applied (2026-11-01). Project footprints for U2, L1/L5, L4 from maker drawings.
-- Image review 2026-11-01 (final): every page read; power stage, PV entry, battery protection and sensor bus hand-drawn.
-  Open drawing items: only the labelled clusters listed in BOARD.md.
+Source: `hardware/gen/` (generators, review checks), `hardware/out/review/` (renders, gitignored).
+- [x] ERC zero errors and warnings, net-intent check OK, geometry review 0 issues, `split_check` OK (power and main board)
+- [x] independent review round 2026-11-21 (four reviewers): `REVIEW-2026-11-21.md`, every item DONE, OPEN or a firmware rule
+- [ ] open decisions of that review answered by the engineer: B11, B13, B15, B18, B22 and follow-up B2 (see `PLAN.md`)
+- [ ] the engineer's KiCad review of the schematics: not recorded
+Status: generated and independently reviewed; open decisions listed.
+
+## Gate 4: placement and Gate 5: routing
+- [x] floorplan with datasheet citations in each `BOARD.md`; `critical.py` OK; stack, header and split checks OK
+- [x] fully routed: power board DRC 0 at all severities with no waivers; main board DRC clean with 3 waived silk-only warnings
+  (`main-board/drc-waivers.csv`); `calc/power_route_check.py` (power board) and `calc/emi_check.py` (main board) OK, run by the
+  gate through `scripts/hw-check.d/20-routed-checks.sh`
+- [x] Routing review section in each `BOARD.md` with the numbers and the residual risks that need a bench
+- [ ] independent render review of the routed boards: not recorded
+- [ ] the engineer's KiCad review of both routed boards: not recorded
+Status: routed and checked by scripts; the human review is the next step.
+
+## Gate 6: fab files and order
+- [ ] clean committed tree; `tools/fab_package.py --require-clean` per board; footprint fit OK; placement preview checked
+- [ ] `scripts/hw-check.sh --strict --stock --qty 5` right before ordering; JLCPCB capability page checked
+- [ ] order notes per board (`<board>/ORDER.md`); the sensor head's are in `ORDER-sensor-boards.md`
+Status: not started for the power and main boards. Sensor head: SHT45 files built 2026-11-05, SHT40 switch pending.
 
 ## Working rules (all gates)
-- A subagent does research and gathering (datasheets, stock, application notes). The owner checks every number against the source before it goes into a design file.
+- Helper agents gather; the owner checks every number that drives a decision against the source.
 - Every number has a source; every gate has evidence in the repo.

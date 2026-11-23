@@ -1,3 +1,6 @@
+> **Superseded 2026-11-21 by `../REQUIREMENTS-system.md`** (power board + main board + sensor head). Kept as the record of the
+> single-board design; where the two differ, the system requirements win.
+
 # esp32-weatherstation v1: PCB requirements (v0.4, schematic v1, pre-layout)
 
 Rewritten 2026-11-01 for the schematic in `hardware/gen/weatherstation_v1.py` (BQ25798, LFP 26700, TPS63802). v0.3 described

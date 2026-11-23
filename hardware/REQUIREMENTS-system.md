@@ -1,7 +1,8 @@
 # System requirements v2 (interview 2026-11-21)
 
 Supersedes the single-board scope in `weatherstation-v1/REQUIREMENTS.md` where they differ (that file stays as the record of the
-single-board design). Status: agreed in the user interview, not yet implemented. Open items are marked **OPEN**.
+single-board design). Status 2026-11-23: agreed in the user interview of 2026-11-21; the power board and the main board are
+designed, routed and checked, the sensor head is still the SHT45 design, nothing is ordered (`GATES.md`). Open items are marked **OPEN**.
 
 ## 1. Goal
 Outdoor air-quality and weather stations for **our own use** (Munich): they give the same features aqicn.org offers (PM2.5/PM10 with
@@ -22,7 +23,7 @@ Station sites are mixed: some sheltered with USB nearby, some exposed on a roof/
 |---|---|---|---|
 | **Power board** | BQ25798 charger (USB VBUS and PV input, firmware-set VREG), cell protection IC with charge/discharge FETs, NTC, PV input TVS/choke, PTC fuse, cell connector, PV connector | 4 (as the current design) | PCBA order 1 |
 | **Main board** | ESP32-S3 module, USB-C (programming, debug, VBUS to the power board), 3V3 buck-boost, 3V3_SW switch, 5 V boost with 5V_SW, all sensor ports, status LEDs | **4** (decided 2026-11-21: solid GND planes make EMC easier) | PCBA order 2 |
-| **SHT head** | SHT40 (+ JST SH in/out) on its own small 2-layer board in the radiation shield | 2 | PCBA order 3 |
+| **SHT head** | SHT40 (+ JST SH in/out) on its own small 2-layer board in the radiation shield (`sht45-board/` still carries the SHT45 design: **OPEN**, switch to SHT40-AD1B-R3 not done) | 2 | PCBA order 3 |
 Bought: solar panel, cell, PM sensor modules, rain gauge, anemometer, extra I2C modules, cables, enclosure.
 Light (VEML6030) and BMP585 add-on boards are retired as ordered designs (generators stay in the repo); pressure moves to the main board (BMP580, engineer 2026-11-21).
 
@@ -42,7 +43,8 @@ of the power board. 18 nets on 19 pins plus the key; full pin table, keying and 
 | USB_VBUS | 19, 20 | main -> power | from USB-C on the main board, to the charger input |
 The contract is documented so a bought charger module that supplies SYS (and ignores the I2C pins) can replace the power board.
 The 3.3 V and 5 V rails are made on the main board from SYS, so the header carries no regulated rail.
-Main board alone (development): SYS from a bench supply on the header or a pad; USB programming works without the power board.
+Main board alone (development): SYS from a bench supply on the header or a pad; the USB data path (programming, debug) works without the power board, but USB VBUS
+alone does not power the main board (review B18, OPEN: optional USB-to-SYS jumper).
 
 ## 4. Power
 - Cell: 1S, **chemistry flexible by BOM and firmware**: default **LiFePO4 26700** (CBAK 26700LT samples in hand, 3.2 V, charge 3.65 V,
@@ -70,7 +72,7 @@ Main board alone (development): SYS from a bench supply on the header or a pad; 
   (a firmware feature, `FIRMWARE-RULES.md`). **7 days autonomy minimum** from 80 % of the cell, checked as a FAIL threshold
   (`autonomy_days_min`) by `calc/power_budget.py hardware/power-board`. Result at 30 min with the 90 s PM window and hourly O3:
   11.7 mA average, 0.90 Wh/day, **11.1 days** autonomy, worst-month solar margin **2.33x** (want 1.5x). The 15 min mode draws
-  22.1 mA (1.69 Wh/day, 5.9 days, margin 1.24x) and is only allowed with an external energy source.
+  22.1 mA (1.70 Wh/day, 5.9 days, margin 1.24x) and is only allowed with an external energy source.
 - Sleep current of the whole stack (3V3_SW and 5V_SW off, CE held low so solar keeps charging): target under 100 uA, checked
   as a sum of named loads in `power-board/board.yaml` (`sleep.loads`): 68.2 uA typical, 78.6 uA with datasheet maxima
   (ESP32 deep sleep with ULP 18 uA, BQ25798 17 uA, TPS63802 11 uA, closed reed contacts 6.6 uA worst case, CE pull-ups
@@ -123,12 +125,11 @@ would also be 0x46).
 - Wake, power the sensor rail, 30 s warm-up (SEN0460 value to be measured), then readings at 1 Hz for a 30-60 s window; compute value,
   **min, max, median and standard deviation** (kept so a later aqicn upload meets WAQI's rule for particle counters), flag high RH, sleep. Sensor-on time grows from 45 s
   to about 90 s per cycle, so `board.yaml` and the power budget are updated.
-- Upload per cycle to the aqicn upload API (HTTPS POST to https://aqicn.org/sensor/upload/, token from aqicn.org/data-platform/token/, explicit units,
-  ISO 8601 time, `averaging` in seconds) and to Home Assistant over MQTT. **Tokens, WiFi names and passwords stay out of the repo**
-  (Kconfig defaults 0 / "").
+- Upload per cycle to Home Assistant over MQTT. Optional later: the aqicn upload API (HTTPS POST to https://aqicn.org/sensor/upload/,
+  token from aqicn.org/data-platform/token/, explicit units, ISO 8601 time, `averaging` in seconds), only if we decide to publish.
+  **Tokens, WiFi names and passwords stay out of the repo** (Kconfig defaults 0 / "").
 - Own driver for SEN0460 with error checks (the vendor library has none). Optional calibration against a nearby LfU station on aqicn.
 - AQI (US EPA scale and the European EAQI) is computed on the Home Assistant side from the PM readings; the station sends raw values and statistics.
-- Optional later: aqicn / Sensor.Community upload (question to WAQI only if we decide to publish).
 
 ## 7. Mechanical and environment
 - Outdoor, Germany, -20 to +40 C ambient. Vented enclosure with rain baffle for the PM inlet, SHT head in a radiation shield, cell away from heat.
@@ -144,7 +145,7 @@ would also be 0x46).
 | Decision | Reason |
 |---|---|
 | Split power and main boards with a 2.54 mm header | meets the per-order budget, swappable power part and chemistry, independent development |
-| USB-C on the main board | programming and debug work without the power board |
+| USB-C on the main board | the programming and debug data path works without the power board (power from a bench supply on SYS; B18 OPEN) |
 | No software MPPT, keep the BQ25798 on the power board | negligible gain at about 1 Wh/day, hardware MPPT exists |
 | LiFePO4 default, chemistry flexible (BOM + firmware) | easier to source and in hand; sodium-ion possible once a datasheet and protection IC are chosen |
 | 5 W 6 V panel, 30 min cycle (15 min with USB or sun), 7 days autonomy minimum | budget; at 30 min 11.1 days and 2.33x worst-month margin, 15 min alone would give 5.9 days (review A4, 2026-11-21) |
@@ -159,7 +160,7 @@ would also be 0x46).
 3. Sodium-ion: cell with a readable datasheet, selectable-threshold protection IC (see section 4), BQ25798 VREG/precharge check in the datasheet.
 4. Main board is 4 layers (decided). Per-order JLC quote against the USD 100 limit: **no self-serve quote API exists** (research 2026-11-21: the
    official api.jlcpcb.com is partner-only with an application and review; unofficial cart endpoints need a logged-in session and risk the account; no maintained
-   script quotes end to end). Plan: an offline estimator `hardware/tools/pcba_quote.py` (stdlib, no network) with the published PCBA fee table in its own data file
+   script quotes end to end). Plan (not written yet; setup, stencil and Extended fees already exist as the `calc/bom_check.py --stock` order totals): an offline estimator `hardware/tools/pcba_quote.py` (stdlib, no network) with the published PCBA fee table in its own data file
    (JLC page "pcb-assembly-price", updated 2026-10-22: Economic setup 8.18, stencil 1.53, SMT 0.0016 per joint, 3.07 per Extended part, hand-solder labour 3.58,
    confirm placement 0.45), joints from CPL and footprint pad counts, Extended count from the BOM, and the stock/price from the existing `hardware/tools/jlcparts.py`.
    Not reproducible offline: bare-PCB price (layers, size, finish, quantity) and shipping: take those from one manual cart.jlcpcb.com quote per board revision and

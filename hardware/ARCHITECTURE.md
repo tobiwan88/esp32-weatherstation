@@ -1,7 +1,7 @@
 # System architecture: power board, main board, SHT head
 
-State 2026-11-21: schematics generated for `power-board/` and `main-board/` (split from `weatherstation-v1/`, which
-stays as the single-board history with its layout and fab files). No layout for the split boards yet.
+State 2026-11-23: `power-board/` and `main-board/` (split from `weatherstation-v1/`, which stays as the single-board history)
+have schematics, placement and routing done, DRC clean; no fab files yet (`GATES.md`). The sensor head is `sht45-board/`.
 Requirements: `REQUIREMENTS-system.md`. Header pin map in code: `gen/boards_common.py` (`HEADER_PINS`), used by both
 generators; `tools/split_check.py` proves both boards use it and that the split keeps every v1 part and net.
 
@@ -57,7 +57,7 @@ Direction is seen from the power board. Engineer decision 2026-11-21 (was an unk
   the connector body sits on the bottom side (stack: main board above, its pins pointing down into the socket).
 - **Asymmetric mounting holes**: the M3 hole pattern of both boards is not symmetric about either board axis (for
   example one hole offset by at least 3 mm), so a board turned 180 degrees or flipped does not line up with the
-  standoffs. Layout rule for both layout generators (`main_layout`/`power_layout` PCB step, not drawn yet).
+  standoffs. Implemented as `HOLES` in `gen/stack.py` for both boards and checked by `tools/stack_check.py`.
 - Silkscreen on both boards: pin 1 mark, "KEY 3" at pin 3, "SYS" at pins 1/2.
 - `tools/header_check.py` (in the gate) proves the key: a 180 degree rotation, a mirror about either axis and any
   one-column offset put a present pin onto the blocked hole (cannot mate: 22 of 35 mating errors). The 13 errors that
