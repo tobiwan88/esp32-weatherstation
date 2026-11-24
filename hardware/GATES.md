@@ -27,7 +27,7 @@ stack against side-by-side mounting, optional sensors) and the EAQI breakpoints 
 Source: `<board>/bom.csv` (generated), `calc/bom_check.py`, `tools/jlcparts.py`, datasheet cards in `<board>/parts/`.
 - [x] `scripts/hw-check.sh --strict` prints OK for both boards (no MISSING rows), 2026-11-23
 - [x] fab number, class, stock and price at the order quantity: `bom_check.py --stock --qty 5` OK for both boards, 2026-11-23
-  (power board USD 55.00, main board USD 85.57 before bare PCB, joints and shipping; limit USD 100)
+  (power board USD 55.02, main board USD 88.91 on 2026-11-24 before bare PCB, joints and shipping; limit USD 100)
 - [ ] a datasheet on file for every IC with the section cited. Known gaps: BMP580 has no public datasheet (circuit and footprint
   from the BMP581 datasheet, marked in `main-board/parts/BMP580.yaml`); the power-board choke L3 (CMF4532F-900) has a text
   specification only; the ZE25-O3 pinout on J8 and the SEN0460 are not verified (`main-board/PARTS-REVIEW.md`); sodium-ion

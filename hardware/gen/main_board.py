@@ -39,7 +39,8 @@ PARTS = {
     "J10": header_part("USB", "main"),
     # CE pull-up to +3V3 (not REGN: CE is also an ESP32 GPIO, 3.3 V I/O; v1 PARTS-REVIEW A7): charge off until firmware
     # has written VREG 3.65 V and drives CE low. 1M since 2026-11-21 (review B1): CE is held low through deep sleep, 3.3 uA
-    # instead of 33 uA; the power board has its own 1M to BAT_PACK, so CE never floats on either side.
+    # instead of 33 uA; the power board has its own pull-up to BAT_PACK (R23 330k since 2026-11-24), so CE never floats
+    # on either side; with +3V3 dead and both boards mated R20/R23 hold CE at 0.75 x BAT (review B2).
     "R20": ("Device:R", "1M", R0402, "C26083", "USB"),
     "R22": ("Device:R", "10k", R0402, "C25744", "USB"),
     # Charger I2C bus (IO1 SDA / IO2 SCL: the RTC I2C pins of the ULP RISC-V driver): own 10k pull-ups to +3V3, readable
@@ -61,11 +62,13 @@ PARTS = {
     "JP2": ("Jumper:SolderJumper_2_Open", "BOOT", "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm", None, "MCU"),
     "R32": ("Device:R", "22", R0402, "C25092", "MCU"),
     "R33": ("Device:R", "22", R0402, "C25092", "MCU"),
-    # two status LEDs (engineer 2026-11-03), active high on IO41/IO42 (module pins 34/35). Red 0603 (Basic), 1k: ~1.3 mA.
+    # two status LEDs (engineer 2026-11-03), active high on IO41/IO42 (module pins 34/35), 1k. Side-view red since
+    # 2026-11-24 (engineer: visible from the side of the stack): Lite-On LTST-S270KRKT (C125114, Extended), lens at the
+    # right board edge; pad 1 = cathode (DS22-2000-210 rev G pages 1 and 7). 0.90-1.55 mA (calc/led_current.py).
     "R34": ("Device:R", "1k", R0402, "C11702", "MCU"),
-    "D10": ("Device:LED", "LED1 red", "LED_SMD:LED_0603_1608Metric", "C2286", "MCU"),
+    "D10": ("Device:LED", "LED1 red side-view (LTST-S270KRKT)", "weatherstation:LED_LiteOn_LTST-S270_SideView", "C125114", "MCU"),
     "R35": ("Device:R", "1k", R0402, "C11702", "MCU"),
-    "D11": ("Device:LED", "LED2 red", "LED_SMD:LED_0603_1608Metric", "C2286", "MCU"),
+    "D11": ("Device:LED", "LED2 red side-view (LTST-S270KRKT)", "weatherstation:LED_LiteOn_LTST-S270_SideView", "C125114", "MCU"),
     "J7": ("Connector_Generic:Conn_01x04", "DEBUG UART (1 = 3.3 V only)", "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical", None, "MCU"),
     # --- Rails -------------------------------------------------------------------------------------------------------
     # 3.3 V buck-boost from SYS (TI SLVSEU9D). Symbol from table 7-1, footprint from the DLA0010A example board layout.
@@ -172,10 +175,12 @@ ADDED = {
        ("J12", "U10", "U11", "R70", "R71", "R72", "R73", "C70", "C71", "R74", "R75", "C72")},
 }
 CHANGED = {
-    "R20": "2026-11-21 review B1: 100k -> 1M (sleep current with CE held low), power board adds its own 1M",
+    "R20": "2026-11-21 review B1: 100k -> 1M (sleep current with CE held low), power board adds its own pull-up (R23 330k)",
     "C47": "2026-11-21 review C: not fitted while U8 (SCD41) is not fitted",
     "C40": "2026-11-21 review B12: 10 uF 0603 -> 22 uF 0805 (C45783)",
     "J7": "2026-11-21 review C: value text marks pin 1 as 3.3 V only",
+    "D10": "2026-11-24 engineer: side-view red LED LTST-S270KRKT (C125114) at the right board edge, same nets",
+    "D11": "2026-11-24 engineer: side-view red LED LTST-S270KRKT (C125114) at the right board edge, same nets",
     "J3": "2026-11-21 review C: value text 'SHT45 cable' -> 'SHT head cable (Qwiic)' (no part change)",
     "R50": "phase B: 10k -> 2.2k, I2C rise time with 2 m cable (calc/i2c_bus.py, PARTS-REVIEW.md B5)",
     "R51": "phase B: 10k -> 2.2k, as R50",

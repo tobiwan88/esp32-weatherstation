@@ -13,7 +13,7 @@ BLOCKS = {
         ("USB-C receptacle", "USB-C sink (programming, USB-JTAG debug, charging): CC1/CC2 5.1k pull-downs (Rd); USBLC6 ESD on D+/D- with VBUS reference. USB_VBUS and D+/D- continue to J10 (power board)",
          (4, 10, 60, 40), {
              "J1": (12, 30, 0), "U4": (34, 35, 0), "R9": (26, 42, 0), "R10": (22, 42, 0), "#FLG12": (16, 40, 0), "#FLG22": (44, 30, 180), "C35": (50, 30, 0)}),
-        ("Board-to-board header J10 (J_PWR) and charger host pull-ups", "J10 mating side (pin map: hardware/ARCHITECTURE.md). +3V3 lives here: CE pull-up R20 1M (charge off until firmware writes VREG; the power board has its own 1M), INT R22 10k, charger I2C R54/R55 10k (BQ25798 table 5-1)",
+        ("Board-to-board header J10 (J_PWR) and charger host pull-ups", "J10 mating side (pin map: hardware/ARCHITECTURE.md). +3V3 lives here: CE pull-up R20 1M (charge off until firmware writes VREG; the power board has its own R23 330k to BAT_PACK), INT R22 10k, charger I2C R54/R55 10k (BQ25798 table 5-1)",
          (70, 10, 70, 46), {
              "J10": (96, 30, 0), "R54": (82, 26, 180), "R22": (76, 26, 180), "R55": (112, 26, 180), "R20": (118, 26, 0),
              "#FLG21": (130, 46, 180)}),
@@ -29,7 +29,7 @@ BLOCKS = {
         ("Debug UART", "UART0 header J7: 1 +3V3, 2 TXD0 (IO43), 3 RXD0 (IO44), 4 GND",
          (86, 46, 40, 30), {
              "J7": (110, 60, 0)}),
-        ("Status LEDs", "Active high: IO41 -> 1k -> LED1, IO42 -> 1k -> LED2 (red 0603, about 1.3 mA)",
+        ("Status LEDs", "Active high IO41/IO42 -> 1k -> side-view red LTST-S270KRKT (right edge, lens out), 0.9-1.6 mA",
          (4, 74, 50, 28), {
              "R34": (16, 82, 0), "D10": (16, 92, 90), "R35": (36, 82, 0), "D11": (36, 92, 90)}),
     ],

@@ -539,7 +539,7 @@ def gas_dac(c):
     interleave there. It drops to B.Cu next to the pin, runs under the module north of the BOOST_EN row, leaves the
     pad band between the BOOST_EN via and the SEN_SDA via, jogs west under the bottom pad row and runs south 1.7 mm
     east of the DN stub (outside emi.yaml's 1.0 mm parallel-run gap to USB copper), between the U2/C40 GND vias and
-    RXD0, so B.Cu under the LED/IO0 corner (R34, D10, R31) stays free for the router's crossings; then F.Cu between
+    RXD0, so B.Cu under the IO0 corner (R31; the LEDs sat there until 2026-11-24) stays free for the router's crossings; then F.Cu between
     J10 columns 3/5 over the charger I2C trunk, B.Cu above J7 into J8."""
     P = c.P
     p7, p20, p21 = P("U1", "7"), P("U1", "20"), P("U1", "21")

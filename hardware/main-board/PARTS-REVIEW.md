@@ -41,6 +41,11 @@ is reviewed in `../weatherstation-v1/PARTS-REVIEW.md`. Nothing below changes the
 | B16 | U9 INT to GND (done with the BMP580 change, eae8360) | |
 | C | C47 not fitted (fit with U8); J3 value text "SHT head cable (Qwiic)"; J7 value "pin 1 3V3 only"; C90/C91 0402 C307331 (eae8360) | |
 
+## Changes 2026-11-24 (engineer decisions)
+| Item | Change | Numbers (script) |
+|---|---|---|
+| D10/D11 status LEDs | 0603 red (C2286, Basic) -> side-view red Lite-On LTST-S270KRKT (C125114, Extended, USD 0.032, stock 29060 on 2026-11-24) at the right board edge, lens out of the edge, so the LEDs show from the side of the stack. Same nets (LED1_A/LED2_A anodes, cathodes GND), R34/R35 1k unchanged. Footprint `weatherstation:LED_LiteOn_LTST-S270_SideView` from the data sheet land pattern (DS22-2000-210 rev G p7: 1.10 x 1.10 pads, 0.90 gap); JLC's footprint fits by pad number (pad 1 = cathode, 0.10 mm pad offset, `tools/fab_package.py --fit-only`). Other red side-view candidates (jlcparts 2026-11-24, all Extended): TJ-S1706SW6TGLC2R-A5 (C273612, 0.045, stock 29875), E6X0602URAC1UDA (C375465, 0.017, stock 3456: thin stock), LTST-S220KRKT (C284935, 0.040, stock 9886, larger body). No Basic side-view LED exists. | `calc/led_current.py hardware/main-board`: 0.90-1.55 mA (Vf 2.4 V max at 20 mA, 1.75 V read off fig. 2 at 1-2 mA), about 2.4-4.2 mcd typical, 0.8 mcd for the lowest bin; order +USD 3.31 at qty 5 (`calc/bom_check.py --stock --qty 5`: USD 88.91) |
+
 ### Inspection and bring-up (review C, not changed in the design)
 - J8 (ZE25-O3) pinout and pitch are not verified against a datasheet (none in the repo): check against the bought module before soldering J8.
 - J2 (PMS7003) row orientation: check against the real cable before soldering.
@@ -50,7 +55,7 @@ is reviewed in `../weatherstation-v1/PARTS-REVIEW.md`. Nothing below changes the
 ## Open decisions after the review (2026-11-21, for the engineer)
 | Review # | Decision | Numbers / options |
 |---|---|---|
-| A5 cost | Order at qty 5 now USD 85.60 before the bare 4-layer PCB, SMT joints and shipping: parts 48.26 (9.65 per board, first price tier) + 9 Extended x 3.07 + setup 8.18 + stencil 1.53 (`calc/bom_check.py --stock --qty 5`). The PCB (est. 5-15) decides whether it stays under 100. | Cheapest further step: hand-solder J3/J4 (JST SH, C160404, the 9th Extended type): saves the 3.07 fee plus the part cost on the PCBA; **not applied** (no new hand-soldering without your decision) |
+| A5 cost | Order at qty 5 now USD 88.91 (2026-11-24, side-view LEDs; was 85.60) before the bare 4-layer PCB, SMT joints and shipping: parts 48.50 (9.70 per board, first price tier) + 10 Extended x 3.07 + setup 8.18 + stencil 1.53 (`calc/bom_check.py --stock --qty 5`). The PCB (est. 5-15) decides whether it stays under 100. | Cheapest further step: hand-solder J3/J4 (JST SH, C160404, one of the 10 Extended types): saves the 3.07 fee plus the part cost on the PCBA; **not applied** (no new hand-soldering without your decision) |
 | B11 | Current limit for J4/J11 (bought Qwiic modules, SEN0460 up to 100 mA) | PTC SMD0805P020TF (C20976) or similar: Extended, +3.07 per order. A series resistor would break a 100 mA module. J3 (outdoor cable) already has R77 |
 | B13 | L4 Isat 4.0 A below the TPS63802 5 A switch limit; L5 Isat 3.22 A below the TPS61023 valley limit (matters only in a short) | accept, or VLS252010HBX-R47M-1 (C88530) for L4 |
 | B15 | Pulse port: 1M / 4.7 nF supports 77 Hz only with at least 6.5 ms reed open time; no supply pin for an active Hall anemometer | measure the anemometer; consider 330-470k; add a 3V3 pin to J12 if needed |

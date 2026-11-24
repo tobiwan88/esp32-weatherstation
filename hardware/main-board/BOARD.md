@@ -3,8 +3,9 @@
 **State (2026-11-21):** schematic generated: phase A split from `../weatherstation-v1/` (same parts and nets), then phase B
 (pressure sensor U9, Qwiic J4, I2C header J11, rain/wind/vane port J12; sensor pull-ups 2.2k), then the review fixes of
 2026-11-21 and the 5-sheet partition. Placement done (2026-11-21, section Layout); routed 2026-11-22 (sections Routing,
-Routing review): DRC clean, no fab files yet.
-Gate: nets OK, ERC 0 errors 0 warnings, review checks 0, `tools/split_check.py` OK. Order at qty 5: USD 85.60 before the bare PCB,
+Routing review): DRC clean, no fab files yet. 2026-11-24 (engineer): status LEDs D10/D11 are side-view red LTST-S270KRKT
+(C125114) at the right board edge; only the LED nets were re-placed and re-routed (section Status LEDs).
+Gate: nets OK, ERC 0 errors 0 warnings, review checks 0, `tools/split_check.py` OK. Order at qty 5: USD 88.91 before the bare PCB,
 joints and shipping (`calc/bom_check.py --stock --qty 5`); open decisions: PARTS-REVIEW.md, last section.
 
 ## Purpose
@@ -15,7 +16,7 @@ bench supply). Contract and pin table: `../ARCHITECTURE.md`.
 | Sheet | Content |
 |---|---|
 | USB | J1 USB-C, CC pull-downs R9/R10, USBLC6 U4, C35 on USB_VBUS; J10 keyed 2x10 2.54 mm male (pin 3 pulled) with the charger host pull-ups R20 (CE 1M), R22 (INT), R54/R55 (I2C) on +3V3 and the pin map note |
-| MCU | ESP32-S3-WROOM-1-N8 U1, decoupling, EN/IO0 strapping, JP1/JP2, R32/R33, J7 debug UART, LEDs |
+| MCU | ESP32-S3-WROOM-1-N8 U1, decoupling, EN/IO0 strapping, JP1/JP2, R32/R33, J7 debug UART, status LEDs D10/D11 (side-view red, R34/R35 1k) |
 | Rails | TPS63802 U2 (SYS -> +3V3), Q40/Q41 3V3_SW switch with the R76/C48 ramp and the R78 22k bleed, TPS61023 U7 (SYS -> 5V_SW), TP1/TP2 |
 | I2C | Sensor bus on 3V3_SW: J3 outdoor SHT cable (feed R77 100 ohm, USBLC6 U5 between J3 and the bus), pull-ups R50/R51 (2.2k), BMP580 U9 (0x46) with C90/C91, Qwiic J4 and 2.54 mm header J11 (GND, 3V3_SW, SDA, SCL), U8 SCD41 and C47 (DNP) |
 | Sensors | UART/analog/pulse: J2 PMS7003 (R48/R49), J8 ZE25-O3 (R46/R47), J12 rain/wind/vane port with U10/U11, R70-R75, C70-C72 |
@@ -41,6 +42,9 @@ Current (BMP580 U9, review fixes incl. R78): parts USD 48.26 at qty 5 (9.65 per 
 ESP32 module, TPS63802, L4, TPS61023, 1 uH, JST SH, BMP580); order at qty 5: 48.26 + setup 8.18 + stencil 1.53 + 9 x 3.07 =
 **USD 85.60** before the 4-layer bare PCB, SMT joints and shipping (manual cart quote). R78 (C25768) is a Basic 0402 at
 USD 0.001. Fallback if the real quote passes USD 100: hand-solder J3/J4 (engineer 2026-11-21, not applied).
+2026-11-24: D10/D11 0603 red (C2286, Basic) -> side-view LTST-S270KRKT (C125114, Extended, USD 0.032, stock 29060):
+parts USD 48.50 (9.70 per board), 10 Extended types, **USD 88.91** at qty 5 (+3.31: one more Extended fee 3.07 and
++0.24 parts). Still below USD 100 before the bare PCB.
 History: phase A USD 73.16; phase B with the BMP585 USD 96.95 (review A5, replaced by the BMP580).
 
 ## Layout (placement 2026-11-21, routed 2026-11-22)
@@ -74,7 +78,7 @@ socket side needs a male-ended cable; choose it only if the housing is flat.
 | right, under the module | U2 TPS63802 block at (38.5, 26.5), U7 TPS61023 block at (29.5, 26.5), both above J10 pin 1/2 (SYS) | SLVSEU9D 12.1/12.2 fig. 12-1 and SLVSF14B 10.1/10.2 fig. 10-1, offsets as v1 (routed there); B.Cu keepout under L4/L5 (REQUIREMENTS E3) |
 | band y 31.7-37.8 | J10 pin 1 at (42, 33.5, 270): pin 1/2 SYS at the right end, 19/20 USB_VBUS at the left end, 7/8 D+/D- at x 34.4 | same position on the power board (stack.py) |
 | bottom edge | J12 wind/rain/vane PH4 at (9.2, 46.5) with U10/U11 ESD and R70-R75/C70-C72 above it; J8 ZE25-O3 PH7 at (26, 46.5) with R47; J7 debug UART under J10 | outdoor cables leave downward |
-| right edge between H2 and H4 | J2 PMS7003 2x5 1.27 at (45.5, 29.5); TP1 (+3V3), TP2 (SYS) beside it | PM cable; test points reachable from the top (main board is the top board) |
+| right edge between H2 and H4 | J2 PMS7003 2x5 1.27 at (45.5, 29.5); TP1 (+3V3), TP2 (SYS) beside it; status LEDs D10 (49.14, 35.0) and D11 (49.14, 39.3), side view, lens out of the right edge; R34 at (48.3, 27.73) between H2 and J2 | PM cable; test points reachable from the top (main board is the top board); LEDs visible from the side of the stack (engineer 2026-11-24): the only edge strip without the antenna, a cable or a connector (section Status LEDs) |
 
 **Holes** (same on both boards, `gen/stack.py`): H1 (3.5, 3.5), H2 (46.5, 24.0), H3 (3.5, 46.5), H4 (46.5, 46.5), M3
 (ISO 7380 head, 3.2 mm copper keepout). H2 is pulled down under the module, so the pattern has no mirror or 180-degree
@@ -88,9 +92,13 @@ the edge: both overhang on purpose; JLC clips silk at the edge), 205 unconnected
 waived). `tools/stack_check.py`: OK.
 
 Placement changes made during routing (2026-11-22, all in `gen/main_pcb.py`): U4 turned 180 degrees (pair fan-out
-without a crossing on F.Cu), R9/R10/C35/C48/C42/C43/R32/R33/R40/R76/C90/C91/Q41/D10/D11 pinned by hand (FIXED), the
+without a crossing on F.Cu), R9/R10/C35/C48/C42/C43/R32/R33/R40/R76/C90/C91/Q41/D10/D11 pinned by hand (FIXED; D10/D11 and R34/R35 moved or pinned again 2026-11-24), the
 anemometer filter block (R70-R75, C70-C72) re-placed in columns, J8 1.5 mm further right, B.Cu crossing window under the
 pair's straight run widened to about 4.7 mm (to the bend).
+
+Placement change 2026-11-24 (status LEDs, `gen/main_pcb.py`): D10/D11 moved from (41.24, 22.86)/(28.74, 20.59) below
+the module to the right edge; R34 from (39.5, 21.11) to (48.3, 27.73); R35 stays at (37.0, 21.09), now pinned. All other
+footprints at their old positions (compared footprint by footprint).
 
 **For the reviewer, first (placement):** the stack direction (connectors on the front here, back on the power board); U9 position
 against the "near an edge" wish; J3 14 mm from the antenna end; the module's right pad column 0.5 mm from the right
@@ -156,14 +164,42 @@ warnings waived in `drc-waivers.csv` (`lib_footprint_mismatch` U1/J1/U4: silk_fi
 detours have not been checked for crosstalk beyond emi_check's parallel rules; USB eye and BC1.2 detection need a
 board on the bench.
 
-**For the reviewer, first (routing):** `out/review/pcb-main-board/annot_usb.png` (pair, window, stitch vias),
+**For the reviewer, first (routing):** `out/review/pcb-main-board/annot_leds.png` (2026-11-24: LED1 past H2, D10/D11 at the edge), `annot_usb.png` (pair, window, stitch vias),
 `annot_pocket.png` (pocket bundle), `annot_switchers.png` (U2/U7 loops, GAS_DAC beside the stubs), `annot_bottom.png`
 (J10/J8/J12 escapes), then `kicad_top.png`/`kicad_bottom.png`.
+
+## Status LEDs (2026-11-24, engineer: visible from the side of the stack)
+- **Part:** Lite-On LTST-S270KRKT, side view, red 631 nm (C125114, Extended, USD 0.032, stock 29060 on 2026-11-24);
+  data sheet DS22-2000-210 rev G: body 1.65 x 1.15 (with lens) x 0.60 mm, VF 2.0 typ / 2.4 max at 20 mA, IV 18-54 mcd
+  at 20 mA, IF max 30 mA. Candidates and why: PARTS-REVIEW.md, section Changes 2026-11-24. Footprint
+  `weatherstation:LED_LiteOn_LTST-S270_SideView` (`gen/build_footprints.py`, land pattern from p7); JLC's footprint fits
+  by pad number, pad 1 = cathode, 0.10 mm pad offset (`tools/fab_package.py --fit-only`). Silk: one line behind the
+  cathode half, on the inboard side.
+- **Edge:** right edge between H2 and H4 (x 48.3-50, y 27-43). The top edge is the antenna, the left edge holds USB-C,
+  Qwiic and J11, the bottom edge the outdoor cables (J12, J8); on the right only J2's vertical plug stands beside the
+  strip, its cable leaves upward. Lens tip 0.05 mm inside the edge, pads 0.31 mm from it. `gen/main_pcb.py` asserts the
+  orientation (lens +x, cathode pad 1 above anode pad 2, at the right edge).
+- **Current:** `calc/led_current.py hardware/main-board`: 0.90-1.55 mA through 1k from 3.3 V, about 2.4-4.2 mcd typical
+  (0.8 mcd lowest bin); was about 1.3 mA with the 0603. Awake only, no sleep load.
+- **Routing (only the LED nets changed):** the old R34 spot below the module was boxed in on both layers (IO0, LED2,
+  RXD0), and only one track fits past H2 (between the SYS corner and the H2 keepout). LED1 (GPIO side) takes that lane,
+  hand-drawn in `frozen-routes.json`: from its old via at the module down B.Cu x 42.0, F.Cu round H2 to R34 at the strip's
+  top; LED1_A on F.Cu x 48.2 down to D10. LED2_A (R35 stays below the module) is a router run with a 1.4 mm edge
+  keepout and 0.45/0.2 vias (frozen): 74.5 mm, 8 vias, round J10's west end and along y 41.9 on B.Cu to a via beside
+  D11. A DC LED line, so the length does not matter electrically; a shorter one needs another net moved (PARTS-REVIEW,
+  open decisions). Cathodes reach GND through the plane vias of route_planes/main_stitch. All 48 other signal and power
+  nets keep identical copper (segment by segment against the 2026-11-22 board); GND lost the 7 old LED cathode stubs and
+  its stitch/pour copper moved a little round the LEDs.
+- **Checks (2026-11-24):** KiCad DRC (refill, schematic parity, all severities): 0 errors, 0 unconnected, 0 parity, the
+  same 3 waived silk warnings. `calc/emi_check.py`: OK, edge fence 41 vias, largest unexempted gap 4.4 mm; same 2 WARN.
+  `calc/critical.py`: OK. Final board: 1364 track segments, 258 vias.
 
 ## Commands
 ```
 python3 hardware/gen/main_board.py
 scripts/schematic-review.sh main-board
+# a regenerated schematic gives the symbols new uuids: refresh the routed board's symbol links (no copper change)
+# kicad-cli sch export netlist -o /tmp/main.net hardware/main-board/main-board.kicad_sch && $KICAD_PYTHON hardware/tools/sync_from_netlist.py /tmp/main.net hardware/main-board/main-board.kicad_pcb
 python3 hardware/gen/pins.py --board main_board MCU U1      # pin/net listing of a part
 hardware/tools/build_board.sh main-board                    # schematic, netlist, placed board + locked copper, renders
 hardware/tools/route_main.sh                                # planes, (router), stitch, pours, silk, DRC -> board in place
@@ -171,15 +207,17 @@ $KICAD_PYTHON hardware/tools/main_freeze.py ROUTED.kicad_pcb NET... --minus HAND
 python3 hardware/calc/emi_check.py hardware/main-board      # USB, edge fence, loops, parallel runs (emi.yaml)
 python3 -I -c "import sys; sys.path.insert(0,'hardware/tools'); from pathlib import Path; import fab_package as f; f.drc_gate(Path('hardware/main-board/main-board.kicad_pcb'), Path('/tmp'))"   # DRC gate with drc-waivers.csv
 # renders: $KICAD_PYTHON hardware/tools/board_geom.py hardware/main-board/main-board.kicad_pcb hardware/out/review/pcb-main-board/geom.json
-#          uv run --package weatherstation-hardware python hardware/tools/render_review.py hardware/out/review/pcb-main-board/geom.json hardware/out/review/pcb-main-board usb=0,6,36,22 switchers=26,19,46,34 pocket=14,3,34,24 bottom=0,36,50,50
+#          uv run --package weatherstation-hardware python hardware/tools/render_review.py hardware/out/review/pcb-main-board/geom.json hardware/out/review/pcb-main-board usb=0,6,36,22 switchers=26,19,46,34 pocket=14,3,34,24 bottom=0,36,50,50 leds=40,19,50,44
 python3 hardware/calc/critical.py hardware/main-board          # routed checks (add --placement for placement only)
 python3 -I hardware/tools/stack_check.py                    # J10, holes and outline line up with the power board
 python3 hardware/calc/power_budget.py hardware/main-board
 python3 hardware/calc/bom_check.py hardware/main-board [--stock --qty 5]
+python3 hardware/calc/led_current.py hardware/main-board     # status LED current and brightness (board.yaml design.leds)
 scripts/hw-check.sh
 ```
 
-## Calc results (2026-11-21)
+## Calc results (2026-11-21; 2026-11-24 LEDs and cost)
+led_current: 0.90-1.55 mA, 2.4-4.2 mcd typical. bom_check --stock --qty 5: USD 88.91, 10 Extended types.
 power_budget: buck-boost input at cutoff 2.30 V vs 1.3 V minimum, OK (path 0.17 ohm incl. J10, assumption).
 track_width: Power class 0.65 mm for 1.7 A OK. bom_check: OK, stock OK at qty 5. No MISSING rows.
 i2c_bus: rise 514 ns (limit 1000), pull-up strength 2.64 mA with one 2.2k module (limit 3), pulse leakage 6.6 uA (7 %),

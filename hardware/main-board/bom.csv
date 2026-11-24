@@ -13,7 +13,7 @@ RESET,JP1,Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm,1,n/a,n/a,NOT AS
 BOOT,JP2,Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm,1,n/a,n/a,NOT ASSEMBLED,
 22,"R32,R33",Resistor_SMD:R_0402_1005Metric,2,C25092,Basic,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),
 1k,"R34,R35,R41,R46,R48,R49,R72,R73,R75",Resistor_SMD:R_0402_1005Metric,9,C11702,Basic,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),R46: 1k (GAS RXD level: 3.3 V x 10/11 = 3.0 V); R48: 1k (PM RX series); R49: 1k (PM SET series)
-LED1 red,"D10,D11",LED_SMD:LED_0603_1608Metric,2,C2286,Basic,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),D11: LED2 red
+LED1 red side-view,"D10,D11",weatherstation:LED_LiteOn_LTST-S270_SideView,2,C125114,Extended,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),D10: LED1 red side-view (LTST-S270KRKT); D11: LED2 red side-view (LTST-S270KRKT)
 DEBUG UART (pin 1 3V3 only),J7,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,1,n/a,n/a,HAND-SOLDER,J7: DEBUG UART (1 = 3.3 V only)
 TPS63802,U2,weatherstation:TPS63802_DLA_VSON-HR-10_2x3mm,1,C2845237,Extended,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),U2: TPS63802DLA 3.3 V buck-boost
 0.47uH,L4,weatherstation:L_Sunlord_WPN201610H,1,C97009,Extended,VERIFIED LCSC part (class: boardgen.JLC_CLASS; stock: hw-check.sh --stock; datasheet values open),"L4: 0.47uH (Sunlord WPN201610HR47MT: Isat 4.0 A max, Irms 2.7 A)"

@@ -31,6 +31,7 @@ TITLE, TITLE_AT, DRU = "weatherstation main board", (25.0, 30.0), "main-board.ki
 #    right edge between H2 and H4; debug UART J7 in the strip under J10
 # Connector bodies on the FRONT: this board's back faces the power board across the 11 mm gap (stack.py).
 UX, UY = 40.0, 6.75  # module centre
+LED_X = W - 0.05 - 0.81  # side-view LED centre: lens tip (0.81 mm from the pad centre line) 0.05 mm inside the right edge
 FIXED = {
     "U1": (UX, UY, 0),
     "J10": J10_AT,                                 # 2x10 male header, pin 3 pulled (key), F.Cu, unmirrored
@@ -55,7 +56,19 @@ FIXED = {
     "R33": (29.25, 16.73, 0), "R32": (29.25, 18.0, 0),
     # Q40 gate network and the BMP580 decoupling: drawn by hand in gen/main_copper.py, so pinned
     "R40": (18.06, 15.05, 0), "R76": (18.06, 13.55, 180), "C90": (12.75, 19.74, 0), "C91": (15.13, 22.51, 270),
-    "Q41": (14.802, 15.66, 0), "D11": (28.74, 20.59, -90), "D10": (41.24, 22.86, 180),
+    "Q41": (14.802, 15.66, 0),
+    # status LEDs (2026-11-24, engineer: visible from the side of the stack): side-view LTST-S270 on the RIGHT edge between
+    # H2 and H4, lens facing +x (footprint lens at local -y, turned -90), lens tip 0.05 mm inside the edge, pads 0.31 mm
+    # from the edge (project copper-edge minimum 0.3); cathode (pad 1) at the top. The top edge is the antenna, the left
+    # edge holds USB-C/Qwiic/J11 and the bottom edge the outdoor cables; this strip only has J2's vertical plug beside it.
+    # D10 beside J2, D11 below it: 1.2 mm between their pads holds one edge-fence via (tools/main_stitch.py), so the
+    # fence keeps its 5 mm pitch across the LEDs (emi_check edge row)
+    "D10": (LED_X, 35.0, -90), "D11": (LED_X, 39.3, -90),
+    # series resistors: R35 stays below the module where the placement pass had put it (pinned: with the old D10 gone the
+    # NEAR pass would move it); R34 sits at the strip's top between H2 and J2, where the only free lane past H2 (between
+    # the SYS corner and the H2 keepout, one track wide) ends. Its old spot below the module is boxed in by IO0, LED2 and
+    # RXD0 copper on both layers, so LED1 (GPIO side) takes that lane and LED2_A the long way (BOARD.md Routing)
+    "R34": (48.3, 27.73, 0), "R35": (37.0, 21.09, 180),
     # wind/rain/vane block between J12, J8 and J10, in cable order so the three inputs fan out without crossing: VANE
     # (J12.4) straight right into U11, WIND (J12.3) and RAIN (J12.2) one level higher each into U10; pull-ups and RC
     # filters in rows above U10 (routing 2026-11-22: the NEAR placement crossed the three lines and left 5 of them open)
@@ -106,8 +119,6 @@ NEAR = [
     # PMS7003 and ZE25-O3 UART series resistors at the driving ESP32 pin (critical.yaml series_termination, as v1),
     # the ZE25 RX divider's lower leg at the connector
     ("R47", [("1", "J8", "5")]),
-    # status LEDs
-    ("R34", [("1", "U1", "34")]), ("R35", [("1", "U1", "35")]),
 ]
 TIGHT = {"C30", "C31", "C32", "C33", "R46", "R48", "R49", "C46", "R32", "R33"}
 HALO = 0.35
@@ -178,6 +189,14 @@ def draw_copper(pcb_file):
         for q in fp.Pads():
             c = q.GetPosition()
             pads.setdefault((fp.GetReference(), q.GetNumber()), (pcbnew.ToMM(c.x) - OX, pcbnew.ToMM(c.y) - OY))
+    # side-view status LEDs: lens (footprint local -y) faces out of the right edge, cathode pad 1 above anode pad 2 (the
+    # polarity mark sits behind pad 1); JLC's EasyEDA footprint C125114 matches pad 1 = cathode (fab_package fit, corr 0)
+    for ref in ("D10", "D11"):
+        fp = board.FindFootprintByReference(ref)
+        (x1, y1), (x2, y2) = pads[(ref, "1")], pads[(ref, "2")]
+        assert round(fp.GetOrientationDegrees()) % 360 == 270, f"{ref}: lens must face +x (orientation -90)"
+        assert abs(x1 - x2) < 1e-3 and y1 < y2, f"{ref}: cathode pad 1 must sit above anode pad 2"
+        assert W - x1 < 1.0, f"{ref}: side-view LED must stand at the right board edge"
     items, _ = main_copper.build(lambda ref, num: pads[(ref, num)])
     layer = {"F": pcbnew.F_Cu, "B": pcbnew.B_Cu}
     for it in items:

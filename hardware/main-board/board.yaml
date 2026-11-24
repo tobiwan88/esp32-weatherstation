@@ -105,3 +105,16 @@ design:
     p_rated_w: {value: 0.25, source: "C17901 LCSC listing: 250 mW (1206 thick film)"}
     i_load_max_a: {value: 0.002, source: "SHT4x datasheet V7.3 4.5: 500 uA max while measuring (heater off; heater forbidden) plus 1.5 mA for one more low-power sensor chained on the head"}
     drop_max_v: {value: 0.3, source: "remote sensor I/O limit VDD + 0.3 V with the bus pull-ups on the main board at 3.3 V"}
+  leds:                    # status LEDs D10/D11 (side view, main-board edge), checked by calc/led_current.py; awake only
+    status:
+      refs: [D10, D11, R34, R35]
+      v_drive: {value: 3.3, source: "IO41/IO42 high at +3V3 (TPS63802 3.32 V; VOH drop at 1-2 mA neglected)"}
+      r_ohm: {value: 1000, source: "R34/R35 1k (C11702 Basic)"}
+      vf_low_v: {value: 1.75, source: "LTST-S270KRKT DS22-2000-210 rev G page 6 fig. 2: VF about 1.75 V near 1 mA (read off the curve)"}
+      vf_max_v: {value: 2.4, source: "LTST-S270KRKT DS22-2000-210 rev G page 4: VF max 2.4 V at 20 mA (upper bound at 1-2 mA)"}
+      if_test_ma: {value: 20, source: "LTST-S270KRKT page 4: IV test current"}
+      if_max_ma: {value: 30, source: "LTST-S270KRKT page 2: DC forward current 30 mA"}
+      gpio_max_ma: {value: 20, source: "ESP32-S3 default GPIO drive strength 20 mA (UNVERIFIED: not in parts/ESP32-S3-WROOM-1.yaml)"}
+      i_min_ma: {value: 0.5, source: "design choice: below about 0.5 mA a 18 mcd-bin part is hard to see indoors"}
+      iv_typ_mcd: {value: 54, source: "LTST-S270KRKT page 4: IV 54 mcd typ at 20 mA"}
+      iv_min_mcd: {value: 18, source: "LTST-S270KRKT page 4 / page 5 bin M: IV 18 mcd min at 20 mA (fig. 4 about linear below 20 mA)"}
