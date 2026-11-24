@@ -22,6 +22,15 @@ Each footprint names its source in the descr. Courtyard = pads and body + 0.25 m
   C22391138 has the same pad numbers at +/-0.78 / +/-0.25 / +/-0.5 (0.0175 mm off): fitted by fab_package.fit.
 - Vishay_VEML6030_2x2mm: Vishay 84366 rev 1.8 page 10 "Recommended Footprint": 6 pads 0.55 x 0.3, outer span 2.3 x 1.6
   (centres x +/-0.875, y 0 / +/-0.65). Top-view pinning: 1 GND bottom right, counter-clockwise to 6 VDD bottom left.
+- LED_LiteOn_LTST-S270_SideView: Lite-On LTST-S270KRKT data sheet DS22-2000-210 rev G (2012-04-21). Page 1 package
+  dimensions: body 1.65 long, 0.68 deep plus a 0.47 lens (1.15 total), 0.60 high (tape pocket 0.75 deep, page 7);
+  terminals 0.33 at both ends. Page 7 "Suggest Soldering Pad Dimensions": two 1.10 x 1.10 pads, 0.90 gap (centres
+  +/-1.0). Emission and polarity: page 1 (lens in the top view, cathode mark at the lower end, polarity symbol) and the
+  page 7 tape drawing (lens toward the feed direction, "CATHODE" at the upper terminal) agree: lens up (-y) puts the
+  cathode left (-x). Footprint: origin between the pads, pad 1 = cathode at -x, pad 2 = anode at +x, lens toward -y
+  (place the -y side at the board edge); pads centred on the 0.68 body (terminal y +/-0.34 inside the 1.10 land, ends
+  0.495-0.825 inside 0.45-1.55). The LCSC/EasyEDA footprint of C125114 has pad 1 (marked "-") at -0.9, pad 2 ("+") at
+  +0.9 (0.8 x 0.7 pads) and draws the lens at -y: same pinning and orientation, centres 0.1 mm apart (fab_package fit).
 """
 
 from pathlib import Path
@@ -128,6 +137,33 @@ def veml6030():
                      "VEML6030 ambient light", pads, (1.0, 1.0), silk, pin1=(1.45, 1.05))
 
 
+def ltst_s270():
+    """Side-view LED, asymmetric outline (lens beyond the body on the -y side), so not through footprint()."""
+    name = "LED_LiteOn_LTST-S270_SideView"
+    pads = [("1", -1.0, 0.0, 1.1, 1.1, "roundrect", 0.1), ("2", 1.0, 0.0, 1.1, 1.1, "roundrect", 0.1)]
+    # courtyard: pads + 0.25 (x), lens tip + 0.25 (-y), pads + 0.15 on the inboard side (+y), so the part can stand at
+    # the board edge beside a connector courtyard (main board J2); IPC-7351 courtyard excess for small chips 0.10-0.25
+    cx, y_top, y_bot = 1.55 + CY, -0.81 - CY, 0.55 + 0.15
+    descr = ("Lite-On LTST-S270 side-view LED 1.65x1.15x0.6 mm, lens toward -y, pad 1 cathode; land 1.10 x 1.10, gap 0.90 "
+             "(DS22-2000-210 rev G pages 1 and 7)")
+    lines = [f'(footprint "{name}"', '  (version 20240108)', '  (generator "weatherstation_build_footprints")',
+             '  (layer "F.Cu")', f'  (descr "{descr}")', '  (tags "LED side view right angle LiteOn LTST-S270")', '  (attr smd)',
+             f'  (fp_text reference "REF**" (at 0 {y_bot + 0.9:g} 0) (layer "F.SilkS") (effects (font (size 1 1) (thickness 0.15))))',
+             f'  (fp_text value "{name}" (at 0 {y_bot + 2.0:g} 0) (layer "F.Fab") (effects (font (size 1 1) (thickness 0.15))))',
+             '  (fp_text user "${REFERENCE}" (at 0 0 0) (layer "F.Fab") (effects (font (size 0.4 0.4) (thickness 0.06))))',
+             '  (fp_rect (start -0.825 -0.34) (end 0.825 0.34) (stroke (width 0.1) (type default)) (fill none) (layer "F.Fab"))',
+             '  (fp_rect (start -0.6 -0.81) (end 0.6 -0.34) (stroke (width 0.1) (type default)) (fill none) (layer "F.Fab"))',
+             '  (fp_line (start -0.825 0.34) (end -0.5 0.0) (stroke (width 0.1) (type default)) (layer "F.Fab"))',
+             f'  (fp_rect (start {-cx:g} {y_top:g}) (end {cx:g} {y_bot:g}) (stroke (width 0.05) (type default)) (fill none) (layer "F.CrtYd"))',
+             # silk on the inboard side only (the lens side sits at the board edge): one line behind the cathode half
+             # (pad 1 to the centre), 0.19 mm from the pad; it stays 0.25 mm from a neighbour's silk 0.8 mm further in
+             # (main board: J2's outline), where a dot behind pad 1 would not fit
+             '  (fp_line (start -1.6 0.8) (end 0 0.8) (stroke (width 0.12) (type default)) (layer "F.SilkS"))']
+    lines += [pad(*p) for p in pads]
+    lines.append(")")
+    return "\n".join(lines) + "\n"
+
+
 FOOTPRINTS = {
     "TPS63802_DLA_VSON-HR-10_2x3mm": dla(),
     # Sunlord WPN201610H: pads b = 0.7 wide, c = 1.7 tall, gap a = 0.7 -> centres at +/-(0.35 + 0.35)
@@ -142,6 +178,7 @@ FOOTPRINTS = {
     "BMP585_LGA-8_3.25x3.25mm": bmp585(),
     "Bosch_LGA-10_2x2mm": bmp580(),
     "Vishay_VEML6030_2x2mm": veml6030(),
+    "LED_LiteOn_LTST-S270_SideView": ltst_s270(),
 }
 
 if __name__ == "__main__":
