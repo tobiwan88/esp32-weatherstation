@@ -45,7 +45,7 @@ Direction is seen from the power board. Engineer decision 2026-11-21 (was an unk
 | 12 | CHG_SCL | main -> power | 10k pull-up R55 on the main board (IO2) |
 | 13, 14 | GND | | |
 | 15 | CHG_INT | power -> main | open drain (6 mA max sink), 10k pull-up R22 on the main board (IO10) |
-| 16 | CHG_CE | main -> power | active low charge enable; pulled up on the main board (R20, IO9) = charge off |
+| 16 | CHG_CE | main -> power | active low charge enable (IO9); pulled up on both boards = charge off: R20 1M to +3V3 (main), R23 330k to BAT_PACK (power) |
 | 17, 18 | GND | | |
 | 19, 20 | USB_VBUS | main -> power | USB-C VBUS to the ACFET1 drain (M1) and VAC1; 2 pins (USB input up to the 1.59 A ILIM clamp) |
 
@@ -84,28 +84,31 @@ b. **USB D+/D- (BC1.2): carried over the header (pins 7/8). ENGINEER DECISION.**
    AUTO_INDET_EN = 0 after the first detection so a later re-detection does not disturb enumeration (v1 B5) and must
    never enable HVDCP (9/12 V on USB_VBUS would exceed the USBLC6 U4 VBR of 6 V on the main board).
 c. **Pull-ups live on the main board** (USB sheet, beside J10): R20 CE 1M (100k until 2026-11-21), R22 INT 10k, R54/R55 I2C 10k,
-   all to +3V3. Exception: the power board carries its own CE pull-up R23 1M to BAT_PACK (d). The
+   all to +3V3. Exception: the power board carries its own CE pull-up R23 330k to BAT_PACK (d). The
    power board has no 3.3 V rail; REGN (5 V) is above the ESP32's 3.6 V and is the wrong rail for INT (7.3.11.2).
    A bought charger module brings its own rail; its pull-ups then sit in parallel (10k || its value).
 d. **CE default: high (charge off)** through R20 until the firmware has written VREG 3.65 V (POR default 4.2 V is
    above the LFP limit 3.75 V). Main board without a power board: nothing on SYS, the board is unpowered unless a bench
    supply feeds SYS (bring-up below); the I2C pull-ups and R20 hang on +3V3 with nothing behind the header.
-   **Power board without a main board:** R23 1M from CHG_CE to BAT_PACK holds CE high (review A1, done 2026-11-21; the
-   TI EVM also keeps its CE pull-up on the charger board, SLUUCB5 JP17). BAT_PACK (2.1-3.75 V for LFP) is inside the CE
-   abs max of 6 V (SLUSDV2C 6.1) and above VIH_CE 1.3 V (6.5) down to about 2.3 V even with the 1 uA maximum CE leakage
-   through 1M; below that the charger may precharge an empty cell, which is the wanted behaviour. With both boards the
-   two 1M pull-ups sit in parallel (CE about 3.3-3.5 V when the GPIO floats, under the ESP32's 3.6 V abs max for an LFP
-   cell; a 4.1 V sodium cell would give 3.7 V: then fit R23 to REGN through a divider instead). The ESP32 GPIO overrides
-   both; holding CE low in deep sleep costs 3.3 + 3.2 uA (`calc/power_budget.py` sleep sum).
-   **Open case (review follow-up B2, 2026-11-21; engineer's call, values unchanged):** both boards mated with +3V3 dead
-   (TPS63802 not running, ESP32 unpowered) leave R20 (1M to about 0 V) and R23 (1M to BAT_PACK) as a divider:
-   CE = BAT/2. That is below VIH_CE 1.3 V (SLUSDV2C 6.5) for BAT under 2.6 V, and with the 1 uA maximum CE leakage
-   through 500k only above BAT 3.6 V is CE surely high: CE is undefined over most of the LFP range and the charger may
-   charge from its POR registers (VREG 4.2 V) until the firmware runs or the HY2112 stops it at 3.75 V. Options:
-   (1) R20 DNP whenever the power board is used (R23 alone holds CE at BAT; R20 is needed only with a bought charger
-   module without its own pull-up); (2) R23 330k: CE = 0.75 x BAT, high above 1.73 V (2.06 V with 1 uA leakage), sleep
-   with CE held low 9.7 uA instead of 3.2 uA (+6.5 uA); (3) accept: with an input present SYS rises to VSYSMIN, +3V3
-   starts and the firmware takes CE within a boot. Details: `power-board/PARTS-REVIEW.md` B5.
+   **Power board without a main board:** R23 330k from CHG_CE to BAT_PACK holds CE high (review A1, done 2026-11-21 with
+   1M; 330k since 2026-11-24, review B2; the TI EVM also keeps its CE pull-up on the charger board, SLUUCB5 JP17).
+   BAT_PACK (2.1-3.75 V for LFP) is inside the CE abs max of 6 V (SLUSDV2C 6.1) and above VIH_CE 1.3 V (6.5) down to
+   BAT 1.63 V even with the 1 uA maximum CE leakage through 330k, below the HY2112 floor of 2.10 V.
+   **Both boards, GPIO released, +3V3 up:** R20 1M (+3V3) and R23 330k (BAT_PACK) in parallel give CE 2.15-3.59 V over
+   BAT 2.1 V to 3.685 V (the highest regulated voltage, VREG 3.65 V + 35 mV) and 3.64 V at the HY2112 trip (3.75 V). The
+   top of that range reaches the 3.6 V the ESP32 module datasheet gives as VDD33 abs max (a GPIO input limit is not in
+   the module card; the pad's clamp to VDD takes at most about 1.4 uA through 330k). Driving CE high as an output instead
+   of releasing it holds CE at 3.3 V and takes 1.2 uA from BAT into the pin (FIRMWARE-RULES.md 2, open decision in
+   `power-board/PARTS-REVIEW.md` B5). A 4.1 V sodium cell would give more: then fit R23 to REGN through a divider.
+   The ESP32 GPIO overrides both; holding CE low in deep sleep costs 3.3 uA (R20, +3V3) + 9.7 uA (R23 at BAT 3.2 V)
+   (`calc/power_budget.py` sleep sum; `calc/ce_pullup.py` for all cases).
+   **Both boards, +3V3 dead (review follow-up B2, DECIDED 2026-11-24: R23 330k):** TPS63802 not running and the ESP32
+   unpowered leave R20 (1M to about 0 V) and R23 (330k to BAT_PACK) as a divider: CE = 0.752 x BAT, high (VIH_CE 1.3 V)
+   above BAT 1.73 V, 2.06 V with the 1 uA maximum CE leakage through 248k, so CE is defined over the whole LFP range
+   above the HY2112 floor (2.10 V). With R23 1M it was BAT/2: undefined below BAT 2.6 V (3.6 V with leakage). Not in this
+   arithmetic: the unpowered ESP32 pad's ESD diode to the dead +3V3 rail can pull CE to that rail + one diode drop
+   (bench check: measure CE with +3V3 off, `calc/ce_pullup.py` WARN row). Rejected options: R20 DNP with the power board;
+   accept (firmware takes CE within a boot). Details: `power-board/PARTS-REVIEW.md` B5.
 e. **No back-feed with the main board unplugged:** USB_VBUS pins connect only to the ACFET1 drain and VAC1; RBFET1 M2
    blocks VBUS/PV from the USB_VBUS pins (figure 8-2). SYS pins stay live (cell voltage through the BQ25798 BATFET);
    exposed SYS pins on a loose power board are a short risk, not a back-feed.

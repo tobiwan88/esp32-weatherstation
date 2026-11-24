@@ -71,12 +71,12 @@ alone does not power the main board (review B18, OPEN: optional USB-to-SYS jumpe
 - Cycle (engineer 2026-11-21): **30 min by default**; the firmware switches to **15 min only while USB or strong sun is present**
   (a firmware feature, `FIRMWARE-RULES.md`). **7 days autonomy minimum** from 80 % of the cell, checked as a FAIL threshold
   (`autonomy_days_min`) by `calc/power_budget.py hardware/power-board`. Result at 30 min with the 90 s PM window and hourly O3:
-  11.7 mA average, 0.90 Wh/day, **11.1 days** autonomy, worst-month solar margin **2.33x** (want 1.5x). The 15 min mode draws
+  11.8 mA average, 0.90 Wh/day, **11.1 days** autonomy, worst-month solar margin **2.33x** (want 1.5x). The 15 min mode draws
   22.1 mA (1.70 Wh/day, 5.9 days, margin 1.24x) and is only allowed with an external energy source.
 - Sleep current of the whole stack (3V3_SW and 5V_SW off, CE held low so solar keeps charging): target under 100 uA, checked
-  as a sum of named loads in `power-board/board.yaml` (`sleep.loads`): 68.2 uA typical, 78.6 uA with datasheet maxima
+  as a sum of named loads in `power-board/board.yaml` (`sleep.loads`): 74.7 uA typical, 85.1 uA with datasheet maxima
   (ESP32 deep sleep with ULP 18 uA, BQ25798 17 uA, TPS63802 11 uA, closed reed contacts 6.6 uA worst case, CE pull-ups
-  1M on both boards 3.3 + 3.2 uA, HY2112 3 uA). The ESP32 ULP figure is the datasheet's "sensor-monitored pattern"; measure it.
+  R20 1M to +3V3 3.3 uA and R23 330k to the cell 9.7 uA (R23 330k since 2026-11-24, review B2), HY2112 3 uA). The ESP32 ULP figure is the datasheet's "sensor-monitored pattern"; measure it.
 - USB-C charging is optional on every station; solar charging continues in deep sleep (charge policy as decided 2026-11-01).
 - Safety (self-built, personal use, not an approved product): fuse (PTC) at the cell, cell protection IC, NTC on the cell with charge inhibited
   below 0 C, panel TVS, reverse-polarity-safe keyed cell connector, no charging above 50 C, enclosure vented and the cell away from the heat corner.

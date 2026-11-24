@@ -91,13 +91,25 @@ design:
     loads:
       esp32_deep_sleep_ulp: {ua: 18, rail: 3v3, source: "ESP32-S3-WROOM-1 v1.8 table 6-7: deep sleep, ULP sensor-monitored pattern 18 uA typ (ULP polls the pulse port and the charger)"}
       r20_ce_pullup_main: {ua: 3.3, rail: 3v3, source: "R20 1M to +3V3 with CE held low by GPIO hold: 3.3 V / 1M"}
-      ce_pullup_power: {ua: 3.2, rail: cell, source: "power-board CE pull-up 1M to BAT_PACK with CE held low: 3.2 V / 1M"}
+      ce_pullup_power: {ua: 9.7, rail: cell, source: "power-board CE pull-up R23 330k to BAT_PACK with CE held low: 3.2 V / 330k = 9.70 uA (engineer 2026-11-24, review B2; was 1M, 3.2 uA)"}
       pulse_contacts: {ua: 6.6, rail: 3v3, source: "R70/R71 1M, both reed contacts resting closed (worst case): 2 x 3.3 uA (calc/i2c_bus.py)"}
       usblc6_u10_u11: {ua: 0.02, ua_max: 0.3, rail: 3v3, source: "USBLC6-2 DS4260 rev 7: IRM 10 nA typ, 150 nA max each, VBUS pin on +3V3"}
       tps63802_iq: {ua: 11, rail: cell, source: "TPS63802 SLVSEU9D 6.5: IQ into VIN 11 uA typ, not switching (max not stated)"}
       tps61023_off: {ua: 0.1, ua_max: 0.2, rail: cell, source: "TPS61023 SLVSF14B 6.5: ISD 0.1 uA typ, 0.2 uA max (EN low)"}
       bq25798_bat: {ua: 17, ua_max: 24, rail: cell, source: "BQ25798 SLUSDV2C 6.5: IQ_BAT_ON 17 uA typ, 24 max (battery only, BATFET on, ADC off; specified at VBAT 8 V)"}
       hy2112: {ua: 3.0, ua_max: 6.0, rail: cell, source: "HY2112-CB DS V08 electrical table: IDD 3.0 uA typ, 6.0 max at VDD 3.2 V"}
+  ce_pullup:               # calc/ce_pullup.py: CHG_CE with R23 here and R20 on the main board (ARCHITECTURE.md d)
+    r_bat_ohm: {value: 330000, source: "R23 330k to BAT_PACK (engineer 2026-11-24, review B2; gen/power_board.py)"}
+    r_host_ohm: {value: 1000000, source: "main board R20 1M to +3V3 (gen/main_board.py)"}
+    v_host: {value: 3.3, source: "+3V3 nominal (TPS63802, main board)"}
+    vih_v: {value: 1.3, source: "BQ25798 SLUSDV2C 6.5 VIH_CE (parts/BQ25798RQMR.yaml)"}
+    leak_ua: {value: 1.0, source: "BQ25798 SLUSDV2C 6.5: CE input leakage 1 uA maximum (PARTS-REVIEW.md B5)"}
+    bat_min_v: {value: 2.1, source: "HY2112-CB overdischarge detection 2.10 V (lowest BAT_PACK with the pack connected)"}
+    bat_max_v: {value: 3.685, source: "VREG 3.65 V + 35 mV accuracy (design.charger above): highest regulated cell voltage"}
+    bat_ovp_v: {value: 3.75, source: "HY2112-CB overcharge detection 3.75 V (charger fault case)"}
+    bat_sleep_v: {value: 3.2, source: "LFP nominal (design.sleep.vcell_v)"}
+    gpio_abs_max_v: {value: 3.6, source: "ESP32-S3-WROOM-1 6.1 table 6-1: VDD33 abs max 3.6 V; a GPIO input limit is not in the module card (UNVERIFIED: same value used, as ARCHITECTURE.md d)"}
+    protect_v: {value: 2.1, source: "HY2112-CB overdischarge 2.10 V: below it the pack is cut off anyway"}
   solar:
     panel_w: {value: 5, source: "REQUIREMENTS-system.md section 4: 5 W 6 V class panel (decided 2026-11-21)"}
     psh_worst_h: {value: 0.7, source: "design value for cloudy December, Germany (PVGIS-SARAH3 2005-2023, 45 deg; weatherstation-v1 profile)"}

@@ -4,6 +4,9 @@
 and routed (2026-11-22, sections Layout and Routing): KiCad DRC 0 violations, 0 unconnected, all severities, no
 waivers; no fab files; review fixes of 2026-11-21 and the 3-sheet partition. Gate: nets OK, ERC 0 errors 0 warnings, review checks 0,
 `tools/split_check.py` OK. Open: panel choice (5 W 6 V, not bought), ICHG (review B5, FIRMWARE-RULES.md).
+**2026-11-24:** R23 (CE pull-up to BAT_PACK) 1M -> 330k (C25778, engineer decision, review follow-up B2 / PARTS-REVIEW B5):
+schematic regenerated, board updated value-only (`tools/sync_from_netlist.py`: Value, LCSC and symbol links; no copper
+change), DRC 0 / 0 unconnected / 0 parity. Open follow-up: CE at a full cell with the GPIO released (PARTS-REVIEW B5).
 
 ## Purpose
 Charger, solar and USB input, cell and its protection. Supplies SYS to the main board over J10 (J_PWR) and takes
@@ -13,7 +16,7 @@ USB_VBUS, D+/D-, and the charger I2C/INT/CE from it. Contract and pin table: `..
 | Sheet | Content |
 |---|---|
 | Inputs | J10 keyed 2x10 2.54 mm socket (hole 3 blocked, key) with the pin map note; USB_VBUS from J10 into ACFET1/RBFET1 M1/M2 (C1, R11); PV: J5, SMBJ10A D1, CM choke L3, C2, ACFET2/RBFET2 M3/M4, R12 |
-| Charger | BQ25798 U3, L1, VBUS/PMID/SYS/BAT caps (table 5-1), PROG R14, ILIM R15/R16, TS R17/R18, STAT R19/D2, CE pull-up R23, QON pad TP3 |
+| Charger | BQ25798 U3, L1, VBUS/PMID/SYS/BAT caps (table 5-1), PROG R14, ILIM R15/R16, TS R17/R18, STAT R19/D2, CE pull-up R23 330k to BAT_PACK, QON pad TP3 |
 | Battery | J6, F1 PTC, TH1 NTC, HY2112-CB U6 with R60/C60/R61, M60/M61 |
 
 ## Decisions
@@ -25,10 +28,12 @@ USB_VBUS, D+/D-, and the charger I2C/INT/CE from it. Contract and pin table: `..
 - Silkscreen polarity next to the connectors (review B19/B20): J5 "PV 1+ 2-", J6 "CELL 1+ 2-" (JST PH leads are sold with both colour orders: check with a meter before plugging).
 - TP3 = QON (pull low to leave ship mode or reset the system; BQ25798 datasheet QON section).
 
-## Cost (JLCPCB Economic PCBA, 2026-11-21 first-tier prices from `tools/jlcparts.py`)
-50 parts on 26 BOM lines, 7 Extended types (BQ25798, SMBJ10A, CM choke, L1 1 uH, PTC, NTC, HY2112).
-Parts about USD 4.75 per board; qty 5: parts 23.73 + setup 8.18 + stencil 1.53 + Extended 7 x 3.07 = USD 54.93,
-without the bare PCB, SMT joints and shipping (manual cart quote, REQUIREMENTS-system.md 10.4). Under USD 100.
+## Cost (JLCPCB Economic PCBA, 2026-11-24 first-tier prices, `calc/bom_check.py --stock --qty 5`)
+50 parts on 26 BOM lines, 7 Extended types with a loading fee (BQ25798, SMBJ10A, CM choke, L1 1 uH, PTC, NTC, HY2112)
+plus R23 330k (C25778), a JLC *preferred* Extended part without a loading fee (the offline `bom_check` without
+`--stock` counts it, 8 x 3.07). Parts USD 4.76 per board; qty 5: parts 23.82 + setup 8.18 + stencil 1.53 + Extended
+7 x 3.07 = **USD 55.02**, without the bare PCB, SMT joints and shipping (manual cart quote, REQUIREMENTS-system.md 10.4).
+Under USD 100. History: USD 54.93 (2026-11-21 prices, R23 1M).
 
 ## Layout (placement 2026-11-21, routed 2026-11-22)
 Generator `gen/power_pcb.py` on the shared engine `gen/pcbkit.py`, stack geometry `gen/stack.py`, build
@@ -54,7 +59,7 @@ antenna overhangs both outlines; nothing of this board lies beyond the top edge 
 **Holes:** H1 (3.5, 3.5), H2 (46.5, 24.0), H3 (3.5, 46.5), H4 (46.5, 46.5), M3, same as the main board.
 
 **Part moves for routing (2026-11-22):** C2 (VAC2 cap) to the PV_IN pin at U3 offset (-2.55, 3.95, 270); R23 (CE
-pull-up) below J10.16 at (24.22, 38.4), because its BAT_PACK feed cannot cross the south band; TP3 (QON) at
+pull-up, 330k since 2026-11-24) below J10.16 at (24.22, 38.4), because its BAT_PACK feed cannot cross the south band; TP3 (QON) at
 (25.55, 26.15), R19 (27.8, 27.4, -90) and D2 (26.8, 29.51) pinned in FIXED, because the rule placement had put them in
 the south band, where CE/SCL/SDA run.
 
@@ -176,9 +181,13 @@ python3 hardware/gen/power_board.py                # regenerate sheets, bom.csv,
 scripts/schematic-review.sh power-board            # ERC, review checks, PNGs in hardware/out/review/power-board/
 python3 -I hardware/tools/split_check.py           # split proof against weatherstation-v1
 python3 hardware/calc/power_budget.py hardware/power-board
+python3 hardware/calc/ce_pullup.py hardware/power-board    # CE pull-up cases with the main board (R20) and alone (gate hook 30)
 python3 hardware/calc/bom_check.py hardware/power-board [--stock --qty 5]
 hardware/tools/build_board.sh power-board          # schematic, netlist, placed board + locked hand copper, renders
 hardware/tools/route_power.sh                      # planes, router (seed 1), finish, DRC summary (in place)
+# value-only schematic change (same footprints and nets) on the routed board, no rebuild (2026-11-24, R23 330k):
+#   kicad-cli sch export netlist -o hardware/power-board/power-board.net hardware/power-board/power-board.kicad_sch
+#   $KICAD_PYTHON hardware/tools/sync_from_netlist.py hardware/power-board/power-board.net hardware/power-board/power-board.kicad_pcb
 python3 hardware/calc/critical.py hardware/power-board
 python3 hardware/calc/power_route_check.py hardware/power-board   # emi_check rows + loops, widths, SW spacing
 uv run --package weatherstation-hardware python hardware/calc/impedance.py hardware/power-board
@@ -189,9 +198,12 @@ Generator: `gen/power_board.py` (parts, nets), `gen/power_layout.py` (block draw
 layout `gen/power_pcb.py` + `gen/pcbkit.py` + `gen/stack.py`, hand copper `gen/power_copper.py`;
 header `gen/boards_common.py`.
 
-## Calc results (2026-11-21)
-power_budget (2026-11-21, 30 min cycle): sleep sum 68.2 uA typ / 78.6 uA max (target 100), average 11.7 mA, 0.90 Wh/day,
-autonomy 11.1 days (minimum 7, FAIL threshold), worst-month solar 2.10 vs 0.90 Wh/day = 2.33x. 15 min mode (USB or sun
-only): 22.1 mA, 5.9 days.
+## Calc results (2026-11-24)
+power_budget (2026-11-24, 30 min cycle, R23 330k): sleep sum 74.7 uA typ / 85.1 uA max (target 100; was 68.2 / 78.6 with
+R23 1M), average 11.8 mA, 0.90 Wh/day, autonomy 11.1 days (minimum 7, FAIL threshold), worst-month solar 2.10 vs 0.90
+Wh/day = 2.33x. 15 min mode (USB or sun only): 22.1 mA, 5.9 days.
+ce_pullup (2026-11-24): alone high above BAT 1.63 V; both boards +3V3 dead CE = 0.752 x BAT, high above 1.73 V (2.06 V
+with 1 uA leakage); GPIO released with +3V3 up 2.15-3.59 V (3.64 V at 3.75 V): WARN against the 3.6 V abs max; CE low
+9.70 uA at 3.2 V.
 track_width: Charge class 0.65 mm for 1.7 A OK. bom_check: OK, stock OK at qty 5. No MISSING rows. critical.py:
 routed, all OK (2026-11-22). buck.py: not applicable (no plain buck).

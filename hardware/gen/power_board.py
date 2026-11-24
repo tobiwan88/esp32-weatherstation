@@ -79,10 +79,12 @@ PARTS = {
     "R19": ("Device:R", "2.2k", R0402, "C25879", "Charger"),
     "D2": ("Device:LED", "STAT red", "LED_SMD:LED_0603_1608Metric", "C2286", "Charger"),
     "#FLG3": ("power:PWR_FLAG", "PWR_FLAG", None, None, "Charger"),
-    # CE pull-up on this board (review A1, 2026-11-21): 1M to BAT_PACK keeps CE high (charge off) when the main board is
+    # CE pull-up on this board (review A1, 2026-11-21): to BAT_PACK, keeps CE high (charge off) when the main board is
     # absent. BQ25798 SLUSDV2C 6.5: VIH_CE 1.3 V, leakage 1 uA max; 6.1: CE abs max 6 V (BAT_PACK <= 3.75 V for LFP).
-    # With the main board R20 1M to +3V3 in parallel; the ESP32 GPIO overrides both.
-    "R23": ("Device:R", "1M (CE pull-up to BAT_PACK)", R0402, "C26083", "Charger"),
+    # 330k since 2026-11-24 (engineer, review follow-up B2): with the main board mated and +3V3 dead, R20 1M (to 0 V) and
+    # R23 form a divider CE = 0.75 x BAT, high above BAT 1.73 V (was BAT/2 with 1M: undefined below 2.6 V). Cost: 9.7 uA
+    # instead of 3.2 uA while CE is held low in sleep (calc/power_budget.py). The ESP32 GPIO overrides both pull-ups.
+    "R23": ("Device:R", "330k (CE pull-up to BAT_PACK)", R0402, "C25778", "Charger"),
     # --- Battery ------------------------------------------------------------------------------------------------------
     # Cell overcurrent backup: PTC hold 3 A, trip 5 A, 8 V. Backup to the HY2112 overcurrent cut.
     "F1": ("Device:Fuse", "PTC 3 A hold (SMD1812P300TF)", "Fuse:Fuse_1812_4532Metric", "C21004", "Battery"),
@@ -106,7 +108,7 @@ PARTS = {
 }
 
 # Parts that are not in weatherstation-v1 (tools/split_check.py)
-ADDED = {"R23": "2026-11-21 review A1: CE pull-up 1M to BAT_PACK on the power board",
+ADDED = {"R23": "2026-11-21 review A1: CE pull-up to BAT_PACK on the power board (1M; 330k since 2026-11-24, review B2)",
          "TP3": "2026-11-21 review C: QON test pad (ship-mode exit / system reset at bring-up)"}
 CHANGED = {
     "D1": "2026-11-21 review A6: unidirectional symbol (D_Zener) for the SMBJ10A, same pins",

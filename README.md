@@ -26,10 +26,10 @@ module that supplies SYS can replace the power board. Contract and pin table: `h
 |---|---|---|
 | Budget | each JLCPCB assembly order under USD 100, whole project under USD 500 | `hardware/REQUIREMENTS-system.md` section 2 |
 | Parts plus fees per order, 5 boards (before bare PCB, SMT joints, shipping) | power board USD 55.00, main board USD 85.57 (live stock and first price tier, 2026-11-23) | `hardware/calc/bom_check.py hardware/<board> --stock --qty 5` |
-| Average current, 30 min cycle | 11.7 mA, 0.90 Wh/day | `hardware/calc/power_budget.py hardware/power-board` |
+| Average current, 30 min cycle | 11.8 mA, 0.90 Wh/day | `hardware/calc/power_budget.py hardware/power-board` |
 | Autonomy without sun | 11.1 days (at least 7 required) | same |
 | Worst-month solar margin | 2.33 x (want 1.5 x) | same |
-| Sleep current of the whole stack | 68 uA typical, 79 uA with datasheet maxima (target under 100 uA) | same |
+| Sleep current of the whole stack | 75 uA typical, 85 uA with datasheet maxima (target under 100 uA) | same |
 The 15 min cycle draws 22 mA and gives 5.9 days, so it is allowed only with an external energy source. A real JLCPCB quote per
 order is still needed: there is no scriptable quote.
 

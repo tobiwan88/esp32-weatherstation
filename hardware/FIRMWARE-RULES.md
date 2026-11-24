@@ -1,6 +1,6 @@
 # Firmware rules from the hardware (power board + main board)
 
-Status 2026-11-21. Firmware is not started. These are the rules the hardware depends on. Each rule names the review item
+Status 2026-11-24 (R23 330k). Firmware is not started. These are the rules the hardware depends on. Each rule names the review item
 (`REVIEW-2026-11-21.md`) or decision it comes from. **This file is the only BQ25798 register plan.** The older tables in
 `weatherstation-v1/usb-charger-bq25798.md` and `weatherstation-v1/charge-policy.md` explain the background; where they
 differ, this file wins. Field names follow the BQ25798 datasheet (SLUSDV2C) register map. Check every field's register
@@ -34,11 +34,16 @@ address and bit position against the datasheet when the driver is written: this 
 11. Only now drive CE low (IO9).
 
 ## 2. CE and GPIO hold
-- CE (IO9) is active low. It is pulled high on both boards: R20 1M to +3V3 (main) and R23 1M to BAT_PACK (power). An ESP32
-  reset or power-on releases the pin, CE goes high, charging stops. This is the fail-safe; do not defeat it.
+- CE (IO9) is active low. It is pulled high on both boards: R20 1M to +3V3 (main) and R23 330k to BAT_PACK (power; 330k
+  since 2026-11-24, review B2). An ESP32 reset or power-on releases the pin, CE goes high, charging stops. This is the
+  fail-safe; do not defeat it.
+- Released (input, no pull), CE sits at up to 3.59 V with a full cell (3.64 V at the HY2112 trip, `calc/ce_pullup.py`),
+  at the 3.6 V module abs max. While the firmware runs and wants charge off, drive IO9 high as an output (CE = 3.3 V,
+  1.2 uA from the cell into the pin) rather than leaving it as an input; reset and deep sleep without hold still release
+  it (open decision, `power-board/PARTS-REVIEW.md` B5).
 - Deep sleep with charging on (decision 2026-11-01): CE low through deep sleep with GPIO hold (`gpio_hold_en` +
-  `gpio_deep_sleep_hold_en`), TS_IGNORE = 0, all of section 1 written in the same wake. Cost: 3.3 + 3.2 uA through the two
-  pull-ups (`calc/power_budget.py` sleep sum).
+  `gpio_deep_sleep_hold_en`), TS_IGNORE = 0, all of section 1 written in the same wake. Cost: 3.3 uA (R20, +3V3) + 9.7 uA
+  (R23 at a 3.2 V cell) through the two pull-ups (`calc/power_budget.py` sleep sum: 74.7 uA typ).
 - A chip POR in sleep drops SYS, resets the ESP32 and releases CE: safe.
 - Charger I2C on IO1/IO2 (RTC I2C): the main CPU and the ULP never use it at the same time.
 
